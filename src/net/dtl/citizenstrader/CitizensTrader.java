@@ -1,4 +1,4 @@
-package net.dtl.trader;
+package net.dtl.citizenstrader;
 
 import java.util.logging.Logger;
 
@@ -10,20 +10,17 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class Trader extends JavaPlugin {
+public class CitizensTrader extends JavaPlugin {
 	public final Logger logger = Logger.getLogger("Minecraft");
 	
-	//DtlProjeckt
-	public DtlProject dtlProject;
-	private int selected = -1;
+	public static CitizensTrader plugin;
 	
+	public DtlProject dtlProject;
 	private CharacterFactory cf;
 	
 	@Override
 	public void onEnable() {
 		
-	//	npc.setName("trader");
-	//	npc.setValidTypes(EntityType.PLAYER);
 		PluginManager pm = this.getServer().getPluginManager();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		
@@ -47,13 +44,16 @@ public class Trader extends JavaPlugin {
 		if ( CitizensAPI.getCharacterManager() != null )
 			CitizensAPI.getCharacterManager().registerCharacter(cf);
 		
-		getServer().getPluginManager().registerEvents(new NpcListener(dtlProject,this), this);
-		getCommand("trader").setExecutor(new TraderCommands(this));
+		getServer().getPluginManager().registerEvents(new TraderListener(dtlProject,this), this);
+		getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+		
+		plugin = this;
 	}
 	
 	@Override
 	public void onDisable() {
 	}
+	/*
 	
 	public void setSelected(int s) {
 		selected = s;
@@ -61,7 +61,7 @@ public class Trader extends JavaPlugin {
 	
 	public int getSelected() {
 		return selected;
-	}
+	}*/
 	
 	
 }

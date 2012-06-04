@@ -1,5 +1,5 @@
 name: DtlCitizensTrader
-main: net.dtl.trader.Trader
+main: net.dtl.citizenstrader.CitizensTrader
 depend: [Citizens]
 version: 0.1
 description: >

@@ -1,4 +1,4 @@
-package net.dtl.trader;
+package net.dtl.citizenstrader;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class TraderCommands implements CommandExecutor {
+public class TraderCommandExecutor implements CommandExecutor {
 
-	private Trader plugin;
+	private CitizensTrader plugin;
 
-	public TraderCommands(Trader instance) {
+	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
 	}
 	

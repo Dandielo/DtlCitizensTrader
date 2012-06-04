@@ -1,4 +1,4 @@
-package net.dtl.trader;
+package net.dtl.citizenstrader;
 
 import java.util.Collection;
 
@@ -19,10 +19,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class NpcListener implements Listener {
+public class TraderListener implements Listener {
 	DtlProject dProject; 
-	private Trader plugin;
-	public NpcListener(DtlProject dtlProject, Trader trader) {
+	private CitizensTrader plugin;
+	public TraderListener(DtlProject dtlProject, CitizensTrader trader) {
 		plugin = trader;
 		dProject = dtlProject;
 	}
@@ -31,7 +31,7 @@ public class NpcListener implements Listener {
 	public void npcSelect(NPCSelectEvent event) {
 		if ( event.getSelector() instanceof Player )
 			if ( dProject.getPermissions().has(event.getSelector(), "dtl.citizens.characters.trader") ) {
-				plugin.setSelected(event.getNPC().getId());
+		//		plugin.setSelected(event.getNPC().getId());
 		//		event.getPlayer().sendMessage("you have selected " + CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getFullName() + ".");
 			}
 	}

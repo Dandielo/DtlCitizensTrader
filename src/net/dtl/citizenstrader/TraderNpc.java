@@ -1,4 +1,4 @@
-package net.dtl.trader;
+package net.dtl.citizenstrader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,21 +8,25 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.metadata.MetadataValue;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.DtlProject;
+import net.dtl.citizenstrader.traits.StockRoomTrait;
 import net.dtl.economy.DtlEconomy;
 
 
 public class TraderNpc extends Character {
 
-	private HashMap<Integer,List<TraderItem>> SellItems = new HashMap<Integer,List<TraderItem>>(); 
-	private HashMap<Integer,List<TraderItem>> BuyItems = new HashMap<Integer,List<TraderItem>>(); 
+//	private HashMap<Integer,List<TraderItem>> SellItems = new HashMap<Integer,List<TraderItem>>(); 
+//	private HashMap<Integer,List<TraderItem>> BuyItems = new HashMap<Integer,List<TraderItem>>(); 
 //	private List<TraderItem> SellItems = new ArrayList<TraderItem>(); 
 //	private List<TraderItem> BuyItems = new ArrayList<TraderItem>(); 
-	private List<Integer> traderID = new ArrayList<Integer>();
+//	private List<Integer> traderID = new ArrayList<Integer>();
 	
 	/*public TraderNpc(TraderNpc character) {
 		SellItems = character.getSellItems();
@@ -32,7 +36,7 @@ public class TraderNpc extends Character {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {		
-		List<String> list = new ArrayList<String>();
+/*		List<String> list = new ArrayList<String>();
 		if ( arg0.keyExists("items") && arg0.getRelative("items").keyExists("sell") )
 			list = (List<String>) arg0.getRelative("items").getRaw("sell");
 
@@ -51,13 +55,13 @@ public class TraderNpc extends Character {
 		for ( int i = 0 ; i < list.size() ; ++i ) {
 			items.add(new TraderItem(list.get(i)));
 		}
-		BuyItems.put(-1, new ArrayList<TraderItem>(items));
+		BuyItems.put(-1, new ArrayList<TraderItem>(items));*/
 		
 	}
 
 	@Override
 	public void save(DataKey arg0) {
-		List<TraderItem> buy = new ArrayList<TraderItem>();
+	/*	List<TraderItem> buy = new ArrayList<TraderItem>();
 		List<TraderItem> sell = new ArrayList<TraderItem>();
 		if ( !SellItems.isEmpty() )
 			sell = SellItems.get(traderID.get(0));
@@ -75,15 +79,32 @@ public class TraderNpc extends Character {
 			strBuy.add(buy.get(i).getItemStack().getTypeId()+(buy.get(i).getItemStack().getData().getData() != 0 ? ":" + buy.get(i).getItemStack().getData().getData() + " " : " " ) + buy.get(i).getCost() + " " + buy.get(i).getAmout() );
 		}
 		
-		
+		*/
 	//	HashMap<String,List<TraderItem>> map = new HashMap<String,List<TraderItem>>();
 	//	map.put("sell", sell);
 	//	map.put("buy", buy);
 
-		arg0.setRaw("items", "sell");
-		arg0.getRelative("items").setRaw("sell", strSell);
-		arg0.getRelative("items").setRaw("buy", strBuy);
+//		arg0.setRaw("items", "sell");
+//		arg0.getRelative("items").setRaw("sell", strSell);
+//		arg0.getRelative("items").setRaw("buy", strBuy);
 	} 
+	
+	@Override
+	public void onRightClick(NPC npc, Player by) {
+		
+		System.out.println("Customer inventory!");
+		by.setMetadata("npc-talking-with", new FixedMetadataValue(CitizensTrader.plugin, npc));
+		by.openInventory(npc.getTrait(StockRoomTrait.class).inventoryView(54));
+		
+	}
+	
+	@Override
+    public void onSet(NPC npc) {
+        if( !npc.hasTrait(StockRoomTrait.class) ){
+            npc.addTrait( new StockRoomTrait() );
+        }
+    }
+	
 	
 	public List<TraderItem> getList(int id, boolean sell) {
 		System.out.print(id+ " " +sell);
