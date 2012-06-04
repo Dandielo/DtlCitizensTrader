@@ -1,0 +1,13 @@
+name: DtlCitizensTrader
+main: net.dtl.trader.Trader
+depend: [Citizens]
+version: 0.1
+description: >
+             Citizens Character.
+commands: 
+    trader:
+      description: Dtl - CitizensTrader commands.
+      usage: /trader [buy/sell] [list/add/remove/edit] (iIndex) (iID) (cost) (amout)
+      permission: dtl.characters.trader
+      permisison-message: You don't have <permission>
+    
