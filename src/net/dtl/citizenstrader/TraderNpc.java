@@ -1,27 +1,46 @@
 package net.dtl.citizenstrader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.metadata.MetadataValue;
 
+import net.citizensnpcs.api.event.NPCSelectEvent;
+import net.citizensnpcs.api.event.NPCSpawnEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.DtlProject;
-import net.dtl.citizenstrader.traits.StockRoomTrait;
-import net.dtl.economy.DtlEconomy;
+import net.dtl.citizenstrader.TraderStatus.Status;
+import net.dtl.citizenstrader.traits.InventoryTrait;
+import net.dtl.citizenstrader.traits.StockItem;
+import net.milkbowl.vault.economy.Economy;
 
 
-public class TraderNpc extends Character {
-
+public class TraderNpc extends Character implements Listener {
+//	private CitizensTrader plugin;
+	private Economy econ;
+	
+	private HashMap<String,TraderStatus> state = new HashMap<String,TraderStatus>();
+	
+	public TraderNpc() {
+	}
+	
+	public void setEcon(Economy e) {
+		econ = e;
+	}
+	
+	public TraderStatus getStatus(String name) {
+		if ( state.containsKey(name) )
+			return state.get(name);
+		return null;
+	}
 //	private HashMap<Integer,List<TraderItem>> SellItems = new HashMap<Integer,List<TraderItem>>(); 
 //	private HashMap<Integer,List<TraderItem>> BuyItems = new HashMap<Integer,List<TraderItem>>(); 
 //	private List<TraderItem> SellItems = new ArrayList<TraderItem>(); 
@@ -89,20 +108,203 @@ public class TraderNpc extends Character {
 	} 
 	
 	@Override
-	public void onRightClick(NPC npc, Player by) {
+	public void onRightClick(NPC npc, Player p) {
 		
 	//	System.out.println("Customer inventory!");
 	//	by.setMetadata("npc-talking-with", new FixedMetadataValue(CitizensTrader.plugin, npc));
-		by.openInventory(npc.getTrait(StockRoomTrait.class).inventoryView(54,npc.getName()));
+		if ( p.getItemInHand().getTypeId() != 280 ) {
+			if ( !state.containsKey(p.getName()) )
+				state.put(p.getName(),new TraderStatus(npc));
+			state.get(p.getName()).setInventory(npc.getTrait(InventoryTrait.class).inventoryView(54,npc.getName()));
+			p.openInventory(state.get(p.getName()).getInventory());
+			
+		} else {
+			if ( state.containsKey(p.getName()) && state.get(p.getName()).getTrader().getId() == npc.getId() ) {
+				if ( !state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE) ) {
+					state.get(p.getName()).setStatus(Status.PLAYER_MANAGE);
+					p.sendMessage(ChatColor.RED + "Trader manager enabled");
+				} else if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE) ) { 
+					state.get(p.getName()).setStatus(Status.PLAYER_SELL);
+					p.sendMessage(ChatColor.RED + "Trader manager disabled");
+				}
+			} else {
+				state.put(p.getName(),new TraderStatus(npc,Status.PLAYER_MANAGE));
+				p.sendMessage(ChatColor.RED + "Trader manager enabled");
+			}
+		}
+			
 		
 	}
 	
 	@Override
     public void onSet(NPC npc) {
-        if( !npc.hasTrait(StockRoomTrait.class) ){
-            npc.addTrait( new StockRoomTrait() );
+        if( !npc.hasTrait(InventoryTrait.class) ){
+            npc.addTrait( new InventoryTrait() );
         }
     }
+	
+	
+	
+	
+	@EventHandler
+	public void npcSelect(NPCSelectEvent event) {
+		if ( event.getSelector() instanceof Player ) {
+			Player p = (Player) event.getSelector();
+		//	if ( plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader.manage") ) {
+				
+			}
+		//}
+					
+		//		plugin.setSelected(event.getNPC().getId());
+		//		event.getPlayer().sendMessage("you have selected " + CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getFullName() + ".");
+		
+	}
+	
+	@EventHandler 
+	public void npcSpawn(NPCSpawnEvent event) {
+		/*if ( event.getNPC().getCharacter() instanceof TraderNpc ) {
+			((TraderNpc)event.getNPC().getCharacter()).setTraderID(event.getNPC().getId());
+		}*/
+	}
+/*	@EventHandler 
+	public void npcSpawn(NPCLeftClickEvent event) {
+		event.setCancelled(true);
+	}*/
+	/*
+	@EventHandler
+	public void playerInteractEntity(PlayerInteractEntityEvent event) {
+		if ( !event.getPlayer().getItemInHand().getType().equals(Material.STICK) ) {
+			Collection<NPC> npcs = CitizensAPI.getNPCRegistry().getNPCs(TraderNpc.class);
+			if ( npcs.contains(CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked())) ) {
+				Inventory inv = CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getInventory();
+				((TraderNpc)CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getCharacter()).setInventory(inv,CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getId(),event.getPlayer(),dProject);
+				event.getPlayer().openInventory(inv);
+			} 
+		}
+	}*///boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+
+	@EventHandler
+	public void inventoryClick(InventoryClickEvent event) {
+		if ( event.getWhoClicked() instanceof Player ) {
+			Player p = (Player) event.getWhoClicked();
+			if ( state.containsKey(p.getName()) ) {
+				TraderStatus trader = state.get(p.getName());
+				InventoryTrait sr = trader.getTrader().getTrait(InventoryTrait.class);
+				boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				
+				if ( !trader.getStatus().equals(Status.PLAYER_MANAGE) && top ) {
+					StockItem si = null;
+					
+				if ( trader.getStatus().equals(Status.PLAYER_SEL_AMOUT) )
+					si = trader.getStockItem();
+				else
+					si = sr.itemForSell(event.getSlot());
+					
+					if ( si != null ) {
+						if ( event.isShiftClick() ) {
+							if ( si.hasMultipleAmouts() ) {
+								if ( econ.has(p.getName(), si.getPrice(event.getSlot())) ) {
+									if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
+										 !event.getCurrentItem().getType().equals(Material.AIR)) {
+										p.getInventory().addItem(event.getCurrentItem());
+										p.sendMessage(ChatColor.GOLD + "You bought " + event.getCurrentItem().getAmount() + " for " + si.getPrice(event.getSlot()) + ".");
+									}
+								} else {
+									p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+								}
+							} else {
+								if ( econ.has(p.getName(), si.getPrice()) ) {
+									p.getInventory().addItem(si.getItemStack());
+									p.sendMessage(ChatColor.GOLD + "You bought " + si.getItemStack().getAmount() + " for " + si.getPrice() + ".");
+								} else {
+									p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+								}
+							}
+						} else {
+							if ( trader.getStatus().equals(Status.PLAYER_SEL_AMOUT) ) {
+								if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+									trader.getInventory().clear();
+									sr.inventoryView(trader.getInventory());
+									trader.setStatus(Status.PLAYER_SELL);
+									trader.setStockItem(null);
+								} else {
+									if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
+										 !event.getCurrentItem().getType().equals(Material.AIR) ) 
+										p.sendMessage(ChatColor.GOLD + "This item costs " + si.getPrice(event.getSlot()) + ".");
+								}
+							} else if ( trader.getStatus().equals(Status.PLAYER_SELL) ) {
+								if ( si.hasMultipleAmouts() ) {
+									if ( trader.getStatus().equals(Status.PLAYER_SELL) ) {
+										trader.getInventory().clear();
+										InventoryTrait.setInventoryWith(trader.getInventory(), si);
+										trader.setStatus(Status.PLAYER_SEL_AMOUT);
+										trader.setStockItem(si);
+									}
+								} else {
+									p.sendMessage(ChatColor.GOLD + "This item costs " + si.getPrice() + ".");
+								}
+							}
+						/*	 else if ( trader.getStatus().equals(Status.PLAYER_SEL_AMOUT) && event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) ) {
+									sr.inventoryView(54, trader.getTrader().getName());
+								} else if ( trader.getStatus().equals(Status.PLAYER_SEL_AMOUT) ) {
+									p.sendMessage(ChatColor.GOLD + "This item costs " + si.getPrice(event.getSlot()) + ".");
+								}
+							} else {*/
+							//	if ( plugin.dtlProject.getEconomy().has(p.getName(), si.getPrice()) ) {
+							//		p.getInventory().addItem(si.getItemStack());
+							//	} else {
+							//		p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+							//	}
+						}
+					}
+				}
+				event.setCancelled(true);
+			} else {
+			}
+		}
+	}
+	
+
+
+
+	@EventHandler
+	public void inventoryClose(InventoryCloseEvent event){
+	    if(state.containsKey(event.getPlayer().getName())){
+	        state.remove(event.getPlayer().getName());
+	    }
+	}
+/*
+			}
+			}
+			
+		//	Collection<NPC> npcs = CitizensAPI.getNPCRegistry().getNPCs(TraderNpc.class);
+
+			for ( int i = 0 ; i < npcs.size() ; ++i ) {
+				if ( ((NPC)npcs.toArray()[i]).getName().equals(event.getInventory().getName()) ) {
+					TraderNpc trader = (TraderNpc)((NPC)npcs.toArray()[i]).getCharacter();/*
+					if ( ( !event.getCursor().getType().equals(Material.AIR) && event.getCurrentItem().getType().equals(Material.FIRE) ) || event.getCurrentItem().getType().equals(Material.FIRE) ) {
+						if ( ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).canBuy(event.getCursor(),((NPC)npcs.toArray()[i]).getId()) )
+							if ( ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).bought(event.getCursor(),((NPC)npcs.toArray()[i]).getId(),dProject.getEconomy(),p) ) {
+								event.setCursor(new ItemStack(0,0));
+								event.setCancelled(true);
+								return;
+							}
+						event.setCancelled(true);
+					} else
+					if ( trader.checkSlot(((NPC)npcs.toArray()[i]).getId(),event.getSlot(),event.getCurrentItem()) && ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).canSell(event.getCurrentItem(),((NPC)npcs.toArray()[i]).getId()) || event.getCurrentItem().equals(Material.FIRE) ) {
+						if ( event.isShiftClick() && ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).sold(event.getCurrentItem(),((NPC)npcs.toArray()[i]).getId(),dProject.getEconomy(),p) )
+							p.getInventory().addItem(event.getCurrentItem());
+						else
+							p.sendMessage(ChatColor.GOLD + event.getCurrentItem().getType().name() + " kosztuje " + ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).getCost(((NPC)npcs.toArray()[i]).getId(),event.getSlot()) + "$ za sztuke.");
+						event.setCancelled(true);
+					} 
+					if ( event.isShiftClick() )
+						event.setCancelled(true);
+				}
+			}
+		}*/
+}
+	
 	/*
 	
 	public List<TraderItem> getList(int id, boolean sell) {
@@ -253,4 +455,3 @@ public class TraderNpc extends Character {
 		return false;
 	}*/
 	
-}

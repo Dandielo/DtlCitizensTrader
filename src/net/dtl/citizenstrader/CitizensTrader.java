@@ -4,10 +4,14 @@ import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
-import net.dtl.DtlProject;
+import net.citizensnpcs.api.trait.TraitFactory;
+import net.dtl.citizenstrader.traits.InventoryTrait;
+import net.milkbowl.vault.economy.Economy;
 
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CitizensTrader extends JavaPlugin {
@@ -15,9 +19,9 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public static CitizensTrader plugin;
 	
-	public DtlProject dtlProject;
 	private CharacterFactory cf;
-	private int selected;
+
+	private Economy economy;
 	
 	
 	@Override
@@ -26,43 +30,38 @@ public class CitizensTrader extends JavaPlugin {
 		PluginManager pm = this.getServer().getPluginManager();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		
-		
-		dtlProject = (DtlProject) pm.getPlugin("DtlProject");
-		if ( dtlProject != null ) {
-			this.logger.info("[" + dtlProject.getDescription().getName() + "]["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");
-		} else {
-			this.logger.info("DtlProject plugin not found. Disabling plugin");
-			this.setEnabled(false);
-			this.getPluginLoader().disablePlugin(this);
-			return;
+		if ( getServer().getPluginManager().getPlugin("Vault") != null ) {
+	        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+	        if ( rsp != null ) {
+	        	economy = rsp.getProvider();
+				this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");
+	        } else {
+				this.logger.info("Vault plugin not found. Disabling plugin");
+				this.setEnabled(false);
+				this.getPluginLoader().disablePlugin(this);
+				return;
+			}
 		}
 		
 		cf = new CharacterFactory(TraderNpc.class);
 
 		cf.withName("trader");
-		//cf.create();
-		
+
 		
 		if ( CitizensAPI.getCharacterManager() != null )
 			CitizensAPI.getCharacterManager().registerCharacter(cf);
+		if ( CitizensAPI.getTraitManager() != null )
+			CitizensAPI.getTraitManager().registerTrait(new TraitFactory(InventoryTrait.class).withName("inv").withPlugin(this));
 		
-		getServer().getPluginManager().registerEvents(new TraderListener(dtlProject,this), this);
-		getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+		getServer().getPluginManager().registerEvents((Listener) CitizensAPI.getCharacterManager().getCharacter("trader"), this);
+		getCommand("trader").setExecutor(new TraderCommandExecutor());
+		((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader")).setEcon(economy);
 		
 		plugin = this;
 	}
 	
 	@Override
 	public void onDisable() {
-	}
-	
-	
-	public void setSelected(int s) {
-		selected = s;
-	}
-	
-	public int getSelected() {
-		return selected;
 	}
 	
 	

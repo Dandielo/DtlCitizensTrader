@@ -4,6 +4,8 @@ import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader.TraderStatus.Status;
+import net.dtl.citizenstrader.traits.InventoryTrait;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -13,10 +15,12 @@ import org.bukkit.entity.Player;
 
 public class TraderCommandExecutor implements CommandExecutor {
 
-	private CitizensTrader plugin;
+//	private CitizensTrader plugin;
+	private TraderNpc trader;
 
-	public TraderCommandExecutor(CitizensTrader instance) {
-		plugin = instance;
+	public TraderCommandExecutor() {
+		trader = ((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader"));
+	//	plugin = instance;
 	}
 	
 	public boolean argsLength(String args[],int min,int max) {
@@ -40,21 +44,21 @@ public class TraderCommandExecutor implements CommandExecutor {
 					if ( args[0].equals("buy") ) {
 						if ( args[1].equals("list") ) {
 				//			showBuyList(p);
-						} else if ( args[1].equals("add") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
+						} else if ( args[1].equals("add")  ) {
 			//				addBuyItem(p, args);
-						} else if ( args[1].equals("remove") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
+						} else if ( args[1].equals("remove") ) {
 			//				removeBuyItem(p, args);
-						} else if ( args[1].equals("edit") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
+						} else if ( args[1].equals("edit") ) {
 			//				editBuyItem(p, args);
 						} 
 					} else if ( args[0].equals("sell") ) {
 						if ( args[1].equals("list") ) {
 			//				showSellList(p);
-						} else if ( args[1].equals("add") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-			//				addSellList(p, args);
-						} else if ( args[1].equals("remove") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-			//				removeSellList(p, args);
-						} else if ( args[1].equals("edit") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
+						} else if ( args[1].equals("add") ) {
+							addSellItem(p, args);
+						} else if ( args[1].equals("remove") ) {
+							removeSellItem(p, args);
+						} else if ( args[1].equals("edit") ) {
 			//				editSellList(p, args);
 						} 
 					}
@@ -81,25 +85,36 @@ public class TraderCommandExecutor implements CommandExecutor {
 
 		p.sendMessage(ChatColor.RED + " Item succesfuly edited.");
 	}
-
-	private void removeSellList(Player p,String[] args) {
+*/
+	private void removeSellItem(Player p,String[] args) {
 		if ( args.length != 3 )
 			return;
-		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
-		((TraderNpc)n.getCharacter()).removeItem(args[2], n.getId(), true);
 		
-		p.sendMessage(ChatColor.RED + " Item succesfuly removed");
+		TraderStatus stat = trader.getStatus(p.getName());
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).removeItem(true, Integer.parseInt(args[2]));
+			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
+			return;
+		}
+		p.sendMessage(ChatColor.RED + " Item could not be removed.");
 	}
 
-	private void addSellList(Player p,String[] args) {
+	private void addSellItem(Player p,String[] args) {
 		if ( args.length < 5 )
 			return;
-		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
-		((TraderNpc)n.getCharacter()).addItem(args[2]+" "+args[3]+" "+args[4], n.getId(), true);
 		
-		p.sendMessage(ChatColor.RED + " Item succesfuly added.");
+		TraderStatus stat = trader.getStatus(p.getName());
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).addItem(true, args[2]+" "+args[3]+" "+args[4]);
+			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
+			return;
+		}
+		p.sendMessage(ChatColor.RED + " Item could not be added.");
+		//NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
+		//((TraderNpc)n.getCharacter()).addItem(args[2]+" "+args[3]+" "+args[4], n.getId(), true);
+		
 	}
-
+/*
 	private void showSellList(Player p) {
 		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
 		List<TraderItem> items = ((TraderNpc)n.getCharacter()).getList(n.getId(), true);

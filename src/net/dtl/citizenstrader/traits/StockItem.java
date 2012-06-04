@@ -1,5 +1,6 @@
 package net.dtl.citizenstrader.traits;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.enchantments.Enchantment;
@@ -7,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class StockItem {
 	private ItemStack item = null;
-	private List<Integer> amouts;
+	private List<Integer> amouts = new ArrayList<Integer>();
 	private int price;
 	
 	public StockItem() {
@@ -27,16 +28,16 @@ public class StockItem {
 				}
 			} else {
 				if ( value.startsWith("p:") ) {
-					price = Integer.parseInt(value.substring(1));
+					price = Integer.parseInt(value.substring(2));
 				}
 				if ( value.startsWith("a:") ) {
-					for ( String amout : value.substring(1).split(",") )
+					for ( String amout : value.substring(2).split(",") )
 						amouts.add(Integer.parseInt(amout));
 					if ( amouts.size() == 1 )
 						item.setAmount(amouts.get(0));
 				}
 				if ( value.startsWith("e:") ) {
-					for ( String ench : value.substring(1).split(",") ) {
+					for ( String ench : value.substring(2).split(",") ) {
 						String[] enchData = ench.split("/");
 						item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
 					}
@@ -60,11 +61,29 @@ public class StockItem {
 		for ( int i = 0 ; i < amouts.size() ; ++i )
 			itemString += amouts.get(i) + ( i + 1 < amouts.size() ? "," : "" );
 		//saving enchantments
-		itemString += " e:";
-		for ( int i = 0 ; i < item.getEnchantments().size() ; ++i ) {
-			Enchantment e = (Enchantment) item.getEnchantments().keySet().toArray()[i];
-			itemString += e.getId() + "/" + item.getEnchantments().get(i) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
+		if ( !item.getEnchantments().isEmpty() ) {
+			itemString += " e:";
+			for ( int i = 0 ; i < item.getEnchantments().size() ; ++i ) {
+				Enchantment e = (Enchantment) item.getEnchantments().keySet().toArray()[i];
+				itemString += e.getId() + "/" + item.getEnchantments().get(i) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
+			}
 		}
 		return itemString;
+	}
+
+	public int getPrice() {
+		return price*amouts.get(0);
+	}
+	public int getPrice(int i) {
+		if ( i < amouts.size() )
+			return price*amouts.get(i);
+		return 0;
+	}
+	public boolean hasMultipleAmouts() {
+		return ( amouts.size() > 1 ? true : false );
+	}
+	
+	public List<Integer> getAmouts() {
+		return amouts;
 	}
 }

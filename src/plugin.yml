@@ -1,6 +1,6 @@
 name: DtlCitizensTrader
 main: net.dtl.citizenstrader.CitizensTrader
-depend: [Citizens]
+depend: [Citizens,Vault]
 version: 0.1
 description: >
              Citizens Character.
