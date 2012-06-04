@@ -33,7 +33,6 @@ public class TraderNpc extends Character {
 		BuyItems = character.getBuyItems();
 	}*/
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void load(DataKey arg0) throws NPCLoadException {		
 /*		List<String> list = new ArrayList<String>();
@@ -92,9 +91,9 @@ public class TraderNpc extends Character {
 	@Override
 	public void onRightClick(NPC npc, Player by) {
 		
-		System.out.println("Customer inventory!");
-		by.setMetadata("npc-talking-with", new FixedMetadataValue(CitizensTrader.plugin, npc));
-		by.openInventory(npc.getTrait(StockRoomTrait.class).inventoryView(54));
+	//	System.out.println("Customer inventory!");
+	//	by.setMetadata("npc-talking-with", new FixedMetadataValue(CitizensTrader.plugin, npc));
+		by.openInventory(npc.getTrait(StockRoomTrait.class).inventoryView(54,npc.getName()));
 		
 	}
 	
@@ -104,7 +103,7 @@ public class TraderNpc extends Character {
             npc.addTrait( new StockRoomTrait() );
         }
     }
-	
+	/*
 	
 	public List<TraderItem> getList(int id, boolean sell) {
 		System.out.print(id+ " " +sell);
@@ -252,6 +251,6 @@ public class TraderNpc extends Character {
 			}
 		}
 		return false;
-	}
+	}*/
 	
 }

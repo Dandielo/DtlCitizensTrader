@@ -22,6 +22,7 @@ import org.bukkit.inventory.ItemStack;
 public class TraderListener implements Listener {
 	DtlProject dProject; 
 	private CitizensTrader plugin;
+	
 	public TraderListener(DtlProject dtlProject, CitizensTrader trader) {
 		plugin = trader;
 		dProject = dtlProject;
@@ -31,22 +32,22 @@ public class TraderListener implements Listener {
 	public void npcSelect(NPCSelectEvent event) {
 		if ( event.getSelector() instanceof Player )
 			if ( dProject.getPermissions().has(event.getSelector(), "dtl.citizens.characters.trader") ) {
-		//		plugin.setSelected(event.getNPC().getId());
+				plugin.setSelected(event.getNPC().getId());
 		//		event.getPlayer().sendMessage("you have selected " + CitizensAPI.getNPCRegistry().getNPC(event.getRightClicked()).getFullName() + ".");
 			}
 	}
 	
 	@EventHandler 
 	public void npcSpawn(NPCSpawnEvent event) {
-		if ( event.getNPC().getCharacter() instanceof TraderNpc ) {
+		/*if ( event.getNPC().getCharacter() instanceof TraderNpc ) {
 			((TraderNpc)event.getNPC().getCharacter()).setTraderID(event.getNPC().getId());
-		}
+		}*/
 	}
-	@EventHandler 
+/*	@EventHandler 
 	public void npcSpawn(NPCLeftClickEvent event) {
 		event.setCancelled(true);
-	}
-	
+	}*/
+	/*
 	@EventHandler
 	public void playerInteractEntity(PlayerInteractEntityEvent event) {
 		if ( !event.getPlayer().getItemInHand().getType().equals(Material.STICK) ) {
@@ -57,7 +58,7 @@ public class TraderListener implements Listener {
 				event.getPlayer().openInventory(inv);
 			} 
 		}
-	}
+	}*/
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event) {
@@ -66,7 +67,7 @@ public class TraderListener implements Listener {
 			Collection<NPC> npcs = CitizensAPI.getNPCRegistry().getNPCs(TraderNpc.class);
 
 			for ( int i = 0 ; i < npcs.size() ; ++i ) {
-				if ( ((NPC)npcs.toArray()[i]).getName().equals(event.getInventory().getName()) ) {
+				if ( ((NPC)npcs.toArray()[i]).getName().equals(event.getInventory().getName()) ) {/*
 					if ( ( !event.getCursor().getType().equals(Material.AIR) && event.getCurrentItem().getType().equals(Material.FIRE) ) || event.getCurrentItem().getType().equals(Material.FIRE) ) {
 						if ( ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).canBuy(event.getCursor(),((NPC)npcs.toArray()[i]).getId()) )
 							if ( ((TraderNpc)((NPC)npcs.toArray()[i]).getCharacter()).bought(event.getCursor(),((NPC)npcs.toArray()[i]).getId(),dProject.getEconomy(),p) ) {
@@ -83,7 +84,7 @@ public class TraderListener implements Listener {
 						event.setCancelled(true);
 					} 
 					if ( event.isShiftClick() )
-						event.setCancelled(true);
+						event.setCancelled(true);*/
 				}
 			}
 		}

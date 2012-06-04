@@ -35,27 +35,27 @@ public class TraderCommandExecutor implements CommandExecutor {
 			if ((sender instanceof Player)) {
 				Player p = (Player) sender;
 				if ( argsLength(args,0,0) ) {
-					traderCommands( p );
+			//		traderCommands( p );
 				} else if ( argsLength(args,2,6) ) {
 					if ( args[0].equals("buy") ) {
 						if ( args[1].equals("list") ) {
-							showBuyList(p);
+				//			showBuyList(p);
 						} else if ( args[1].equals("add") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							addBuyItem(p, args);
+			//				addBuyItem(p, args);
 						} else if ( args[1].equals("remove") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							removeBuyItem(p, args);
+			//				removeBuyItem(p, args);
 						} else if ( args[1].equals("edit") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							editBuyItem(p, args);
+			//				editBuyItem(p, args);
 						} 
 					} else if ( args[0].equals("sell") ) {
 						if ( args[1].equals("list") ) {
-							showSellList(p);
+			//				showSellList(p);
 						} else if ( args[1].equals("add") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							addSellList(p, args);
+			//				addSellList(p, args);
 						} else if ( args[1].equals("remove") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							removeSellList(p, args);
+			//				removeSellList(p, args);
 						} else if ( args[1].equals("edit") && plugin.dtlProject.getPermissions().has(p, "dtl.citizens.characters.trader") ) {
-							editSellList(p, args);
+			//				editSellList(p, args);
 						} 
 					}
 				} else if ( argsLength(args,2,2) ) {
@@ -72,7 +72,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 		}
 		return false;
 	}
-
+/*
 	private void editSellList(Player p,String[] args) {
 		if ( args.length < 6 )
 			return;
@@ -148,6 +148,6 @@ public class TraderCommandExecutor implements CommandExecutor {
 	public void traderCommands( Player p ) {
 		
 	}
-	
+	*/
 }
 	

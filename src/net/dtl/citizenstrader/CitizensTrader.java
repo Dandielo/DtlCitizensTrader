@@ -17,6 +17,8 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public DtlProject dtlProject;
 	private CharacterFactory cf;
+	private int selected;
+	
 	
 	@Override
 	public void onEnable() {
@@ -53,7 +55,7 @@ public class CitizensTrader extends JavaPlugin {
 	@Override
 	public void onDisable() {
 	}
-	/*
+	
 	
 	public void setSelected(int s) {
 		selected = s;
@@ -61,7 +63,7 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public int getSelected() {
 		return selected;
-	}*/
+	}
 	
 	
 }
