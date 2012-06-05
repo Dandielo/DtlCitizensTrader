@@ -24,8 +24,10 @@ public class StockItem {
 				if ( value.contains(":") ) {
 					String[] itemData = value.split(":");
 					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
+					amouts.add(1);
 				} else {
 					item = new ItemStack(Integer.parseInt(value),1);
+					amouts.add(1);
 				}
 			} else {
 				if ( value.startsWith("p:") ) {
@@ -35,13 +37,11 @@ public class StockItem {
 					slot = Integer.parseInt(value.substring(2));
 				}
 				if ( value.startsWith("a:") ) {
+					amouts.clear();
 					for ( String amout : value.substring(2).split(",") )
 						amouts.add(Integer.parseInt(amout));
 					if ( amouts.size() > 0 )
 						item.setAmount(amouts.get(0));
-				} else {
-					amouts.add(1);
-					item.setAmount(1);
 				}
 				if ( value.startsWith("e:") ) {
 					for ( String ench : value.substring(2).split(",") ) {
