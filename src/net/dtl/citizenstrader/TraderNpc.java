@@ -186,6 +186,8 @@ public class TraderNpc extends Character implements Listener {
 	@SuppressWarnings("unused")
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event) {
+		if ( event.getRawSlot() < 0 )
+			return;
 		if ( event.getWhoClicked() instanceof Player ) {
 			Player p = (Player) event.getWhoClicked();
 			if ( state.containsKey(p.getName()) ) {
