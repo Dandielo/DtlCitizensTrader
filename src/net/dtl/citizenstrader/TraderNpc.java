@@ -292,6 +292,9 @@ public class TraderNpc extends Character implements Listener {
 	@EventHandler
 	public void inventoryClose(InventoryCloseEvent event){
 	    if(state.containsKey(event.getPlayer().getName())){
+			if ( state.get(event.getPlayer().getName()).getStatus().equals(Status.PLAYER_MANAGE)) {
+				
+			}
 	        state.remove(event.getPlayer().getName());
 	    }
 	}

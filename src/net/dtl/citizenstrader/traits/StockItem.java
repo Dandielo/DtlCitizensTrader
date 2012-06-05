@@ -9,7 +9,8 @@ import org.bukkit.inventory.ItemStack;
 public class StockItem {
 	private ItemStack item = null;
 	private List<Integer> amouts = new ArrayList<Integer>();
-	private int price;
+	private int price = 0;
+	private int slot = -1;
 	
 	public StockItem() {
 		//'1': id[:data] p:price a:1,3,4,5 e:id/lvl,
@@ -30,11 +31,17 @@ public class StockItem {
 				if ( value.startsWith("p:") ) {
 					price = Integer.parseInt(value.substring(2));
 				}
+				if ( value.startsWith("s:") ) {
+					slot = Integer.parseInt(value.substring(2));
+				}
 				if ( value.startsWith("a:") ) {
 					for ( String amout : value.substring(2).split(",") )
 						amouts.add(Integer.parseInt(amout));
 					if ( amouts.size() > 0 )
 						item.setAmount(amouts.get(0));
+				} else {
+					amouts.add(1);
+					item.setAmount(1);
 				}
 				if ( value.startsWith("e:") ) {
 					for ( String ench : value.substring(2).split(",") ) {
@@ -83,6 +90,13 @@ public class StockItem {
 		return ( amouts.size() > 1 ? true : false );
 	}
 	
+	public int getSlot() {
+		return slot;
+	}
+	public void setSlot(int s) {
+		slot = s;
+	}
+
 	public List<Integer> getAmouts() {
 		return amouts;
 	}
