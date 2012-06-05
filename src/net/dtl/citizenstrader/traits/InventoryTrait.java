@@ -103,6 +103,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		
 		return view;
 	}
+	@SuppressWarnings("unused")
 	public Inventory inventoryView(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
@@ -112,7 +113,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
             chk.addEnchantments(item.getItemStack().getEnchantments());
             if ( view.contains(chk) == false ) {
             	if ( item.getSlot() < 0 )
-            		item.setSlot(i);
+            		item.setSlot(view.firstEmpty());
                 view.setItem(item.getSlot(),chk);
             }
             i++;
@@ -132,8 +133,9 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 
 	public StockItem wantItemBuy(int slot) {
-		if ( slot < buyStock.size() && slot >= 0 )
-			return buyStock.get(slot);
+		for ( StockItem item : buyStock )
+			if ( item.getSlot() == slot )
+				return item;
 		return null;
 	}
 	
@@ -153,11 +155,25 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		else
 			buyStock.add(new StockItem(data));
 	}
-	public void removeItem(boolean sell,int i) {
-		if ( sell && sellStock.size() > i )
-			sellStock.remove(i);
-		else if ( buyStock.size() > i )
-			buyStock.remove(i);
+	public void addItem(boolean sell,StockItem si) {
+		if ( sell )
+			sellStock.add(si);
+		else
+			buyStock.add(si);
+	}
+	public void removeItem(boolean sell,int slot) {
+		if ( sell ) {
+			for ( StockItem item : sellStock )
+				if ( item.getSlot() == slot ) {
+					sellStock.remove(item);
+					return;
+				}
+		} else 
+			for ( StockItem item : buyStock )
+				if ( item.getSlot() == slot ) {
+					buyStock.remove(item);
+					return;
+				}
 	}
 
 	

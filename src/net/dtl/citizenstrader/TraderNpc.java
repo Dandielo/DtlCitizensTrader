@@ -177,19 +177,25 @@ public class TraderNpc extends Character implements Listener {
 					}					
 					event.setCancelled(true);
 				} else { 
+					StockItem si = null;
 					if ( top ) {
-						
-						StockItem si = null;
 						if ( trader.getStockItem() == null ) {
 							si = sr.itemForSell(event.getSlot());
 							trader.setStockItem( si );
 						} else {
+							if ( trader.getStockItem().getSlot() < 0 )
+								sr.addItem(true, trader.getStockItem());
 							trader.getStockItem().setSlot(event.getSlot());
 							trader.setStockItem(null);
 						}
-						
 					} else {
-						event.setCancelled(true);
+						if ( trader.getStockItem() == null ) {
+							ItemStack is = event.getCurrentItem();
+							trader.setStockItem(new StockItem(is.getTypeId()+" a:"+is.getAmount()));
+						} else {
+							sr.removeItem(true, trader.getStockItem().getSlot());
+							trader.setStockItem(null);
+						}
 					}
 				}
 			} 
