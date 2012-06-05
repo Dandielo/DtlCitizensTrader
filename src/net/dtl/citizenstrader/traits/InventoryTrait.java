@@ -6,6 +6,7 @@ import java.util.List;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
+import net.dtl.citizenstrader.TraderStatus.Status;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -76,10 +77,11 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		return inv;
 	}
 	
-	public Inventory inventoryView(Inventory view) {
+	public Inventory inventoryView(Inventory view,Status s) {
 		//	Inventory view = Bukkit.createInventory(this, size, name);
 			
-			int i = 0;
+		int i = 0;
+		if ( s.equals(Status.PLAYER_SELL) ) {
 			for( StockItem item : sellStock ){
 	         //   if( item != null ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -90,9 +92,24 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	        //    }
 	            i++;
 	        }
-			
-			return view;
+            if ( !buyStock.isEmpty() )
+            	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
+		} else if ( s.equals(Status.PLAYER_BUY ) ) {
+			for( StockItem item : buyStock ) {
+		         //   if( item != null ) {
+	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+	            chk.addEnchantments(item.getItemStack().getEnchantments());
+	            if ( view.contains(chk) == false ) {
+	                view.setItem(i,chk);
+	            }
+	        //    }
+	            i++;
+	        }
+            view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
 		}
+		
+		return view;
+	}
 	public Inventory inventoryView(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
@@ -107,13 +124,22 @@ public class InventoryTrait extends Trait implements InventoryHolder {
         //    }
             i++;
         }
-		
+
+        if ( !buyStock.isEmpty() )
+        	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
+        
 		return view;
 	}
 	
-	public StockItem itemForSell(int i) {
-		if ( i < sellStock.size() )
-			return sellStock.get(i);
+	public StockItem itemForSell(int slot) {
+		if ( slot < sellStock.size() && slot >= 0 )
+			return sellStock.get(slot);
+		return null;
+	}
+
+	public StockItem wantItemBuy(int slot) {
+		if ( slot < buyStock.size() && slot >= 0 )
+			return buyStock.get(slot);
 		return null;
 	}
 	
@@ -139,5 +165,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		else if ( buyStock.size() > i )
 			buyStock.remove(i);
 	}
+
 	
 }

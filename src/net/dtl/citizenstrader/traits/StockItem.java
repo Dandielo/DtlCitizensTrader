@@ -33,7 +33,7 @@ public class StockItem {
 				if ( value.startsWith("a:") ) {
 					for ( String amout : value.substring(2).split(",") )
 						amouts.add(Integer.parseInt(amout));
-					if ( amouts.size() == 1 )
+					if ( amouts.size() > 0 )
 						item.setAmount(amouts.get(0));
 				}
 				if ( value.startsWith("e:") ) {

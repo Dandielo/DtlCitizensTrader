@@ -45,9 +45,9 @@ public class TraderCommandExecutor implements CommandExecutor {
 						if ( args[1].equals("list") ) {
 				//			showBuyList(p);
 						} else if ( args[1].equals("add")  ) {
-			//				addBuyItem(p, args);
+							addBuyItem(p, args);
 						} else if ( args[1].equals("remove") ) {
-			//				removeBuyItem(p, args);
+							removeBuyItem(p, args);
 						} else if ( args[1].equals("edit") ) {
 			//				editBuyItem(p, args);
 						} 
@@ -133,23 +133,36 @@ public class TraderCommandExecutor implements CommandExecutor {
 		p.sendMessage(ChatColor.RED + " Item succesfuly edited.");
 	}
 
+*/
 	private void removeBuyItem(Player p,String[] args) {
 		if ( args.length != 3 )
 			return;
-		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
-		((TraderNpc)n.getCharacter()).removeItem(args[2], n.getId(), false);
 		
-		p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
+		TraderStatus stat = trader.getStatus(p.getName());
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).removeItem(false, Integer.parseInt(args[2]));
+			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
+			return;
+		}
+		p.sendMessage(ChatColor.RED + " Item could not be removed.");
 	}
 
 	private void addBuyItem(Player p,String[] args) {
 		if ( args.length < 5 )
 			return;
-		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
-		((TraderNpc)n.getCharacter()).addItem(args[2]+" "+args[3]+" "+args[4], n.getId(), false);
 		
-		p.sendMessage(ChatColor.RED + " Item succesfuly added.");
+		TraderStatus stat = trader.getStatus(p.getName());
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).addItem(false, args[2]+" "+args[3]+" "+args[4]);
+			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
+			return;
+		}
+		p.sendMessage(ChatColor.RED + " Item could not be added.");
+		//NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());
+		//((TraderNpc)n.getCharacter()).addItem(args[2]+" "+args[3]+" "+args[4], n.getId(), true);
+		
 	}
+/*
 
 	private void showBuyList(Player p) {
 		NPC n = CitizensAPI.getNPCRegistry().getNPC(plugin.getSelected());

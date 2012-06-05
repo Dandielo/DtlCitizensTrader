@@ -8,7 +8,7 @@ import net.dtl.citizenstrader.traits.StockItem;
 public class TraderStatus {
 	
 	public enum Status {
-		PLAYER_SELL, PLAYER_BUY, PLAYER_SEL_AMOUT, PLAYER_MANAGE, PLAYER_SELECTED
+		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUT, PLAYER_MANAGE, PLAYER_SELECTED
 	}
 	
 	private NPC trader;
