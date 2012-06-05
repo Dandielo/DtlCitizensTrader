@@ -288,8 +288,11 @@ public class TraderNpc extends Character implements Listener {
 							trader.setStockItem( si );
 						} else {
 							trader.getStockItem().setSlot(event.getSlot());
+							trader.setStockItem(null);
 						}
 						
+					} else {
+						event.setCancelled(true);
 					}
 				}
 			} 

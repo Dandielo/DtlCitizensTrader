@@ -87,8 +87,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 	            if ( view.contains(chk) == false ) {
-	            	if ( item.getSlot() < 0 )
-	            		item.setSlot(i);
 	                view.setItem( item.getSlot() ,chk);
 	            }
 	        //    }
@@ -102,7 +100,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 	            if ( view.contains(chk) == false ) {
-	                view.setItem(i,chk);
+	                view.setItem( item.getSlot() ,chk);
 	            }
 	        //    }
 	            i++;
@@ -121,7 +119,9 @@ public class InventoryTrait extends Trait implements InventoryHolder {
             ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
             chk.addEnchantments(item.getItemStack().getEnchantments());
             if ( view.contains(chk) == false ) {
-                view.setItem(i,chk);
+            	if ( item.getSlot() < 0 )
+            		item.setSlot(i);
+                view.setItem(item.getSlot(),chk);
             }
         //    }
             i++;
@@ -134,8 +134,11 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 	
 	public StockItem itemForSell(int slot) {
-		if ( slot < sellStock.size() && slot >= 0 )
-			return sellStock.get(slot);
+	//	if ( slot < sellStock.size() && slot >= 0 )
+	//		return sellStock.get(slot);
+		for ( StockItem item : sellStock )
+			if ( item.getSlot() == slot )
+				return item;
 		return null;
 	}
 
