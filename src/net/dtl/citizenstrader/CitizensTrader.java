@@ -10,7 +10,6 @@ import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,8 +25,6 @@ public class CitizensTrader extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
-		
-		PluginManager pm = this.getServer().getPluginManager();
 		PluginDescriptionFile pdfFile = this.getDescription();
 		
 		if ( getServer().getPluginManager().getPlugin("Vault") != null ) {

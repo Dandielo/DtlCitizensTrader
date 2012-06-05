@@ -16,12 +16,9 @@ import org.bukkit.inventory.ItemStack;
 
 public class InventoryTrait extends Trait implements InventoryHolder {
 	
-	//private Inventory sellStock;
 	private List<StockItem> sellStock = new ArrayList<StockItem>();					//What the trader sells the player
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 
 	private int size;
-	//private Inventory buyStock;
-	//Map<ItemStack,Integer> prices;
 	
 	public InventoryTrait() {
 		this(54); 
@@ -77,32 +74,28 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		return inv;
 	}
 	
+	@SuppressWarnings("unused")
 	public Inventory inventoryView(Inventory view,Status s) {
-		//	Inventory view = Bukkit.createInventory(this, size, name);
 			
 		int i = 0;
 		if ( s.equals(Status.PLAYER_SELL) ) {
 			for( StockItem item : sellStock ){
-	         //   if( item != null ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 	            if ( view.contains(chk) == false ) {
 	                view.setItem( item.getSlot() ,chk);
 	            }
-	        //    }
 	            i++;
 	        }
             if ( !buyStock.isEmpty() )
             	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
 		} else if ( s.equals(Status.PLAYER_BUY ) ) {
 			for( StockItem item : buyStock ) {
-		         //   if( item != null ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 	            if ( view.contains(chk) == false ) {
 	                view.setItem( item.getSlot() ,chk);
 	            }
-	        //    }
 	            i++;
 	        }
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
@@ -115,7 +108,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		
 		int i = 0;
 		for( StockItem item : sellStock ){
-         //   if( item != null ) {
             ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
             chk.addEnchantments(item.getItemStack().getEnchantments());
             if ( view.contains(chk) == false ) {
@@ -123,7 +115,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
             		item.setSlot(i);
                 view.setItem(item.getSlot(),chk);
             }
-        //    }
             i++;
         }
 
@@ -134,8 +125,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 	
 	public StockItem itemForSell(int slot) {
-	//	if ( slot < sellStock.size() && slot >= 0 )
-	//		return sellStock.get(slot);
 		for ( StockItem item : sellStock )
 			if ( item.getSlot() == slot )
 				return item;
