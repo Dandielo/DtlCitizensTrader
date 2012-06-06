@@ -164,7 +164,7 @@ public class TraderNpc extends Character implements Listener {
 						if ( si != null ) {
 							if ( si.getItemStack().getType().equals(event.getCursor().getType()) ) {
 								econ.depositPlayer(p.getName(), si.getPrice()*event.getCursor().getAmount());
-								p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + si.getPrice(event.getSlot()) + ".");
+								p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + si.getPrice(si.getSlot())*event.getCursor().getAmount() + ".");
 								event.setCursor(new ItemStack(Material.AIR));
 							} else {
 								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
