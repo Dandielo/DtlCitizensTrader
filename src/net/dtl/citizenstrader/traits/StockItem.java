@@ -31,13 +31,13 @@ public class StockItem {
 				}
 			} else {
 				if ( value.length() > 2 ) {
-					if ( value.startsWith("p:") ) {
+					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
 						price = Integer.parseInt(value.substring(2));
 					}
-					if ( value.startsWith("s:") ) {
+					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
 					}
-					if ( value.startsWith("a:") ) {
+					if ( value.startsWith("a:") && !value.contains("/") && !value.contains(";") ) {
 						amouts.clear();
 						for ( String amout : value.substring(2).split(",") )
 							amouts.add(Integer.parseInt(amout));

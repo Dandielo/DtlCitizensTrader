@@ -59,6 +59,7 @@ public class CitizensTrader extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		
 	}
 	
 	

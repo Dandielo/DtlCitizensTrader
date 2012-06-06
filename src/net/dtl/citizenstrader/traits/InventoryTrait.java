@@ -56,7 +56,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		List<String> buyList = new ArrayList<String>();
 		if ( !buyStock.isEmpty() )
 			for ( StockItem item : buyStock )
-				sellList.add(item.toString());
+				buyList.add(item.toString());
 
 		data.setRaw("sell", sellList);
 		data.setRaw("buy", buyList);
@@ -113,8 +113,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	            i++;
 	        }
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
-            if ( !buyStock.isEmpty() )
-            	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
+            view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
 		} else if ( s.equals(Status.PLAYER_MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
