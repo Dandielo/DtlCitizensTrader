@@ -70,7 +70,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 			return;
 		
 		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
 			stat.getTrader().getTrait(InventoryTrait.class).removeItem(true, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
 			return;
@@ -79,25 +79,32 @@ public class TraderCommandExecutor implements CommandExecutor {
 	}
 
 	private void addSellItem(Player p,String[] args) {
-		if ( args.length < 5 )
+		if ( args.length < 3 )
 			return;
 		
+
+		String itemDesc = "";
+		for ( int i = 2 ; i < args.length ; ++i )
+			itemDesc += args[i] + " ";
+		
 		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).addItem(true, args[2]+" "+args[3]+" "+args[4]);
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).addItem(true, itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
 			return;
 		}
 		p.sendMessage(ChatColor.RED + " Item could not be added.");
 		
 	}
+	
+	//Buying options
 
 	private void removeBuyItem(Player p,String[] args) {
 		if ( args.length != 3 )
 			return;
 		
 		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
 			stat.getTrader().getTrait(InventoryTrait.class).removeItem(false, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
 			return;
@@ -106,12 +113,16 @@ public class TraderCommandExecutor implements CommandExecutor {
 	}
 
 	private void addBuyItem(Player p,String[] args) {
-		if ( args.length < 5 )
+		if ( args.length < 3 )
 			return;
 		
+		String itemDesc = "";
+		for ( int i = 2 ; i < args.length ; ++i )
+			itemDesc += args[i] + " ";
+		
 		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).addItem(false, args[2]+" "+args[3]+" "+args[4]);
+		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+			stat.getTrader().getTrait(InventoryTrait.class).addItem(false,itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
 			return;
 		}

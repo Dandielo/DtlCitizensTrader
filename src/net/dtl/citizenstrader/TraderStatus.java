@@ -8,21 +8,26 @@ import net.dtl.citizenstrader.traits.StockItem;
 public class TraderStatus {
 	
 	public enum Status {
-		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUT, PLAYER_MANAGE, PLAYER_SELECTED
+		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUT, PLAYER_MANAGE_SELL, PLAYER_MANAGE_SELL_AMOUT, PLAYER_MANAGE_PRICE, PLAYER_MANAGE_BUY,
 	}
 	
 	private NPC trader;
 	private Status status;
 	private Inventory inventory;
 	private StockItem itemSelected;
+	private boolean lastInv = false;
 	
 	public TraderStatus(NPC t) {
 		trader = t;
 		status = Status.PLAYER_SELL;
+		inventory = null;
+		itemSelected = null;
 	}
 	public TraderStatus(NPC t,Status s) {
 		trader = t;
 		status = s;
+		inventory = null;
+		itemSelected = null;
 	}
 	
 	public void setStatus(Status s) {
@@ -30,6 +35,12 @@ public class TraderStatus {
 	}
 	public Status getStatus() {
 		return status;
+	}
+	public void setLastInv(boolean l) {
+		lastInv = l;
+	}
+	public boolean getLastInv() {
+		return lastInv;
 	}
 	
 	public void setInventory(Inventory i) {

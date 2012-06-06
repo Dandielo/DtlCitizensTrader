@@ -53,20 +53,23 @@ public class TraderNpc extends Character implements Listener {
 		if ( p.getItemInHand().getTypeId() != 280 ) {
 			if ( !state.containsKey(p.getName()) )
 				state.put(p.getName(),new TraderStatus(npc));
+
 			state.get(p.getName()).setInventory(npc.getTrait(InventoryTrait.class).inventoryView(54,npc.getName()));
+			if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) )
+				npc.getTrait(InventoryTrait.class).inventoryView(state.get(p.getName()).getInventory(), Status.PLAYER_MANAGE_SELL);
 			p.openInventory(state.get(p.getName()).getInventory());
 			
 		} else {
 			if ( state.containsKey(p.getName()) && state.get(p.getName()).getTrader().getId() == npc.getId() ) {
-				if ( !state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE) ) {
-					state.get(p.getName()).setStatus(Status.PLAYER_MANAGE);
+				if ( !state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+					state.get(p.getName()).setStatus(Status.PLAYER_MANAGE_SELL);
 					p.sendMessage(ChatColor.RED + "Trader manager enabled");
-				} else if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE) ) { 
+				} else if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) ) { 
 					state.get(p.getName()).setStatus(Status.PLAYER_SELL);
 					p.sendMessage(ChatColor.RED + "Trader manager disabled");
 				}
 			} else {
-				state.put(p.getName(),new TraderStatus(npc,Status.PLAYER_MANAGE));
+				state.put(p.getName(),new TraderStatus(npc,Status.PLAYER_MANAGE_SELL));
 				p.sendMessage(ChatColor.RED + "Trader manager enabled");
 			}
 		}
@@ -92,7 +95,9 @@ public class TraderNpc extends Character implements Listener {
 				InventoryTrait sr = trader.getTrader().getTrait(InventoryTrait.class);
 				boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 				
-				if ( !trader.getStatus().equals(Status.PLAYER_MANAGE) && top ) {
+				if ( (!trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) && 
+					  !trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ) && 
+					  !trader.getStatus().equals(Status.PLAYER_MANAGE_PRICE ) && top ) {
 					StockItem si = null;
 					
 					if ( trader.getStatus().equals(Status.PLAYER_SELL) || trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) ) {
@@ -102,7 +107,7 @@ public class TraderNpc extends Character implements Listener {
 							si = sr.itemForSell(event.getSlot());
 						if ( si != null ) {
 							if ( event.isShiftClick() ) {
-								if ( si.hasMultipleAmouts() ) {
+								if ( si.hasMultipleAmouts() && trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) ) {
 									if ( econ.has(p.getName(), si.getPrice(event.getSlot())) ) {
 										if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
 											 !event.getCurrentItem().getType().equals(Material.AIR)) {
@@ -176,26 +181,99 @@ public class TraderNpc extends Character implements Listener {
 						}
 					}					
 					event.setCancelled(true);
-				} else { 
+				} else {
 					StockItem si = null;
 					if ( top ) {
-						if ( trader.getStockItem() == null ) {
-							si = sr.itemForSell(event.getSlot());
-							trader.setStockItem( si );
+						if ( event.isShiftClick() ) {
+							if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+								si = sr.itemForSell(event.getSlot());
+								if ( si != null ) {
+									trader.getInventory().clear();
+									InventoryTrait.setInventoryWith(trader.getInventory(), si);
+									trader.setStatus(Status.PLAYER_MANAGE_SELL_AMOUT);
+									trader.setStockItem(si);
+								} else {
+									if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
+										 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+										trader.setStatus(Status.PLAYER_MANAGE_PRICE);
+										trader.getInventory().clear();
+										sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
+										
+									}
+								}
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ) {
+								sr.saveNewAmouts(trader.getInventory(), trader.getStockItem());
+								trader.getInventory().clear();
+								sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
+								trader.setStatus(Status.PLAYER_MANAGE_SELL);
+								trader.setStockItem(null);
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_PRICE) ) {
+								 if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)15)) && 
+								      ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+									trader.setStatus(Status.PLAYER_MANAGE_SELL);
+									trader.getInventory().clear();
+									sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
+								}
+							}
+
+							event.setCancelled(true);
 						} else {
-							if ( trader.getStockItem().getSlot() < 0 )
-								sr.addItem(true, trader.getStockItem());
-							trader.getStockItem().setSlot(event.getSlot());
-							trader.setStockItem(null);
+							if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+								if ( trader.getStockItem() == null ) {
+									trader.setStockItem( sr.itemForSell(event.getSlot()) );
+								} else {
+									if ( trader.getStockItem().getSlot() < 0 ) {
+										trader.getStockItem().getAmouts().clear();
+										trader.getStockItem().addAmout(event.getCursor().getAmount());
+										sr.addItem(true, trader.getStockItem());
+									}
+									StockItem item = trader.getStockItem();
+									
+									if ( !event.getCurrentItem().getType().equals(Material.AIR) )
+										trader.setStockItem(sr.itemForSell(event.getSlot()));
+									else
+										trader.setStockItem(null);
+									item.setSlot(event.getSlot());
+								}
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ) {
+								if ( !event.getCursor().getType().equals(Material.AIR) &&
+									 !( event.getCursor().getType().equals(trader.getStockItem().getItemStack().getType()) &&
+									    event.getCursor().getData().equals(trader.getStockItem().getItemStack().getData()) ) ||
+									 ( !event.getCurrentItem().getType().equals(trader.getStockItem().getItemStack().getType()) &&
+									   !event.getCurrentItem().getType().equals(Material.AIR) ) ) {
+									p.sendMessage(ChatColor.GOLD + "Wrong item!");
+									event.setCancelled(true);
+								}
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
+								//Future Implementation
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_PRICE) ) {
+								si = sr.itemForSell(event.getSlot());
+								if ( si == null )
+									si = sr.wantItemBuy(event.getSlot());
+								if ( si != null ) {
+									if ( event.isLeftClick() )
+										si.increasePrice(this.getManagePriceAmout(event.getCursor()));
+									else if ( event.isRightClick() ) 
+										si.lowerPrice(this.getManagePriceAmout(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New price: " + si.getPrice()/si.getAmouts().get(0));
+									event.setCancelled(true);
+								} else 
+									p.sendMessage(ChatColor.GOLD + "Wrong Item!");
+							}
 						}
+						trader.setLastInv(true);
 					} else {
-						if ( trader.getStockItem() == null ) {
-							ItemStack is = event.getCurrentItem();
-							trader.setStockItem(new StockItem(is.getTypeId()+" a:"+is.getAmount()));
+						if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) || trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
+							if ( trader.getLastInv() && trader.getStockItem() != null ) {
+								sr.removeItem(true, trader.getStockItem().getSlot());
+								trader.setStockItem(null);
+							} else {
+								ItemStack is = event.getCurrentItem();
+								trader.setStockItem(new StockItem(is.getTypeId()+" a:"+is.getAmount()));
+							}
 						} else {
-							sr.removeItem(true, trader.getStockItem().getSlot());
-							trader.setStockItem(null);
 						}
+						trader.setLastInv(false);
 					}
 				}
 			} 
@@ -208,12 +286,32 @@ public class TraderNpc extends Character implements Listener {
 	@EventHandler
 	public void inventoryClose(InventoryCloseEvent event){
 	    if(state.containsKey(event.getPlayer().getName())){
-			if ( state.get(event.getPlayer().getName()).getStatus().equals(Status.PLAYER_MANAGE)) {
-				
+			if ( state.get(event.getPlayer().getName()).getStatus().equals(Status.PLAYER_SELL_AMOUT) ||
+				 state.get(event.getPlayer().getName()).getStatus().equals(Status.PLAYER_SELL) ||
+				 state.get(event.getPlayer().getName()).getStatus().equals(Status.PLAYER_BUY) ) 
+				state.remove(event.getPlayer().getName());
+			else {
+				TraderStatus trader = state.get(event.getPlayer().getName());
+				InventoryTrait sr = trader.getTrader().getTrait(InventoryTrait.class);
+				if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ){
+					sr.saveNewAmouts(trader.getInventory(), trader.getStockItem());
+					trader.getInventory().clear();
+					sr.inventoryView(trader.getInventory(),Status.PLAYER_SELL);
+				}
+				trader.setStatus(Status.PLAYER_MANAGE_SELL);
+				trader.setStockItem(null);
 			}
-	        state.remove(event.getPlayer().getName());
 	    }
 	}
+	
+	public int getManagePriceAmout(ItemStack is) {
+		if ( is.getType().equals(Material.DIRT) )
+			return is.getAmount()*10;		
+		else if ( is.getType().equals(Material.COBBLESTONE) )
+			return is.getAmount()*100;
+		return is.getAmount();
+	}
+	
 }
 	
 

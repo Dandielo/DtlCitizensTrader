@@ -30,23 +30,25 @@ public class StockItem {
 					amouts.add(1);
 				}
 			} else {
-				if ( value.startsWith("p:") ) {
-					price = Integer.parseInt(value.substring(2));
-				}
-				if ( value.startsWith("s:") ) {
-					slot = Integer.parseInt(value.substring(2));
-				}
-				if ( value.startsWith("a:") ) {
-					amouts.clear();
-					for ( String amout : value.substring(2).split(",") )
-						amouts.add(Integer.parseInt(amout));
-					if ( amouts.size() > 0 )
-						item.setAmount(amouts.get(0));
-				}
-				if ( value.startsWith("e:") ) {
-					for ( String ench : value.substring(2).split(",") ) {
-						String[] enchData = ench.split("/");
-						item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
+				if ( value.length() > 2 ) {
+					if ( value.startsWith("p:") ) {
+						price = Integer.parseInt(value.substring(2));
+					}
+					if ( value.startsWith("s:") ) {
+						slot = Integer.parseInt(value.substring(2));
+					}
+					if ( value.startsWith("a:") ) {
+						amouts.clear();
+						for ( String amout : value.substring(2).split(",") )
+							amouts.add(Integer.parseInt(amout));
+						if ( amouts.size() > 0 )
+							item.setAmount(amouts.get(0));
+					}
+					if ( value.startsWith("e:") ) {
+						for ( String ench : value.substring(2).split(",") ) {
+							String[] enchData = ench.split("/");
+							item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
+						}
 					}
 				}
 			}
@@ -63,6 +65,8 @@ public class StockItem {
 		String itemString = "" + item.getTypeId() + ( item.getData().getData() != 0 ? ":" + item.getData().getData() : "" );
 		//saving the item price
 		itemString += " p:" + price;
+		//saving the item slot
+		itemString += " s:" + slot;
 		//saving the item amouts
 		itemString += " a:";
 		for ( int i = 0 ; i < amouts.size() ; ++i )
@@ -78,6 +82,16 @@ public class StockItem {
 		return itemString;
 	}
 
+	public void increasePrice(int p) {
+		price += p;
+	}
+	public void lowerPrice(int p) {
+		if ( ( price - p ) < 0 ) {
+			price = 0;
+			return;
+		}
+		price -= p;
+	}
 	public int getPrice() {
 		return price*amouts.get(0);
 	}
@@ -96,7 +110,9 @@ public class StockItem {
 	public void setSlot(int s) {
 		slot = s;
 	}
-
+	public void addAmout(int a) {
+		amouts.add(a);
+	}
 	public List<Integer> getAmouts() {
 		return amouts;
 	}
