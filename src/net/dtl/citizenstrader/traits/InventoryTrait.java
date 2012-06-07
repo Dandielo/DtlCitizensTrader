@@ -48,7 +48,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	@SuppressWarnings("unchecked")
 	@Override
 	public void load(DataKey data) throws NPCLoadException {
-	/*	if ( data.keyExists("sell") ) {
+		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
 				sellStock.add(new StockItem(item));
 			}
@@ -56,59 +56,19 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 
 		if ( data.keyExists("buy") ) {
 			for ( String item :  (List<String>) data.getRaw("buy") ) 
-				sellStock.add(new StockItem(item));
-		}*/
+				buyStock.add(new StockItem(item));
+		}
 	}
 	
-	//1 file opened maybe 30 times? Will be change in future...
-	@SuppressWarnings("unchecked")
-	public InventoryTrait loadInventory(int npcID) {
-		firstSave = true;
-		File file = new File("plugins/DtlCitizensTrader/traders.yml");
-		
-		if ( !file.exists() || file.length() <= 0 ) {
-			return this;
-		}
-		
-		InputStream inputStream;
-		try {
-			inputStream = new FileInputStream(file);
-			Yaml yaml = new Yaml();
-			HashMap<String,Object> traders = (HashMap<String,Object>) yaml.load(inputStream);
-			if ( traders.containsKey(String.valueOf(npcID)) ) {
-				HashMap<String,Object> traderData = (HashMap<String,Object>) traders.get(String.valueOf(npcID));
-				if ( traderData.containsKey("traderInventory") ) {
-					HashMap<String,Object> inv = (HashMap<String,Object>) traderData.get("traderInventory");
-					if ( inv != null ) {
-						if ( inv.containsKey("sell") && inv.get("sell") != null ) {
-							for ( String item : (List<String>) inv.get("sell") ) {
-								sellStock.add(new StockItem(item));
-							}
-						}
 	
-						if ( inv.containsKey("buy") && inv.get("buy") != null ) {
-							for ( String item :  (List<String>) inv.get("buy") ) 
-								buyStock.add(new StockItem(item));
-						}
-					}
-				}
-			}
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return this;
-	}
-
 	@Override
 	public void save(DataKey data) {
-	/*	System.out.print(data);
+		System.out.print(data);
 		
         List<String> sellList = new ArrayList<String>();
 		if ( !sellStock.isEmpty() )
-	        for ( int i = 0 ; i < sellStock.size() ; ++i )
-	            	sellList.add(sellStock.get(i).toString());
+	        for ( StockItem item : sellStock )
+	            	sellList.add(item.toString());
         
 		List<String> buyList = new ArrayList<String>();
 		if ( !buyStock.isEmpty() )
@@ -116,51 +76,8 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 				buyList.add(item.toString());
 
 		data.setRaw("sell", sellList);
-		data.setRaw("buy", buyList);*/
+		data.setRaw("buy", buyList);
 		
-	}
-	public boolean saveInventory(int npcID) throws IOException {
-		File file = new File("plugins/DtlCitizensTrader/traders.yml");
-		
-		FileWriter out;
-		if ( !file.exists() || file.length() <= 0 ) {
-			new File("plugins/DtlCitizensTrader").mkdirs();
-			file.createNewFile();
-		}
-	    out = new FileWriter(file,!firstSave);
-	    firstSave = false;
-	 //   out.write(name + ": ");
-	    out.write("\n'"+npcID+"': ");
-	    out.write("\n  traderInventory: ");
-	    out.write("\n    sell: ");
-	    
-	//    List<String> sellList = new ArrayList<String>();
-		if ( !sellStock.isEmpty() )
-	        for ( int i = 0 ; i < sellStock.size() ; ++i )
-	            out.write("\n    - "+sellStock.get(i).toString());
-        
-	//	List<String> buyList = new ArrayList<String>();
-	    out.write("\n    buy: ");
-		if ( !buyStock.isEmpty() )
-			for ( StockItem item : buyStock )
-				out.write("\n    - "+item.toString());
-
-	//	data.setRaw("sell", sellList);
-	//	data.setRaw("buy", buyList);
-	    /*
-	    for ( int i = 0 ; i < inventory.size() ; ++i ) {
-	    	int k = (int) inventory.keySet().toArray()[i];
-	    	ItemStack is = inventory.get(k);
-	    	out.write(k+":"+is.getTypeId()+":"+is.getAmount()+":"+is.getData().getData());
-	    	Map<Enchantment,Integer> ench = is.getEnchantments();
-	    	for ( int e = 0 ; e < ench.size() ; ++e ) {
-	    		out.write(":"+((Enchantment)ench.keySet().toArray()[e]).getId()+"/"+ench.get(ench.keySet().toArray()[e]));
-	    	}*/
-	   // 	out.write(";");
-	    	out.flush();
-	//    }
-	    
-		return true;
 	}
 	
 	//Returning the displayInventory

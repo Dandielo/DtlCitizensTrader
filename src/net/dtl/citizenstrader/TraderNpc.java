@@ -89,23 +89,9 @@ public class TraderNpc extends Character implements Listener {
 	@Override
     public void onSet(NPC npc) {
         if( !npc.hasTrait(InventoryTrait.class) ) {
-            npc.addTrait(new InventoryTrait());
-            npc.getTrait(InventoryTrait.class).loadInventory(npc.getId());
+            npc.addTrait(InventoryTrait.class);
         }
     }
-	
-	@EventHandler
-    public void onNpcDespawn(NPCDespawnEvent event) {
-        if( event.getNPC().hasTrait(InventoryTrait.class) ) {
-            try {
-            	event.getNPC().getTrait(InventoryTrait.class).saveInventory(event.getNPC().getId());
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-        }
-    }
-	
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event) {
@@ -116,6 +102,7 @@ public class TraderNpc extends Character implements Listener {
 			if ( state.containsKey(p.getName()) ) {
 				TraderStatus trader = state.get(p.getName());
 				InventoryTrait sr = trader.getTrader().getTrait(InventoryTrait.class);
+			//	sr.loadInventory(trader.getTrader().getId());
 				boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 				
 				if ( (!trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) && 
@@ -193,7 +180,7 @@ public class TraderNpc extends Character implements Listener {
 							} else {
 								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 									 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-								p.sendMessage(ChatColor.GOLD + "You can get for this item " + si.getPrice(event.getSlot()) + " money.");
+								p.sendMessage(ChatColor.GOLD + "You can get for this item " + si.getPrice() + " money.");
 							}
 						} else {
 							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
