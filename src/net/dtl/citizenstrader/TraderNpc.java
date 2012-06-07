@@ -1,16 +1,25 @@
 package net.dtl.citizenstrader;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
+import org.yaml.snakeyaml.Yaml;
 
+import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.Character;
@@ -40,7 +49,7 @@ public class TraderNpc extends Character implements Listener {
 	}
 
 	@Override
-	public void load(DataKey arg0) throws NPCLoadException {		
+	public void load(DataKey arg0) throws NPCLoadException {	
 	}
 
 	@Override
@@ -79,10 +88,24 @@ public class TraderNpc extends Character implements Listener {
 	
 	@Override
     public void onSet(NPC npc) {
-        if( !npc.hasTrait(InventoryTrait.class) ){
-            npc.addTrait( new InventoryTrait() );
+        if( !npc.hasTrait(InventoryTrait.class) ) {
+            npc.addTrait(new InventoryTrait());
+            npc.getTrait(InventoryTrait.class).loadInventory(npc.getId());
         }
     }
+	
+	@EventHandler
+    public void onNpcDespawn(NPCDespawnEvent event) {
+        if( event.getNPC().hasTrait(InventoryTrait.class) ) {
+            try {
+            	event.getNPC().getTrait(InventoryTrait.class).saveInventory(event.getNPC().getId());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    }
+	
 
 	@EventHandler
 	public void inventoryClick(InventoryClickEvent event) {
