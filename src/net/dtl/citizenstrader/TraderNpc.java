@@ -193,6 +193,11 @@ public class TraderNpc extends Character implements Listener {
 					}					
 					event.setCancelled(true);
 				} else {
+					if ( ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) || 
+						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) ||
+						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)15)) && ( event.getSlot() == trader.getInventory().getSize() - 2 ) )||
+						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) )
+							event.setCancelled(true);
 					StockItem si = null;
 					if ( top ) {
 						if ( event.isShiftClick() ) {
@@ -324,7 +329,13 @@ public class TraderNpc extends Character implements Listener {
 								trader.setStockItem(null);
 							} else {
 								ItemStack is = event.getCurrentItem();
-								trader.setStockItem(new StockItem(is.getTypeId()+" a:"+is.getAmount()));
+								String itemInfo = is.getTypeId()+":"+ is.getData().getData() +" a:"+is.getAmount() + " d:" + is.getDurability();
+								if ( !is.getEnchantments().isEmpty() ) {
+									itemInfo += " e:";
+									for ( Enchantment ench : is.getEnchantments().keySet() ) 
+										itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
+								}
+								trader.setStockItem(new StockItem(itemInfo));
 							}
 						} else {
 						}

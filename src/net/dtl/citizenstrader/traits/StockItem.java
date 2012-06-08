@@ -37,6 +37,9 @@ public class StockItem {
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
 					}
+					if ( value.startsWith("d:") && !value.contains("/") && !value.contains(";") ) {
+						item.setDurability(Short.parseShort(value.substring(2)));
+					}
 					if ( value.startsWith("a:") && !value.contains("/") && !value.contains(";") ) {
 						amouts.clear();
 						for ( String amout : value.substring(2).split(",") )
