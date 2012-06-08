@@ -70,6 +70,8 @@ public class StockItem {
 		itemString += " p:" + price;
 		//saving the item slot
 		itemString += " s:" + slot;
+		//saving the item slot
+		itemString += " d:" + item.getDurability();
 		//saving the item amouts
 		itemString += " a:";
 		for ( int i = 0 ; i < amouts.size() ; ++i )
@@ -79,16 +81,16 @@ public class StockItem {
 			itemString += " e:";
 			for ( int i = 0 ; i < item.getEnchantments().size() ; ++i ) {
 				Enchantment e = (Enchantment) item.getEnchantments().keySet().toArray()[i];
-				itemString += e.getId() + "/" + item.getEnchantments().get(i) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
+				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
 		return itemString;
 	}
 
-	public void increasePrice(int p) {
-		price += p;
+	public void increasePrice(double d) {
+		price += d;
 	}
-	public void lowerPrice(int p) {
+	public void lowerPrice(double p) {
 		if ( ( price - p ) < 0 ) {
 			price = 0;
 			return;

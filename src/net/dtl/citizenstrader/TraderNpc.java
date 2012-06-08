@@ -370,8 +370,12 @@ public class TraderNpc extends Character implements Listener {
 	    }
 	}
 	
-	public int getManagePriceAmout(ItemStack is) {
-		if ( is.getType().equals(Material.DIRT) )
+	public double getManagePriceAmout(ItemStack is) {
+		if ( is.getType().equals(Material.WOOD) )
+			return is.getAmount()*0.01;		
+		else if ( is.getType().equals(Material.LOG) )
+			return is.getAmount()*0.1;
+		else if ( is.getType().equals(Material.DIRT) )
 			return is.getAmount()*10;		
 		else if ( is.getType().equals(Material.COBBLESTONE) )
 			return is.getAmount()*100;
