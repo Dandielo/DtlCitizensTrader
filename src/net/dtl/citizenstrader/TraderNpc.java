@@ -75,7 +75,7 @@ public class TraderNpc extends Character implements Listener {
 			p.openInventory(state.get(p.getName()).getInventory());
 			
 		} else {
-			if ( !npc.getTrait(Owner.class).isOwnedBy(p.getName()) ) {
+			if ( !npc.getTrait(Owner.class).isOwnedBy(p.getName()) && !p.isOp() ) {
 				p.sendMessage(ChatColor.RED + "Only the owner can manage this trader.");
 				return;
 			}
