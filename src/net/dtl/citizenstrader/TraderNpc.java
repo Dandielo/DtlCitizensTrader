@@ -190,7 +190,7 @@ public class TraderNpc extends Character implements Listener {
 							} else {
 								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 									 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-								p.sendMessage(ChatColor.GOLD + "You can get for this item " + si.getPrice() + " money.");
+								p.sendMessage(ChatColor.GOLD + "You get " + si.getPrice() + " for this item.");
 							}
 						} else {
 							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
