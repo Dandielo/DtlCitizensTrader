@@ -270,6 +270,11 @@ public class TraderNpc extends Character implements Listener {
 							event.setCancelled(true);
 						} else {
 							if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+								if ( event.isRightClick() ) {
+									p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
+									event.setCancelled(true);
+									return;
+								}
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.itemForSell(event.getSlot()) );
 								} else {
@@ -296,6 +301,11 @@ public class TraderNpc extends Character implements Listener {
 									event.setCancelled(true);
 								}
 							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
+								if ( event.isRightClick() ) {
+									p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
+									event.setCancelled(true);
+									return;
+								}
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.wantItemBuy(event.getSlot()) );
 								} else {
