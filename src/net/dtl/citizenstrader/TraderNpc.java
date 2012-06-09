@@ -23,6 +23,7 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.Character;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader.TraderStatus.Status;
 import net.dtl.citizenstrader.traits.InventoryTrait;
@@ -64,22 +65,31 @@ public class TraderNpc extends Character implements Listener {
 				state.put(p.getName(),new TraderStatus(npc));
 
 			state.get(p.getName()).setInventory(npc.getTrait(InventoryTrait.class).inventoryView(54,npc.getName()));
-			if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) )
-				npc.getTrait(InventoryTrait.class).inventoryView(state.get(p.getName()).getInventory(), Status.PLAYER_MANAGE_SELL);
+			if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+				if ( npc.getId() == state.get(p.getName()).getTrader().getId() )
+					npc.getTrait(InventoryTrait.class).inventoryView(state.get(p.getName()).getInventory(), Status.PLAYER_MANAGE_SELL);
+				else {
+					p.sendMessage(ChatColor.RED + state.get(p.getName()).getTrader().getFullName() +": is currently managed!");
+				}
+			}
 			p.openInventory(state.get(p.getName()).getInventory());
 			
 		} else {
+			if ( !npc.getTrait(Owner.class).isOwnedBy(p.getName()) ) {
+				p.sendMessage(ChatColor.RED + "Only the owner can manage this trader.");
+				return;
+			}
 			if ( state.containsKey(p.getName()) && state.get(p.getName()).getTrader().getId() == npc.getId() ) {
 				if ( !state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
 					state.get(p.getName()).setStatus(Status.PLAYER_MANAGE_SELL);
-					p.sendMessage(ChatColor.RED + "Trader manager enabled");
+					p.sendMessage(ChatColor.RED + npc.getFullName() +": managing mode!");
 				} else if ( state.get(p.getName()).getStatus().equals(Status.PLAYER_MANAGE_SELL) ) { 
 					state.get(p.getName()).setStatus(Status.PLAYER_SELL);
-					p.sendMessage(ChatColor.RED + "Trader manager disabled");
+					p.sendMessage(ChatColor.RED + npc.getFullName() +": user mode!");
 				}
 			} else {
 				state.put(p.getName(),new TraderStatus(npc,Status.PLAYER_MANAGE_SELL));
-				p.sendMessage(ChatColor.RED + "Trader manager enabled");
+				p.sendMessage(ChatColor.RED + npc.getFullName() +": managing mode!");
 			}
 		}
 			
