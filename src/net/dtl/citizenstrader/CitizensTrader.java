@@ -40,7 +40,7 @@ public class CitizensTrader extends JavaPlugin {
 				this.getPluginLoader().disablePlugin(this);
 				return;
 			}
-	        RegisteredServiceProvider<Permission> rspPerm = plugin.getServer().getServicesManager().getRegistration(Permission.class);
+	        RegisteredServiceProvider<Permission> rspPerm = getServer().getServicesManager().getRegistration(Permission.class);
 	        if ( rspPerm != null ) {
 		        permission = rspPerm.getProvider();
 				this.logger.info("["+ pdfFile.getName() + "] Permissions enabled.");
