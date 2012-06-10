@@ -209,6 +209,7 @@ public class TraderNpc extends Character implements Listener {
 					if ( ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) || 
 						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) ||
 						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)15)) && ( event.getSlot() == trader.getInventory().getSize() - 2 ) )||
+						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) && ( event.getSlot() == trader.getInventory().getSize() - 2 ) )||
 						 ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) )
 							event.setCancelled(true);
 					StockItem si = null;
@@ -223,12 +224,15 @@ public class TraderNpc extends Character implements Listener {
 									trader.setStockItem(si);
 								} 
 							} 
+							event.setCancelled(true);
+						} else {
 							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
 								 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
 								trader.setStatus(Status.PLAYER_MANAGE_PRICE);
 							//	trader.getInventory().clear();
 							//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
 								trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+								return;
 							} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && 
 									 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
 									trader.setStatus(Status.PLAYER_MANAGE_BUY);
@@ -269,8 +273,6 @@ public class TraderNpc extends Character implements Listener {
 								}
 							}
 
-							event.setCancelled(true);
-						} else {
 							if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
 								if ( event.isRightClick() ) {
 									p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
@@ -280,12 +282,12 @@ public class TraderNpc extends Character implements Listener {
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.itemForSell(event.getSlot()) );
 								} else {
-									if ( trader.getStockItem().getSlot() < 0 ) {
-										trader.getStockItem().getAmouts().clear();
-										trader.getStockItem().addAmout(event.getCursor().getAmount());
-										sr.addItem(true, trader.getStockItem());
-									}
 									StockItem item = trader.getStockItem();
+									if ( item.getSlot() < 0 ) {
+										item.getAmouts().clear();
+										item.addAmout(event.getCursor().getAmount());
+										sr.addItem(true, item);
+									}
 									
 									if ( !event.getCurrentItem().getType().equals(Material.AIR) )
 										trader.setStockItem(sr.itemForSell(event.getSlot()));
@@ -311,12 +313,12 @@ public class TraderNpc extends Character implements Listener {
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.wantItemBuy(event.getSlot()) );
 								} else {
-									if ( trader.getStockItem().getSlot() < 0 ) {
-										trader.getStockItem().getAmouts().clear();
-										trader.getStockItem().addAmout(event.getCursor().getAmount());
-										sr.addItem(false, trader.getStockItem());
-									}
 									StockItem item = trader.getStockItem();
+									if ( item.getSlot() < 0 ) {
+										item.getAmouts().clear();
+										item.addAmout(event.getCursor().getAmount());
+										sr.addItem(false, item);
+									}
 									
 									if ( !event.getCurrentItem().getType().equals(Material.AIR) )
 										trader.setStockItem(sr.wantItemBuy(event.getSlot()));
@@ -347,7 +349,13 @@ public class TraderNpc extends Character implements Listener {
 					} else {
 						if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) || trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
 							if ( trader.getLastInv() && trader.getStockItem() != null ) {
-								sr.removeItem(true, trader.getStockItem().getSlot());
+								StockItem item = trader.getStockItem();
+								if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) )
+									if ( sr.itemForSell(item.getSlot()).equals(item) )
+										sr.removeItem(true, trader.getStockItem().getSlot());
+								if ( trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) )
+									if ( sr.wantItemBuy(item.getSlot()).equals(item) )
+										sr.removeItem(false, trader.getStockItem().getSlot());
 								trader.setStockItem(null);
 							} else {
 								ItemStack is = event.getCurrentItem();
