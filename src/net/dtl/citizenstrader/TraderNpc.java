@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -114,6 +115,7 @@ public class TraderNpc extends Character implements Listener {
 				InventoryTrait sr = trader.getTrader().getTrait(InventoryTrait.class);
 			//	sr.loadInventory(trader.getTrader().getId());
 				boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				DecimalFormat f = new DecimalFormat("#.##");
 				
 				if ( (!trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) && 
 					  !trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) && 
@@ -134,7 +136,7 @@ public class TraderNpc extends Character implements Listener {
 											 !event.getCurrentItem().getType().equals(Material.AIR)) {
 											econ.withdrawPlayer(p.getName(), si.getPrice(event.getSlot()));
 											p.getInventory().addItem(event.getCurrentItem());
-											p.sendMessage(ChatColor.GOLD + "You bought " + event.getCurrentItem().getAmount() + " for " + si.getPrice(event.getSlot()) + ".");
+											p.sendMessage(ChatColor.GOLD + "You bought " + event.getCurrentItem().getAmount() + " for " + f.format(si.getPrice(event.getSlot())) + ".");
 										}
 									} else {
 										p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
@@ -143,7 +145,7 @@ public class TraderNpc extends Character implements Listener {
 									if ( econ.has(p.getName(), si.getPrice()) ) {
 										econ.withdrawPlayer(p.getName(), si.getPrice());
 										p.getInventory().addItem(si.getItemStack());
-										p.sendMessage(ChatColor.GOLD + "You bought " + si.getItemStack().getAmount() + " for " + si.getPrice() + ".");
+										p.sendMessage(ChatColor.GOLD + "You bought " + si.getItemStack().getAmount() + " for " + f.format(si.getPrice()) + ".");
 									} else {
 										p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
 									}
@@ -158,7 +160,7 @@ public class TraderNpc extends Character implements Listener {
 									} else {
 										if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
 											 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-											p.sendMessage(ChatColor.GOLD + "This item costs " + si.getPrice(event.getSlot()) + ".");
+											p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice(event.getSlot())) + ".");
 									}
 								} else if ( trader.getStatus().equals(Status.PLAYER_SELL) ) {
 									if ( si.hasMultipleAmouts() ) {
@@ -170,7 +172,7 @@ public class TraderNpc extends Character implements Listener {
 										}
 									} else {
 										
-											p.sendMessage(ChatColor.GOLD + "This item costs " + si.getPrice() + ".");
+											p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice()) + ".");
 									}
 								}
 							} 
@@ -183,14 +185,15 @@ public class TraderNpc extends Character implements Listener {
 					} else if ( trader.getStatus().equals(Status.PLAYER_BUY) ) {
 						si = sr.wantItemBuy(event.getSlot());
 						if ( si != null ) {
-							if ( si.getItemStack().getType().equals(event.getCursor().getType()) ) {
+							if ( si.getItemStack().getType().equals(event.getCursor().getType()) &&
+								 si.getItemStack().getData().equals(event.getCursor().getData()) ) {
 								econ.depositPlayer(p.getName(), si.getPrice()*event.getCursor().getAmount());
-								p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + si.getPrice(si.getSlot())*event.getCursor().getAmount() + ".");
+								p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + f.format(si.getPrice()*event.getCursor().getAmount()) + ".");
 								event.setCursor(new ItemStack(Material.AIR));
 							} else {
 								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
-									 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-								p.sendMessage(ChatColor.GOLD + "You get " + si.getPrice() + " for this item.");
+									 !event.getCurrentItem().getType().equals(Material.AIR)  ) 
+									p.sendMessage(ChatColor.GOLD + "You get " + f.format(si.getPrice()) + " for this item.");
 							}
 						} else {
 							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
@@ -218,21 +221,20 @@ public class TraderNpc extends Character implements Listener {
 									InventoryTrait.setInventoryWith(trader.getInventory(), si);
 									trader.setStatus(Status.PLAYER_MANAGE_SELL_AMOUT);
 									trader.setStockItem(si);
-								} else {
-									if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
-										 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
-										trader.setStatus(Status.PLAYER_MANAGE_PRICE);
-									//	trader.getInventory().clear();
-									//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
-										trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-									} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && 
-											 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
-											trader.setStatus(Status.PLAYER_MANAGE_BUY);
-											trader.getInventory().clear();
-											sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_BUY);
-										//	trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-									}
-								}
+								} 
+							} 
+							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
+								 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+								trader.setStatus(Status.PLAYER_MANAGE_PRICE);
+							//	trader.getInventory().clear();
+							//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
+								trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+							} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && 
+									 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+									trader.setStatus(Status.PLAYER_MANAGE_BUY);
+									trader.getInventory().clear();
+									sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_BUY);
+								//	trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
 							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ) {
 								sr.saveNewAmouts(trader.getInventory(), trader.getStockItem());
 								trader.getInventory().clear();
@@ -335,7 +337,7 @@ public class TraderNpc extends Character implements Listener {
 										si.increasePrice(this.getManagePriceAmout(event.getCursor()));
 									else if ( event.isRightClick() ) 
 										si.lowerPrice(this.getManagePriceAmout(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New price: " + si.getPrice()/si.getAmouts().get(0));
+									p.sendMessage(ChatColor.GOLD + "New price: " + f.format(si.getPrice()/si.getAmouts().get(0)));
 									event.setCancelled(true);
 								} else 
 									p.sendMessage(ChatColor.GOLD + "Wrong Item!");
