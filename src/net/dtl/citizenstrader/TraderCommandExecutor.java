@@ -11,9 +11,11 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class TraderCommandExecutor implements CommandExecutor {
+	public static CitizensTrader plugin;
 	private TraderNpc trader;
 
-	public TraderCommandExecutor() {
+	public TraderCommandExecutor(CitizensTrader instance) {
+		plugin = instance;
 		trader = ((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader"));
 	}
 	
@@ -50,6 +52,8 @@ public class TraderCommandExecutor implements CommandExecutor {
 							removeSellItem(p, args);
 						} else if ( args[1].equals("edit") ) {
 						} 
+					} else if ( args[0].equals("mode") ) {
+						setTraderMode(p, args[1]);
 					}
 				} else if ( argsLength(args,2,2) ) {
 					if ( args[0].equals("main") ) {
@@ -65,6 +69,17 @@ public class TraderCommandExecutor implements CommandExecutor {
 		}
 		return false;
 	}
+	
+	private void setTraderMode(Player p,String mode) {
+		if ( mode != null && ( mode.equals("secure") || mode.equals("simple") ) ) {
+			plugin.config.setMode(mode);
+			p.sendMessage(ChatColor.RED + "Trader mode set to: " + mode);
+		} else {
+			p.sendMessage(ChatColor.RED + "Invalid trader mode!");
+		}
+		
+	}
+	
 	private void removeSellItem(Player p,String[] args) {
 		if ( args.length != 3 )
 			return;

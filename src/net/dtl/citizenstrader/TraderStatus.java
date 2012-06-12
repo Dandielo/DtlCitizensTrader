@@ -16,6 +16,7 @@ public class TraderStatus {
 	private Inventory inventory;
 	private StockItem itemSelected;
 	private boolean lastInv = false;
+	private int lastSlot = -1;
 	
 	public TraderStatus(NPC t) {
 		trader = t;
@@ -41,6 +42,12 @@ public class TraderStatus {
 	}
 	public boolean getLastInv() {
 		return lastInv;
+	}
+	public void setLastSlot(int slot) {
+		lastSlot = slot;
+	}
+	public int getLastSlot() {
+		return lastSlot;
 	}
 	
 	public void setInventory(Inventory i) {
