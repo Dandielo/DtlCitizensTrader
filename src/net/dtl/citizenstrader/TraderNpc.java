@@ -227,53 +227,13 @@ public class TraderNpc extends Character implements Listener {
 							event.setCancelled(true);
 						} else {
 							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
-								 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
-								trader.setStatus(Status.PLAYER_MANAGE_PRICE);
-							//	trader.getInventory().clear();
-							//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
-								trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-								return;
-							} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && 
-									 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
-									trader.setStatus(Status.PLAYER_MANAGE_BUY);
-									trader.getInventory().clear();
-									sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_BUY);
-								//	trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL_AMOUT) ) {
-								sr.saveNewAmouts(trader.getInventory(), trader.getStockItem());
-								trader.getInventory().clear();
-								sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
-								trader.setStatus(Status.PLAYER_MANAGE_SELL);
-								trader.setStockItem(null);
-							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
-								if ( sr.wantItemBuy(event.getSlot()) == null ) {
-									if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
-										 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
-										trader.setStatus(Status.PLAYER_MANAGE_PRICE);
-									//	trader.getInventory().clear();
-									//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
-										trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-									} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && 
-											 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
-										trader.getInventory().clear();
-										sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
-										trader.setStatus(Status.PLAYER_MANAGE_SELL);
-										trader.setStockItem(null);
-									}
-								}
-							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_PRICE) ) {
-								 if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)15)) && 
-								      ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
-									if ( trader.getInventory().getItem(trader.getInventory().getSize()-1).equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)))
-										trader.setStatus(Status.PLAYER_MANAGE_SELL);
-									else
-										trader.setStatus(Status.PLAYER_MANAGE_BUY);
-									trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1));
-							//		sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
-								}
-							}
-
-							if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
+									 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+									trader.setStatus(Status.PLAYER_MANAGE_PRICE);
+								//	trader.getInventory().clear();
+								//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
+									trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+									return;
+							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
 								if ( event.isRightClick() ) {
 									p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
 									event.setCancelled(true);
@@ -281,6 +241,15 @@ public class TraderNpc extends Character implements Listener {
 								}
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.itemForSell(event.getSlot()) );
+									if ( trader.getStockItem() == null )
+										if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && 
+												 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+												trader.getInventory().clear();
+												sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_BUY);
+												trader.setStatus(Status.PLAYER_MANAGE_BUY);
+												trader.setStockItem( null );
+											//	trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+										}
 								} else {
 									StockItem item = trader.getStockItem();
 									if ( item.getSlot() < 0 ) {
@@ -304,6 +273,13 @@ public class TraderNpc extends Character implements Listener {
 									p.sendMessage(ChatColor.GOLD + "Wrong item!");
 									event.setCancelled(true);
 								}
+								if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+									sr.saveNewAmouts(trader.getInventory(), trader.getStockItem());
+									trader.getInventory().clear();
+									sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
+									trader.setStatus(Status.PLAYER_MANAGE_SELL);
+									trader.setStockItem(null);
+								}
 							} else if ( trader.getStatus().equals(Status.PLAYER_MANAGE_BUY) ) {
 								if ( event.isRightClick() ) {
 									p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
@@ -312,6 +288,21 @@ public class TraderNpc extends Character implements Listener {
 								}
 								if ( trader.getStockItem() == null ) {
 									trader.setStockItem( sr.wantItemBuy(event.getSlot()) );
+									if ( trader.getStockItem() == null ) {
+										if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1)) && 
+												 ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+												trader.setStatus(Status.PLAYER_MANAGE_PRICE);
+											//	trader.getInventory().clear();
+											//	sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_PRICE);
+												trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+											} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && 
+													 ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+												trader.getInventory().clear();
+												sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
+												trader.setStatus(Status.PLAYER_MANAGE_SELL);
+												trader.setStockItem(null);
+											}
+									}
 								} else {
 									StockItem item = trader.getStockItem();
 									if ( item.getSlot() < 0 ) {
@@ -341,8 +332,19 @@ public class TraderNpc extends Character implements Listener {
 										si.lowerPrice(this.getManagePriceAmout(event.getCursor()));
 									p.sendMessage(ChatColor.GOLD + "New price: " + f.format(si.getPrice()/si.getAmouts().get(0)));
 									event.setCancelled(true);
-								} else 
-									p.sendMessage(ChatColor.GOLD + "Wrong Item!");
+								} else {
+									 if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)15)) && 
+									    ( event.getSlot() == trader.getInventory().getSize() - 2 ) ) {
+											if ( trader.getInventory().getItem(trader.getInventory().getSize()-1).equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)))
+												trader.setStatus(Status.PLAYER_MANAGE_SELL);
+											else
+												trader.setStatus(Status.PLAYER_MANAGE_BUY);
+											trader.getInventory().setItem(trader.getInventory().getSize()-2, new ItemStack(Material.WOOL,1));
+									//		sr.inventoryView(trader.getInventory(),Status.PLAYER_MANAGE_SELL);
+									} else 
+										p.sendMessage(ChatColor.GOLD + "Wrong Item!");
+								}
+									
 							}
 						}
 						trader.setLastInv(true);
