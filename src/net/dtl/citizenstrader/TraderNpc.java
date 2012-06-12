@@ -1,13 +1,7 @@
 package net.dtl.citizenstrader;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.HashMap;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,11 +12,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.metadata.MetadataValue;
-import org.bukkit.plugin.Plugin;
-import org.yaml.snakeyaml.Yaml;
 
-import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.npc.character.Character;
@@ -238,6 +228,7 @@ public class TraderNpc extends Character implements Listener {
 									 !event.getCurrentItem().getType().equals(Material.AIR) ) {
 									if ( trader.getLastSlot() != event.getSlot() ) {
 										p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice(event.getSlot())) + ".");
+										p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
 										trader.setLastSlot(event.getSlot()); 
 									} else {
 										if ( econ.has(p.getName(), si.getPrice(event.getSlot())) ) {
@@ -263,6 +254,7 @@ public class TraderNpc extends Character implements Listener {
 							} else {
 								if ( trader.getLastSlot() != event.getSlot() ) {
 									p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice()) + ".");
+									p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
 									trader.setLastSlot(event.getSlot()); 
 								} else {
 									if ( econ.has(p.getName(), si.getPrice()) ) {
@@ -307,6 +299,7 @@ public class TraderNpc extends Character implements Listener {
 							if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 								 !event.getCurrentItem().getType().equals(Material.AIR)  ) {
 								p.sendMessage(ChatColor.GOLD + "You get " + f.format(si.getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+								p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
 								trader.setLastSlot(event.getSlot());
 							}
 						}
