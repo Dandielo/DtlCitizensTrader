@@ -1,23 +1,21 @@
 ====================================
 - CitizensTrader -------------------
 
-Its still beta so use it at you'r own risk!
+It's a plugin for the characters used by Citizens 2.0 Beta
+
+Its still beta so use it at your own risk!
 
 - Installing ------------------------
 To make this trader working you need the last Citizens 2.0 build, Vault and an economy plugin
 
-Creating an npc look like this
+Creating an npc looks like this:
 /npc create name --char trader
 
 or just select the npc you want set the trader character and type
 /npc character trader
 
 
-In game Character name: "trader"
-
 To use commands you need to r.click him with a stick to enable "manager mode".
-
-When in the "manager mode", you can also move the npc inventory, and thats all, nothing will be saved atm.
 
 
 - Commands ------------------------- [] - optional ()  required
@@ -25,12 +23,15 @@ When in the "manager mode", you can also move the npc inventory, and thats all, 
 /trader sell remove (slot)
 /trader buy add id[:data] [p:price] [s:slot] 
 /trader buy remove (slot)
+/trader mode simple/secure
 
-- Using the trader -----------------
+
+
+- Using the trader (secure mode) -----------------
 1. r.click him to open the inventory
 
 2. 
-- click shows up the item price or opens a multiple amout choice.
+- click shows up the item price or opens a multiple amount choice.
 - shift.click buys the item.
 
 3. In multiple amount choice, red wool click means do back to the main trader inventory.
@@ -38,6 +39,22 @@ When in the "manager mode", you can also move the npc inventory, and thats all, 
 4. In the main trader inventory clicking on the wool cyan and lime, toggles the buy/sell list.
 
 5. to sell an item to the trader just drag it from you'r inventory and click on the item on the trader inventory.
+
+
+
+- Using the trader (simple mode) -----------------
+1. r.click him to open the inventory
+
+2. 
+- first click shows up the item price or opens a multiple amount choice.
+- a second click will buy this item
+
+3. In multiple amount choice, red wool click means go back to the main trader inventory.
+
+4. In the main trader inventory clicking on the wool cyan and lime, toggles the buy/sell list.
+
+5. to sell an item click on it in you inventory to see how much money you will get.
+   a second click will sell the item
 
 
 
@@ -52,7 +69,7 @@ When in the "manager mode", you can also move the npc inventory, and thats all, 
      - Amount set section allows to set the multiple items a player can buy
      - you can add here only materials with the same id/data 
      - it saves the amounts after leaving this section (red_woll or inventory close)
-  e  shift click the white_wool to enter the price edit
+  e  click the white_wool to enter the price edit
      - r.click to decrease the price
      - l.click to increase the price
      - wood counts as * 0.01
@@ -61,7 +78,7 @@ When in the "manager mode", you can also move the npc inventory, and thats all, 
      - cobblestone counts as * 100
      - needs to have anything in the cursor to change the price
      - AIR will show up the current price
-     - shift click the black_wool to leave price editing
+     - click the black_wool to leave price editing
   
 May have some issues with item dragging but i'm not sure.
 
