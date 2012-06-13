@@ -100,7 +100,8 @@ public class TraderNpc extends Character implements Listener {
 		if ( event.getWhoClicked() instanceof Player ) {
 			Player p = (Player) event.getWhoClicked();
 			DecimalFormat f = new DecimalFormat("#.##");
-			if ( trader.getStatus().equals(Status.PLAYER_SELL) || trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) ) {
+			boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+			if ( trader.getStatus().equals(Status.PLAYER_SELL) || trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) && top ) {
 				if ( trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) )
 					si = trader.getStockItem();
 				else
@@ -159,7 +160,8 @@ public class TraderNpc extends Character implements Listener {
 					trader.setStatus(Status.PLAYER_BUY);
 					trader.setStockItem(null);
 				} 
-			} else if ( trader.getStatus().equals(Status.PLAYER_BUY) ) {
+				event.setCancelled(true);
+			} else if ( trader.getStatus().equals(Status.PLAYER_BUY) && top ) {
 				si = sr.wantItemBuy(event.getSlot());
 				if ( si != null ) {
 					if ( si.getItemStack().getType().equals(event.getCursor().getType()) &&
@@ -180,6 +182,7 @@ public class TraderNpc extends Character implements Listener {
 						trader.setStockItem(null);
 					}
 				}
+				event.setCancelled(true);
 			}			
 		}
 	}
@@ -302,14 +305,17 @@ public class TraderNpc extends Character implements Listener {
 			} else if ( trader.getStatus().equals(Status.PLAYER_BUY) ) {
 				//
 				if ( top ) {
+					si = sr.wantItemBuy(event.getSlot());
 					if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
 						trader.getInventory().clear();
 						sr.inventoryView(trader.getInventory(),Status.PLAYER_SELL);
 						trader.setStatus(Status.PLAYER_SELL);
 						trader.setStockItem(null);
 					} else {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(si.getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+						if ( si != null )
+							p.sendMessage(ChatColor.GOLD + "You get " + f.format(si.getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
 					}
+					event.setCancelled(true);
 				} else {
 					si = sr.wantItemBuy(event.getCurrentItem());
 					if ( si != null ) {
@@ -354,7 +360,7 @@ public class TraderNpc extends Character implements Listener {
 					  !trader.getStatus().equals(Status.PLAYER_MANAGE_PRICE ) ) {
 					StockItem si = null;
 					
-					if ( ((CitizensTrader)sr.getPlugin()).config.getMode().equals("secure") && top ) {
+					if ( ((CitizensTrader)sr.getPlugin()).config.getMode().equals("secure") ) {
 						secureMode(event,trader,si,sr);
 						return; //to avoid the event canceled in the buy list
 					}
