@@ -198,9 +198,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	
 	public StockItem wantItemBuy(ItemStack itemStack) {
 		for ( StockItem item : buyStock )
-			if ( item.getItemStack().getType().equals(itemStack.getType()) &&
-				 item.getItemStack().getDurability() == itemStack.getDurability() &&
-				 item.getItemStack().getData().equals(itemStack.getData()) )
+			if ( item.getItemStack().equals(itemStack) && item.getItemStack().getEnchantments().equals(itemStack.getEnchantments()) )
 				return item;
 		return null;
 	}

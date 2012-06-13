@@ -164,8 +164,7 @@ public class TraderNpc extends Character implements Listener {
 			} else if ( trader.getStatus().equals(Status.PLAYER_BUY) && top ) {
 				si = sr.wantItemBuy(event.getSlot());
 				if ( si != null ) {
-					if ( si.getItemStack().getType().equals(event.getCursor().getType()) &&
-						 si.getItemStack().getData().equals(event.getCursor().getData()) ) {
+					if ( si.getItemStack().equals(event.getCursor()) && si.getItemStack().getEnchantments().equals(event.getCursor().getEnchantments()) ) {
 						econ.depositPlayer(p.getName(), si.getPrice()*event.getCursor().getAmount());
 						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + f.format(si.getPrice()*event.getCursor().getAmount()) + ".");
 						event.setCursor(new ItemStack(Material.AIR));
