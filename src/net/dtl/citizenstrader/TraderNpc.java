@@ -9,7 +9,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryClickEvent; 
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,8 +19,8 @@ import net.citizensnpcs.api.npc.character.Character;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader.TraderStatus.Status;
+import net.dtl.citizenstrader.containers.StockItem;
 import net.dtl.citizenstrader.traits.InventoryTrait;
-import net.dtl.citizenstrader.traits.StockItem;
 import net.milkbowl.vault.economy.Economy;
 
 

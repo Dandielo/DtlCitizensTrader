@@ -3,7 +3,8 @@ package net.dtl.citizenstrader;
 import org.bukkit.inventory.Inventory;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizenstrader.traits.StockItem;
+import net.dtl.citizenstrader.containers.StockItem;
+import net.dtl.citizenstrader.tradertypes.Trader.TraderType;
 
 public class TraderStatus {
 	
@@ -14,7 +15,8 @@ public class TraderStatus {
 	private NPC trader;
 	private Status status;
 	private Inventory inventory;
-	private StockItem itemSelected;
+	private TraderType type;
+	private net.dtl.citizenstrader.containers.StockItem itemSelected;
 	private boolean lastInv = false;
 	private int lastSlot = -1;
 	
@@ -31,6 +33,12 @@ public class TraderStatus {
 		itemSelected = null;
 	}
 	
+	public void setTraderType(TraderType t) {
+		type = t;
+	}
+	public TraderType getTraderType() {
+		return type;
+	}
 	public void setStatus(Status s) {
 		status = s;
 	}

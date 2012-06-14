@@ -1,37 +1,25 @@
-package net.dtl.citizenstrader.traits;
+package net.dtl.citizenstrader_new.traits;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader.TraderStatus.Status;
-import net.dtl.citizenstrader.containers.StockItem;
+import net.dtl.citizenstrader_new.containers.StockItem;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.yaml.snakeyaml.Yaml;
 
 public class InventoryTrait extends Trait implements InventoryHolder {
 	
 	private List<StockItem> sellStock = new ArrayList<StockItem>();					//What the trader sells the player
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 
 	private int size;
-	private boolean firstSave;
 	
 	public InventoryTrait() {
 		this(54); 
