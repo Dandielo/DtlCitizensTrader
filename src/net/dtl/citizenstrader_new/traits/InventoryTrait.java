@@ -6,8 +6,8 @@ import java.util.List;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizenstrader.TraderStatus.Status;
 import net.dtl.citizenstrader_new.containers.StockItem;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -52,7 +52,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	
 	@Override
 	public void save(DataKey data) {
-		System.out.print(data);
+	//	System.out.print(data);
 		
         List<String> sellList = new ArrayList<String>();
 		if ( !sellStock.isEmpty() )
@@ -81,10 +81,10 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 	
 	@SuppressWarnings("unused")
-	public Inventory inventoryView(Inventory view,Status s) {
+	public Inventory inventoryView(Inventory view,TraderStatus s) {
 
 		int i = 0;
-		if ( s.equals(Status.PLAYER_SELL) ) {
+		if ( s.equals(TraderStatus.PLAYER_SELL) ) {
 			for( StockItem item : sellStock ){
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -95,7 +95,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	        }
             if ( !buyStock.isEmpty() )
             	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
-		} else if ( s.equals(Status.PLAYER_BUY ) ) {
+		} else if ( s.equals(TraderStatus.PLAYER_BUY ) ) {
 			for( StockItem item : buyStock ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -107,7 +107,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	            i++;
 	        }
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
-		} else if ( s.equals(Status.PLAYER_MANAGE_SELL ) ) {
+		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_SELL ) ) {
 			for( StockItem item : sellStock ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -120,7 +120,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	        }
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
-		} else if ( s.equals(Status.PLAYER_MANAGE_BUY ) ) {
+		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -133,7 +133,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	        }
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
-		} else if ( s.equals(Status.PLAYER_MANAGE_PRICE ) ) {
+		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_PRICE ) ) {
 			for( StockItem item : sellStock ) {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -171,6 +171,37 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		return view;
 	}
 	
+	public boolean hasItem(int slot,TraderStatus status) {
+		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) ||
+			 status.equals(TraderStatus.PLAYER_BUY) ) {
+			for ( StockItem item : buyStock )
+				if ( item.getSlot() == slot )
+					return true;
+		} else if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) ||
+			   status.equals(TraderStatus.PLAYER_SELL ) ) {
+			for ( StockItem item : sellStock )
+				if ( item.getSlot() == slot )
+					return true;
+		}
+		return false;
+	}
+	
+	public StockItem getItem(int slot,TraderStatus status) {
+		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) ||
+			 status.equals(TraderStatus.PLAYER_BUY) ) {
+			for ( StockItem item : buyStock )
+				if ( item.getSlot() == slot )
+					return item;
+		} if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) ||
+			   status.equals(TraderStatus.PLAYER_SELL ) ) {
+			for ( StockItem item : sellStock )
+				if ( item.getSlot() == slot )
+					return item;
+		}
+		return null;
+	}
+	
+	
 	public StockItem itemForSell(int slot) {
 		for ( StockItem item : sellStock )
 			if ( item.getSlot() == slot )
@@ -194,7 +225,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	
 	public static void setInventoryWith(Inventory inv,StockItem si) {
 		int i = 0;
-		for ( Integer amount : si.getAmouts() ) {
+		for ( Integer amount : si.getAmounts() ) {
 			ItemStack is = si.getItemStack().clone();
 			is.setAmount(amount);
 			inv.setItem(i++,is);
@@ -229,14 +260,14 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 				}
 	}
 	public void saveNewAmouts(Inventory inv,StockItem si) {
-		si.getAmouts().clear();
+		si.getAmounts().clear();
 		for ( ItemStack is : inv.getContents() ) {
 			if ( is != null ) {
-				si.addAmout(is.getAmount());
+				si.addAmount(is.getAmount());
 			}
 		}
-		if ( si.getAmouts().size() > 1 )
-			si.getAmouts().remove(si.getAmouts().size()-1);
+		if ( si.getAmounts().size() > 1 )
+			si.getAmounts().remove(si.getAmounts().size()-1);
 	}
 	
 }

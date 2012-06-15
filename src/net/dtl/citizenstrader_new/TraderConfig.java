@@ -1,4 +1,4 @@
-package net.dtl.citizenstrader;
+package net.dtl.citizenstrader_new;
 
 public class TraderConfig {
 	//MySQL section

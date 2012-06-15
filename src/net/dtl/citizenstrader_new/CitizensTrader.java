@@ -1,4 +1,4 @@
-package net.dtl.citizenstrader;
+package net.dtl.citizenstrader_new;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,8 @@ import java.util.logging.Logger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.character.CharacterFactory;
 import net.citizensnpcs.api.trait.TraitFactory;
-import net.dtl.citizenstrader.traits.InventoryTrait;
+import net.dtl.citizenstrader_new.traits.InventoryTrait;
+import net.dtl.citizenstrader_new.traits.TraderTrait;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
@@ -53,20 +54,21 @@ public class CitizensTrader extends JavaPlugin {
 		        permission = rspPerm.getProvider();
 				this.logger.info("["+ pdfFile.getName() + "] Permissions enabled.");
 	        } else {
-				this.logger.info("["+ pdfFile.getName() + "] Permissions not found!");
+				this.logger.info("["+ pdfFile.getName() + "] Permissions not found!"); 
 	        }
 			
 			config = new TraderConfig();
 			loadConfig();
 			
 			if ( CitizensAPI.getCharacterManager() != null )
-				CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderNpc.class).withName("trader"));
-			if ( CitizensAPI.getTraitManager() != null )
+				CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderCharacter.class).withName("trader"));
+			if ( CitizensAPI.getTraitManager() != null ) {
 				CitizensAPI.getTraitManager().registerTrait(new TraitFactory(InventoryTrait.class).withName("inv").withPlugin(this));
-			
+				CitizensAPI.getTraitManager().registerTrait(new TraitFactory(TraderTrait.class).withName("trader").withPlugin(this));
+			}
 			getServer().getPluginManager().registerEvents((Listener) CitizensAPI.getCharacterManager().getCharacter("trader"), this);
 			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
-			((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader")).setEcon(economy);
+			//((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader"));
 			
 			plugin = this;
 			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");

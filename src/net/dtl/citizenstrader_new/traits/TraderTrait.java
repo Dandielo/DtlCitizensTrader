@@ -15,7 +15,7 @@ public class TraderTrait extends Trait {
 	}
 
 	private WalletType wType;
-	private TraderType tType;
+	private TraderType tType = TraderType.SERVER_TRADER;
 	
 	public TraderType getTraderType() {
 		return tType;

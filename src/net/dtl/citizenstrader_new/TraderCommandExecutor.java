@@ -1,8 +1,8 @@
-package net.dtl.citizenstrader;
+package net.dtl.citizenstrader_new;
 
 import net.citizensnpcs.api.CitizensAPI;
-import net.dtl.citizenstrader.TraderStatus.Status;
-import net.dtl.citizenstrader.traits.InventoryTrait;
+import net.dtl.citizenstrader_new.traders.Trader;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 
 public class TraderCommandExecutor implements CommandExecutor {
 	public static CitizensTrader plugin;
-	private TraderNpc trader;
+	private TraderCharacter trader;
 
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
-		trader = ((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader"));
+		trader = ((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader"));
 	}
 	
 	public boolean argsLength(String args[],int min,int max) {
@@ -84,9 +84,9 @@ public class TraderCommandExecutor implements CommandExecutor {
 		if ( args.length != 3 )
 			return;
 		
-		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).removeItem(true, Integer.parseInt(args[2]));
+		Trader trade = trader.getOngoingTrades(p.getName());
+		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
+			trade.getTraderStock().removeItem(true, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
 			return;
 		}
@@ -101,10 +101,10 @@ public class TraderCommandExecutor implements CommandExecutor {
 		String itemDesc = "";
 		for ( int i = 2 ; i < args.length ; ++i )
 			itemDesc += args[i] + " ";
-		
-		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).addItem(true, itemDesc);
+
+		Trader trade = trader.getOngoingTrades(p.getName());
+		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
+			trade.getTraderStock().addItem(true, itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
 			return;
 		}
@@ -117,10 +117,10 @@ public class TraderCommandExecutor implements CommandExecutor {
 	private void removeBuyItem(Player p,String[] args) {
 		if ( args.length != 3 )
 			return;
-		
-		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).removeItem(false, Integer.parseInt(args[2]));
+
+		Trader trade = trader.getOngoingTrades(p.getName());
+		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
+			trade.getTraderStock().removeItem(false, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
 			return;
 		}
@@ -134,10 +134,10 @@ public class TraderCommandExecutor implements CommandExecutor {
 		String itemDesc = "";
 		for ( int i = 2 ; i < args.length ; ++i )
 			itemDesc += args[i] + " ";
-		
-		TraderStatus stat = trader.getStatus(p.getName());
-		if ( stat != null && stat.getStatus().equals(Status.PLAYER_MANAGE_SELL) ) {
-			stat.getTrader().getTrait(InventoryTrait.class).addItem(false,itemDesc);
+
+		Trader trade = trader.getOngoingTrades(p.getName());
+		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
+			trade.getTraderStock().addItem(false,itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
 			return;
 		}

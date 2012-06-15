@@ -7,8 +7,11 @@ public class Wallet {
 	private WalletType type;
 	private Economy economy;
 	
-	public Wallet(WalletType t,Economy e) {
+	public Wallet(WalletType t) {
 		type = t;
+	}
+	
+	public void setEconomy(Economy e) {
 		economy = e;
 	}
 	

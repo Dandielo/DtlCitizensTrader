@@ -98,6 +98,9 @@ public class StockItem {
 	public double getPrice() {
 		return price*amouts.get(0);
 	}
+	public double getRawPrice() {
+		return price;
+	}
 	public double getPrice(int i) {
 		if ( i < amouts.size() )
 			return price*amouts.get(i);
@@ -113,10 +116,15 @@ public class StockItem {
 	public void setSlot(int s) {
 		slot = s;
 	}
-	public void addAmout(int a) {
+	public void resetAmounts(int a) {
+		amouts.clear();
+		item.setAmount(a);
 		amouts.add(a);
 	}
-	public List<Integer> getAmouts() {
+	public void addAmount(int a) {
+		amouts.add(a);
+	}
+	public List<Integer> getAmounts() {
 		return amouts;
 	}
 }
