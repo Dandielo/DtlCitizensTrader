@@ -124,6 +124,9 @@ public class StockItem {
 	public void addAmount(int a) {
 		amouts.add(a);
 	}
+	public int getAmount() {
+		return amouts.get(0);
+	}
 	public List<Integer> getAmounts() {
 		return amouts;
 	}

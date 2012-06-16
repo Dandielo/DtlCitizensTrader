@@ -68,7 +68,7 @@ public class CitizensTrader extends JavaPlugin {
 			}
 			getServer().getPluginManager().registerEvents((Listener) CitizensAPI.getCharacterManager().getCharacter("trader"), this);
 			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
-			//((TraderNpc) CitizensAPI.getCharacterManager().getCharacter("trader"));
+			((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
 			
 			plugin = this;
 			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");

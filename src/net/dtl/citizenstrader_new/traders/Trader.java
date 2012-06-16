@@ -155,7 +155,7 @@ public abstract class Trader {
 	public final boolean getInventoryClicked() {
 		return inventoryClicked;
 	}
-	public final Integer getSlotClicked() {
+	public final Integer getClickedSlot() {
 		return slotClicked;
 	}
 	

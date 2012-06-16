@@ -9,6 +9,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader.TraderStatus.Status;
+import net.dtl.citizenstrader.traits.InventoryTrait;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
@@ -27,8 +29,128 @@ public class ServerTrader extends Trader {
 
 	@Override
 	public void simpleMode(InventoryClickEvent event) {
-		// TODO Auto-generated method stub
 		
+		/* 
+		 * will vanish after i've madeUp the simpleMode 
+		 * 
+		 */
+		
+		Player p = (Player) event.getWhoClicked();
+		DecimalFormat f = new DecimalFormat("#.##");
+		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+		System.out.print("a1");
+		
+		if ( top ) {
+			/*
+			 * top is for mostly for the "BuyFromTraderEvents"
+			 * 	
+			 */
+
+			System.out.print("a2");
+			
+			if ( event.getSlot() >= getInventory().getSize() - 1 ) {
+				/*
+				 * Standard wool place (last item slot)
+				 * 
+				 */
+				System.out.print("a3");
+				
+				if ( isWool(event.getCurrentItem(),(byte) 14) ) {
+					/*
+					 * lest go back to the main selling inventory ;)
+					 * 
+					 */
+					switchInventory(TraderStatus.PLAYER_SELL);		
+				} else if ( isWool(event.getCurrentItem(),(byte) 3) ) {
+					/*
+					 * lest go back to the main selling inventory ;)
+					 * 
+					 */
+					switchInventory(TraderStatus.PLAYER_SELL);		
+					System.out.print("a4");
+				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
+					/*
+					 * lest go back to the main selling inventory ;)
+					 * 
+					 */
+					switchInventory(TraderStatus.PLAYER_BUY);		
+				}
+			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL) ) {
+				/*
+				 * Player is buying from the trader
+				 * 
+				 */
+				System.out.print("a5");
+				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_SELL).hasSelectedItem() ) {
+					System.out.print("a6");
+					if ( getSelectedItem().hasMultipleAmouts() ) {
+						/*
+						 * Switching to the amount select inventory
+						 * 
+						 */
+						switchInventory(getSelectedItem());
+						setTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT);
+					} else {
+						if ( getClickedSlot() == event.getSlot() ) {
+							/*
+							 * This will trigger if some1 will click more than 1 amount on teh same item  
+							 * in the trader inventory
+							 * 
+							 */
+							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+						} else {
+							/*
+							 * First click will display the price and instructions.
+							 * Future: language support
+							 * 
+							 */
+							p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice()) + ".");
+							p.sendMessage(ChatColor.GOLD + "Now click to buy it.");
+							setClickedSlot(event.getSlot());
+						}
+					}
+				}
+			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) {
+				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
+					if ( getClickedSlot() == event.getSlot() ) {
+						
+						p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+					} else {
+						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
+						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
+						
+					}
+				}
+			} else if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
+				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
+					if ( getClickedSlot() == event.getSlot() ) {
+						
+						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+					} else {
+						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
+						setClickedSlot(event.getSlot());
+					}
+				}
+			}
+			setInventoryClicked(true);
+		} else {
+			if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
+				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
+					
+					p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+				} else {
+					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
+						 !event.getCurrentItem().getType().equals(Material.AIR)  ) {
+						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
+						setClickedSlot(event.getSlot());
+					}
+				}
+			}
+			setInventoryClicked(false);
+		}
+		event.setCancelled(true);
 	}
 
 	@Override
@@ -57,11 +179,17 @@ public class ServerTrader extends Trader {
 					 * 
 					 */
 					setTraderStatus(TraderStatus.PLAYER_MANAGE_PRICE);
+					
+					/*
+					 * WoolChanging
+					 * 
+					 */
 					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)15) ) {
 					/*
 					 * Price managing disabled
+					 * restoring the proper managing mode
 					 * 
 					 */
 					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) )
@@ -69,25 +197,41 @@ public class ServerTrader extends Trader {
 					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 						setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
 					
+					/*
+					 * WoolChanging
+					 * 
+					 */
 					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)5) ) {
 					
+					/*
+					 * Switching to the BuyModeManagement
+					 * ( player sells to trader )
+					 * 
+					 */
 					switchInventory(TraderStatus.PLAYER_MANAGE_BUY);
 					
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)3) ) {
 					
+					/*
+					 * Switching to the SellModeManagement
+					 * ( player buys from trader )
+					 * 
+					 */
 					switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
 					
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)14) ) {
 					
+					/*
+					 * Leaving the amount management 
+					 * 
+					 */
 					saveManagedAmouts();
 					switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
-					
-					
 				}
 				
 				event.setCancelled(true);
@@ -95,7 +239,7 @@ public class ServerTrader extends Trader {
 			} else {
 				if ( event.isShiftClick() ) {
 					/*
-					 * Shift click => amount managing mode 
+					 * Entering amount managing mode 
 					 * 
 					 */
 					
@@ -118,7 +262,7 @@ public class ServerTrader extends Trader {
 						  */
 						 if ( event.isRightClick() ) {
 							 /*
-							  * RightClick Currently nut supported
+							  * RightClick currently not supported
 							  * 
 							  */
 							 p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
@@ -133,16 +277,34 @@ public class ServerTrader extends Trader {
 							 
 							 StockItem item = getSelectedItem();
 							 if ( item.getSlot() == -1 ) {
+								 /*
+								  * if the slot equals -1 then it's a new item
+								  * that should be added to the trader inventory
+								  * 
+								  * amounts reset, to be sure the item will have his amount
+								  * from the cursor item
+								  */
 								 item.resetAmounts(event.getCursor().getAmount());
 								 getTraderStock().addItem(true, item);
-							//	 p.sendMessage(ChatColor.GOLD + "Item added sucessfully.");
 							 }
+							 
+							 /*
+							  * Select a trader item and check if it exists
+							  * if true set his slot to -2, (Item Editing)
+							  */
+							 if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
+								 getSelectedItem().setSlot(-2);
 							
-							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
-								getSelectedItem().setSlot(-2);
-							
-							item.setSlot(event.getSlot());
+							 /*
+							  * Setting the slot for the current placed item
+							  * 
+							  */
+							 item.setSlot(event.getSlot());
 						} else {
+							/*
+							 * Select a trader item and check if it exists
+							 * if true set his slot to -2, (Item Editing)
+							 */
 							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
 								getSelectedItem().setSlot(-2);
 						}
@@ -153,42 +315,64 @@ public class ServerTrader extends Trader {
 						 *  
 						 */
 						if ( !equalsSelected(event.getCursor(),true,false) && !event.getCursor().getType().equals(Material.AIR) ) {
+							/*
+							 * The item placed in the amount selection window must have the same id, data and have less durability lost 
+							 * than the item that will be set for sale
+							 */
 							p.sendMessage(ChatColor.GOLD + "Wrong item!");
 							event.setCancelled(true);
 						}
 						return;
 					} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
-						 /*
-						  * Managing items in the sell mode
-						  * 
-						  */
-						 if ( event.isRightClick() ) {
-							 /*
-							  * RightClick Currently nut supported
-							  * 
-							  */
-							 p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
-							 event.setCancelled(true);
-							 return;
-						 }
-						 if ( hasSelectedItem() ) {
+						/*
+						 * Managing items in the sell mode
+						 * 
+						 */
+						if ( event.isRightClick() ) {
+							/*
+							 * RightClick Currently nut supported
+							 * 
+							 */
+							p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
+							event.setCancelled(true);
+							return;
+						}
+						if ( hasSelectedItem() ) {
 							 
-							 
-							 /*
-							  * Changing item slot or adding a new item to the trader inventory (sell mode)
-							  * 
-							  */
-							 StockItem item = getSelectedItem();
-							 if ( item.getSlot() == -1 ) {
-								 item.resetAmounts(event.getCursor().getAmount());
-								 getTraderStock().addItem(false, item);
-							 }
-							
-							 if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
+								 
+							/*
+							 * Changing item slot or adding a new item to the trader inventory (sell mode)
+							 * 
+							 */
+							StockItem item = getSelectedItem();
+							if ( item.getSlot() == -1 ) {
+								/*
+								 * if the slot equals -1 then it's a new item
+								 * that should be added to the trader inventory
+								 * 
+								 * amounts reset, to be sure the item will have his amount
+								 * from the cursor item
+								 */
+								item.resetAmounts(event.getCursor().getAmount());
+								getTraderStock().addItem(false, item);
+							}
+
+							/*
+							 * Select a trader item and check if it exists
+							 * if true set his slot to -2, (Item Editing)
+							 */
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
 								getSelectedItem().setSlot(-2);
-							
+							/*
+							 * Setting the slot for the current placed item
+							 * 
+							 */
 							item.setSlot(event.getSlot());
 						} else {
+							/*
+							 * Select a trader item and check if it exists
+							 * if true set his slot to -2, (Item Editing)
+							 */
 							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() );
 								getSelectedItem().setSlot(-2);
 						}
@@ -199,6 +383,10 @@ public class ServerTrader extends Trader {
 						 * 
 						 */
 						if ( event.getCursor().getType().equals(Material.AIR) ) {
+							/*
+							 * Display Prices if nothing is set in the cursor
+							 * 
+							 */
 							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
 									p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
@@ -207,6 +395,10 @@ public class ServerTrader extends Trader {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
 									p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
 						} else {
+							/*
+							 * Change prices and display them after the change
+							 * 
+							 */
 							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
 									if ( event.isRightClick() ) 
@@ -231,16 +423,20 @@ public class ServerTrader extends Trader {
 		} else {
 			if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) || equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
 				if ( getInventoryClicked() && hasSelectedItem() ) {
-					//StockItem item = trader.getStockItem();
+					/*
+					 * Remove an item from the trader inventory
+					 * 
+					 */
 					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) )
-						//if ( sr.itemForSell(item.getSlot()).equals(item) )
 						getTraderStock().removeItem(true, getSelectedItem().getSlot());
 					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) )
-					//	if ( sr.wantItemBuy(item.getSlot()).equals(item) )
 						getTraderStock().removeItem(false, getSelectedItem().getSlot());
-							//sr.removeItem(false, trader.getStockItem().getSlot());
 					selectItem(null);
 				} else {
+					/*
+					 * Select an item to add it to the trader inventory
+					 * 
+					 */
 					selectItem(toStockItem(event.getCurrentItem()));
 				}
 			} 
