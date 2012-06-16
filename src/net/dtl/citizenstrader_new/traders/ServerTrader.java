@@ -115,29 +115,39 @@ public class ServerTrader extends Trader {
 					} else {
 						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
-						
+						setClickedSlot(event.getSlot());
 					}
 				}
-			} 
+			} else if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
+				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
+				//	if ( getClickedSlot() == event.getSlot() ) {
+					p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+				//	}
+				}
+			}
 			setInventoryClicked(true);
 		} else {
 			if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
-				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
-					if ( getClickedSlot() == event.getSlot() ) {
+				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
+					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
 						if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
 							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+						else 
+							p.sendMessage(ChatColor.GOLD + "Can't sell it");
 					} else {
 						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
 						setClickedSlot(event.getSlot());
 					}
 				}
-			} else if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
+			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
 					if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
 						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+					else 
+						p.sendMessage(ChatColor.GOLD + "Can't sell it");
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR)  ) {

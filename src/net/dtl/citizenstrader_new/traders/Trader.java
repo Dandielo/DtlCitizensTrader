@@ -111,6 +111,10 @@ public abstract class Trader {
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
 		return this;
+	} 
+	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
+		selectedItem = traderStock.getItem(item, status, dura, amount);
+		return this;
 	}
 	public final boolean hasSelectedItem() {
 		return selectedItem != null;

@@ -201,6 +201,43 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		return null;
 	}
 	
+	public StockItem getItem(ItemStack itemStack, TraderStatus status, boolean dura,
+			boolean amount) {
+
+		boolean equal = false;
+		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) ||
+			 status.equals(TraderStatus.PLAYER_BUY) ) {
+			for ( StockItem item : buyStock ) {
+				equal = false;
+				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
+					 itemStack.getData().equals(item.getItemStack().getData()) ) {
+						equal = true;
+					if ( dura ) 
+						equal = itemStack.getDurability() >= item.getItemStack().getDurability();
+					if ( amount && equal )
+						equal =  itemStack.getAmount() == item.getItemStack().getAmount();
+					if ( equal )
+						return item;
+				}
+			}
+		} if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) ||
+			   status.equals(TraderStatus.PLAYER_SELL ) ) {
+			for ( StockItem item : sellStock ) {
+				equal = false;
+				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
+					 itemStack.getData().equals(item.getItemStack().getData()) ) {
+						equal = true;
+					if ( dura ) 
+						equal = itemStack.getDurability() >= item.getItemStack().getDurability();
+					if ( amount && equal )
+						equal =  itemStack.getAmount() == item.getItemStack().getAmount();
+					if ( equal )
+						return item;
+				}
+			}
+		}
+		return null;
+	}
 	
 	public StockItem itemForSell(int slot) {
 		for ( StockItem item : sellStock )
@@ -269,5 +306,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		if ( si.getAmounts().size() > 1 )
 			si.getAmounts().remove(si.getAmounts().size()-1);
 	}
+
+	
 	
 }
