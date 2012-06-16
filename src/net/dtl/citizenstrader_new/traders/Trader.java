@@ -2,11 +2,13 @@ package net.dtl.citizenstrader_new.traders;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
@@ -35,7 +37,7 @@ public abstract class Trader {
 	private Inventory inventory;
 	private InventoryTrait traderStock; 
 	private StockItem selectedItem = null; 
-	private Wallet wallet;
+//	private Wallet wallet;
 	
 	private Boolean inventoryClicked = true;
 	private Integer slotClicked = -1;
@@ -45,7 +47,8 @@ public abstract class Trader {
 		traderStock = npc.getTrait(InventoryTrait.class);
 		inventory = traderStock.inventoryView(54, npc.getName() + " selling");
 		traderConfig = c;
-		wallet = new Wallet(traderConfig.getWalletType());
+	//	wallet = new Wallet(traderConfig.getWalletType());
+		traderConfig.getWallet().setEconomy(((CitizensTrader)c.getPlugin()).getEconomy());
 		traderStatus = TraderStatus.PLAYER_SELL;
 	}
 	
@@ -94,6 +97,12 @@ public abstract class Trader {
 		slotClicked = s;
 	}
 	
+	public boolean buyTransaction(Player p, double price) {
+		return traderConfig.buyTransaction(p, price);
+	}
+	public boolean sellTransaction(Player p, double price) {
+		return traderConfig.sellTransaction(p, price);
+	}
 	
 	public final Trader selectItem(StockItem i) {
 		selectedItem = i;
@@ -145,7 +154,7 @@ public abstract class Trader {
 		return inventory;
 	}
 	public final Wallet getWallet() {
-		return wallet;
+		return traderConfig.getWallet();
 	}	
 	
 	public final InventoryTrait getTraderStock() {

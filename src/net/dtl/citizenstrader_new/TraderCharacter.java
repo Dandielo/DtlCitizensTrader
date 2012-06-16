@@ -1,5 +1,6 @@
 package net.dtl.citizenstrader_new;
 
+import java.security.acl.Owner;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -54,14 +55,16 @@ public class TraderCharacter extends Character implements Listener {
     public void onSet(NPC npc) {
         if( !npc.hasTrait(InventoryTrait.class) ) 
             npc.addTrait(InventoryTrait.class);
-        if ( !npc.hasTrait(TraderTrait.class) )
+        if ( !npc.hasTrait(TraderTrait.class) ) {
             npc.addTrait(TraderTrait.class);
+        	npc.getTrait(TraderTrait.class).getWallet().setEconomy(config.getEcon());
+        }
     }
 	
 	@Override
 	public void onRightClick(NPC npc, Player p) {
 		TraderTrait trait = npc.getTrait(TraderTrait.class);
-		System.out.print(trait.getName());
+	//	System.out.print(trait.getName());
 
 		if ( p.getItemInHand().getTypeId() != 280 ) {
 			if ( ongoingTrades.containsKey(p.getName()) ) { 

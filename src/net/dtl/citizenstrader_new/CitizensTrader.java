@@ -59,6 +59,7 @@ public class CitizensTrader extends JavaPlugin {
 			
 			config = new TraderConfig();
 			loadConfig();
+			config.setEcon(economy);
 			
 			if ( CitizensAPI.getCharacterManager() != null )
 				CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderCharacter.class).withName("trader"));
@@ -145,6 +146,10 @@ public class CitizensTrader extends JavaPlugin {
     	out.flush();
     	
 		return true;
+	}
+	
+	public Economy getEconomy() {
+		return economy;
 	}
 	
 }

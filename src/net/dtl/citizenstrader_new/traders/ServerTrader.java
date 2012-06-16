@@ -9,8 +9,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizenstrader.TraderStatus.Status;
-import net.dtl.citizenstrader.traits.InventoryTrait;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
@@ -38,7 +36,6 @@ public class ServerTrader extends Trader {
 		Player p = (Player) event.getWhoClicked();
 		DecimalFormat f = new DecimalFormat("#.##");
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
-		System.out.print("a1");
 		
 		if ( top ) {
 			/*
@@ -46,14 +43,12 @@ public class ServerTrader extends Trader {
 			 * 	
 			 */
 
-			System.out.print("a2");
 			
 			if ( event.getSlot() >= getInventory().getSize() - 1 ) {
 				/*
 				 * Standard wool place (last item slot)
 				 * 
 				 */
-				System.out.print("a3");
 				
 				if ( isWool(event.getCurrentItem(),(byte) 14) ) {
 					/*
@@ -67,7 +62,6 @@ public class ServerTrader extends Trader {
 					 * 
 					 */
 					switchInventory(TraderStatus.PLAYER_SELL);		
-					System.out.print("a4");
 				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
@@ -80,9 +74,7 @@ public class ServerTrader extends Trader {
 				 * Player is buying from the trader
 				 * 
 				 */
-				System.out.print("a5");
 				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_SELL).hasSelectedItem() ) {
-					System.out.print("a6");
 					if ( getSelectedItem().hasMultipleAmouts() ) {
 						/*
 						 * Switching to the amount select inventory
@@ -97,7 +89,10 @@ public class ServerTrader extends Trader {
 							 * in the trader inventory
 							 * 
 							 */
-							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+							if ( buyTransaction(p,getSelectedItem().getPrice()) )
+								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+							else 
+								p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
 						} else {
 							/*
 							 * First click will display the price and instructions.
@@ -113,32 +108,36 @@ public class ServerTrader extends Trader {
 			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == event.getSlot() ) {
-						
-						p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+						if ( buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
+						else
+							p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
 					} else {
 						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
 						
 					}
 				}
-			} else if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
+			} 
+			setInventoryClicked(true);
+		} else {
+			if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
 				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() ) {
-						
-						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+
+						if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
 					} else {
 						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
 						setClickedSlot(event.getSlot());
 					}
 				}
-			}
-			setInventoryClicked(true);
-		} else {
-			if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
+			} else if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+					if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR)  ) {
