@@ -22,7 +22,7 @@ public class ServerTrader extends Trader {
 	@Override
 	public void secureMode(InventoryClickEvent event) {
 		// TODO Auto-generated method stub
-		
+		event.setCancelled(true);
 	}
 
 	@Override

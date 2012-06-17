@@ -125,17 +125,22 @@ public class TraderCharacter extends Character implements Listener {
 				
 			}
 			else {
-		/*		if ( config.getMode().equals("secure") ) 
+				
+				/*
+				 * Secure mode handling
+				 * 
+				 */
+				if ( config.getMode().equals("secure") ) 
 					ongoingTrades.get(p.getName()).secureMode(event);
-				else*/
+				
 				
 				/*
 				 * Simple mode handling
 				 * 
 				 */
-				
 				if ( config.getMode().equals("simple") ) 
 					ongoingTrades.get(p.getName()).simpleMode(event);
+				
 			}
 		}
 	}
