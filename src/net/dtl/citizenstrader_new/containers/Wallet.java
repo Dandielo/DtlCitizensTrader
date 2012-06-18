@@ -50,18 +50,18 @@ public class Wallet {
 	}
 	public boolean withdraw(String p, double m, boolean isOwner) {
 		if ( isOwner ) {
-			if ( type.equals(WalletType.PLAYER_WALLET) )
+			if ( type.equals(WalletType.PLAYER_WALLET) ) {
 				if ( economy.getBalance(p) >= m ) {
 					economy.depositPlayer(p, m);
 					return true;
 				}
-			else if ( type.equals(WalletType.NPC_WALLET) )
+			} else if ( type.equals(WalletType.NPC_WALLET) ) {
 				if ( money >= m ) {
 					money -= m;
 					return true;
 				}
-			else if ( type.equals(WalletType.SERVER_INFINITE) ) {
-				return false;
+			} else if ( type.equals(WalletType.SERVER_INFINITE) ) {
+				return true;
 			}
 		} else {
 			if ( economy.getBalance(p) >= m ) {

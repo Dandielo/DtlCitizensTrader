@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.Wallet;
 
 public class TraderTrait extends Trait {
@@ -30,7 +29,7 @@ public class TraderTrait extends Trait {
 			return WalletType.SERVER_INFINITE;
 		}
 		
-		public static String toSting(WalletType w) {
+		public static String toString(WalletType w) {
 			switch( w ) {
 			case PLAYER_WALLET:
 				return "player-wallet";
@@ -65,7 +64,7 @@ public class TraderTrait extends Trait {
 			return TraderType.CUSTOM;
 		}
 		
-		public static String toSting(TraderType w) {
+		public static String toString(TraderType w) {
 			switch( w ) {
 			case PLAYER_TRADER:
 				return "player";
@@ -110,7 +109,7 @@ public class TraderTrait extends Trait {
 		return false;
 	}
 	public boolean sellTransaction(Player pSelling, double price) {
-		if ( w.withdraw(owner, price, false) ) {
+		if ( w.withdraw(owner, price, true) ) {
 			w.deposit(pSelling.getName(), price, false);
 			return true;
 		}
@@ -120,10 +119,10 @@ public class TraderTrait extends Trait {
 	@Override
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("trader-type") ) {
-			tType = TraderType.getTypeByName(data.getString("trader-tupe"));
+			tType = TraderType.getTypeByName(data.getString("trader-type"));
 		}
 		if ( data.keyExists("wallet-type") ) {
-			wType = WalletType.getTypeByName(data.getString("wallet-tupe"));
+			wType = WalletType.getTypeByName(data.getString("wallet-type"));
 			w.setWalletType(wType);
 		}
 		if ( data.keyExists("owner") ) {
@@ -136,8 +135,8 @@ public class TraderTrait extends Trait {
 
 	@Override
 	public void save(DataKey data) {
-		data.setString("trader-type", TraderType.toSting(tType));
-		data.setString("wallet-type", WalletType.toSting(wType));
+		data.setString("trader-type", TraderType.toString(tType));
+		data.setString("wallet-type", WalletType.toString(wType));
 		data.setString("owner", owner);
 		data.setDouble("money", w.getMoney());
 	}

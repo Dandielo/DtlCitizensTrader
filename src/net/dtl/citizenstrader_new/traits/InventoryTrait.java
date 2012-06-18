@@ -158,9 +158,9 @@ public class InventoryTrait extends Trait implements InventoryHolder {
             ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
             chk.addEnchantments(item.getItemStack().getEnchantments());
             //if ( view.contains(chk) == false ) {
-            	if ( item.getSlot() < 0 )
-            		item.setSlot(view.firstEmpty());
-                view.setItem(item.getSlot(),chk);
+        	if ( item.getSlot() < 0 )
+        		item.setSlot(view.firstEmpty());
+            view.setItem(item.getSlot(),chk);
             //}
             i++;
         }

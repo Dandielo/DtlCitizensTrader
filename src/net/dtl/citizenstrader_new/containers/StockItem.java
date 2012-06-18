@@ -57,6 +57,11 @@ public class StockItem {
 	}
 	
 	public ItemStack getItemStack() {
+		item.setAmount(amouts.get(0));
+		return item;
+	}
+	public ItemStack getItemStack(int slot) {
+		item.setAmount(amouts.get(slot));
 		return item;
 	}
 

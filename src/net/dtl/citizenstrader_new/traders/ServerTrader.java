@@ -21,7 +21,98 @@ public class ServerTrader extends Trader {
 
 	@Override
 	public void secureMode(InventoryClickEvent event) {
-		// TODO Auto-generated method stub
+		/*
+		 * if ( event.getWhoClicked() instanceof Player ) {
+			Player p = (Player) event.getWhoClicked();
+			DecimalFormat f = new DecimalFormat("#.##");
+			boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+			if ( trader.getStatus().equals(Status.PLAYER_SELL) || trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) && top ) {
+				if ( trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) )
+					si = trader.getStockItem();
+				else
+					si = sr.itemForSell(event.getSlot());
+				if ( si != null ) {
+					if ( event.isShiftClick() ) {
+						if ( si.hasMultipleAmouts() && trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) ) {
+							if ( econ.has(p.getName(), si.getPrice(event.getSlot())) ) {
+								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
+									 !event.getCurrentItem().getType().equals(Material.AIR)) {
+									econ.withdrawPlayer(p.getName(), si.getPrice(event.getSlot()));
+									p.getInventory().addItem(event.getCurrentItem());
+									p.sendMessage(ChatColor.GOLD + "You bought " + event.getCurrentItem().getAmount() + " for " + f.format(si.getPrice(event.getSlot())) + ".");
+								}
+							} else {
+								p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+							}
+						} else {
+							if ( econ.has(p.getName(), si.getPrice()) ) {
+								econ.withdrawPlayer(p.getName(), si.getPrice());
+								p.getInventory().addItem(si.getItemStack());
+								p.sendMessage(ChatColor.GOLD + "You bought " + si.getItemStack().getAmount() + " for " + f.format(si.getPrice()) + ".");
+							} else {
+								p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+							}
+						}
+					} else {
+						if ( trader.getStatus().equals(Status.PLAYER_SELL_AMOUT) ) {
+							if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+								trader.getInventory().clear();
+								sr.inventoryView(trader.getInventory(),Status.PLAYER_SELL);
+								trader.setStatus(Status.PLAYER_SELL);
+								trader.setStockItem(null);
+							} else {
+								if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)14)) &&
+									 !event.getCurrentItem().getType().equals(Material.AIR) ) 
+									p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice(event.getSlot())) + ".");
+							}
+						} else if ( trader.getStatus().equals(Status.PLAYER_SELL) ) {
+							if ( si.hasMultipleAmouts() ) {
+								if ( trader.getStatus().equals(Status.PLAYER_SELL) ) {
+									trader.getInventory().clear();
+									InventoryTrait.setInventoryWith(trader.getInventory(), si);
+									trader.setStatus(Status.PLAYER_SELL_AMOUT);
+									trader.setStockItem(si);
+								}
+							} else {
+								
+									p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(si.getPrice()) + ".");
+							}
+						}
+					} 
+				} else if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)5)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+					trader.getInventory().clear();
+					sr.inventoryView(trader.getInventory(),Status.PLAYER_BUY);
+					trader.setStatus(Status.PLAYER_BUY);
+					trader.setStockItem(null);
+				} 
+				event.setCancelled(true);
+			} else if ( trader.getStatus().equals(Status.PLAYER_BUY) && top ) {
+				si = sr.wantItemBuy(event.getSlot());
+				if ( si != null ) {
+					if ( si.getItemStack().equals(event.getCursor()) && si.getItemStack().getEnchantments().equals(event.getCursor().getEnchantments()) ) {
+						econ.depositPlayer(p.getName(), si.getPrice()*event.getCursor().getAmount());
+						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCursor().getAmount() + " for " + f.format(si.getPrice()*event.getCursor().getAmount()) + ".");
+						event.setCursor(new ItemStack(Material.AIR));
+					} else {
+						if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
+							 !event.getCurrentItem().getType().equals(Material.AIR)  ) 
+							p.sendMessage(ChatColor.GOLD + "You get " + f.format(si.getPrice()) + " for this item.");
+					}
+				} else {
+					if ( event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) && ( event.getSlot() == trader.getInventory().getSize() - 1 ) ) {
+						trader.getInventory().clear();
+						sr.inventoryView(trader.getInventory(),Status.PLAYER_SELL);
+						trader.setStatus(Status.PLAYER_SELL);
+						trader.setStockItem(null);
+					}
+				}
+				event.setCancelled(true);
+			}			
+		}
+		 * 
+		 * 
+		 */
+		((Player)event.getWhoClicked()).sendMessage(ChatColor.RED+"SecureMode Inactive! Switch to simple mode!");
 		event.setCancelled(true);
 	}
 
@@ -85,14 +176,16 @@ public class ServerTrader extends Trader {
 					} else {
 						if ( getClickedSlot() == event.getSlot() ) {
 							/*
-							 * This will trigger if some1 will click more than 1 amount on teh same item  
+							 * This will trigger if some1 will click more than 1 amount on the same item  
 							 * in the trader inventory
 							 * 
 							 */
-							if ( buyTransaction(p,getSelectedItem().getPrice()) )
+							if ( inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
 								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
-							else 
-								p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+								//p.getInventory().addItem(getSelectedItem().getItemStack());
+								addSelectedToInventory(p,0);
+							} else 
+								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 						} else {
 							/*
 							 * First click will display the price and instructions.
@@ -108,10 +201,12 @@ public class ServerTrader extends Trader {
 			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == event.getSlot() ) {
-						if ( buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+						if ( inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
 							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
-						else
-							p.sendMessage(ChatColor.GOLD + "You don't have enough money.");
+						//	p.getInventory().addItem(getSelectedItem().getItemStack(event.getSlot()));
+							addSelectedToInventory(p,event.getSlot());
+						} else
+							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 					} else {
 						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
@@ -131,9 +226,10 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+						if ( sellTransaction(p,getSelectedItem().getPrice()) ) {
 							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
-						else 
+							event.setCurrentItem(new ItemStack(Material.AIR));
+						} else 
 							p.sendMessage(ChatColor.GOLD + "Can't sell it");
 					} else {
 						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
@@ -144,8 +240,10 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( sellTransaction(p,getSelectedItem().getPrice(event.getSlot())) )
+					if ( sellTransaction(p,getSelectedItem().getPrice()) ) {
 						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+						event.setCurrentItem(new ItemStack(Material.AIR));
+					}
 					else 
 						p.sendMessage(ChatColor.GOLD + "Can't sell it");
 				} else {

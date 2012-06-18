@@ -122,6 +122,46 @@ public abstract class Trader {
 	public final StockItem getSelectedItem() {
 		return selectedItem;
 	}
+	public final boolean addSelectedToInventory(Player p,int slot) {
+		int amountToAdd = selectedItem.getAmount(slot);
+		
+		for ( ItemStack item : p.getInventory().all(selectedItem.getItemStack().getType()).values() ) {
+			if ( item.getAmount() + amountToAdd <= 64 ) {
+				item.setAmount(item.getAmount()+amountToAdd);
+
+				return true;
+			} else if ( item.getAmount() < 64 ) {
+				amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				item.setAmount(64);
+
+			}
+			if ( amountToAdd <= 0 )
+				return true;
+		}
+		
+		if ( p.getInventory().firstEmpty() < p.getInventory().getSize() &&
+			 p.getInventory().firstEmpty() >= 0 ) {
+			ItemStack is = selectedItem.getItemStack(slot).clone();
+			is.setAmount(amountToAdd);
+			p.getInventory().setItem(p.getInventory().firstEmpty(), is);
+			return true;
+		}
+		return false;
+	}
+	public final boolean inventoryHasPlace(Player p,int slot) {
+
+		for ( ItemStack item : p.getInventory().all(selectedItem.getItemStack().getType()).values() ) {
+			if ( item.getAmount() + selectedItem.getAmount(slot) <= 64 ) {
+
+				return true;
+			}
+		}
+		if ( p.getInventory().firstEmpty() < p.getInventory().getSize() &&
+			 p.getInventory().firstEmpty() >= 0 ) {
+			return true;
+		}
+		return false;
+	}
 	
 	public final TraderStatus getTraderStatus() {
 		return traderStatus;
