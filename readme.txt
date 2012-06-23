@@ -27,7 +27,7 @@ To use commands you need to r.click him with a stick to enable "manager mode".
 
 
 
-- Using the trader (secure mode) -----------------
+- Using the trader (secure mode) ----------------- (CURRENTLY NOT WORKING USE SIMPLE INSTEAD)!!
 1. r.click him to open the inventory
 
 2. 
@@ -83,6 +83,18 @@ To use commands you need to r.click him with a stick to enable "manager mode".
 May have some issues with item dragging but i'm not sure.
 
 Any bugs, improvements and whish'es report at daniel.penkala@gmail.com
+
+=====================================================================================
+- Thanks to -------------------------------------------------------------------------
+
+For the feedback  
+Wreyth 	
+Instinx
+Gizmoholm
+
+For the help so I could improve my skills in programming 
+tehbeard
+
 
 
 P.S. sorry for my bad English
