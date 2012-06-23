@@ -11,6 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
@@ -162,6 +163,18 @@ public class TraderCharacter extends Character implements Listener {
 				}
 				ongoingTrades.get(p.getName()).reset(TraderStatus.PLAYER_MANAGE);
 			}
+	    }
+	}
+	
+	@EventHandler
+	public void onPlayerDropItem(PlayerDropItemEvent event) {
+		Player p = (Player) event.getPlayer();
+		if( ongoingTrades.containsKey(p.getName()) ){
+			if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ||
+				 ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_SELL) ||
+				 ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_BUY) ) 
+				event.setCancelled(true);
+			
 	    }
 	}
 }

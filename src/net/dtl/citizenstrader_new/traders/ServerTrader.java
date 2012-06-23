@@ -226,7 +226,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( sellTransaction(p,getSelectedItem().getPrice()) ) {
+						if ( sellTransaction(p,getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) ) {
 							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
 							event.setCurrentItem(new ItemStack(Material.AIR));
 						} else 
@@ -240,7 +240,7 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( sellTransaction(p,getSelectedItem().getPrice()) ) {
+					if ( sellTransaction(p,getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) ) {
 						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
 						event.setCurrentItem(new ItemStack(Material.AIR));
 					}
