@@ -1,6 +1,8 @@
 package net.dtl.citizenstrader_new.containers;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bukkit.enchantments.Enchantment;
@@ -12,6 +14,7 @@ public class StockItem {
 	private boolean stackPrice = false;
 	private double price = 0;
 	private int slot = -1;
+	private Limit limit = new Limit();
 	
 	public StockItem() {
 	}
@@ -20,6 +23,14 @@ public class StockItem {
 		String[] values = data.split(" ");
 		for ( String value : values ) {
 			if ( item == null ) {
+				
+				
+				/* *
+				 * StockItem required properties
+				 * id => ItemId
+				 * data => itemData
+				 * 
+				 */
 				if ( value.contains(":") ) {
 					String[] itemData = value.split(":");
 					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
@@ -30,11 +41,20 @@ public class StockItem {
 				}
 			} else {
 				if ( value.length() > 2 ) {
+					
+					
+					/* *
+					 * Additional StockItem properties
+					 * p => price
+					 * s => slot
+					 * d => durability
+					 * a => amounts (list)
+					 * e => enchants (list)
+					 * l => limit
+					 *  
+					 */
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
 						price = Double.parseDouble(value.substring(2));
-					}
-					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
-						stackPrice = true;
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
@@ -49,11 +69,26 @@ public class StockItem {
 						if ( amouts.size() > 0 )
 							item.setAmount(amouts.get(0));
 					}
-					if ( value.startsWith("e:") ) {
+					if ( value.startsWith("l:") && !value.contains(";") ) {
+						String[] limitData = value.substring(2).split("/");
+						limit.setLimit(Integer.parseInt(limitData[0]));
+						limit.setAmount(Integer.parseInt(limitData[1]));
+						limit.setTimeout(Integer.parseInt(limitData[2]));
+					}
+					if ( value.startsWith("e:") && !value.contains(";")  ) {
 						for ( String ench : value.substring(2).split(",") ) {
 							String[] enchData = ench.split("/");
 							item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
 						}
+					}
+					
+					/* *
+					 * StockItem configurations
+					 * sp => stackPrice
+					 * 
+					 */
+					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
+						stackPrice = true;
 					}
 				}
 			}
@@ -81,11 +116,14 @@ public class StockItem {
 		itemString += " s:" + slot;
 		//saving the item slot
 		itemString += " d:" + item.getDurability();
-		//saving the item amouts
+		//saving the item amounts
 		itemString += " a:";
 		for ( int i = 0 ; i < amouts.size() ; ++i )
 			itemString += amouts.get(i) + ( i + 1 < amouts.size() ? "," : "" );
-		//saving enchantments
+		//saving the item limits
+		if ( limit.hasLimit() ) 
+			itemString += " l:" + limit.toString();
+		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
 			itemString += " e:";
 			for ( int i = 0 ; i < item.getEnchantments().size() ; ++i ) {
@@ -165,5 +203,104 @@ public class StockItem {
 	}
 	public List<Integer> getAmounts() {
 		return amouts;
+	}
+	
+	public boolean checkLimit() {
+		if ( limit.checkTimer(new Date()).reachedLimit() ) {
+			return false;
+		}
+		return true;
+	}
+	public String getLimitReset() {
+		return limit.getNextReset();
+	}
+	public void changeLimitAmount(int a) {
+		limit.changeAmount(a);
+	}
+	public boolean hasLimitAmount(int a) { 
+		if ( limit.hasLimit() )
+			return limit.hasAmount(a);
+		return true;
+	}
+	
+	private class Limit {
+		private int limit = -1;
+		private int amount = 0;
+		private Date timer = new Date();
+		private long timeout = 0;
+		
+		/* *
+		 * Limit and amount management
+		 */
+		public void setLimit(int l) {
+			limit = l;
+		}
+		public void setAmount(int a) {
+			amount = a;
+		}
+		public void changeAmount(int a) {
+			amount += a;
+		}
+		public void resetAmount() {
+			amount = 0;
+		}
+		public boolean hasAmount(int a) {
+			return ( limit - amount ) >= a ;
+		}
+		
+		public boolean reachedLimit() {
+			if ( limit < 1 )
+				return false;
+			return limit <= amount;
+		}
+		public boolean hasLimit() {
+			if ( limit < 0 )
+				return false;
+			return true;
+		}
+		
+		/* *
+		 * Time and reset management
+		 * 
+		 */
+		public Limit setTimeout(long t) {
+			timeout = t;
+			return this;
+		}
+		public Limit resetTimer() {
+			timer = new Date();
+			return this;
+		}
+		public Limit checkTimer(Date d) {
+			if ( limit < 0 )
+				return this;
+			if ( d.getTime() - timer.getTime() > timeout ) {
+				reset();
+			}
+			return this;
+		}
+		public String getNextReset() {
+			Date d = new Date();
+			d.setTime(new Date().getTime() - timer.getTime());
+			return new SimpleDateFormat("HH mm ss").format(d);
+		}
+		
+		/* *
+		 * mainReset
+		 * 
+		 */
+		public void reset() {
+			resetTimer();
+			resetAmount();
+		}
+		
+		/* *
+		 * toString Override
+		 * 
+		 */
+		@Override
+		public String toString() {
+			return limit + "/" + amount + "/" + timeout;
+		}
 	}
 }

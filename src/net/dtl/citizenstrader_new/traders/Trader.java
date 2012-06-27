@@ -103,6 +103,18 @@ public abstract class Trader {
 	public boolean sellTransaction(Player p, double price) {
 		return traderConfig.sellTransaction(p, price);
 	}
+	public void updateSelectedItemLimit() {
+		updateSelectedItemLimit(selectedItem.getAmount());
+	}
+	public void updateSelectedItemLimit(int amount) {
+		selectedItem.changeLimitAmount(amount);
+		if ( !selectedItem.checkLimit() || selectedItem.hasLimitAmount(amount) ) {
+			if ( !traderStatus.equals(TraderStatus.PLAYER_SELL_AMOUNT) )
+				inventory.remove(selectedItem.getSlot());
+			else 
+				switchInventory(selectedItem);
+		}
+	}
 	
 	public final Trader selectItem(StockItem i) {
 		selectedItem = i;
@@ -110,6 +122,10 @@ public abstract class Trader {
 	}
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
+		/*
+		if ( !TraderStatus.hasManageMode(status) )
+			if ( !selectedItem.checkLimit() )
+				selectedItem = null;*/
 		return this;
 	} 
 	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
@@ -181,14 +197,6 @@ public abstract class Trader {
 	}
 	public final boolean equalsWalletType(WalletType type) {
 		return traderConfig.getWalletType().equals(type);
-	}
-	
-	public final boolean isStockItem(int slot,TraderStatus status) {
-		if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) )
-			return traderStock.itemForSell(slot) != null;
-		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) )
-			return traderStock.wantItemBuy(slot) != null;
-		return false;
 	}
 	
 	public final NPC getNpc() {
