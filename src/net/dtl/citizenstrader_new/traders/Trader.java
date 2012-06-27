@@ -19,7 +19,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 public abstract class Trader {
 	
 	public enum TraderStatus {
-		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUNT, PLAYER_MANAGE_SELL, PLAYER_MANAGE_SELL_AMOUNT, PLAYER_MANAGE_PRICE, PLAYER_MANAGE_BUY, PLAYER_MANAGE;
+		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUNT, PLAYER_MANAGE_SELL, PLAYER_MANAGE_LIMIT, PLAYER_MANAGE_SELL_AMOUNT, PLAYER_MANAGE_PRICE, PLAYER_MANAGE_BUY, PLAYER_MANAGE;
 	
 		public static boolean hasManageMode(TraderStatus status) {
 			if ( !status.equals(PLAYER_SELL) && 
@@ -103,15 +103,20 @@ public abstract class Trader {
 	public boolean sellTransaction(Player p, double price) {
 		return traderConfig.sellTransaction(p, price);
 	}
+	public boolean checkLimit() {
+		if ( selectedItem.checkLimit() && selectedItem.hasLimitAmount(selectedItem.getAmount()) )
+			return true;
+		return false;
+	}
 	public void updateSelectedItemLimit() {
 		updateSelectedItemLimit(selectedItem.getAmount());
 	}
 	public void updateSelectedItemLimit(int amount) {
 		selectedItem.changeLimitAmount(amount);
-		if ( !selectedItem.checkLimit() || selectedItem.hasLimitAmount(amount) ) {
-			if ( !traderStatus.equals(TraderStatus.PLAYER_SELL_AMOUNT) )
-				inventory.remove(selectedItem.getSlot());
-			else 
+		if ( !selectedItem.checkLimit() || !selectedItem.hasLimitAmount(amount) ) {
+			if ( !traderStatus.equals(TraderStatus.PLAYER_SELL_AMOUNT) ) {
+				inventory.setItem(selectedItem.getSlot(), new ItemStack(Material.AIR));
+			} else 
 				switchInventory(selectedItem);
 		}
 	}
@@ -122,10 +127,10 @@ public abstract class Trader {
 	}
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
-		/*
+		
 		if ( !TraderStatus.hasManageMode(status) )
-			if ( !selectedItem.checkLimit() )
-				selectedItem = null;*/
+			if ( selectedItem != null && !selectedItem.checkLimit() )
+				selectedItem = null;
 		return this;
 	} 
 	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
@@ -234,6 +239,14 @@ public abstract class Trader {
 		else if ( is.getType().equals(Material.LOG) )
 			return is.getAmount()*0.1;
 		else if ( is.getType().equals(Material.DIRT) )
+			return is.getAmount()*10;		
+		else if ( is.getType().equals(Material.COBBLESTONE) )
+			return is.getAmount()*100;
+		return is.getAmount();
+	}
+	
+	public static int calculateLimit(ItemStack is) {
+		if ( is.getType().equals(Material.DIRT) )
 			return is.getAmount()*10;		
 		else if ( is.getType().equals(Material.COBBLESTONE) )
 			return is.getAmount()*100;

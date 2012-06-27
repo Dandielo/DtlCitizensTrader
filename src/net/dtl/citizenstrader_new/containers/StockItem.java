@@ -206,9 +206,8 @@ public class StockItem {
 	}
 	
 	public boolean checkLimit() {
-		if ( limit.checkTimer(new Date()).reachedLimit() ) {
+		if ( limit.checkTimer(new Date()).reachedLimit() ) 
 			return false;
-		}
 		return true;
 	}
 	public String getLimitReset() {
@@ -222,6 +221,19 @@ public class StockItem {
 			return limit.hasAmount(a);
 		return true;
 	}
+	public void changeLimit(int l) { 
+		limit.changeLimit(l);
+	}
+	public int getLimit() {
+		return limit.getLimit();
+	}
+	
+	public void changeTimeout(int t) { 
+		limit.changeTimeout(t);
+	}
+	public String getTimeout() {
+		return limit.getTimeout();
+	}
 	
 	private class Limit {
 		private int limit = -1;
@@ -234,6 +246,19 @@ public class StockItem {
 		 */
 		public void setLimit(int l) {
 			limit = l;
+		}
+		public int getLimit() {
+			return limit;
+		}
+		public void changeTimeout(int t) {
+			timeout += t*1000;
+			if ( timeout < 0 )
+				timeout = 0;
+		}
+		public void changeLimit(int l) {
+			limit += l;
+			if ( limit < 0 )
+				limit = -1;
 		}
 		public void setAmount(int a) {
 			amount = a;
@@ -283,6 +308,11 @@ public class StockItem {
 			Date d = new Date();
 			d.setTime(new Date().getTime() - timer.getTime());
 			return new SimpleDateFormat("HH mm ss").format(d);
+		}
+		public String getTimeout() {
+			Date d = new Date();
+			d.setTime(timeout);
+			return new SimpleDateFormat("dd HH mm ss").format(d);
 		}
 		
 		/* *
