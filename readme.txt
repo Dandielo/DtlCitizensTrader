@@ -69,7 +69,7 @@ To use commands you need to r.click him with a stick to enable "manager mode".
      - Amount set section allows to set the multiple items a player can buy
      - you can add here only materials with the same id/data 
      - it saves the amounts after leaving this section (red_woll or inventory close)
-  e  click the white_wool to enter the price edit
+  e  click the white_wool (first counting from right) to enter the price edit
      - r.click to decrease the price
      - l.click to increase the price
      - wood counts as * 0.01
@@ -79,6 +79,14 @@ To use commands you need to r.click him with a stick to enable "manager mode".
      - needs to have anything in the cursor to change the price
      - AIR will show up the current price
      - click the black_wool to leave price editing
+  f  click the white_wool (second counting from right) to enter the limit edit
+     - r.lick decrease the limit of a item
+     - l.click increase the limit
+     - shift.r.lick decrease the timeout of a item when it should reset it's limit
+     - shift.l.click increase the timeout of a item when it should reset it's limit
+  g  Shift.Right.Click an item to change if the price is applied to the whole stack or to 1 item
+     - if stack price is enabled the (amount select window wont work)
+     
   
 May have some issues with item dragging but i'm not sure.
 
