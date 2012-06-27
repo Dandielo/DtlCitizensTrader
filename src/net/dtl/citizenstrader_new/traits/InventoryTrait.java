@@ -118,6 +118,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	                view.setItem( item.getSlot() ,chk);
 			//	}
 	        }
+            view.setItem(view.getSize()-3, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
 		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_BUY ) ) {
@@ -131,6 +132,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		            view.setItem( item.getSlot() ,chk);
 			//	}
 	        }
+            view.setItem(view.getSize()-3, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
 		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_PRICE ) ) {
