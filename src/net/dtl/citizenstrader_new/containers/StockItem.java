@@ -9,6 +9,7 @@ import org.bukkit.inventory.ItemStack;
 public class StockItem {
 	private ItemStack item = null;
 	private List<Integer> amouts = new ArrayList<Integer>();
+	private boolean stackPrice = false;
 	private double price = 0;
 	private int slot = -1;
 	
@@ -31,6 +32,9 @@ public class StockItem {
 				if ( value.length() > 2 ) {
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
 						price = Double.parseDouble(value.substring(2));
+					}
+					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
+						stackPrice = true;
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
@@ -62,6 +66,8 @@ public class StockItem {
 	}
 	public ItemStack getItemStack(int slot) {
 		item.setAmount(amouts.get(slot));
+		if ( stackPrice )
+			item.setAmount(amouts.get(0));
 		return item;
 	}
 
@@ -87,9 +93,20 @@ public class StockItem {
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
+		//saving additional configurations
+		if ( stackPrice )
+			itemString += " sp";
+		
 		return itemString;
 	}
 
+	public boolean hasStackPrice() {
+		return stackPrice;
+	}
+	public void setStackPrice(boolean b) {
+		stackPrice = b;
+	}
+	
 	public void increasePrice(double d) {
 		price += d;
 	}
@@ -100,7 +117,16 @@ public class StockItem {
 		}
 		price -= p;
 	}
+	
+	public double getBuyPrice() {
+		if ( stackPrice )
+			return price/amouts.get(0);
+		return price;
+	}
+	
 	public double getPrice() {
+		if ( stackPrice )
+			return price;
 		return price*amouts.get(0);
 	}
 	public double getRawPrice() {
@@ -112,6 +138,8 @@ public class StockItem {
 		return 0;
 	}
 	public boolean hasMultipleAmouts() {
+		if ( stackPrice )
+			return false;
 		return ( amouts.size() > 1 ? true : false );
 	}
 	

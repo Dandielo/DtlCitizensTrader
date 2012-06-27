@@ -226,13 +226,13 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( sellTransaction(p,getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) ) {
-							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+						if ( sellTransaction(p,getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) ) {
+							p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) + ".");
 							event.setCurrentItem(new ItemStack(Material.AIR));
 						} else 
 							p.sendMessage(ChatColor.GOLD + "Can't sell it");
 					} else {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) + " for this item.");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
 						setClickedSlot(event.getSlot());
 					}
@@ -240,16 +240,16 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,false).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( sellTransaction(p,getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) ) {
-						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + ".");
+					if ( sellTransaction(p,getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) ) {
+						p.sendMessage(ChatColor.GOLD + "You sold " + event.getCurrentItem().getAmount() + " for " + f.format(getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) + ".");
 						event.setCurrentItem(new ItemStack(Material.AIR));
 					}
 					else 
 						p.sendMessage(ChatColor.GOLD + "Can't sell it");
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
-						 !event.getCurrentItem().getType().equals(Material.AIR)  ) {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+						 !event.getCurrentItem().getType().equals(Material.AIR) ) {
+						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getBuyPrice()*event.getCurrentItem().getAmount()) + " for this item.");
 						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
 						setClickedSlot(event.getSlot());
 					}
@@ -349,13 +349,36 @@ public class ServerTrader extends Trader {
 					 * Entering amount managing mode 
 					 * 
 					 */
-					
-					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
-						if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-							switchInventory(getSelectedItem());
-							setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL_AMOUNT); 
+					if ( event.isLeftClick() ) {
+						if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+								switchInventory(getSelectedItem());
+								setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL_AMOUNT); 
+							} 
 						} 
-					} 
+					} else {
+						if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+								if ( getSelectedItem().hasStackPrice() ) {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+								} else {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+								}
+							}
+						} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
+								if ( getSelectedItem().hasStackPrice() ) {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+								} else {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+								}
+							}
+						}
+					}
 					event.setCancelled(true);
 				} else {
 					/*
