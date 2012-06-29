@@ -477,6 +477,14 @@ public abstract class Trader {
 	}
 
 	/* *
+	 * getTraderStatus
+	 * 
+	 */
+	public final TraderStatus getTraderStatus() {
+		return traderStatus;
+	}
+	
+	/* *
 	 * get the traders inventory 
 	 */
 	public final Inventory getInventory() {
@@ -524,7 +532,7 @@ public abstract class Trader {
 			return is.getAmount()*100;
 		return is.getAmount();
 	}
-	
+	 
 	public static StockItem toStockItem(ItemStack is) {
 		String itemInfo = is.getTypeId()+":"+ is.getData().getData() +" a:"+is.getAmount() + " d:" + is.getDurability();
 		if ( !is.getEnchantments().isEmpty() ) {
@@ -539,7 +547,6 @@ public abstract class Trader {
 	 * Abstract Functions (future implementation for custom traders)
 	 * 
 	 */
-	@Deprecated
 	public abstract void secureMode(InventoryClickEvent event);
 	
 	public abstract void simpleMode(InventoryClickEvent event);

@@ -111,7 +111,7 @@ public class ServerTrader extends Trader {
 				}
 			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
-					if ( getClickedSlot() == event.getSlot() ) {
+					if ( getClickedSlot() == event.getSlot() ) { 
 						if ( inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
 							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
 						//	p.getInventory().addItem(getSelectedItem().getItemStack(event.getSlot()));
