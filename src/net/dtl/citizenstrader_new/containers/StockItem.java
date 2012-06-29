@@ -73,7 +73,7 @@ public class StockItem {
 						String[] limitData = value.substring(2).split("/");
 						limit.setLimit(Integer.parseInt(limitData[0]));
 						limit.setAmount(Integer.parseInt(limitData[1]));
-						limit.setTimeout(Integer.parseInt(limitData[2]));
+						limit.setTimeout(Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("e:") && !value.contains(";")  ) {
 						for ( String ench : value.substring(2).split(",") ) {
@@ -205,6 +205,10 @@ public class StockItem {
 		return amouts;
 	}
 	
+	/* *
+	 * Limit handling
+	 * 
+	 */
 	public boolean checkLimit() {
 		if ( limit.checkTimer(new Date()).reachedLimit() ) 
 			return false;
@@ -330,7 +334,7 @@ public class StockItem {
 		 */
 		@Override
 		public String toString() {
-			return limit + "/" + amount + "/" + timeout;
+			return limit + "/" + amount + "/" + ( timeout / 1000 );
 		}
 	}
 }

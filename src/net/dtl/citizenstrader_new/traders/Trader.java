@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
@@ -16,11 +17,25 @@ import net.dtl.citizenstrader_new.traits.TraderTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 
+
+/* *
+ * Trader basic class
+ * Providing all tools for item selection and managing
+ * 
+ */
 public abstract class Trader {
 	
+	/* *
+	 * TraderStatus
+	 * 
+	 */
 	public enum TraderStatus {
 		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUNT, PLAYER_MANAGE_SELL, PLAYER_MANAGE_LIMIT, PLAYER_MANAGE_SELL_AMOUNT, PLAYER_MANAGE_PRICE, PLAYER_MANAGE_BUY, PLAYER_MANAGE;
 	
+		/* *
+		 * ManagerMode condition
+		 * 
+		 */
 		public static boolean hasManageMode(TraderStatus status) {
 			if ( !status.equals(PLAYER_SELL) && 
 				 !status.equals(PLAYER_SELL_AMOUNT) && 
@@ -30,79 +45,316 @@ public abstract class Trader {
 		}
 	}
 	
+	/* *
+	 * Npc Traits
+	 * @traderConfig - currently not edit-able in-game
+	 * 
+	 */
+	private InventoryTrait traderStock;
 	private TraderStatus traderStatus;
 	private TraderTrait traderConfig;
 	
-	private NPC npc;
+	/* *
+	 * NpcInventory 
+	 * 
+	 */
 	private Inventory inventory;
-	private InventoryTrait traderStock; 
-	private StockItem selectedItem = null; 
-//	private Wallet wallet;
 	
+	/* *
+	 * ItemManagement
+	 * 
+	 */
+	private StockItem selectedItem = null; 
+	
+	/* *
+	 * TempVariables 
+	 * 
+	 */
 	private Boolean inventoryClicked = true;
 	private Integer slotClicked = -1;
 	
-	public Trader(NPC n,TraderTrait c) {
-		npc = n;
-		traderStock = npc.getTrait(InventoryTrait.class);
-		inventory = traderStock.inventoryView(54, npc.getName() + " selling");
-		traderConfig = c;
-	//	wallet = new Wallet(traderConfig.getWalletType());
-		traderConfig.getWallet().setEconomy(((CitizensTrader)c.getPlugin()).getEconomy());
+	/* *
+	 * Constructor 
+	 * @tradderNpc The NPC object from the trader
+	 * @traderConfiguragion the TraderConfiguration
+	 * 
+	 */
+	public Trader(NPC tradderNpc,TraderTrait traderConfiguragion) {
+		
+		/* *
+		 * Assign the configuration for later changes
+		 * 
+		 */
+		traderConfig = traderConfiguragion;
+		
+		/* *
+		 * Initialize the trader
+		 * 
+		 */
+		traderStock = tradderNpc.getTrait(InventoryTrait.class);
+		inventory = traderStock.inventoryView(54, tradderNpc.getName() + " selling");
 		traderStatus = TraderStatus.PLAYER_SELL;
+		
+		/* *
+		 * SetAn Economy plugin to the trader's wallet
+		 */
+		traderConfig.getWallet().setEconomy(((CitizensTrader)traderConfig.getPlugin()).getEconomy());
 	}
 	
-	public final void saveManagedAmouts() {
-		traderStock.saveNewAmouts(inventory, selectedItem);
+	
+	/* * ===============================================================================================
+	 * SelectedItem Management
+	 * 
+	 */
+	public boolean equalsSelected(ItemStack itemToCompare,boolean durability,boolean amount) {
+		/* *
+		 * reset the equality state
+		 * 
+		 */
+		boolean equal = false;
+		
+		if ( itemToCompare.getType().equals( selectedItem.getItemStack().getType() ) 
+				&& itemToCompare.getData().equals( selectedItem.getItemStack().getData() ) ) {
+			/* *
+			 * id and data check passed
+			 * 
+			 */
+			equal = true;
+			
+			/* *
+			 * check durability
+			 * 
+			 */
+			if ( durability ) 
+				equal = itemToCompare.getDurability() >= selectedItem.getItemStack().getDurability();
+				
+			/* *
+			 * check amount if durability passed
+			 * 
+			 */
+			if ( amount && equal )
+				equal =  itemToCompare.getAmount() == selectedItem.getItemStack().getAmount();
+			
+			/* *
+			 * return the value
+			 * 
+			 */
+			return equal;
+		}
+		
+		/* *
+		 * 100% this items are different ;)
+		 * 
+		 */
+		return false;
 	}
+
+	/* *
+	 * Select the given item
+	 * 
+	 */
+	public final Trader selectItem(StockItem i) {
+		selectedItem = i;
+		return this;
+	}
+	
+	/* * 
+	 * Select item by slot and status
+	 * 
+	 */
+	public final Trader selectItem(int slot,TraderStatus status) {
+		selectedItem = traderStock.getItem(slot, status);
+		
+		if ( !TraderStatus.hasManageMode(status) )
+			if ( selectedItem != null && !selectedItem.checkLimit() )
+				selectedItem = null;
+		return this;
+	} 
+
+	/* *
+	 * Select item by equality to the given item stack
+	 * checking the status, durability and amount
+	 * 
+	 */
+	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
+		selectedItem = traderStock.getItem(item, status, dura, amount);
+		return this;
+	}
+	
+	/* *
+	 * if there is currently any item selected
+	 * 
+	 */
+	public final boolean hasSelectedItem() {
+		return selectedItem != null;
+	}
+	
+	/* *
+	 * returns the selectedItem
+	 * 
+	 */
+	public final StockItem getSelectedItem() {
+		return selectedItem;
+	}
+	
+	/* * ===============================================================================================
+	 * Inventory Management
+	 * 
+	 */
+	
+	/* *
+	 * Checking if the inventory has enough space to save the selected amount
+	 * 
+	 */
+	public final boolean inventoryHasPlace(Player player,int slot) {
+		PlayerInventory inventory = player.getInventory();
+		int amountToAdd = selectedItem.getAmount(slot);
+		
+		/* *
+		 * get all stacks with the same type (hmm... does it compares the data values?)
+		 * 
+		 */
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
+			if ( item.getAmount() + selectedItem.getAmount(slot) <= 64 ) {
+				
+				/* *
+				 * if the added amount isn't over the limit
+				 *
+				 */
+				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
+					return true;
+				
+				/* *
+				 * if the added amount is less than 64 (so we are not adding a whole stack)
+				 * 
+				 * lowering the amount to add
+				 *
+				 */ 
+				if ( item.getAmount() < 64 ) {
+					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				}
+				
+				/* *
+				 * if there is nothing left just return
+				 * 
+				 */
+				if ( amountToAdd <= 0 )
+					return true;
+			}
+		}
+		
+		/* *
+		 * if any amount left to add check if there is place in the inventory
+		 */
+		if ( inventory.firstEmpty() < inventory.getSize() 
+				&& inventory.firstEmpty() >= 0 ) {
+			return true;
+		}
+		return false;
+	}
+	
+	/* *
+	 * SelfWritten Inventory.addItem() function for a work around with a bukkit inventory function bug
+	 * 
+	 */
+	public final boolean addSelectedToInventory(Player player, int slot) {
+		PlayerInventory inventory = player.getInventory();
+		int amountToAdd = selectedItem.getAmount(slot);
+		
+		/* *
+		 * get all stacks with the same type (hmm... does it compares the data values?)
+		 * 
+		 */
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
+			
+			/* *
+			 * if the added amount isn't over the limit
+			 * 
+			 * setting the new amount in the player's inventory 
+			 *
+			 */
+			if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
+				item.setAmount( item.getAmount() + amountToAdd );
+				return true;
+				
+			} 
+			/* *
+			 * if the added amount is less than 64 (so we are not adding a whole stack)
+			 * 
+			 * maximizing the first item stack amount, and lowering the amount to add
+			 *
+			 */ 
+			if ( item.getAmount() < 64 ) {
+				amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				item.setAmount(64);
+			}
+			
+			/* *
+			 * if there is nothing left just return
+			 * 
+			 */
+			if ( amountToAdd <= 0 )
+				return true;
+		}
+		
+		/* *
+		 * Stack's are maximized and there is some amount left
+		 *  
+		 *  Checking if there is any free space in the inventory (just for care)
+		 *  
+		 */
+		if ( inventory.firstEmpty() < inventory.getSize() 
+				&& inventory.firstEmpty() >= 0 ) {
+			/* *
+			 * creating a ItemStack clone from the existing saving
+			 * and changing amount's
+			 */
+			ItemStack is = selectedItem.getItemStack(slot).clone();
+			is.setAmount(amountToAdd);
+			
+			/* *
+			 * setting the item into a free slot
+			 * don't using the addItem() bacause it's a workaround for this function
+			 * 
+			 */
+			inventory.setItem(inventory.firstEmpty(), is);
+			return true;
+		}
+		
+		/* *
+		 * Item couldn't be added to the inventory
+		 * 
+		 */
+		return false;
+	}
+	
+	/* *
+	 * Switching the inventory to the parsed status
+	 * reseting the values with the given status
+	 * 
+	 */
 	public final void switchInventory(TraderStatus status) {
 		inventory.clear();
 		traderStock.inventoryView(inventory, status);
 		reset(status);
 	}
+	
+	/* *
+	 * Switching to the MultipleAmount's selection
+	 * 
+	 */
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
 		InventoryTrait.setInventoryWith(inventory, item);
 		selectedItem = item;
 	}
-	public boolean equalsSelected(ItemStack itemToCompare,boolean durability,boolean amount) {
-		boolean equal = false;
-		if ( itemToCompare.getType().equals(selectedItem.getItemStack().getType()) &&
-			 itemToCompare.getData().equals(selectedItem.getItemStack().getData()) ) {
-			equal = true;
-			if ( durability ) 
-				equal = itemToCompare.getDurability() >= selectedItem.getItemStack().getDurability();
-			if ( amount && equal )
-				equal =  itemToCompare.getAmount() == selectedItem.getItemStack().getAmount();
-			return equal;
-		}
-		return false;
-	}
 	
-	public final Trader reset(TraderStatus status) {
-		traderStatus = status;
-		selectedItem = null;
-		inventoryClicked = true;
-		slotClicked = -1;
-		return this;
-	}
 	
-	public final void setTraderStatus(TraderStatus s) {
-		traderStatus = s;
-	}
-	public final void setInventoryClicked(Boolean i) {
-		inventoryClicked = i;
-	}
-	public final void setClickedSlot(Integer s) {
-		slotClicked = s;
-	}
-	
-	public boolean buyTransaction(Player p, double price) {
-		return traderConfig.buyTransaction(p, price);
-	}
-	public boolean sellTransaction(Player p, double price) {
-		return traderConfig.sellTransaction(p, price);
-	}
+	/* * ===============================================================================================
+	 * Limits (recoding) 
+	 * 
+	 * 
+	 */
 	public boolean checkLimit() {
 		if ( selectedItem.checkLimit() && selectedItem.hasLimitAmount(selectedItem.getAmount()) )
 			return true;
@@ -121,79 +373,99 @@ public abstract class Trader {
 		}
 	}
 	
-	public final Trader selectItem(StockItem i) {
-		selectedItem = i;
-		return this;
-	}
-	public final Trader selectItem(int slot,TraderStatus status) {
-		selectedItem = traderStock.getItem(slot, status);
-		
-		if ( !TraderStatus.hasManageMode(status) )
-			if ( selectedItem != null && !selectedItem.checkLimit() )
-				selectedItem = null;
-		return this;
-	} 
-	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
-		selectedItem = traderStock.getItem(item, status, dura, amount);
-		return this;
-	}
-	public final boolean hasSelectedItem() {
-		return selectedItem != null;
-	}
-	public final StockItem getSelectedItem() {
-		return selectedItem;
-	}
-	public final boolean addSelectedToInventory(Player p,int slot) {
-		int amountToAdd = selectedItem.getAmount(slot);
-		
-		for ( ItemStack item : p.getInventory().all(selectedItem.getItemStack().getType()).values() ) {
-			if ( item.getAmount() + amountToAdd <= 64 ) {
-				item.setAmount(item.getAmount()+amountToAdd);
-
-				return true;
-			} else if ( item.getAmount() < 64 ) {
-				amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
-				item.setAmount(64);
-
-			}
-			if ( amountToAdd <= 0 )
-				return true;
-		}
-		
-		if ( p.getInventory().firstEmpty() < p.getInventory().getSize() &&
-			 p.getInventory().firstEmpty() >= 0 ) {
-			ItemStack is = selectedItem.getItemStack(slot).clone();
-			is.setAmount(amountToAdd);
-			p.getInventory().setItem(p.getInventory().firstEmpty(), is);
-			return true;
-		}
-		return false;
-	}
-	public final boolean inventoryHasPlace(Player p,int slot) {
-
-		for ( ItemStack item : p.getInventory().all(selectedItem.getItemStack().getType()).values() ) {
-			if ( item.getAmount() + selectedItem.getAmount(slot) <= 64 ) {
-
-				return true;
-			}
-		}
-		if ( p.getInventory().firstEmpty() < p.getInventory().getSize() &&
-			 p.getInventory().firstEmpty() >= 0 ) {
-			return true;
-		}
-		return false;
+	/* * ===============================================================================================
+	 * ManagerMode functions 
+	 * 
+	 */
+	
+	/* *
+	 * saving the new amounts found in the select multiple items mode
+	 */
+	public final void saveManagedAmouts() {
+		traderStock.saveNewAmouts(inventory, selectedItem);
 	}
 	
-	public final TraderStatus getTraderStatus() {
-		return traderStatus;
-	}
-	public final TraderType getTraderType() {
-		return traderConfig.getTraderType();
-	}
-	public final WalletType getWalletType() {
-		return traderConfig.getWalletType();
+	/* * ===============================================================================================
+	 * Item Sell and buy management
+	 * 
+	 */
+	
+	/* *
+	 * handling a transaction if the player buys something from the trader
+	 * 
+	 */
+	public boolean buyTransaction(Player p, double price) {
+		return traderConfig.buyTransaction(p, price);
 	}
 	
+	/* *
+	 * handling a transaction if the player sells something to the trader
+	 * 
+	 */
+	public boolean sellTransaction(Player p, double price) {
+		return traderConfig.sellTransaction(p, price);
+	}
+	
+	/* * ===============================================================================================
+	 * Other management functions 
+	 * 
+	 */
+	
+	/* *
+	 * reset the trader with a given status (needed on inventory switching)
+	 * 
+	 */
+	public final Trader reset(TraderStatus status) {
+		traderStatus = status;
+		selectedItem = null;
+		inventoryClicked = true;
+		slotClicked = -1;
+		return this;
+	}
+	
+	/* *
+	 * Setting the trader Status
+	 */
+	public final void setTraderStatus(TraderStatus s) {
+		traderStatus = s;
+	}
+	
+	/* *
+	 * Setting the last clicked inventory
+	 * 
+	 * true => top
+	 * false => bottom
+	 * 
+	 */
+	public final void setInventoryClicked(boolean c) {
+		inventoryClicked = c;
+	}
+	
+	/* *
+	 * getting last clicked inventory
+	 * 
+	 */
+	public final boolean getInventoryClicked() {
+		return inventoryClicked;
+	}
+	
+	/* *
+	 * Setting the last clicked slot in any inventory
+	 */
+	public final void setClickedSlot(Integer s) {
+		slotClicked = s;
+	}
+	
+	/* *
+	 * getting last clicked slot
+	 */
+	public final Integer getClickedSlot() {
+		return slotClicked;
+	}
+	
+	/* *
+	 * comparing functions for TraderStatus, TraderType, WalletType
+	 */
 	public final boolean equalsTraderStatus(TraderStatus status) {
 		return traderStatus.equals(status);
 	}
@@ -203,30 +475,30 @@ public abstract class Trader {
 	public final boolean equalsWalletType(WalletType type) {
 		return traderConfig.getWalletType().equals(type);
 	}
-	
-	public final NPC getNpc() {
-		return npc;
-	}
+
+	/* *
+	 * get the traders inventory 
+	 */
 	public final Inventory getInventory() {
 		return inventory;
 	}
+	
+	/* *
+	 * get the traders wallet 
+	 */
 	public final Wallet getWallet() {
 		return traderConfig.getWallet();
 	}	
-	
+	/* *
+	 * get the traders inventory stock
+	 */
 	public final InventoryTrait getTraderStock() {
 		return traderStock;
 	}
 	
-	public final boolean getInventoryClicked() {
-		return inventoryClicked;
-	}
-	public final Integer getClickedSlot() {
-		return slotClicked;
-	}
 	
-	/*
-	 * Static functions for cleaner code comparing
+	/* * ===============================================================================================
+	 * Static functions for cleaner code
 	 * 
 	 */
 	public static boolean isWool(ItemStack itemToCompare,byte colorData) {
@@ -263,6 +535,11 @@ public abstract class Trader {
 		return new StockItem(itemInfo);
 	}
 	
+	/* * ===============================================================================================
+	 * Abstract Functions (future implementation for custom traders)
+	 * 
+	 */
+	@Deprecated
 	public abstract void secureMode(InventoryClickEvent event);
 	
 	public abstract void simpleMode(InventoryClickEvent event);
