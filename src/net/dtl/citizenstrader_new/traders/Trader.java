@@ -203,6 +203,14 @@ public abstract class Trader {
 	 */
 	
 	/* *
+	 * Checking if the given slot is a inventory management slot
+	 * 
+	 */
+	public boolean isManagementSlot(int slot, int range) {
+		return slot >= ( getInventory().getSize() - range );
+	}
+	
+	/* *
 	 * Checking if the inventory has enough space to save the selected amount
 	 * 
 	 */
@@ -353,7 +361,10 @@ public abstract class Trader {
 	/* * ===============================================================================================
 	 * Limits (recoding) 
 	 * 
-	 * 
+	 */
+	
+	/* *
+	 * Checking if an item has reached his limit
 	 */
 	public boolean checkLimit() {
 		if ( selectedItem.checkLimit() && selectedItem.hasLimitAmount(selectedItem.getAmount()) )
@@ -383,6 +394,17 @@ public abstract class Trader {
 	 */
 	public final void saveManagedAmouts() {
 		traderStock.saveNewAmouts(inventory, selectedItem);
+	}
+	
+	/* *
+	 * checking sell/buy mode by wool color
+	 * 
+	 */
+	public boolean isSellModeByWool() {
+		return isWool(inventory.getItem(inventory.getSize()-1),(byte)5);
+	}
+	public boolean isBuyModeByWool() {
+		return isWool(inventory.getItem(inventory.getSize()-1),(byte)3);
 	}
 	
 	/* * ===============================================================================================

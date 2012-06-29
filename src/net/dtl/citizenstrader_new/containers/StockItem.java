@@ -110,19 +110,25 @@ public class StockItem {
 	public String toString() {
 		//saving the item id and data
 		String itemString = "" + item.getTypeId() + ( item.getData().getData() != 0 ? ":" + item.getData().getData() : "" );
+		
 		//saving the item price
 		itemString += " p:" + price;
+		
 		//saving the item slot
 		itemString += " s:" + slot;
+		
 		//saving the item slot
 		itemString += " d:" + item.getDurability();
+		
 		//saving the item amounts
 		itemString += " a:";
 		for ( int i = 0 ; i < amouts.size() ; ++i )
 			itemString += amouts.get(i) + ( i + 1 < amouts.size() ? "," : "" );
+		
 		//saving the item limits
 		if ( limit.hasLimit() ) 
 			itemString += " l:" + limit.toString();
+		
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
 			itemString += " e:";
@@ -131,6 +137,7 @@ public class StockItem {
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
+		
 		//saving additional configurations
 		if ( stackPrice )
 			itemString += " sp";
