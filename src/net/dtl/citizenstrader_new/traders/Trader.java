@@ -1,5 +1,6 @@
 package net.dtl.citizenstrader_new.traders;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -166,9 +167,9 @@ public abstract class Trader {
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
 		
-		if ( !TraderStatus.hasManageMode(status) )
-			if ( selectedItem != null && !selectedItem.getLimitSystem().checkLimit("", 0) )
-				selectedItem = null;
+	//	if ( !TraderStatus.hasManageMode(status) )
+	//		if ( selectedItem != null && !selectedItem.getLimitSystem().checkLimit("", 0) )
+	//			selectedItem = null;
 		return this;
 	} 
 
@@ -364,12 +365,20 @@ public abstract class Trader {
 	 * 
 	 */
 	
-	public boolean checkLimits(String p) {
-		return selectedItem.getLimitSystem().checkLimit(p,0);
+	public boolean checkLimits(Player p) {
+		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0) ) {
+			p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
+			return false;
+		}
+		return true;
 	}
 	
-	public boolean checkLimits(String p, int slot) {
-		return selectedItem.getLimitSystem().checkLimit(p,slot);
+	public boolean checkLimits(Player p, int slot) {
+		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),slot) ) {
+			p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
+			return false;
+		}
+		return true;
 	}
 	
 	public boolean updateLimits(String p, int slot) {

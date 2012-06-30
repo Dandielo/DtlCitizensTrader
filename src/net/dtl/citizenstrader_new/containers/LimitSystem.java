@@ -45,6 +45,9 @@ public class LimitSystem {
 	}
 	
 	public boolean checkLimit(String p, int slot) {
+		if ( limit.timeoutReached(new Date()) )
+			limit.reset();
+		
 		if ( !limit.reachedLimit() ) {
 			if ( playerLimit.hasLimit() ) {
 				if ( players.containsKey(p) ) {
@@ -54,10 +57,35 @@ public class LimitSystem {
 					players.put(p, 0);
 				}
 			}
-			return !limit.reachedLimitWith(thisItem.getAmount(slot));
+			return !limit.reachedLimitWith(thisItem.getAmount(slot)-1);
 		}
 		return false;
 	}
+	
+	/* *
+	 * Lol, why I've coded that?
+	 * 
+	
+	public boolean checkLimitWith(int l, String p) {
+		if ( !limit.reachedLimit() ) {
+			if ( playerLimit.hasLimit() ) {
+				if ( players.containsKey(p) ) {
+					if ( playerLimit.reachedLimitAs(players.get(p)-1) )
+						return false;
+					if (  playerLimit.reachedLimitAs((players.get(p)+l)-1) )
+						return false;
+				} else {
+					if ( playerLimit.reachedLimitAs(l-1) )
+						return false;
+				}
+			}
+			if ( limit.reachedLimitWith(l-1) )
+				return false;
+			
+			return true;
+		}
+		return false;
+	}*/
 	
 	public boolean updateLimit(int slot, String p) {
 		if ( !limit.reachedLimit() ) {
@@ -79,26 +107,7 @@ public class LimitSystem {
 		return false;
 	}
 	
-	public boolean checkLimitWith(int l, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( playerLimit.reachedLimitAs(players.get(p)-1) )
-						return false;
-					if (  playerLimit.reachedLimitAs((players.get(p)+l)-1) )
-						return false;
-				} else {
-					if ( playerLimit.reachedLimitAs(l-1) )
-						return false;
-				}
-			}
-			if ( limit.reachedLimitWith(l-1) )
-				return false;
-			
-			return true;
-		}
-		return false;
-	}
+	
 	
 	public void setItemLimit(int limit, int amount, long time) {
 		this.limit.setLimit(limit);
@@ -229,7 +238,7 @@ public class LimitSystem {
 		
 		public String timeoutString() {			
 			long sTime = timeout/1000;
-			System.out.print(sTime);
+
 			String sec = ( sTime % 60 > 0 ? sTime % 60 + "s " : "" );
 			sTime /= 60;
 			String min = ( sTime % 60 > 0 ? sTime % 60 + "m " : "" );
@@ -239,6 +248,13 @@ public class LimitSystem {
 			String day = ( sTime > 0 ? sTime + "d " : "" );
 			
 			return day + hou + min + sec;
+		}
+		
+		
+
+		public void reset() {
+			resetAmount();
+			resetTimer();
 		}
 		
 		/* *

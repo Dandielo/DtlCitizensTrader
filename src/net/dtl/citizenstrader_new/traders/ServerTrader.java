@@ -90,7 +90,7 @@ public class ServerTrader extends Trader {
 							 * in the trader inventory
 							 * 
 							 */
-							if ( inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
+							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
 								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 								
 								/* *
@@ -121,7 +121,7 @@ public class ServerTrader extends Trader {
 			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == event.getSlot() ) { 
-						if ( inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
+						if ( checkLimits(p,event.getSlot()) && inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
 							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
 							
 							/* *
@@ -161,7 +161,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( checkLimits(p.getName()) && sellTransaction(p,getSelectedItem().getPrice()) ) {//*event.getCurrentItem().getAmount()
+						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice()) ) {//*event.getCurrentItem().getAmount()
 							p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 							
 							/* *
@@ -191,7 +191,7 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( checkLimits(p.getName()) &&  sellTransaction(p,getSelectedItem().getPrice()) ) {
+					if ( checkLimits(p) &&  sellTransaction(p,getSelectedItem().getPrice()) ) {
 						p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 						
 						/* *
