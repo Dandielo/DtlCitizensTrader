@@ -147,7 +147,7 @@ public class ServerTrader extends Trader {
 			} else if ( equalsTraderStatus(TraderStatus.PLAYER_BUY) ) {
 				if ( selectItem(event.getSlot(), TraderStatus.PLAYER_BUY).hasSelectedItem() ) {
 					
-					p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*event.getCurrentItem().getAmount()) + " for this item.");
+					p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()) + " for this item.");
 				
 				}
 			}
