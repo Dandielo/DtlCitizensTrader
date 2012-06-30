@@ -54,7 +54,7 @@ public class LimitSystem {
 					players.put(p, 0);
 				}
 			}
-			return limit.reachedLimitWith(thisItem.getAmount(slot));
+			return !limit.reachedLimitWith(thisItem.getAmount(slot));
 		}
 		return false;
 	}
@@ -117,10 +117,10 @@ public class LimitSystem {
 	 */
 	
 	public String getGlobalTimeout() {
-		return limit.getTimeoutString();
+		return limit.timeoutString();
 	}
 	public String getPlayerTimeout() {
-		return limit.getTimeoutString();
+		return playerLimit.timeoutString();
 	}
 	
 	public void changeGlobalTimeout(long t) {
@@ -209,9 +209,6 @@ public class LimitSystem {
 		public long getTimeout() {
 			return timeout;
 		}
-		public String getTimeoutString() {
-			return "";
-		}
 		public void setTimeout(long t) {
 			timeout = t;
 		}
@@ -228,14 +225,14 @@ public class LimitSystem {
 		
 		public String timeoutString() {			
 			long sTime = timeout/1000;
-			
-			String sec = ( sTime % 60 != 0 ? sTime % 60 + "s " : "" );
+			System.out.print(sTime);
+			String sec = ( sTime % 60 > 0 ? sTime % 60 + "s " : "" );
 			sTime /= 60;
-			String min = ( sTime % 60 != 0 ? sTime % 60 + "m " : "" );
+			String min = ( sTime % 60 > 0 ? sTime % 60 + "m " : "" );
 			sTime /= 60;
-			String hou = ( sTime % 24 != 0 ? sTime % 60 + "h " : "" );
+			String hou = ( sTime % 24 > 0 ? sTime % 24 + "h " : "" );
 			sTime /= 24;
-			String day = ( sTime != 0 ? sTime + "d " : "" );
+			String day = ( sTime > 0 ? sTime + "d " : "" );
 			
 			return day + hou + min + sec;
 		}
