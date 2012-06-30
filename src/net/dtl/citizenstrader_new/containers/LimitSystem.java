@@ -174,6 +174,8 @@ public class LimitSystem {
 		}
 		public void changeLimit(int l) {
 			limit += l;
+			if ( limit < 0 )
+				limit = 0;
 		}
 		public void setLimit(int l) {
 			limit = l;
@@ -214,6 +216,8 @@ public class LimitSystem {
 		}
 		public void changeTimeout(long t) {
 			timeout += t;
+			if ( timeout < 0 )
+				timeout = 0;
 		}
 		public void resetTimer() {
 			timer = new Date();

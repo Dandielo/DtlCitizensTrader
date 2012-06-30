@@ -145,14 +145,14 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		
 	//	int i = 0;
 		for( StockItem item : sellStock ){
-			if ( item.getLimitSystem().checkLimit("", 0) ) {
+		//	if ( item.getLimitSystem().checkLimit("", 0) ) {
 		        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		        chk.addEnchantments(item.getItemStack().getEnchantments());
 		
 		    	if ( item.getSlot() < 0 )
 		    		item.setSlot(view.firstEmpty());
 		        view.setItem(item.getSlot(),chk);
-			}
+		//	}
 
    //         i++;
         }
