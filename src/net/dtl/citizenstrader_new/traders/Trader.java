@@ -10,6 +10,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
@@ -165,9 +166,9 @@ public abstract class Trader {
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
 		
-		if ( !TraderStatus.hasManageMode(status) )
-			if ( selectedItem != null && !selectedItem.checkLimit() )
-				selectedItem = null;
+	//	if ( !TraderStatus.hasManageMode(status) )
+	//		if ( selectedItem != null && !selectedItem.checkLimit() )
+	//			selectedItem = null;
 		return this;
 	} 
 
@@ -363,10 +364,26 @@ public abstract class Trader {
 	 * 
 	 */
 	
+	public boolean checkLimits(String p) {
+		return selectedItem.getLimitSystem().checkLimit(p,0);
+	}
+	
+	public boolean checkLimits(String p, int slot) {
+		return selectedItem.getLimitSystem().checkLimit(p,slot);
+	}
+	
+	public boolean updateLimits(String p, int slot) {
+		return selectedItem.getLimitSystem().updateLimit(slot, p);
+	}
+	
+	public boolean updateLimits(String p) {
+		return selectedItem.getLimitSystem().updateLimit(0, p);
+	}
+	
 	/* *
 	 * Checking if an item has reached his limit
 	 */
-	public boolean checkLimit() {
+/*	public boolean checkLimit() {
 		if ( selectedItem.checkLimit() && selectedItem.hasLimitAmount(selectedItem.getAmount()) )
 			return true;
 		return false;
@@ -382,7 +399,7 @@ public abstract class Trader {
 			} else 
 				switchInventory(selectedItem);
 		}
-	}
+	}*/
 	
 	/* * ===============================================================================================
 	 * ManagerMode functions 

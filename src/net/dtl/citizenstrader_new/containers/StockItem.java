@@ -3,6 +3,7 @@ package net.dtl.citizenstrader_new.containers;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.enchantments.Enchantment;
@@ -14,7 +15,7 @@ public class StockItem {
 	private boolean stackPrice = false;
 	private double price = 0;
 	private int slot = -1;
-	private Limit limit = new Limit();
+	private LimitSystem limit;
 	
 	public StockItem() {
 	}
@@ -71,9 +72,7 @@ public class StockItem {
 					}
 					if ( value.startsWith("l:") && !value.contains(";") ) {
 						String[] limitData = value.substring(2).split("/");
-						limit.setLimit(Integer.parseInt(limitData[0]));
-						limit.setAmount(Integer.parseInt(limitData[1]));
-						limit.setTimeout(Integer.parseInt(limitData[2])*1000);
+						limit.setItemLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("e:") && !value.contains(";")  ) {
 						for ( String ench : value.substring(2).split(",") ) {
@@ -93,6 +92,7 @@ public class StockItem {
 				}
 			}
 		}
+		limit = new LimitSystem(this);
 	}
 	
 	public ItemStack getItemStack() {
@@ -213,9 +213,19 @@ public class StockItem {
 	}
 	
 	/* *
-	 * Limit handling
+	 * getLimitSystem
 	 * 
 	 */
+	public LimitSystem getLimitSystem() {
+		return limit;
+	}
+	
+	
+	
+	/* *
+	 * Limit handling
+	 * 
+	 *//*
 	public boolean checkLimit() {
 		if ( limit.checkTimer(new Date()).reachedLimit() ) 
 			return false;
@@ -246,15 +256,14 @@ public class StockItem {
 		return limit.getTimeout();
 	}
 	
-	private class Limit {
+	public class Limit {
 		private int limit = -1;
 		private int amount = 0;
 		private Date timer = new Date();
 		private long timeout = 0;
 		
-		/* *
 		 * Limit and amount management
-		 */
+		 *
 		public void setLimit(int l) {
 			limit = l;
 		}
@@ -295,10 +304,10 @@ public class StockItem {
 			return true;
 		}
 		
-		/* *
+		* *
 		 * Time and reset management
 		 * 
-		 */
+		 *
 		public Limit setTimeout(long t) {
 			timeout = t;
 			return this;
@@ -326,22 +335,22 @@ public class StockItem {
 			return new SimpleDateFormat("dd HH mm ss").format(d);
 		}
 		
-		/* *
+		* *
 		 * mainReset
 		 * 
-		 */
+		 *
 		public void reset() {
 			resetTimer();
 			resetAmount();
 		}
 		
-		/* *
+		* *
 		 * toString Override
 		 * 
-		 */
+		 *
 		@Override
 		public String toString() {
 			return limit + "/" + amount + "/" + ( timeout / 1000 );
-		}
-	}
+		}*/
+//	}
 }

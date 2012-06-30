@@ -103,7 +103,7 @@ public class ServerTrader extends Trader {
 								 * needs to be recoded
 								 * 
 								 */
-								updateSelectedItemLimit();
+						//		updateSelectedItemLimit();
 							} else 
 								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 						} else {
@@ -134,7 +134,7 @@ public class ServerTrader extends Trader {
 							 * needs to be recoded
 							 * 
 							 */
-							updateSelectedItemLimit(getSelectedItem().getAmount(event.getSlot()));
+					//		updateSelectedItemLimit(getSelectedItem().getAmount(event.getSlot()));
 							
 						} else
 							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
@@ -161,14 +161,16 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( checkLimit() && sellTransaction(p,getSelectedItem().getPrice()) ) {//*event.getCurrentItem().getAmount()
+						if ( checkLimits(p.getName()) && sellTransaction(p,getSelectedItem().getPrice()) ) {//*event.getCurrentItem().getAmount()
 							p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 							
 							/* *
 							 * needs to be recoded
 							 * 
+							 * #Recoded (not tested)
+							 * 
 							 */
-							updateSelectedItemLimit();
+							updateLimits(p.getName());
 
 							/* *
 							 * need to create removeFromInventory fnc (code cleanup)
@@ -189,14 +191,16 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( checkLimit() && sellTransaction(p,getSelectedItem().getPrice()) ) {
+					if ( checkLimits(p.getName()) &&  sellTransaction(p,getSelectedItem().getPrice()) ) {
 						p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 						
 						/* *
 						 * needs to be recoded
 						 * 
+						 * #Recoded (not tested)
+						 * 
 						 */
-						updateSelectedItemLimit();
+						updateLimits(p.getName());
 						
 						/* *
 						 * need to create removeFromInventoryFunction (code cleanup)
@@ -358,13 +362,13 @@ public class ServerTrader extends Trader {
 							 * Display Limits if nothing is set in the cursor
 							 * 
 							 */
-							if ( isBuyModeByWool() ) {
+						/*	if ( isBuyModeByWool() ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
 										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getTimeout() );
 								
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
-										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getTimeout() );
+										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getTimeout() );*/
 						} else {
 							/*
 							 * Change prices and display them after the change
@@ -372,19 +376,19 @@ public class ServerTrader extends Trader {
 							 */
 							if ( isBuyModeByWool() ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-									if ( event.isRightClick() ) 
+								/*	if ( event.isRightClick() ) 
 										getSelectedItem().changeTimeout(-calculateLimit(event.getCursor()));
 									else 
 										getSelectedItem().changeTimeout(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );
+									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );*/
 								}
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-									if ( event.isRightClick() ) 
+								/*	if ( event.isRightClick() ) 
 										getSelectedItem().changeTimeout(-calculateLimit(event.getCursor()));
 									else
 										getSelectedItem().changeTimeout(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );
+									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );*/
 								}
 						}
 						event.setCancelled(true);
@@ -604,13 +608,13 @@ public class ServerTrader extends Trader {
 							 * Display Limits if nothing is set in the cursor
 							 * 
 							 */
-							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
+						/*	if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
 										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimit() );
 								
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
-										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimit() );
+										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimit() );*/
 						} else {
 							/*
 							 * Change prices and display them after the change
@@ -618,19 +622,19 @@ public class ServerTrader extends Trader {
 							 */
 							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-									if ( event.isRightClick() ) 
+								/*	if ( event.isRightClick() ) 
 										getSelectedItem().changeLimit(-calculateLimit(event.getCursor()));
 									else
 										getSelectedItem().changeLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New limit: " + getSelectedItem().getLimit() );
+									p.sendMessage(ChatColor.GOLD + "New limit: " + getSelectedItem().getLimit() );*/
 								}
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-									if ( event.isRightClick() ) 
+								/*	if ( event.isRightClick() ) 
 										getSelectedItem().changeLimit(-calculateLimit(event.getCursor()));
 									else
 										getSelectedItem().changeLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New Limit: " + getSelectedItem().getLimit() );
+									p.sendMessage(ChatColor.GOLD + "New Limit: " + getSelectedItem().getLimit() );*/
 								}
 						}
 						event.setCancelled(true);
