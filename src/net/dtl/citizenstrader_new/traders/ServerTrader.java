@@ -103,7 +103,7 @@ public class ServerTrader extends Trader {
 								 * needs to be recoded
 								 * 
 								 */
-						//		updateSelectedItemLimit();
+								updateLimits(p.getName());
 							} else 
 								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 						} else {
@@ -134,7 +134,7 @@ public class ServerTrader extends Trader {
 							 * needs to be recoded
 							 * 
 							 */
-					//		updateSelectedItemLimit(getSelectedItem().getAmount(event.getSlot()));
+							updateLimits(p.getName(),event.getSlot());
 							
 						} else
 							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
@@ -362,13 +362,13 @@ public class ServerTrader extends Trader {
 							 * Display Limits if nothing is set in the cursor
 							 * 
 							 */
-						/*	if ( isBuyModeByWool() ) {
+							if ( isBuyModeByWool() ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
-										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getTimeout() );
+										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
-										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getTimeout() );*/
+										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 						} else {
 							/*
 							 * Change prices and display them after the change
@@ -376,19 +376,19 @@ public class ServerTrader extends Trader {
 							 */
 							if ( isBuyModeByWool() ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-								/*	if ( event.isRightClick() ) 
-										getSelectedItem().changeTimeout(-calculateLimit(event.getCursor()));
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changeGlobalTimeout(-calculateTimeout(event.getCursor()));
 									else 
-										getSelectedItem().changeTimeout(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );*/
+										getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								}
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-								/*	if ( event.isRightClick() ) 
-										getSelectedItem().changeTimeout(-calculateLimit(event.getCursor()));
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changeGlobalTimeout(-calculateTimeout(event.getCursor()));
 									else
-										getSelectedItem().changeTimeout(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getTimeout() );*/
+										getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								}
 						}
 						event.setCancelled(true);
@@ -608,13 +608,13 @@ public class ServerTrader extends Trader {
 							 * Display Limits if nothing is set in the cursor
 							 * 
 							 */
-						/*	if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
+							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
-										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimit() );
+										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 								
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
-										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimit() );*/
+										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 						} else {
 							/*
 							 * Change prices and display them after the change
@@ -622,19 +622,19 @@ public class ServerTrader extends Trader {
 							 */
 							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-								/*	if ( event.isRightClick() ) 
-										getSelectedItem().changeLimit(-calculateLimit(event.getCursor()));
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
 									else
-										getSelectedItem().changeLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New limit: " + getSelectedItem().getLimit() );*/
+										getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 								}
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-								/*	if ( event.isRightClick() ) 
-										getSelectedItem().changeLimit(-calculateLimit(event.getCursor()));
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
 									else
-										getSelectedItem().changeLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New Limit: " + getSelectedItem().getLimit() );*/
+										getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 								}
 						}
 						event.setCancelled(true);

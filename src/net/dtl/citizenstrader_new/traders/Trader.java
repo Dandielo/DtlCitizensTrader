@@ -166,9 +166,9 @@ public abstract class Trader {
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
 		
-	//	if ( !TraderStatus.hasManageMode(status) )
-	//		if ( selectedItem != null && !selectedItem.checkLimit() )
-	//			selectedItem = null;
+		if ( !TraderStatus.hasManageMode(status) )
+			if ( selectedItem != null && !selectedItem.getLimitSystem().checkLimit("", 0) )
+				selectedItem = null;
 		return this;
 	} 
 
@@ -569,6 +569,16 @@ public abstract class Trader {
 			return is.getAmount()*10;		
 		else if ( is.getType().equals(Material.COBBLESTONE) )
 			return is.getAmount()*100;
+		return is.getAmount();
+	}
+	
+	public static int calculateTimeout(ItemStack is) {
+		if ( is.getType().equals(Material.DIRT) )
+			return is.getAmount()*60;		
+		else if ( is.getType().equals(Material.COBBLESTONE) )
+			return is.getAmount()*3600;	
+		else if ( is.getType().equals(Material.LOG) )
+			return is.getAmount()*3600*24;
 		return is.getAmount();
 	}
 	 

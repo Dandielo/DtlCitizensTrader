@@ -108,7 +108,30 @@ public class LimitSystem {
 	
 	@Override
 	public String toString() {
-		return limit.getAmount() + "/" + limit.getLimit() + "/" + limit.getTimeout() + ( playerLimit.hasLimit() ? "pl" : "" );
+		return limit.getAmount() + "/" + limit.getLimit() + "/" + ( limit.getTimeout() / 1000 );// + ( playerLimit.hasLimit() ? "pl" : "" );
+	}
+	
+	
+	/* *
+	 * global limit
+	 */
+	
+	public String getGlobalTimeout() {
+		return limit.getTimeoutString();
+	}
+	public String getPlayerTimeout() {
+		return limit.getTimeoutString();
+	}
+	
+	public void changeGlobalTimeout(long t) {
+		limit.changeTimeout(t*1000);
+	}
+	
+	public int getGlobalLimit() {
+		return limit.getLimit();
+	}
+	public void changeGlobalLimit(int l) {
+		limit.changeLimit(l);
 	}
 	
 	/* *
@@ -202,6 +225,20 @@ public class LimitSystem {
 			return ( d.getTime() - timer.getTime() > timeout );
 		}
 		
+		
+		public String timeoutString() {			
+			long sTime = timeout/1000;
+			
+			String sec = ( sTime % 60 != 0 ? sTime % 60 + "s " : "" );
+			sTime /= 60;
+			String min = ( sTime % 60 != 0 ? sTime % 60 + "m " : "" );
+			sTime /= 60;
+			String hou = ( sTime % 24 != 0 ? sTime % 60 + "h " : "" );
+			sTime /= 24;
+			String day = ( sTime != 0 ? sTime + "d " : "" );
+			
+			return day + hou + min + sec;
+		}
 		
 		/* *
 		 * Limit and amount management

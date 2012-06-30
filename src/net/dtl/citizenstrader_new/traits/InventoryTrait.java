@@ -86,65 +86,65 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	//	int i = 0;
 		if ( s.equals(TraderStatus.PLAYER_SELL) ) {
 			for( StockItem item : sellStock ) {
-				//if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+				if ( item.getLimitSystem().checkLimit("", 0) ) {
 		            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		            chk.addEnchantments(item.getItemStack().getEnchantments());
 	
 		            view.setItem( item.getSlot() ,chk);
-			//	}
+				}
 	        }
             if ( !buyStock.isEmpty() )
             	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
 		} else if ( s.equals(TraderStatus.PLAYER_BUY ) ) {
 			for( StockItem item : buyStock ) {
-				//if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+				if ( item.getLimitSystem().checkLimit("", 0) ) {
 		            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            	if ( item.getSlot() < 0 )
 	            		item.setSlot(view.firstEmpty());
 	                view.setItem( item.getSlot() ,chk);
-				//}
+				}
 	        }
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
 		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_SELL ) ) {
 			for( StockItem item : sellStock ) {
-			//	if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+				if ( item.getLimitSystem().checkLimit("", 0) ) {
 		            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            	if ( item.getSlot() < 0 )
 	            		item.setSlot(view.firstEmpty());
 	                view.setItem( item.getSlot() ,chk);
-			//	}
+				}
 	        }
             view.setItem(view.getSize()-3, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
 		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
-			//	if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+				if ( item.getLimitSystem().checkLimit("", 0) ) {
 		            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 		            if ( item.getSlot() < 0 )
 		            	item.setSlot(view.firstEmpty());
 		            view.setItem( item.getSlot() ,chk);
-			//	}
+				}
 	        }
             view.setItem(view.getSize()-3, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
 		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_PRICE ) ) {
 			for( StockItem item : sellStock ) {
-			//	if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+				if ( item.getLimitSystem().checkLimit("", 0) ) {
 		            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            	if ( item.getSlot() < 0 )
 	            		item.setSlot(view.firstEmpty());
 	                view.setItem( item.getSlot() ,chk);
-			//	}
+				}
 	        }
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));//3
 		}
@@ -157,14 +157,14 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		
 	//	int i = 0;
 		for( StockItem item : sellStock ){
-			//if ( item.checkLimit() && item.hasLimitAmount(item.getAmount()) ) {
+			if ( item.getLimitSystem().checkLimit("", 0) ) {
 		        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 		        chk.addEnchantments(item.getItemStack().getEnchantments());
 		
 		    	if ( item.getSlot() < 0 )
 		    		item.setSlot(view.firstEmpty());
 		        view.setItem(item.getSlot(),chk);
-		//	}
+			}
 
    //         i++;
         }
@@ -234,7 +234,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 		for ( Integer amount : si.getAmounts() ) {
 			ItemStack is = si.getItemStack().clone();
 			is.setAmount(amount);
-			//if ( si.hasLimitAmount(amount) )
+			if ( si.getLimitSystem().checkLimit("", i) )
 				inv.setItem(i++,is);
 		}
 		inv.setItem(inv.getSize()-1,new ItemStack(Material.WOOL,1,(short)0,(byte)14));
