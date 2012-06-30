@@ -17,10 +17,8 @@ public class StockItem {
 	private int slot = -1;
 	private LimitSystem limit;
 	
-	public StockItem() {
-	}
-	
 	public StockItem(String data) {
+		limit = new LimitSystem(this);
 		String[] values = data.split(" ");
 		for ( String value : values ) {
 			if ( item == null ) {
@@ -92,7 +90,6 @@ public class StockItem {
 				}
 			}
 		}
-		limit = new LimitSystem(this);
 	}
 	
 	public ItemStack getItemStack() {
