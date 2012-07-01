@@ -661,6 +661,7 @@ public class ServerTrader extends Trader {
 					selectItem(toStockItem(event.getCurrentItem()));
 				}
 			} 
+			event.setCancelled(true);
 			setInventoryClicked(false);
 		}
 	}
