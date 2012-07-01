@@ -161,7 +161,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 
-						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice()) ) {//*event.getCurrentItem().getAmount()
+						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
 							p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 							
 							/* *
@@ -170,7 +170,8 @@ public class ServerTrader extends Trader {
 							 * #Recoded (not tested)
 							 * 
 							 */
-							updateLimits(p.getName());
+							if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+								updateLimits(p.getName());
 
 							/* *
 							 * need to create removeFromInventory fnc (code cleanup)
@@ -191,7 +192,7 @@ public class ServerTrader extends Trader {
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
-					if ( checkLimits(p) &&  sellTransaction(p,getSelectedItem().getPrice()) ) {
+					if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
 						p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 						
 						/* *
@@ -200,16 +201,29 @@ public class ServerTrader extends Trader {
 						 * #Recoded (not tested)
 						 * 
 						 */
-						updateLimits(p.getName());
+						if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+							updateLimits(p.getName());
 						
 						/* *
 						 * need to create removeFromInventoryFunction (code cleanup)
 						 * 
 						 */
-						if ( event.getCurrentItem().getAmount()-getSelectedItem().getAmount() > 0 )
-							event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getSelectedItem().getAmount());
-						else 
-							event.setCurrentItem(new ItemStack(Material.AIR));
+						
+						/* *
+						 * TEMPORARY!!!!!!
+						 * 
+						 */
+						if ( event.getCurrentItem().getAmount() == 1 ) {
+							if ( event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()) > 0 )
+								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()));
+							else 
+								event.setCurrentItem(new ItemStack(Material.AIR));
+						} else {
+							if ( event.getCurrentItem().getAmount()-getSelectedItem().getAmount() > 0 )
+								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getSelectedItem().getAmount());
+							else 
+								event.setCurrentItem(new ItemStack(Material.AIR));
+						}
 					}
 					else 
 						p.sendMessage(ChatColor.GOLD + "Can't sell it");

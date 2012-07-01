@@ -42,6 +42,10 @@ public class LimitSystem {
 		return playerLimit.hasLimit();
 	}
 	
+	public void linkWith(StockItem item) {
+		linked = item;
+	}
+	
 	public boolean checkLimit(String p, int slot) {
 		if ( limit.timeoutReached(new Date()) )
 			limit.reset();
@@ -105,6 +109,54 @@ public class LimitSystem {
 		return false;
 	}
 	
+	/* *
+	 * temporary function!!!!!!
+	 * 
+	 */
+	public boolean updateLimitWith(int amount, String p) {
+		if ( !limit.reachedLimit() ) {
+			if ( playerLimit.hasLimit() ) {
+				if ( players.containsKey(p) ) {
+					if ( !playerLimit.reachedLimitAs(players.get(p) + amount) )
+						return false;
+					players.put(p, players.get(p) + amount);
+				} else {
+					if ( playerLimit.reachedLimitAs(amount) )
+						return false;
+					players.put(p, players.get(p) + amount);
+				}
+			}
+			limit.changeAmount(amount);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	
+	/* *
+	 * Future implementation
+	 * 
+	 */
+	public boolean updateLinkedLimit(int slot, String p) {
+		if ( !limit.reachedLimit() ) {
+			if ( playerLimit.hasLimit() ) {
+				if ( players.containsKey(p) ) {
+					if ( !playerLimit.reachedLimitAs(players.get(p) + thisItem.getAmount(slot)) )
+						return false;
+					players.put(p, players.get(p) + thisItem.getAmount(slot));
+				} else {
+					if ( playerLimit.reachedLimitAs(thisItem.getAmount(slot)) )
+						return false;
+					players.put(p, players.get(p) + thisItem.getAmount(slot));
+				}
+			}
+			limit.changeAmount(thisItem.getAmount(slot));
+			
+			return true;
+		}
+		return false;
+	}
 	
 	
 	public void setItemLimit(int limit, int amount, long time) {
@@ -141,6 +193,13 @@ public class LimitSystem {
 		limit.changeLimit(l);
 	}
 	
+	public int getGlobalAmount() {
+		return limit.getAmount();
+	}
+	
+	public int getUnusedLimit() {
+		return limit.getLimit() - limit.getAmount();
+	}
 	/* *
 	 * The Limit information of an item
 	 * 

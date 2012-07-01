@@ -389,6 +389,26 @@ public abstract class Trader {
 	}
 	
 	/* *
+	 * temporary Function!!!!!!!!!!!!!!!!!!!!
+	 * 
+	 */
+	public boolean updateLimitsTem(String p, ItemStack item) {
+		if ( item.getAmount() == 1 )
+			return selectedItem.getLimitSystem().updateLimitWith(getMaxAmount(item), p);
+		return false;
+	}
+	
+	/* *
+	 * get the max amount the limit can carry comparing to an Item
+	 * 
+	 */
+	public int getMaxAmount(ItemStack item) {
+		if ( selectedItem.getLimitSystem().getUnusedLimit() >= item.getAmount() ) {
+			return item.getAmount();
+		}
+		return selectedItem.getLimitSystem().getUnusedLimit();
+	}
+	/* *
 	 * Checking if an item has reached his limit
 	 */
 /*	public boolean checkLimit() {
@@ -450,6 +470,17 @@ public abstract class Trader {
 	 * 
 	 */
 	public boolean sellTransaction(Player p, double price) {
+		return traderConfig.sellTransaction(p, price);
+	}
+	
+	public boolean sellTransaction(Player p, double price, ItemStack item) {
+		/* *
+		 * Fast implementation for a more comfortable selling
+		 * going to change this in future
+		 * 
+		 */
+		if ( item.getAmount() == 1 )
+			return traderConfig.sellTransaction(p, price*getMaxAmount(item));
 		return traderConfig.sellTransaction(p, price);
 	}
 	
