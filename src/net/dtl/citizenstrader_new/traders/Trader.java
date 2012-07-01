@@ -11,7 +11,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
-import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;

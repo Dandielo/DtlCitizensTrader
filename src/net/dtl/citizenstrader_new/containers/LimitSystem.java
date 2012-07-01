@@ -3,8 +3,6 @@ package net.dtl.citizenstrader_new.containers;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.bukkit.entity.Player;
-
 /* *
  * New LimitClass (the old one will be removed after this one is complete)
  * 
