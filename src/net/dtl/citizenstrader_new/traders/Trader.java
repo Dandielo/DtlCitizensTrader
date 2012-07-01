@@ -93,7 +93,7 @@ public abstract class Trader {
 		 * 
 		 */
 		traderStock = tradderNpc.getTrait(InventoryTrait.class);
-		inventory = traderStock.inventoryView(54, tradderNpc.getName() + " selling");
+		inventory = traderStock.inventoryView(54, tradderNpc.getName() + " trader");
 		traderStatus = TraderStatus.PLAYER_SELL;
 		
 		/* *
