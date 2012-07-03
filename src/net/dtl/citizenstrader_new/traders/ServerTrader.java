@@ -298,6 +298,7 @@ public class ServerTrader extends Trader {
 				} else if ( isWool(event.getCurrentItem(),(byte)0) && event.getSlot() == getInventory().getSize() - 3 ) {
 					/*
 					 * Limit managing enabled
+					 * Global limit as default
 					 * 
 					 */
 					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL);
@@ -307,7 +308,35 @@ public class ServerTrader extends Trader {
 					 * 
 					 */
 					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)13));
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.AIR));
+					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
+					
+				} else if ( isWool(event.getCurrentItem(),(byte)12) ) {
+					/*
+					 * switched to player Limit
+					 * 
+					 */
+					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER);
+					
+					/*
+					 * WoolChanging
+					 * 
+					 */
+					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+				//	getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.AIR));
+					
+				} else if ( isWool(event.getCurrentItem(),(byte)11) ) {
+					/*
+					 * switched to global Limit
+					 * 
+					 */
+					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL);
+					
+					/*
+					 * WoolChanging
+					 * 
+					 */
+					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
+				//	getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.AIR));
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)13) ) {
 					/*
