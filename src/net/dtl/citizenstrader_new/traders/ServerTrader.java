@@ -16,7 +16,6 @@ public class ServerTrader extends Trader {
 
 	public ServerTrader(NPC n, TraderTrait c) {
 		super(n, c);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
