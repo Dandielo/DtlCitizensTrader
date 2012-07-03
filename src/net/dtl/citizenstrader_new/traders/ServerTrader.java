@@ -392,29 +392,30 @@ public class ServerTrader extends Trader {
 			} else {
 				if ( event.isShiftClick() ) {
 					/*
-					 * Entering amount managing mode 
+					 * Entering amount managing mode and timeout limit management
 					 * 
 					 */
+					
 					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL) ) {
 						/*
-						 * Managing limits for an item
+						 * Managing global timeout limits for an item
 						 * 
 						 */
 						if ( event.getCursor().getType().equals(Material.AIR) ) {
 							/*
-							 * Display Limits if nothing is set in the cursor
+							 * Display global Limits if nothing is set in the cursor
 							 * 
 							 */
 							if ( isBuyModeByWool() ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
-										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
+										p.sendMessage(ChatColor.GOLD + "Global timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
-										p.sendMessage(ChatColor.GOLD + "Timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
+										p.sendMessage(ChatColor.GOLD + "Global timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 						} else {
 							/*
-							 * Change prices and display them after the change
+							 * Change global timeouts and display them after the change
 							 * 
 							 */
 							if ( isBuyModeByWool() ) {
@@ -423,7 +424,7 @@ public class ServerTrader extends Trader {
 										getSelectedItem().getLimitSystem().changeGlobalTimeout(-calculateTimeout(event.getCursor()));
 									else 
 										getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
+									p.sendMessage(ChatColor.GOLD + "New global timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								}
 							} else if ( isSellModeByWool() )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
@@ -431,13 +432,61 @@ public class ServerTrader extends Trader {
 										getSelectedItem().getLimitSystem().changeGlobalTimeout(-calculateTimeout(event.getCursor()));
 									else
 										getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
+									p.sendMessage(ChatColor.GOLD + "New global timeout: " + getSelectedItem().getLimitSystem().getGlobalTimeout() );
 								}
 						}
 						event.setCancelled(true);
 						return;
 					}
-					 
+					
+					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER) ) {
+						/*
+						 * Managing player timeout limits for an item
+						 * 
+						 */
+						if ( event.getCursor().getType().equals(Material.AIR) ) {
+							/*
+							 * Display player timeout Limits if nothing is set in the cursor
+							 * 
+							 */
+							if ( isBuyModeByWool() ) {
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
+										p.sendMessage(ChatColor.GOLD + "Player timeout: " + getSelectedItem().getLimitSystem().getPlayerTimeout() );
+								
+							} else if ( isSellModeByWool() )
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
+										p.sendMessage(ChatColor.GOLD + "Player timeout: " + getSelectedItem().getLimitSystem().getPlayerTimeout() );
+						} else {
+							/*
+							 * Change player timeout limits and display them after the change
+							 * 
+							 */
+							if ( isBuyModeByWool() ) {
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changePlayerTimeout(-calculateTimeout(event.getCursor()));
+									else 
+										getSelectedItem().getLimitSystem().changePlayerTimeout(calculateTimeout(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New player timeout: " + getSelectedItem().getLimitSystem().getPlayerTimeout() );
+								}
+							} else if ( isSellModeByWool() )
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changePlayerTimeout(-calculateTimeout(event.getCursor()));
+									else
+										getSelectedItem().getLimitSystem().changePlayerTimeout(calculateTimeout(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New player timeout: " + getSelectedItem().getLimitSystem().getPlayerTimeout() );
+								}
+						}
+						event.setCancelled(true);
+						return;
+					}
+					
+					
+					/* *
+					 * Amount managing mode enabling
+					 *  
+					 */
 					if ( event.isLeftClick() ) {
 						if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
 							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
@@ -445,32 +494,8 @@ public class ServerTrader extends Trader {
 								setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL_AMOUNT); 
 							} 
 						} 
-						
-					/* *
-					 * Future putting this into the price section
-					 */
 					} else {
-						if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
-							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-								if ( getSelectedItem().hasStackPrice() ) {
-									getSelectedItem().setStackPrice(true);
-									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
-								} else {
-									getSelectedItem().setStackPrice(true);
-									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
-								}
-							}
-						} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
-							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-								if ( getSelectedItem().hasStackPrice() ) {
-									getSelectedItem().setStackPrice(true);
-									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
-								} else {
-									getSelectedItem().setStackPrice(true);
-									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
-								}
-							}
-						}
+						
 					}
 					event.setCancelled(true);
 					
@@ -489,7 +514,18 @@ public class ServerTrader extends Trader {
 							  * RightClick currently not supported
 							  * 
 							  */
-							 p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
+							 if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+									if ( getSelectedItem().hasStackPrice() ) {
+										getSelectedItem().setStackPrice(true);
+										p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+									} else {
+										getSelectedItem().setStackPrice(true);
+										p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+									}
+								}
+							 }
+					//		 p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
 							 event.setCancelled(true);
 							 return;
 						 }
@@ -557,7 +593,19 @@ public class ServerTrader extends Trader {
 							 * RightClick Currently nut supported
 							 * 
 							 */
-							p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
+							
+							if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
+									if ( getSelectedItem().hasStackPrice() ) {
+										getSelectedItem().setStackPrice(true);
+										p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+									} else {
+										getSelectedItem().setStackPrice(true);
+										p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+									}
+								}
+							}
+						//	p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
 							event.setCancelled(true);
 							return;
 						}
@@ -653,11 +701,11 @@ public class ServerTrader extends Trader {
 							 */
 							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
-										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
+										p.sendMessage(ChatColor.GOLD + "Global limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 								
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
-										p.sendMessage(ChatColor.GOLD + "Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
+										p.sendMessage(ChatColor.GOLD + "Global limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 						} else {
 							/*
 							 * Change prices and display them after the change
@@ -669,7 +717,7 @@ public class ServerTrader extends Trader {
 										getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
 									else
 										getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
+									p.sendMessage(ChatColor.GOLD + "New global limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
 								}
 							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
 								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
@@ -677,7 +725,47 @@ public class ServerTrader extends Trader {
 										getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
 									else
 										getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
-									p.sendMessage(ChatColor.GOLD + "New Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
+									p.sendMessage(ChatColor.GOLD + "New global Limit: " + getSelectedItem().getLimitSystem().getGlobalLimit() );
+								}
+						}
+						event.setCancelled(true);
+					} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER) ) {
+						/*
+						 * Managing limits for an item
+						 * 
+						 */
+						if ( event.getCursor().getType().equals(Material.AIR) ) {
+							/*
+							 * Display Limits if nothing is set in the cursor
+							 * 
+							 */
+							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
+										p.sendMessage(ChatColor.GOLD + "Player limit: " + getSelectedItem().getLimitSystem().getPlayerLimit() );
+								
+							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() )
+										p.sendMessage(ChatColor.GOLD + "Player limit: " + getSelectedItem().getLimitSystem().getPlayerLimit() );
+						} else {
+							/*
+							 * Change prices and display them after the change
+							 * 
+							 */
+							if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) ) {
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changePlayerLimit(-calculateLimit(event.getCursor()));
+									else
+										getSelectedItem().getLimitSystem().changePlayerLimit(calculateLimit(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New player limit: " + getSelectedItem().getLimitSystem().getPlayerLimit() );
+								}
+							} else if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
+								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+									if ( event.isRightClick() ) 
+										getSelectedItem().getLimitSystem().changePlayerLimit(-calculateLimit(event.getCursor()));
+									else
+										getSelectedItem().getLimitSystem().changePlayerLimit(calculateLimit(event.getCursor()));
+									p.sendMessage(ChatColor.GOLD + "New player Limit: " + getSelectedItem().getLimitSystem().getPlayerLimit() );
 								}
 						}
 						event.setCancelled(true);

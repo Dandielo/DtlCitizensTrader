@@ -185,12 +185,21 @@ public class LimitSystem {
 	public void changeGlobalTimeout(long t) {
 		limit.changeTimeout(t*1000);
 	}
+	public void changePlayerTimeout(long t) {
+		playerLimit.changeTimeout(t*1000);
+	}
 	
 	public int getGlobalLimit() {
 		return limit.getLimit();
 	}
+	public int getPlayerLimit() {
+		return playerLimit.getLimit();
+	}
 	public void changeGlobalLimit(int l) {
 		limit.changeLimit(l);
+	}
+	public void changePlayerLimit(int l) {
+		playerLimit.changeLimit(l);
 	}
 	
 	public int getGlobalAmount() {
