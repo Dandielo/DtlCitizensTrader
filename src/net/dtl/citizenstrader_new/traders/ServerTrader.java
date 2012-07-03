@@ -297,10 +297,10 @@ public class ServerTrader extends Trader {
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)0) && event.getSlot() == getInventory().getSize() - 3 ) {
 					/*
-					 * Price managing enabled
+					 * Limit managing enabled
 					 * 
 					 */
-					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT);
+					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL);
 					
 					/*
 					 * WoolChanging
@@ -311,7 +311,7 @@ public class ServerTrader extends Trader {
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)13) ) {
 					/*
-					 * Price managing disabled
+					 * Limit managing disabled
 					 * restoring the proper managing mode
 					 * 
 					 */
@@ -366,7 +366,7 @@ public class ServerTrader extends Trader {
 					 * Entering amount managing mode 
 					 * 
 					 */
-					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT) ) {
+					if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL) ) {
 						/*
 						 * Managing limits for an item
 						 * 
@@ -612,7 +612,7 @@ public class ServerTrader extends Trader {
 								}
 						}
 						event.setCancelled(true);
-					} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT) ) {
+					} else if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL) ) {
 						/*
 						 * Managing limits for an item
 						 * 
