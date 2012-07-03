@@ -159,17 +159,25 @@ public class LimitSystem {
 	}
 	
 	
-	public void setItemLimit(int limit, int amount, long time) {
+	public void setItemGlobalLimit(int limit, int amount, long time) {
 		this.limit.setLimit(limit);
 		this.limit.setAmountt(amount);
 		this.limit.setTimeout(time);
+	}
+	public void setItemPlayerLimit(int limit, int amount, long time) {
+		this.playerLimit.setLimit(limit);
+		this.playerLimit.setAmountt(amount);
+		this.playerLimit.setTimeout(time);
 	}
 	
 	@Override
 	public String toString() {
 		return limit.getAmount() + "/" + limit.getLimit() + "/" + ( limit.getTimeout() / 1000 );// + ( playerLimit.hasLimit() ? "pl" : "" );
 	}
-	
+
+	public String playerLimitToString() {
+		return playerLimit.getAmount() + "/" + playerLimit.getLimit() + "/" + ( playerLimit.getTimeout() / 1000 );// + ( playerLimit.hasLimit() ? "pl" : "" );
+	}
 	
 	/* *
 	 * global limit

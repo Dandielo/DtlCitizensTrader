@@ -65,9 +65,13 @@ public class StockItem {
 						if ( amouts.size() > 0 )
 							item.setAmount(amouts.get(0));
 					}
-					if ( value.startsWith("l:") && !value.contains(";") ) {
+					if ( value.startsWith("gl:") && !value.contains(";") ) {
 						String[] limitData = value.substring(2).split("/");
-						limit.setItemLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
+						limit.setItemGlobalLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
+					}
+					if ( value.startsWith("pl:") && !value.contains(";") ) {
+						String[] limitData = value.substring(2).split("/");
+						limit.setItemPlayerLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("e:") && !value.contains(";")  ) {
 						for ( String ench : value.substring(2).split(",") ) {
@@ -119,9 +123,13 @@ public class StockItem {
 		for ( int i = 0 ; i < amouts.size() ; ++i )
 			itemString += amouts.get(i) + ( i + 1 < amouts.size() ? "," : "" );
 		
-		//saving the item limits
+		//saving the item global limits
 		if ( limit.hasLimit() ) 
-			itemString += " l:" + limit.toString();
+			itemString += " gl:" + limit.toString();
+		
+		//saving the item global limits
+		if ( limit.hasPlayerLimit() ) 
+			itemString += " pl:" + limit.playerLimitToString();
 		
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
