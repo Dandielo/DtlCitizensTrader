@@ -170,7 +170,7 @@ public class LimitSystem {
 		this.playerLimit.setTimeout(time);
 	}
 	
-	@Override
+	@Override 
 	public String toString() {
 		return limit.getAmount() + "/" + limit.getLimit() + "/" + ( limit.getTimeout() / 1000 );// + ( playerLimit.hasLimit() ? "pl" : "" );
 	}
