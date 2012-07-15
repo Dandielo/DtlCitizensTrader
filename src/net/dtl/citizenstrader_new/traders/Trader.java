@@ -282,33 +282,40 @@ public abstract class Trader {
 		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
 			
 			/* *
-			 * if the added amount isn't over the limit
+			 * Checking items by durability, so if you buy a diax sword it wont buy like it would be broken :P
 			 * 
-			 * setting the new amount in the player's inventory 
-			 *
 			 */
-			if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
-				item.setAmount( item.getAmount() + amountToAdd );
-				return true;
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
 				
-			} 
-			/* *
-			 * if the added amount is less than 64 (so we are not adding a whole stack)
-			 * 
-			 * maximizing the first item stack amount, and lowering the amount to add
-			 *
-			 */ 
-			if ( item.getAmount() < 64 ) {
-				amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
-				item.setAmount(64);
+				/* *
+				 * if the added amount isn't over the limit
+				 * 
+				 * setting the new amount in the player's inventory 
+				 *
+				 */
+				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
+					item.setAmount( item.getAmount() + amountToAdd );
+					return true;
+				} 
+				
+				/* *
+				 * if the added amount is less than 64 (so we are not adding a whole stack)
+				 * 
+				 * maximizing the first item stack amount, and lowering the amount to add
+				 *
+				 */ 
+				if ( item.getAmount() < 64 ) {
+					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+					item.setAmount(64);
+				}
+				
+				/* *
+				 * if there is nothing left just return
+				 * 
+				 */
+				if ( amountToAdd <= 0 )
+					return true;
 			}
-			
-			/* *
-			 * if there is nothing left just return
-			 * 
-			 */
-			if ( amountToAdd <= 0 )
-				return true;
 		}
 		
 		/* *
