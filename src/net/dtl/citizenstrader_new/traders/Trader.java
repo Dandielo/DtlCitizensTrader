@@ -285,8 +285,7 @@ public abstract class Trader {
 			 * Checking items by durability, so if you buy a diax sword it wont buy like it would be broken :P
 			 * 
 			 */
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ||
-					item.getMaxStackSize() != 1 ) {
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
 				
 				/* *
 				 * if the added amount isn't over the limit
@@ -327,9 +326,11 @@ public abstract class Trader {
 		 */
 		if ( inventory.firstEmpty() < inventory.getSize() 
 				&& inventory.firstEmpty() >= 0 ) {
+			
 			/* *
 			 * creating a ItemStack clone from the existing saving
 			 * and changing amount's
+			 * 
 			 */
 			ItemStack is = selectedItem.getItemStack(slot).clone();
 			is.setAmount(amountToAdd);
