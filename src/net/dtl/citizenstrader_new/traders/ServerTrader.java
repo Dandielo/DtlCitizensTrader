@@ -589,7 +589,7 @@ public class ServerTrader extends Trader {
 						 */
 						if ( event.isRightClick() ) {
 							/*
-							 * RightClick Currently nut supported
+							 * RightClick Currently not supported
 							 * 
 							 */
 							
@@ -640,11 +640,12 @@ public class ServerTrader extends Trader {
 							 */
 							item.setSlot(event.getSlot());
 						} else {
+							
 							/*
 							 * Select a trader item and check if it exists
 							 * if true set his slot to -2, (Item Editing)
 							 */
-							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() );
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() )
 								getSelectedItem().setSlot(-2);
 						}
 						return;
@@ -791,7 +792,6 @@ public class ServerTrader extends Trader {
 					selectItem(toStockItem(event.getCurrentItem()));
 				}
 			} 
-			event.setCancelled(true);
 			setInventoryClicked(false);
 		}
 	}

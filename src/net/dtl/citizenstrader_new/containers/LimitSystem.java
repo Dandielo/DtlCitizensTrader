@@ -281,6 +281,8 @@ public class LimitSystem {
 			return amount >= limit;
 		}
 		public boolean reachedLimitWith(int a) {
+			if ( limit <= 0 )
+				return false;
 			return amount + a >= limit;
 		}
 		public boolean reachedLimitAs(int a) {
