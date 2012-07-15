@@ -1,17 +1,42 @@
 package net.dtl.citizenstrader_new;
 
+import java.security.Permissions;
+
 import net.milkbowl.vault.economy.Economy;
 
 public class TraderConfig {
-	//MySQL section
-	private String mode = "secure";
-	private Economy econ;
+	/* *
+	 * Trader mode, indicates which mode to use (secure mode isn't working)
+	 * default = simple
+	 * 
+	 */
+	private String mode = "simple";
 	
+	/* *
+	 * Economy plugin (going to delete this)
+	 * 
+	 */
+	private Economy econ;
+	/* *
+	 * Permissions plugin (going to delete this)
+	 * future preparation
+	 * 
+	 */
+	private Permissions perm;
+	
+	/* *
+	 * Constructor
+	 * 
+	 */
 	public void setTraderConfig(String arg0) {
 		if ( arg0 != null )
 			mode = arg0;
 	}
 
+	/* *
+	 * Functions 
+	 * 
+	 */
 	public Economy getEcon() {
 		return econ;
 	}
