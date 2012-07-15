@@ -94,16 +94,18 @@ public class TraderCharacter extends Character implements Listener {
 			}
 			p.openInventory(ongoingTrades.get(p.getName()).getInventory());
 		} else {
-			if ( ongoingTrades.containsKey(p.getName()) ) {
-				if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) ) {
-					ongoingTrades.remove(p.getName());
-					p.sendMessage(ChatColor.RED + npc.getFullName() +": user mode!");
-				}
-			} else {
-				ongoingTrades.put(p.getName(),new ServerTrader(npc,npc.getTrait(TraderTrait.class)));
-				ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE);
-				p.sendMessage(ChatColor.RED + npc.getFullName() +": manager mode!");
-			}				
+			if ( p.isOp() || npc.getTrait(net.citizensnpcs.api.trait.trait.Owner.class).isOwnedBy(p.getName()) ) {
+				if ( ongoingTrades.containsKey(p.getName()) ) {
+					if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) ) {
+						ongoingTrades.remove(p.getName());
+						p.sendMessage(ChatColor.RED + npc.getFullName() +": user mode!");
+					}
+				} else {
+					ongoingTrades.put(p.getName(),new ServerTrader(npc,npc.getTrait(TraderTrait.class)));
+					ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE);
+					p.sendMessage(ChatColor.RED + npc.getFullName() +": manager mode!");
+				}	
+			}
 		}
 	}
 	
