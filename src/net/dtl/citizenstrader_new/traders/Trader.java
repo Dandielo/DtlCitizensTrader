@@ -285,7 +285,8 @@ public abstract class Trader {
 			 * Checking items by durability, so if you buy a diax sword it wont buy like it would be broken :P
 			 * 
 			 */
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ||
+					item.getMaxStackSize() != 1 ) {
 				
 				/* *
 				 * if the added amount isn't over the limit
