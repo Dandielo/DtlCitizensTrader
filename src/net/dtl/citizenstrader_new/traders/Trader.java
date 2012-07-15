@@ -229,7 +229,8 @@ public abstract class Trader {
 		 * 
 		 */
 		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
-			if ( item.getAmount() + selectedItem.getAmount(slot) <= 64 ) {
+			
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
 				
 				/* *
 				 * if the added amount isn't over the limit
@@ -304,9 +305,9 @@ public abstract class Trader {
 				 * maximizing the first item stack amount, and lowering the amount to add
 				 *
 				 */ 
-				if ( item.getAmount() < 64 ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
-					item.setAmount(64);
+				if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
+					amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
+					item.setAmount(selectedItem.getItemStack().getMaxStackSize());
 				}
 				
 				/* *

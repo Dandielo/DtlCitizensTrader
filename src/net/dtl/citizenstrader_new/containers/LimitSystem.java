@@ -278,6 +278,8 @@ public class LimitSystem {
 		}
 		
 		public boolean reachedLimit() {
+			if ( limit <= 0 )
+				return false;
 			return amount >= limit;
 		}
 		public boolean reachedLimitWith(int a) {
