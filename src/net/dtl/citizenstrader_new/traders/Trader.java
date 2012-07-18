@@ -353,6 +353,23 @@ public abstract class Trader {
 	}
 	
 	/* *
+	 * remove item from inventory, a function to avoid large code declarations
+	 * 
+	 */
+	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
+		if ( item.getAmount() != selectedItem.getAmount() ) {
+			if ( item.getAmount() % selectedItem.getAmount() == 0 ) 
+				event.setCurrentItem(new ItemStack(Material.AIR));
+			else 
+				item.setAmount( item.getAmount() % selectedItem.getAmount() );
+		} else {
+			event.setCurrentItem(new ItemStack(Material.AIR));
+		}
+		
+		return false;
+	}
+	
+	/* *
 	 * Switching the inventory to the parsed status
 	 * reseting the values with the given status
 	 * 
@@ -419,7 +436,7 @@ public abstract class Trader {
 	 */
 	public int getMaxAmount(ItemStack item) {
 		if ( selectedItem.getLimitSystem().getUnusedLimit() >= item.getAmount() ) {
-			return item.getAmount();
+			return item.getAmount(); 
 		}
 		return selectedItem.getLimitSystem().getUnusedLimit();
 	}
@@ -494,9 +511,10 @@ public abstract class Trader {
 		 * going to change this in future
 		 * 
 		 */
-		if ( item.getAmount() == 1 )
-			return traderConfig.sellTransaction(p, price*getMaxAmount(item));
-		return traderConfig.sellTransaction(p, price);
+	//	if ( item.getAmount() == 1 )
+	//		return traderConfig.sellTransaction(p, price*getMaxAmount(item));
+	//	int scale = ;
+		return traderConfig.sellTransaction(p, price*((int)item.getAmount() / selectedItem.getAmount()));
 	}
 	
 	/* * ===============================================================================================
