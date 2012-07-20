@@ -191,6 +191,10 @@ public class ServerTrader extends Trader {
 						setClickedSlot(event.getSlot());
 					}
 				}
+			} else if ( equalsTraderStatus(TraderStatus.PLAYER_SELL_AMOUNT) ) { 
+				p.sendMessage(ChatColor.GOLD + "You can't sell anything when selecting amounts");
+				event.setCancelled(true);
+				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.PLAYER_BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
 					
