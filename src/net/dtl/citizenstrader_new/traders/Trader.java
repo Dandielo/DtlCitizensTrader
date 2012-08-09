@@ -109,6 +109,13 @@ public abstract class Trader {
 	}
 	
 	
+	/*
+	 * Trader configuration
+	 */
+	public TraderTrait getTraderConfig() {
+		return this.traderConfig;
+	}
+	
 	/* * ===============================================================================================
 	 * SelectedItem Management
 	 * 

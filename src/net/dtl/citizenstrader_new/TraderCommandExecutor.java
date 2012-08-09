@@ -2,6 +2,7 @@ package net.dtl.citizenstrader_new;
 
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
+import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -56,10 +57,12 @@ public class TraderCommandExecutor implements CommandExecutor {
 						} 
 					} else if ( args[0].equals("mode") ) {
 						setTraderMode(p, args[1]);
+					} else if ( args[0].equals("type") ) {
+						setTraderType(p, args[1]);
 					}
 				} else if ( argsLength(args,2,2) ) {
-					if ( args[0].equals("main") ) {
-
+					if ( args[0].equals("type") ) {
+						setTraderType(p, args[1]);
 					} else if ( args[0].equals("choose") ) {
 
 					} 
@@ -72,7 +75,21 @@ public class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
-	private void setTraderMode(Player p,String mode) {
+	private void setTraderType(Player p, String type) {
+		if ( type != null && ( type.equals("server") || type.equals("player") ) ) {
+			Trader trader = this.traderManager.getOngoingTrades(p.getName());
+			if ( trader.getTraderConfig().getTraderType().toString().equals(type) )
+				return;
+			
+			trader.getTraderConfig().setTraderType(TraderType.getTypeByName(type));
+			p.sendMessage(ChatColor.RED + "Trader type changed to " + type);
+		} else {
+			p.sendMessage(ChatColor.RED + "Invalid trader type!");
+		}
+		
+	}
+
+	private void setTraderMode(Player p, String mode) {
 		if ( mode != null && ( mode.equals("secure") || mode.equals("simple") ) ) {
 			CitizensTrader.config.setMode(mode);
 			p.sendMessage(ChatColor.RED + "Trader mode set to: " + mode);

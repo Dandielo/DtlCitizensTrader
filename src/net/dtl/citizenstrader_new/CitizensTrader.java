@@ -67,7 +67,7 @@ public class CitizensTrader extends JavaPlugin {
 			//	CitizensAPI.getTraitManager().registerTrait(new TraitFactory(TraderTrait.class).withName("trader").withPlugin(this));
 			//}
 			getServer().getPluginManager().registerEvents(traderManager, this);
-			//getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
 			//((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
 			
 			plugin = this;

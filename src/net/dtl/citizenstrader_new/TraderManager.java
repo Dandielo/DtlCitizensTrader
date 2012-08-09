@@ -53,15 +53,20 @@ public class TraderManager implements Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if ( event.getRawSlot() < 0 )
-			return;
 		if ( !( event.getWhoClicked() instanceof Player ) )
 			return;
 		
 		Player p = (Player) event.getWhoClicked();
 
+		//needs to be canceled cose traders for players are much more templates that they can fill up with their stuff 
+		//event.setCancelled(true);
 
 		if ( ongoingTrades.containsKey(p.getName()) ) {
+			
+			if ( event.getRawSlot() < 0 ) {
+				event.setCancelled(true);
+				return;
+			}
 
 			if ( TraderStatus.hasManageMode(ongoingTrades.get(p.getName()).getTraderStatus()) ) {
 				if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) )
@@ -179,7 +184,12 @@ public class TraderManager implements Listener {
 							p.sendMessage(ChatColor.RED + npc.getFullName() +": user mode!");
 						}
 					} else {
-						ongoingTrades.put(p.getName(),new ServerTrader(npc,trait));
+						System.out.print(trait.getTraderType().toString());
+						if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
+							ongoingTrades.put(p.getName(), new ServerTrader(npc,trait));
+						else if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) {
+							ongoingTrades.put(p.getName(), new PlayerTrader(npc,trait));
+						}
 						ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE);
 						p.sendMessage(ChatColor.RED + npc.getFullName() +": manager mode!");
 					}	

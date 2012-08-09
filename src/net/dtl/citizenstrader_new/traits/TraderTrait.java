@@ -80,8 +80,8 @@ public class TraderTrait {
 		}
 	}
 
-	private WalletType wType = WalletType.SERVER_INFINITE;
-	private TraderType tType = TraderType.SERVER_TRADER;
+	private WalletType wType;// = WalletType.SERVER_INFINITE;
+	private TraderType tType;// = TraderType.SERVER_TRADER;
 	
 	private Wallet w;
 	private String owner = "server";
@@ -89,7 +89,20 @@ public class TraderTrait {
 	public TraderTrait() {
 	//	super("type");
 		w = new Wallet(wType);
-		w.setMoney(0.0);
+		w.setMoney(100.0);
+	}
+	
+	public void setTraderType(TraderType type) {
+		if ( type.equals(TraderType.PLAYER_TRADER) ) {
+			tType = TraderType.PLAYER_TRADER;
+			wType = WalletType.NPC_WALLET;
+			return;
+		}
+		if ( type.equals(TraderType.SERVER_TRADER) ) {
+			tType = TraderType.SERVER_TRADER;
+			wType = WalletType.SERVER_INFINITE;
+			return;
+		}
 	}
 	
 	public TraderType getTraderType() {
@@ -120,10 +133,11 @@ public class TraderTrait {
 	
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("trader-type") ) {
-			tType = TraderType.getTypeByName(data.getString("trader-type"));
+			tType = TraderType.getTypeByName(data.getString("trader-type", "server"));
+			System.out.print(tType.toString());
 		}
 		if ( data.keyExists("wallet-type") ) {
-			wType = WalletType.getTypeByName(data.getString("wallet-type"));
+			wType = WalletType.getTypeByName(data.getString("wallet-type", "server-infinite"));
 			w.setWalletType(wType);
 		}
 		if ( data.keyExists("owner") ) {
