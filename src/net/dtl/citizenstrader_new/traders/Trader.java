@@ -11,6 +11,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.TraderCharacterTrait;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
@@ -97,14 +98,14 @@ public abstract class Trader {
 		 * Initialize the trader
 		 * 
 		 */
-		traderStock = tradderNpc.getTrait(InventoryTrait.class);
+		traderStock = tradderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
 		inventory = traderStock.inventoryView(54, tradderNpc.getName() + " trader");
 		traderStatus = TraderStatus.PLAYER_SELL;
 		
 		/* *
 		 * SetAn Economy plugin to the trader's wallet
 		 */
-		traderConfig.getWallet().setEconomy(((CitizensTrader)traderConfig.getPlugin()).getEconomy());
+		traderConfig.getWallet().setEconomy(CitizensTrader.plugin.getEconomy());
 	}
 	
 	

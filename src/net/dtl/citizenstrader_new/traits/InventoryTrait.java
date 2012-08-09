@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
-import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
@@ -15,7 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-public class InventoryTrait extends Trait implements InventoryHolder {
+public class InventoryTrait implements InventoryHolder {
 	
 	private List<StockItem> sellStock = new ArrayList<StockItem>();					//What the trader sells the player
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 
@@ -26,6 +25,7 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 	
 	private InventoryTrait(int stockSize){
+	//	super("stock");
 	//	if ( this.getName() == null ) {
 	//		this.setName("inv");
 	//	}
@@ -34,8 +34,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
         	throw new IllegalArgumentException("Size must be between 1 and 54");}
     }
 	
-	@SuppressWarnings("unchecked")
-	@Override
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
@@ -50,7 +48,6 @@ public class InventoryTrait extends Trait implements InventoryHolder {
 	}
 	
 	
-	@Override
 	public void save(DataKey data) {
 	//	System.out.print(data);
 		

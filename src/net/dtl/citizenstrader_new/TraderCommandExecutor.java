@@ -1,6 +1,5 @@
 package net.dtl.citizenstrader_new;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
@@ -12,11 +11,14 @@ import org.bukkit.entity.Player;
 
 public class TraderCommandExecutor implements CommandExecutor {
 	public static CitizensTrader plugin;
-	private TraderCharacter trader;
-
+	//private TraderCharacterTrait trader;
+	private TraderManager traderManager;
+	
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
-		trader = ((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader"));
+		new CitizensTrader();
+		this.traderManager = CitizensTrader.getTraderManager();
+		//trader = ((TraderCharacterTrait) CitizensAPI.getTraitFactory().getTrait(TraderCharacterTrait.class));
 	}
 	
 	public boolean argsLength(String args[],int min,int max) {
@@ -72,7 +74,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 	
 	private void setTraderMode(Player p,String mode) {
 		if ( mode != null && ( mode.equals("secure") || mode.equals("simple") ) ) {
-			plugin.config.setMode(mode);
+			CitizensTrader.config.setMode(mode);
 			p.sendMessage(ChatColor.RED + "Trader mode set to: " + mode);
 		} else {
 			p.sendMessage(ChatColor.RED + "Invalid trader mode!");
@@ -84,7 +86,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 		if ( args.length != 3 )
 			return;
 		
-		Trader trade = trader.getOngoingTrades(p.getName());
+		Trader trade = this.traderManager.getOngoingTrades(p.getName());
 		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
 			trade.getTraderStock().removeItem(true, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
@@ -102,7 +104,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 		for ( int i = 2 ; i < args.length ; ++i )
 			itemDesc += args[i] + " ";
 
-		Trader trade = trader.getOngoingTrades(p.getName());
+		Trader trade = this.traderManager.getOngoingTrades(p.getName());
 		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
 			trade.getTraderStock().addItem(true, itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");
@@ -118,7 +120,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 		if ( args.length != 3 )
 			return;
 
-		Trader trade = trader.getOngoingTrades(p.getName());
+		Trader trade = this.traderManager.getOngoingTrades(p.getName());
 		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
 			trade.getTraderStock().removeItem(false, Integer.parseInt(args[2]));
 			p.sendMessage(ChatColor.RED + " Item succesfuly removed.");
@@ -135,7 +137,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 		for ( int i = 2 ; i < args.length ; ++i )
 			itemDesc += args[i] + " ";
 
-		Trader trade = trader.getOngoingTrades(p.getName());
+		Trader trade = this.traderManager.getOngoingTrades(p.getName());
 		if ( trade != null && trade.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) {
 			trade.getTraderStock().addItem(false,itemDesc);
 			p.sendMessage(ChatColor.RED + " Item succesfuly added.");

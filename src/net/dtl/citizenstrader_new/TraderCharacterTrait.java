@@ -1,16 +1,64 @@
-package net.dtl.citizenstrader_new.traits;
+package net.dtl.citizenstrader_new;
 
-import org.bukkit.entity.Player;
+
+import org.bukkit.Bukkit;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizenstrader_new.containers.Wallet;
+import net.dtl.citizenstrader_new.traits.InventoryTrait;
+import net.dtl.citizenstrader_new.traits.TraderTrait;
 
-public class TraderTrait {
+public class TraderCharacterTrait extends Trait {
+	
+	private CitizensTrader plugin;
 
+
+	public TraderCharacterTrait() {
+		super("trader");
+//		w = new Wallet(WalletType.PLAYER_WALLET);
+//		w.setMoney(0.0);
+		this.traderTrait = new TraderTrait();
+		this.inventoryTrait = new InventoryTrait();
+	}
+	
+	@Override
+	public void onSpawn() {
+		plugin = (CitizensTrader) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
+		//plugin.getDenizenNPCRegistry().registerNPC(npc);
+
+		//for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
+			//if (!triggerMap.containsKey(theTriggerName))
+				//triggerMap.put(theTriggerName, plugin.getTriggerRegistry().getTrigger(theTriggerName).getEnabledByDefault());
+	}
+
+	private TraderTrait traderTrait;
+	private InventoryTrait inventoryTrait;
+	
+	
+	public InventoryTrait getInventoryTrait() {
+		return inventoryTrait;
+	}
+	
+	public TraderTrait getTraderTrait() {
+		return traderTrait;
+	}
+	/*
+	private WalletType wType = WalletType.SERVER_INFINITE;
+	private TraderType tType = TraderType.SERVER_TRADER;
+	
+	private Wallet w;
+	private String owner = "server";
+	
+	
+	
+	
+	
+
+	
 	public enum WalletType {
 		PLAYER_WALLET, PLAYER_BANK, NPC_WALLET, SERVER_BANK, SERVER_INFINITE, GROUP_WALLET //Future FACTION_WALLET
-;
+		;
 
 		public static WalletType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("player-wallet") ) 
@@ -49,7 +97,7 @@ public class TraderTrait {
 	
 	public enum TraderType {
 		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, BANK, CUSTOM
-;
+		;
 		
 		public static TraderType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("server") ) 
@@ -73,24 +121,11 @@ public class TraderTrait {
 				return "auctionhouse";
 			case BANK:
 				return "bank";
-			default:
-				break;
 			}
 			return "";
 		}
 	}
-
-	private WalletType wType = WalletType.SERVER_INFINITE;
-	private TraderType tType = TraderType.SERVER_TRADER;
 	
-	private Wallet w;
-	private String owner = "server";
-	
-	public TraderTrait() {
-	//	super("type");
-		w = new Wallet(wType);
-		w.setMoney(0.0);
-	}
 	
 	public TraderType getTraderType() {
 		return tType;
@@ -116,10 +151,13 @@ public class TraderTrait {
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
+	@Override
 	public void load(DataKey data) throws NPCLoadException {
-		if ( data.keyExists("trader-type") ) {
+		this.traderTrait.load(data);
+		this.inventoryTrait.load(data);
+	/*	if ( data.keyExists("trader-type") ) {
 			tType = TraderType.getTypeByName(data.getString("trader-type"));
 		}
 		if ( data.keyExists("wallet-type") ) {
@@ -131,14 +169,84 @@ public class TraderTrait {
 		}
 		if ( data.keyExists("money") ) {
 			w.setMoney(data.getDouble("money"));
-		}
+		}*/
 	}
 
+	@Override
 	public void save(DataKey data) {
-		data.setString("trader-type", TraderType.toString(tType));
+		this.inventoryTrait.save(data);
+		this.traderTrait.save(data);
+	/*	data.setString("trader-type", TraderType.toString(tType));
 		data.setString("wallet-type", WalletType.toString(wType));
 		data.setString("owner", owner);
-		data.setDouble("money", w.getMoney());
+		data.setDouble("money", w.getMoney());*/
 	}
-
+	
+	
+	
+	
+	
+	
+/* Inventory Trait Functions! */
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
+	
+	@Override
+    public void onSet(NPC npc) {
+        if( !npc.hasTrait(InventoryTrait.class) ) 
+            npc.addTrait(InventoryTrait.class);
+        if ( !npc.hasTrait(TraderTrait.class) ) {
+            npc.addTrait(TraderTrait.class);
+        	npc.getTrait(TraderTrait.class).getWallet().setEconomy(config.getEcon());
+        }
+    }
+	*/
+	
+	
+	
 }

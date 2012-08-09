@@ -10,14 +10,10 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
-import net.citizensnpcs.api.npc.character.CharacterFactory;
-import net.citizensnpcs.api.trait.TraitFactory;
-import net.dtl.citizenstrader_new.traits.InventoryTrait;
-import net.dtl.citizenstrader_new.traits.TraderTrait;
+import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,10 +24,11 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public static CitizensTrader plugin;
 	
-	public TraderConfig config;
+	public static TraderConfig config;
 
 	private Economy economy;
 	private Permission permission;
+	private static TraderManager traderManager;
 	
 	
 	@Override
@@ -61,15 +58,17 @@ public class CitizensTrader extends JavaPlugin {
 			loadConfig();
 			config.setEcon(economy);
 			
-			if ( CitizensAPI.getCharacterManager() != null )
-				CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderCharacter.class).withName("trader"));
-			if ( CitizensAPI.getTraitManager() != null ) {
-				CitizensAPI.getTraitManager().registerTrait(new TraitFactory(InventoryTrait.class).withName("inv").withPlugin(this));
-				CitizensAPI.getTraitManager().registerTrait(new TraitFactory(TraderTrait.class).withName("trader").withPlugin(this));
-			}
-			getServer().getPluginManager().registerEvents((Listener) CitizensAPI.getCharacterManager().getCharacter("trader"), this);
-			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
-			((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
+			traderManager = new TraderManager();
+						
+			//if ( CitizensAPI.hasImplementation()  )
+			//	CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderCharacter.class).withName("trader"));
+			//if ( CitizensAPI.getTraitManager() != null ) {
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("trader"));
+			//	CitizensAPI.getTraitManager().registerTrait(new TraitFactory(TraderTrait.class).withName("trader").withPlugin(this));
+			//}
+			getServer().getPluginManager().registerEvents(traderManager, this);
+			//getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+			//((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
 			
 			plugin = this;
 			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");
@@ -146,6 +145,14 @@ public class CitizensTrader extends JavaPlugin {
     	out.flush();
     	
 		return true;
+	}
+	
+	public static TraderManager getTraderManager() {
+		return traderManager;
+	}
+	
+	public static TraderConfig getTraderConfig() {
+		return config;
 	}
 	
 	public Economy getEconomy() {

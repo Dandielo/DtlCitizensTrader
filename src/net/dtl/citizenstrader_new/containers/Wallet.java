@@ -7,7 +7,7 @@ public class Wallet {
 	private WalletType type;
 	private Economy economy;
 	
-	private double money;
+	private double money; 
 	private String bank;
 	
 	public Wallet(WalletType t) {
