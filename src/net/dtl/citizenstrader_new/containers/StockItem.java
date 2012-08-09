@@ -66,11 +66,11 @@ public class StockItem {
 							item.setAmount(amouts.get(0));
 					}
 					if ( value.startsWith("gl:") && !value.contains(";") ) {
-						String[] limitData = value.substring(2).split("/");
+						String[] limitData = value.substring(3).split("/");
 						limit.setItemGlobalLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("pl:") && !value.contains(";") ) {
-						String[] limitData = value.substring(2).split("/");
+						String[] limitData = value.substring(3).split("/");
 						limit.setItemPlayerLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("e:") && !value.contains(";")  ) {

@@ -62,7 +62,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 
 					} else if ( args[0].equals("choose") ) {
 
-					}
+					} 
 				}
 				
 				

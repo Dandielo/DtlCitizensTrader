@@ -1,8 +1,6 @@
 package net.dtl.citizenstrader_new;
 
 
-import org.bukkit.Bukkit;
-
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -18,13 +16,14 @@ public class TraderCharacterTrait extends Trait {
 		super("trader");
 //		w = new Wallet(WalletType.PLAYER_WALLET);
 //		w.setMoney(0.0);
+		//CitizensTrader.getTraderManager().addTraderNpc(this.npc);
 		this.traderTrait = new TraderTrait();
 		this.inventoryTrait = new InventoryTrait();
 	}
 	
 	@Override
 	public void onSpawn() {
-		plugin = (CitizensTrader) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
+		//plugin = (CitizensTrader) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		//plugin.getDenizenNPCRegistry().registerNPC(npc);
 
 		//for (String theTriggerName : plugin.getTriggerRegistry().listTriggers().keySet())
