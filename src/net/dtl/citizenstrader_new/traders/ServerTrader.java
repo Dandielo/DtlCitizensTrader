@@ -266,7 +266,7 @@ public class ServerTrader extends Trader {
 				 * Wool checking, also removing a bug that allowed placing items for sell in the wool slots 
 				 * 
 				 */
-				if ( isWool(event.getCurrentItem(),(byte)0) && event.getSlot() == getInventory().getSize() - 2 ) {
+				if ( isWool(event.getCurrentItem(),(byte)15) ) {// && event.getSlot() == getInventory().getSize() - 2 ) {
 					/*
 					 * Price managing enabled
 					 * 
@@ -277,10 +277,10 @@ public class ServerTrader extends Trader {
 					 * WoolChanging
 					 * 
 					 */
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.AIR));
 					
-				} else if ( isWool(event.getCurrentItem(),(byte)15) ) {
+				} else if ( isWool(event.getCurrentItem(),(byte)0) ) {
 					/*
 					 * Price managing disabled
 					 * restoring the proper managing mode
@@ -295,11 +295,11 @@ public class ServerTrader extends Trader {
 					 * WoolChanging
 					 * 
 					 */
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
-					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
 					
 					
-				} else if ( isWool(event.getCurrentItem(),(byte)0) && event.getSlot() == getInventory().getSize() - 3 ) {
+				} else if ( isWool(event.getCurrentItem(),(byte)11) ) { // && event.getSlot() == getInventory().getSize() - 3 ) {
 					/*
 					 * Limit managing enabled
 					 * Global limit as default
@@ -311,7 +311,7 @@ public class ServerTrader extends Trader {
 					 * WoolChanging
 					 * 
 					 */
-					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)13));
+					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)12) ) {
@@ -328,40 +328,39 @@ public class ServerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
 				//	getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.AIR));
 					
-				} else if ( isWool(event.getCurrentItem(),(byte)11) ) {
-					/*
-					 * switched to global Limit
-					 * 
-					 */
+				}/* else if ( isWool(event.getCurrentItem(),(byte)11) ) {
+					
+				//	  switched to global Limit
+					  
 					setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_GLOBAL);
 					
-					/*
-					 * WoolChanging
-					 * 
-					 */
+					
+				//	 WoolChanging
+					 
+					 
 					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
 				//	getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.AIR));
 					
 				} else if ( isWool(event.getCurrentItem(),(byte)13) ) {
-					/*
+					
 					 * Limit managing disabled
 					 * restoring the proper managing mode
 					 * 
-					 */
-					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) )
-						setTraderStatus(TraderStatus.PLAYER_MANAGE_BUY);
-					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
-						setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
+					 
+				//	if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) )
+				//		setTraderStatus(TraderStatus.PLAYER_MANAGE_BUY);
+				//	if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
+				//		setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
 					
-					/*
+					
 					 * WoolChanging
 					 * 
-					 */
-					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					 *
+				//	getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					//getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					
 					
-				} else if ( isWool(event.getCurrentItem(),(byte)5) ) {
+				} */ else if ( isWool(event.getCurrentItem(),(byte)5) ) {
 					
 					/*
 					 * Switching to the BuyModeManagement

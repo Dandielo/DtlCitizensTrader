@@ -80,8 +80,8 @@ public class TraderTrait {
 		}
 	}
 
-	private WalletType wType;// = WalletType.SERVER_INFINITE;
-	private TraderType tType;// = TraderType.SERVER_TRADER;
+	private WalletType wType = WalletType.SERVER_INFINITE;
+	private TraderType tType = TraderType.SERVER_TRADER;
 	
 	private Wallet w;
 	private String owner = "server";
