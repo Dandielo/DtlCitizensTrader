@@ -72,7 +72,8 @@ public class TraderManager implements Listener {
 				if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) )
 					ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
 				ongoingTrades.get(p.getName()).managerMode(event);
-				
+
+				System.out.print(event.isCancelled());
 			}
 			else {
 				
@@ -153,6 +154,7 @@ public class TraderManager implements Listener {
 			if ( p.getItemInHand().getTypeId() != 280 ) {
 				if ( ongoingTrades.containsKey(p.getName()) ) { 
 					if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) ) {
+						//
 						ongoingTrades.get(p.getName()).switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
 						ongoingTrades.get(p.getName()).reset(TraderStatus.PLAYER_MANAGE);
 					} else 
@@ -184,7 +186,6 @@ public class TraderManager implements Listener {
 							p.sendMessage(ChatColor.RED + npc.getFullName() +": user mode!");
 						}
 					} else {
-						System.out.print(trait.getTraderType().toString());
 						if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
 							ongoingTrades.put(p.getName(), new ServerTrader(npc,trait));
 						else if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) {

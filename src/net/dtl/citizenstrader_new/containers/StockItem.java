@@ -61,7 +61,7 @@ public class StockItem {
 					if ( value.startsWith("a:") && !value.contains("/") && !value.contains(";") ) {
 						amouts.clear();
 						for ( String amout : value.substring(2).split(",") )
-							amouts.add(Integer.parseInt(amout));
+							amouts.add((Integer.parseInt(amout)==0?1:Integer.parseInt(amout)));
 						if ( amouts.size() > 0 )
 							item.setAmount(amouts.get(0));
 					}

@@ -64,6 +64,26 @@ public class LimitSystem {
 		return false;
 	}
 	
+	public boolean checkLimitAutoReset(String p, int slot) {
+		if ( limit.timeoutReached(new Date()) )
+			limit.reset();
+		
+		if ( !limit.reachedLimit() ) {
+			if ( playerLimit.hasLimit() ) {
+				if ( players.containsKey(p) ) {
+					if ( playerLimit.reachedLimitWith(players.get(p)+thisItem.getAmount(slot)) )
+						return false;
+				} else {
+					players.put(p, 0);
+				}
+			}
+			return !limit.reachedLimitWith(thisItem.getAmount(slot)-1);
+		}
+		limit.setLimit(1);
+		limit.setAmountt(1);
+		return false;
+	}
+	
 	/* *
 	 * Lol, why I've coded that?
 	 * 
@@ -190,6 +210,9 @@ public class LimitSystem {
 		return playerLimit.timeoutString();
 	}
 	
+	public void setGlobalTimeout(long t) {
+		limit.setTimeout(t);
+	}
 	public void changeGlobalTimeout(long t) {
 		limit.changeTimeout(t*1000);
 	}
@@ -310,6 +333,8 @@ public class LimitSystem {
 			timer = new Date();
 		}
 		public boolean timeoutReached(Date d) {
+			if ( timeout == -2 )
+				return false;
 			return ( d.getTime() - timer.getTime() > timeout );
 		}
 		
