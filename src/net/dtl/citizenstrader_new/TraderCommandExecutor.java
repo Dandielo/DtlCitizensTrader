@@ -88,9 +88,9 @@ public class TraderCommandExecutor implements CommandExecutor {
 				return;
 			
 			trader.getTraderConfig().setWalletType(WalletType.getTypeByName(type));
-			p.sendMessage(ChatColor.RED + "Trader type changed to " + type);
+			p.sendMessage(ChatColor.RED + "Wallet type changed to " + type);
 		} else {
-			p.sendMessage(ChatColor.RED + "Invalid trader type!");
+			p.sendMessage(ChatColor.RED + "Invalid wallet type!");
 		}
 	}
 

@@ -501,6 +501,94 @@ public class PlayerTrader extends Trader {
 				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_PRICE) )
 				{
 					
+					//check the cursor (if nothing is held just show the items price)
+					if ( event.getCursor().getType().equals(Material.AIR) ) {
+						
+						
+						// check if it's buy or sell mode
+						if ( isBuyModeByWool() )
+						{
+							
+							//select the item to get the information from, and show the price
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
+								p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
+							
+							
+							//reset the selection
+							selectItem(null);
+						}
+						else
+						if ( isBuyModeByWool() )
+						{
+							
+							//select the item to get the information from, and show the price
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
+								p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
+							
+							
+							//reset the selection
+							selectItem(null);
+						}
+						
+					} 
+					//if some thing is held change the items price
+					else
+					{
+
+						// check if it's buy or sell mode
+						if ( isBuyModeByWool() ) 
+						{
+							
+							//select the item if it exists
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) 
+							{
+								
+								//if it's right clicked the lower the price, else rise it
+								if ( event.isRightClick() ) 
+									getSelectedItem().lowerPrice(calculatePrice(event.getCursor()));
+								else
+									getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
+								
+								//show the new price
+								p.sendMessage(ChatColor.GOLD + "New price: " + f.format(getSelectedItem().getRawPrice()) );
+								
+								//deselect the item
+								selectItem(null);
+								
+								
+							}
+							
+							
+						} 
+						else
+						if ( isSellModeByWool() )
+						{
+						
+							//select the item if it exists
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) 
+							{
+
+								//if it's right clicked the lower the price, else rise it
+								if ( event.isRightClick() ) 
+									getSelectedItem().lowerPrice(calculatePrice(event.getCursor()));
+								else
+									getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
+								
+								//show the new price
+								p.sendMessage(ChatColor.GOLD + "New price: " + f.format(getSelectedItem().getRawPrice()) );
+								
+								//deselct the item
+								selectItem(null);
+							}
+							
+							
+						}
+						
+						
+					}
+					event.setCancelled(true);
+					
+					
 				}
 				else 
 				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER) )
