@@ -9,7 +9,7 @@ import net.dtl.citizenstrader_new.containers.Wallet;
 public class TraderTrait {
 
 	public enum WalletType {
-		PLAYER_WALLET, PLAYER_BANK, NPC_WALLET, SERVER_BANK, SERVER_INFINITE, GROUP_WALLET //Future FACTION_WALLET
+		PLAYER_WALLET, PLAYER_BANK, NPC_WALLET, SERVER_BANK, SERVER_INFINITE, GROUP_WALLET //Future CLAN_WALLET
 ;
 
 		public static WalletType getTypeByName(String n) {
@@ -90,6 +90,28 @@ public class TraderTrait {
 	//	super("type");
 		w = new Wallet(wType);
 		w.setMoney(100.0);
+	}
+	
+	public void setOwner(String owner) {
+		this.owner = owner;
+	}
+	
+	public void setWalletType(WalletType type) {
+		// if the trader is a server trader (admin shop) allow to sat anny walet
+		if ( tType.equals(TraderType.SERVER_TRADER) ) {
+			wType = type;
+			w.setWalletType(wType);
+		}
+		// if the trader is a player trader
+		if ( tType.equals(TraderType.SERVER_TRADER) ) {
+			
+			//disallow infinite money
+			if ( type.equals(WalletType.SERVER_INFINITE) )
+				return;
+			
+			
+			wType = type;
+		}
 	}
 	
 	public void setTraderType(TraderType type) {

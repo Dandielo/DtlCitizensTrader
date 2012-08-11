@@ -3,6 +3,7 @@ package net.dtl.citizenstrader_new;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
+import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
@@ -23,8 +24,10 @@ public class TraderCharacterTrait extends Trait {
 	
 	@Override
 	public void onSpawn() {
-		if ( npc.hasTrait(TraderCharacterTrait.class) )
+		if ( npc.hasTrait(TraderCharacterTrait.class) ) {
 			CitizensTrader.getTraderManager().addTraderNpc(npc);
+			this.traderTrait.setOwner(npc.getTrait(Owner.class).getOwner());
+		}
 		//plugin = (CitizensTrader) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		//plugin.getDenizenNPCRegistry().registerNPC(npc);
 
