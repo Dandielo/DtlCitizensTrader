@@ -23,6 +23,8 @@ public class TraderCharacterTrait extends Trait {
 	
 	@Override
 	public void onSpawn() {
+		if ( npc.hasTrait(TraderCharacterTrait.class) )
+			CitizensTrader.getTraderManager().addTraderNpc(npc);
 		//plugin = (CitizensTrader) Bukkit.getServer().getPluginManager().getPlugin("Denizen");
 		//plugin.getDenizenNPCRegistry().registerNPC(npc);
 

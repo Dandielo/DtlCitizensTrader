@@ -73,7 +73,6 @@ public class TraderManager implements Listener {
 					ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
 				ongoingTrades.get(p.getName()).managerMode(event);
 
-				System.out.print(event.isCancelled());
 			}
 			else {
 				
@@ -126,12 +125,6 @@ public class TraderManager implements Listener {
 				event.setCancelled(true);
 			
 	    }
-	}
-	
-	@EventHandler
-	public void onNPCSpawn(NPCSpawnEvent event) {
-		if ( event.getNPC().hasTrait(TraderCharacterTrait.class) )
-			this.isTraderNpc.add(event.getNPC());
 	}
 	
 	@EventHandler

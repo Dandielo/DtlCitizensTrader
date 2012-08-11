@@ -78,6 +78,9 @@ public class TraderCommandExecutor implements CommandExecutor {
 	private void setTraderType(Player p, String type) {
 		if ( type != null && ( type.equals("server") || type.equals("player") ) ) {
 			Trader trader = this.traderManager.getOngoingTrades(p.getName());
+			if ( trader == null )
+				return;
+			
 			if ( trader.getTraderConfig().getTraderType().toString().equals(type) )
 				return;
 			

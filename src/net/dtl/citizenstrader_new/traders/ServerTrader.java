@@ -64,7 +64,7 @@ public class ServerTrader extends Trader {
 					switchInventory(TraderStatus.PLAYER_SELL);		
 				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
 					/*
-					 * lest go back to the main selling inventory ;)
+					 * lest go to the buy inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.PLAYER_BUY);		
@@ -513,24 +513,23 @@ public class ServerTrader extends Trader {
 						  * 
 						  */
 						 if ( event.isRightClick() ) {
-							 /*
-							  * RightClick currently not supported
-							  * 
-							  */
-							 if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) ) { 
-								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
-									if ( getSelectedItem().hasStackPrice() ) {
-										getSelectedItem().setStackPrice(true);
-										p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
-									} else {
-										getSelectedItem().setStackPrice(true);
-										p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
-									}
+
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_SELL).hasSelectedItem() ) {
+								if ( getSelectedItem().hasStackPrice() ) {
+									getSelectedItem().setStackPrice(false);
+									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+								} else {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
 								}
-							 }
-					//		 p.sendMessage(ChatColor.GOLD + "Cannot right click here!");
-							 event.setCancelled(true);
-							 return;
+							}
+
+							//reset the selection
+							selectItem(null);
+							
+							//cancel the event
+							event.setCancelled(true);
+							return;
 						 }
 						 if ( hasSelectedItem() ) {
 							 /*
@@ -597,15 +596,13 @@ public class ServerTrader extends Trader {
 							 * 
 							 */
 							
-							if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) {
-								if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
-									if ( getSelectedItem().hasStackPrice() ) {
-										getSelectedItem().setStackPrice(true);
-										p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
-									} else {
-										getSelectedItem().setStackPrice(true);
-										p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
-									}
+							if ( selectItem(event.getSlot(),TraderStatus.PLAYER_MANAGE_BUY).hasSelectedItem() ) {
+								if ( getSelectedItem().hasStackPrice() ) {
+									getSelectedItem().setStackPrice(false);
+									p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+								} else {
+									getSelectedItem().setStackPrice(true);
+									p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
 								}
 							}
 						//	p.sendMessage(ChatColor.GOLD + "Cannot right click here!");

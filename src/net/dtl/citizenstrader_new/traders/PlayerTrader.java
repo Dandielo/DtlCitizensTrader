@@ -239,6 +239,16 @@ public class PlayerTrader extends Trader {
 		}
 		event.setCancelled(true);		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	@Override
 	public void managerMode(InventoryClickEvent event) {
@@ -251,38 +261,367 @@ public class PlayerTrader extends Trader {
 		
 		if ( top ) 
 		{
+			setInventoryClicked(true);
 			
 			if ( isManagementSlot(clickedSlot, 3) ) 
 			{
-				if ( isWool(event.getCurrentItem(), (byte) 0) && clickedSlot == event.getInventory().getSize() - 2 )
+				if ( isWool(event.getCurrentItem(), (byte) 0) )
 				{
+					
+					
+					//close any management mode, switch to the default buy/sell management
+					if ( isSellModeByWool() )
+						this.setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
+					if ( isBuyModeByWool() )
+						this.setTraderStatus(TraderStatus.PLAYER_MANAGE_BUY);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+					
 					
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 0) && clickedSlot == event.getInventory().getSize() - 2 )
+				if ( isWool(event.getCurrentItem(), (byte) 15) )
 				{
+					
+					
+					//switch to price setting mode
+					this.setTraderStatus(TraderStatus.PLAYER_MANAGE_PRICE);
+					
+					
+
+					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
+					
 					
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 0) && clickedSlot == event.getInventory().getSize() - 2 )
+				if ( isWool(event.getCurrentItem(), (byte) 11) )
 				{
+					
+					
+					//Only player limit management is enabled
+					//global limit used by this system
+					this.setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
+					
 					
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 0) && clickedSlot == event.getInventory().getSize() - 2 )
+				if ( isWool(event.getCurrentItem(), (byte) 5) )
 				{
 					
+					
+					//switch to buy mode
+					//status switching included in Inventory switch
+					switchInventory(TraderStatus.PLAYER_MANAGE_BUY);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
+					
+					
 				}
+				else
+				if ( isWool(event.getCurrentItem(), (byte) 3) )
+				{
+					
+					
+					//switch to sell mode
+					//status switching included in Inventory switch
+					switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
+				
+				
+				}
+				else
+				if ( isWool(event.getCurrentItem(), (byte) 2) )	//unsupported wool data value
+				{
+					
+					
+					// TODO Currently disabled!!
+					//switch to sell mode, out of amount management
+					this.setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
+					
+					
+				}
+				
+				//cancel the event, so no1 can take up wools and end
+				event.setCancelled(true);
+				return;
 			}
+			//items management 
 			else
 			{
-				
+				//sell management
+				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) )
+				{
+					
+					//if an item is right-clicked
+					if ( event.isRightClick() ) 
+					{
+						if ( selectItem(event.getSlot(), getTraderStatus()).hasSelectedItem() )
+						{
+							//if it has the stack price change it back to "per-item" price
+							if ( getSelectedItem().hasStackPrice() ) 
+							{
+								getSelectedItem().setStackPrice(false);
+								p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+							} 
+							//change the price to a stack-price
+							else
+							{
+								getSelectedItem().setStackPrice(true);
+								p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+							}
+						}
+						
+						//reset the selection
+						selectItem(null);
+						
+						//cancel the event
+						event.setCancelled(true);
+						return;
+					}
+					
+					
+					//has a selected item, can change the position or throw away
+					if ( hasSelectedItem() ) 
+					{
+						//switch the items selected
+						
+						
+						
+						StockItem stockItem = getSelectedItem();
+						
+						
+						
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+							getSelectedItem().setSlot(-2);
+						
+						
+						
+						stockItem.setSlot(clickedSlot);
+						
+						
+					}
+					//no item selected, select an item and change it's slot to -2 (in management)
+					else
+					{
+						
+						
+						//try to select an item (if it existis in that slot)
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+							getSelectedItem().setSlot(-2);	//found a item for management
+						
+						
+						
+					}
+					return;
+				}
+				else
+				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_BUY) ) 
+				{
+					//if an item is right-clicked
+					if ( event.isRightClick() ) 
+					{
+						if ( selectItem(event.getSlot(), getTraderStatus()).hasSelectedItem() )
+						{
+							//if it has the stack price change it back to "per-item" price
+							if ( getSelectedItem().hasStackPrice() ) 
+							{
+								getSelectedItem().setStackPrice(false);
+								p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+							} 
+							//change the price to a stack-price
+							else
+							{
+								getSelectedItem().setStackPrice(true);
+								p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+							}
+						}
+						
+						//reset the selection
+						selectItem(null);
+						
+						//cancel the event
+						event.setCancelled(true);
+						return;
+					}
+					
+					
+					//has a selected item, can change the position or throw away
+					if ( hasSelectedItem() ) 
+					{
+						//switch the items selected
+						
+						
+						
+						StockItem stockItem = getSelectedItem();
+						
+						
+						
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+							getSelectedItem().setSlot(-2);
+						
+						
+						
+						stockItem.setSlot(clickedSlot);
+						
+						
+					}
+					//no item selected, select an item and change it's slot to -2 (in management)
+					else
+					{
+						
+						
+						//try to select an item (if it existis in that slot)
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+							getSelectedItem().setSlot(-2);	//found a item for management
+						
+						
+						
+					}
+					return;
+				}
+				else 
+				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_PRICE) )
+				{
+					
+				}
+				else 
+				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER) )
+				{
+					
+				}
+				//currently unsupported
+				else 
+				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL_AMOUNT) )
+				{
+					
+				} 
+
 			}
 			
 		}
+		//bottom inventory management
 		else 
 		{
+
+			System.out.print("bottom");
 			
+			
+			//cancel the event, bottom always canceled
+			event.setCancelled(true);
+			
+			
+			//if top inventory was clicked before
+			if ( this.getInventoryClicked() )
+			{
+				
+				
+				//if there is some thing selected
+				if ( hasSelectedItem() ) 
+				{
+					
+
+					//clear the stock
+					if ( isSellModeByWool() )
+						getTraderStock().removeItem(true, getSelectedItem().getSlot());
+					if ( isBuyModeByWool() )
+						getTraderStock().removeItem(false, getSelectedItem().getSlot());
+					
+					
+					
+					//remove the selection and clear the cursor
+					selectItem(null);
+					event.setCursor(new ItemStack(Material.AIR));
+					
+					
+					//doesnt work...
+					//event.getWhoClicked().getInventory().setItem(clickedSlot, new ItemStack(0));
+				
+				}
+				
+			}
+			//if bottom inventory was clicked before
+			else
+			{
+
+
+				
+				//if an item is right-clicked
+				if ( event.isRightClick() && event.getCurrentItem().getTypeId() != 0 )
+				{
+
+					
+					
+					//get the item information
+					ItemStack itemToAdd = event.getCurrentItem();
+					itemToAdd.setAmount(1);
+					
+					
+					//get the first empty item slot
+					int firstEmpty = getInventory().firstEmpty();
+					
+					
+					
+					//just to be sure nothing will be out of the inventory range
+					if ( firstEmpty >= 0 && firstEmpty < getInventory().getSize() )
+					{
+						
+						
+						//set the item to the inventory
+						getInventory().setItem(firstEmpty, itemToAdd);
+						
+						
+						
+						//change the item into the stock type
+						StockItem stockItem = toStockItem(itemToAdd);
+						
+						
+						
+						//set the stock items slot
+						stockItem.setSlot(firstEmpty);
+						
+						
+						
+						//put it into the stock list
+						if ( isSellModeByWool() )
+							getTraderStock().addItem(true, stockItem);
+						if ( isBuyModeByWool() )
+							getTraderStock().addItem(false, stockItem);
+						
+						
+						
+						
+					}
+					
+					
+					
+					
+					
+					
+					//nothing to select, just copy it up to the inventory
+				}
+				
+				
+			}
+			
+			setInventoryClicked(false);
 		}
 		
 		
