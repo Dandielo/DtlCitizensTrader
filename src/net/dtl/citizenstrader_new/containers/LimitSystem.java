@@ -3,27 +3,24 @@ package net.dtl.citizenstrader_new.containers;
 import java.util.Date;
 import java.util.HashMap;
 
-/* *
+/**
  * New LimitClass (the old one will be removed after this one is complete)
  * 
  */
 public class LimitSystem {
-	/* *
-	 * Players variable used by the perPlayerLimit system
-	 * 
-	 */
+	//the stocks item limit system
 	private final StockItem thisItem;
+	//the linked stock item (feature)
 	private StockItem linked;
 
+	//global limit for server traders, or amount saving for player traders
 	private Limit limit;
+	//a player based limit, a player can only buy a set amount of items until the timeout (atm not supported)
 	private Limit playerLimit;
 
+	//players with a ongoing timeout (need to add a gile to save this)
 	private HashMap<String,Integer> players;
 	
-	/* *
-	 * Constructor
-	 *
-	 */
 	public LimitSystem(StockItem item) {
 		thisItem = item;
 		linked = null;
@@ -42,10 +39,13 @@ public class LimitSystem {
 		return playerLimit.hasLimit();
 	}
 	
+	// TODO linking system 
 	public void linkWith(StockItem item) {
 		linked = item;
 	}
 	
+	
+	// TODO redo this function
 	public boolean checkLimit(String p, int slot) {
 		if ( limit.timeoutReached(new Date()) )
 			limit.reset();
@@ -64,6 +64,8 @@ public class LimitSystem {
 		return false;
 	}
 	
+	
+	// TODO redo this function
 	public boolean checkLimitAutoReset(String p, int slot) {
 		if ( limit.timeoutReached(new Date()) )
 			limit.reset();
@@ -79,8 +81,6 @@ public class LimitSystem {
 			}
 			return !limit.reachedLimitWith(thisItem.getAmount(slot)-1);
 		}
-		limit.setLimit(1);
-		limit.setAmountt(1);
 		return false;
 	}
 	
@@ -179,14 +179,14 @@ public class LimitSystem {
 	}
 	
 	
-	public void setItemGlobalLimit(int limit, int amount, long time) {
+	public void setItemGlobalLimit(int amount, int limit, long time) {
 		this.limit.setLimit(limit);
-		this.limit.setAmountt(amount);
+		this.limit.setAmount(amount);
 		this.limit.setTimeout(time);
 	}
-	public void setItemPlayerLimit(int limit, int amount, long time) {
+	public void setItemPlayerLimit(int amount, int limit, long time) {
 		this.playerLimit.setLimit(limit);
-		this.playerLimit.setAmountt(amount);
+		this.playerLimit.setAmount(amount);
 		this.playerLimit.setTimeout(time);
 	}
 	
@@ -202,6 +202,9 @@ public class LimitSystem {
 	/* *
 	 * global limit
 	 */
+	public void setGlobalAmount(int amount) {
+		limit.setAmount(amount);
+	}
 	
 	public String getGlobalTimeout() {
 		return limit.timeoutString();
@@ -225,6 +228,9 @@ public class LimitSystem {
 	}
 	public int getPlayerLimit() {
 		return playerLimit.getLimit();
+	}
+	public void setGlobalLimit(int l) {
+		limit.setLimit(l);
 	}
 	public void changeGlobalLimit(int l) {
 		limit.changeLimit(l);
@@ -273,7 +279,7 @@ public class LimitSystem {
 		 * 
 		 */
 		public boolean hasLimit() {
-			return limit > 0;
+			return limit > -1;
 		}
 		public int getLimit() {
 			return limit;
@@ -293,23 +299,27 @@ public class LimitSystem {
 		public void changeAmount(int a) {
 			amount += a;
 		}
-		public void setAmountt(int a) {
+		public void setAmount(int a) {
 			amount = a;
 		}
 		public void resetAmount() {
 			amount = 0;
 		}
 		
+		//less than = no limit, 0 = always unavailable, 
 		public boolean reachedLimit() {
-			if ( limit <= 0 )
+			if ( limit < 0 )
 				return false;
 			return amount >= limit;
 		}
+		
+		//less than = no limit, 0 = always unavailable, 
 		public boolean reachedLimitWith(int a) {
-			if ( limit <= 0 )
+			if ( limit < 0 )
 				return false;
 			return amount + a >= limit;
 		}
+		
 		public boolean reachedLimitAs(int a) {
 			return a >= limit;
 		}
@@ -333,7 +343,7 @@ public class LimitSystem {
 			timer = new Date();
 		}
 		public boolean timeoutReached(Date d) {
-			if ( timeout == -2 )
+			if ( timeout == -2000 )
 				return false;
 			return ( d.getTime() - timer.getTime() > timeout );
 		}

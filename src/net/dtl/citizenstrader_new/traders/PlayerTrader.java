@@ -9,6 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
@@ -298,33 +299,36 @@ public class PlayerTrader extends Trader {
 					
 				}
 				else
+				// TODO add a support system ;P
 				if ( isWool(event.getCurrentItem(), (byte) 11) )
 				{
 					
-					
+
+					p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
 					//Only player limit management is enabled
 					//global limit used by this system
-					this.setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER);
+					//this.setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER);
 					
 					
 					
-					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
-					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
+					//getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+				//	getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 					
 					
 				}
 				else
+				// TODO add a nice support to this system
 				if ( isWool(event.getCurrentItem(), (byte) 5) )
 				{
-					
+					p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
 					
 					//switch to buy mode
 					//status switching included in Inventory switch
-					switchInventory(TraderStatus.PLAYER_MANAGE_BUY);
+					//switchInventory(TraderStatus.PLAYER_MANAGE_BUY);
 					
 					
 					
-					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
+					//getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
 					
 					
 				}
@@ -366,6 +370,49 @@ public class PlayerTrader extends Trader {
 			//items management 
 			else
 			{
+				//shift click handling
+				if ( event.isShiftClick() )
+				{
+					
+					//we don't like shift click in the upper inventory ;)
+					event.setCancelled(true);
+					
+					
+					//but any shift click will remove an item from the traders stock ;> 
+					//and return all the remaining amount to the player, (if he has enough space)
+					if ( selectItem(clickedSlot, getBasicManageModeByWool() ).hasSelectedItem() ) 
+					{
+						//get the amount left in the stock
+						int leftAmount = getSelectedItem().getLimitSystem().getGlobalLimit() - getSelectedItem().getLimitSystem().getGlobalAmount();
+						
+						//check if the player has enough space
+						if ( inventoryHasPlaceAmount(p, leftAmount) )
+						{
+						
+							//remove that item from stock room
+							if ( isBuyModeByWool() )
+								getTraderStock().removeItem(false, clickedSlot);
+							if ( isSellModeByWool() )
+								getTraderStock().removeItem(true, clickedSlot);
+							
+							
+							//add the remaining amount to the player
+							this.addAmountToInventory(p, leftAmount);
+							
+							
+							getInventory().setItem(clickedSlot, new ItemStack(0));
+							
+							
+							//clear the selecton and message the player
+							selectItem(null);
+							p.sendMessage(ChatColor.RED+"You got " + leftAmount + " of this item back");
+						}
+						
+						
+					}
+					
+					
+				}
 				//sell management
 				if ( equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL) )
 				{
@@ -518,7 +565,7 @@ public class PlayerTrader extends Trader {
 							selectItem(null);
 						}
 						else
-						if ( isBuyModeByWool() )
+						if ( isSellModeByWool() )
 						{
 							
 							//select the item to get the information from, and show the price
@@ -608,9 +655,6 @@ public class PlayerTrader extends Trader {
 		//bottom inventory management
 		else 
 		{
-
-			System.out.print("bottom");
-			
 			
 			//cancel the event, bottom always canceled
 			event.setCancelled(true);
@@ -651,15 +695,39 @@ public class PlayerTrader extends Trader {
 
 
 				
-				//if an item is right-clicked
-				if ( event.isRightClick() && event.getCurrentItem().getTypeId() != 0 )
+				//if an item is left-clicked
+				if ( event.isLeftClick() && event.getCurrentItem().getTypeId() != 0 )
 				{
-
+					//save the amount 
+					int backUpAmount = event.getCurrentItem().getAmount();
 					
 					
 					//get the item information
 					ItemStack itemToAdd = event.getCurrentItem();
 					itemToAdd.setAmount(1);
+					
+					
+					//if that item already exist, don't put it again
+					if ( isSellModeByWool() )
+						this.selectItem(itemToAdd, getTraderStatus(), false, false);
+					if ( isBuyModeByWool() )
+						this.selectItem(itemToAdd, getTraderStatus(), false, false);
+					
+					
+					if ( hasSelectedItem() )
+					{
+						
+						
+						//message the player
+						p.sendMessage(ChatColor.RED + "That item is alredy in the traders stock");
+						
+						
+						//reset the selection and set the clicked inventory (false = bottom)
+						itemToAdd.setAmount(backUpAmount);
+						selectItem(null);
+						setInventoryClicked(false);
+						return;
+					}
 					
 					
 					//get the first empty item slot
@@ -673,18 +741,22 @@ public class PlayerTrader extends Trader {
 						
 						
 						//set the item to the inventory
-						getInventory().setItem(firstEmpty, itemToAdd);
+						getInventory().setItem(firstEmpty, itemToAdd.clone());
 						
 						
 						
 						//change the item into the stock type
-						StockItem stockItem = toStockItem(itemToAdd);
-						
+						StockItem stockItem = toStockItem(itemToAdd.clone());
 						
 						
 						//set the stock items slot
 						stockItem.setSlot(firstEmpty);
+
 						
+						//set the limit system to 0/0/-2 (player empty configuration)
+						LimitSystem limitSystem = stockItem.getLimitSystem();
+						limitSystem.setGlobalLimit(0);
+						limitSystem.setGlobalTimeout(-2000);
 						
 						
 						//put it into the stock list
@@ -695,15 +767,85 @@ public class PlayerTrader extends Trader {
 						
 						
 						
+						itemToAdd.setAmount(backUpAmount);
+					}
+					
+					
+				}
+				else
+				//if we are right clicking an item we will add the stock amount the trader will sell
+				if ( event.getCurrentItem().getTypeId() != 0 )
+				{
+					//if it's not shift clicked it has no effect ;P
+					if ( !event.isShiftClick() )
+					{
+						
+						//message the player
+						p.sendMessage(ChatColor.RED + "Shift click to add an amount");
+						
+						
+						//reset the selection and set the clicked inventory (false = bottom)
+						selectItem(null);
+						setInventoryClicked(false);
+						return;
+					}
+					
+					
+					//get the item we want to add
+					ItemStack itemToAdd = event.getCurrentItem();
+					
+					
+					//get the item if it exists in the inventory
+					if ( isSellModeByWool() )
+						this.selectItem(itemToAdd, getTraderStatus(), false, false);
+					if ( isBuyModeByWool() )
+						this.selectItem(itemToAdd, getTraderStatus(), false, false);
+					
+					
+					//if it exist allow the event to occur (let the item disappear)
+					if ( hasSelectedItem() ) 
+					{
+						
+						//let the item disappear
+						event.setCancelled(false);
+						
+						
+						//get the items limit system
+						LimitSystem limitSystem = getSelectedItem().getLimitSystem();
+						
+						
+						//timeout set to no timeout checks (-2000 = it will never reset)
+						limitSystem.setGlobalTimeout(-2000);
+						
+						
+						int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
+						if ( getItemsLeft < 0 )
+							getItemsLeft = 0;
+						
+						//set the new limit (how many items can players buy)
+						limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
+						
+						
+						//set the amount to 0 to push it but don't change the top items amount 
+						itemToAdd.setAmount(0);
+						event.setCurrentItem(itemToAdd);
+						
+						
+						//reset the amount
+						limitSystem.setGlobalAmount(0);
+					
+						
+						//reset
+						selectItem(null);
+					}
+					else
+					{
+						//that item isn't in the stock
+						p.sendMessage(ChatColor.RED+"You don't have this item in you'r stock");
 						
 					}
 					
 					
-					
-					
-					
-					
-					//nothing to select, just copy it up to the inventory
 				}
 				
 				

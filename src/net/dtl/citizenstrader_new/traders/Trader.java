@@ -228,10 +228,14 @@ public abstract class Trader {
 	 * Checking if the inventory has enough space to save the selected amount
 	 * 
 	 */
-	public final boolean inventoryHasPlace(Player player,int slot) {
-		PlayerInventory inventory = player.getInventory();
+	public final boolean inventoryHasPlace(Player player, int slot) {
 		int amountToAdd = selectedItem.getAmount(slot);
-		
+		return this.inventoryHasPlaceAmount(player, amountToAdd);
+	}
+	
+	public final boolean inventoryHasPlaceAmount(Player player,int amount) {
+		PlayerInventory inventory = player.getInventory();
+		int amountToAdd = amount;
 		/* *
 		 * get all stacks with the same type (hmm... does it compares the data values?)
 		 * 
@@ -276,13 +280,20 @@ public abstract class Trader {
 		return false;
 	}
 	
-	/* *
+	public final boolean addSelectedToInventory(Player player, int slot) {
+
+		int amountToAdd = selectedItem.getAmount(slot);
+		return addAmountToInventory(player, amountToAdd);
+		
+	}
+	
+	/**
 	 * SelfWritten Inventory.addItem() function for a work around with a bukkit inventory function bug
 	 * 
 	 */
-	public final boolean addSelectedToInventory(Player player, int slot) {
+	public final boolean addAmountToInventory(Player player, int amount) {
 		PlayerInventory inventory = player.getInventory();
-		int amountToAdd = selectedItem.getAmount(slot);
+		int amountToAdd = amount;
 		
 		/* *
 		 * get all stacks with the same type (hmm... does it compares the data values?)
@@ -341,7 +352,7 @@ public abstract class Trader {
 			 * and changing amount's
 			 * 
 			 */
-			ItemStack is = selectedItem.getItemStack(slot).clone();
+			ItemStack is = selectedItem.getItemStack().clone();
 			is.setAmount(amountToAdd);
 			
 			/* *
@@ -481,7 +492,7 @@ public abstract class Trader {
 		traderStock.saveNewAmouts(inventory, selectedItem);
 	}
 	
-	/* *
+	/**
 	 * checking sell/buy mode by wool color
 	 * 
 	 */
@@ -490,6 +501,18 @@ public abstract class Trader {
 	}
 	public boolean isBuyModeByWool() {
 		return isWool(inventory.getItem(inventory.getSize()-1),(byte)3);
+	}
+	
+	/**
+	 * 
+	 */
+	public TraderStatus getBasicManageModeByWool() 
+	{
+		if ( isSellModeByWool() )
+			return TraderStatus.PLAYER_MANAGE_SELL;
+		if ( isBuyModeByWool() )
+			return TraderStatus.PLAYER_MANAGE_BUY;
+		return TraderStatus.PLAYER_MANAGE;
 	}
 	
 	/* * ===============================================================================================
