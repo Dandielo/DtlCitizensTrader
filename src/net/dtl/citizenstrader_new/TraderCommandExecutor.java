@@ -1,5 +1,7 @@
 package net.dtl.citizenstrader_new;
 
+import java.text.DecimalFormat;
+
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
@@ -62,10 +64,16 @@ public class TraderCommandExecutor implements CommandExecutor {
 						setTraderType(p, args[1]);
 					} else if ( args[0].equals("wallet") ) {
 						setWalletType(p, args[1]);
+					} else if ( args[0].equals("deposit") ) {
+						depositTrader(p, args[1]);
+					} else if ( args[0].equals("withdraw") ) {
+						withdrawTrader(p, args[1]);
 					}
-				} else if ( argsLength(args,2,2) ) {
+				} else if ( argsLength(args,1,1) ) {
 					if ( args[0].equals("type") ) {
 						setTraderType(p, args[1]);
+					} else if ( args[0].equals("balance") ) {
+						showTraderBalance(p);
 					} else if ( args[0].equals("choose") ) {
 
 					} 
@@ -78,6 +86,97 @@ public class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private void withdrawTrader(Player p, String amount) {
+		Trader trader = this.traderManager.getOngoingTrades(p.getName());
+		if ( trader == null )
+			return;
+		
+		if ( trader.getWallet().getWalletType().equals(WalletType.NPC_WALLET) ) 
+		{	
+			double money = trader.getWallet().getMoney();
+			double withdraw = 0.0;
+			try 
+			{
+				withdraw = Double.valueOf(amount);
+			} 
+			catch (NumberFormatException e)
+			{
+				p.sendMessage("Wrong amount as argument");
+				return;
+			}
+			
+			if ( withdraw > money )
+			{
+				p.sendMessage(ChatColor.RED + "This trader cannot give you that amount");
+				return;
+			}
+			trader.getWallet().setMoney(money - withdraw);
+			DecimalFormat f = new DecimalFormat("#.##");
+
+			plugin.getEconomy().depositPlayer(p.getName(), withdraw);
+			
+			p.sendMessage(ChatColor.RED + "You withdrawed " + withdraw + "");
+			p.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.WHITE + f.format(trader.getWallet().getMoney()) + "");
+		} 
+		else 
+		{
+			p.sendMessage(ChatColor.RED + "This npc does not have his own wallet");
+		}
+	}
+
+	private void depositTrader(Player p, String amount) {
+		Trader trader = this.traderManager.getOngoingTrades(p.getName());
+		if ( trader == null )
+			return;
+		
+		if ( trader.getWallet().getWalletType().equals(WalletType.NPC_WALLET) ) 
+		{	
+			double money = trader.getWallet().getMoney();
+			double deposit = 0.0;
+			try 
+			{
+				deposit = Double.valueOf(amount);
+			} 
+			catch (NumberFormatException e)
+			{
+				p.sendMessage("Wrong amount as argument");
+				return;
+			}
+			
+			plugin.getEconomy().withdrawPlayer(p.getName(), deposit);
+			
+			trader.getWallet().setMoney(money + deposit);
+			DecimalFormat f = new DecimalFormat("#.##");
+			
+			p.sendMessage(ChatColor.RED + "You deposited " + amount + "");
+			p.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.WHITE + f.format(trader.getWallet().getMoney()) + "");
+		} 
+		else 
+		{
+			p.sendMessage(ChatColor.RED + "This npc does not have his own wallet");
+		}
+	}
+
+	private void showTraderBalance(Player p) {
+		//if ( type != null && ( type.equals("server-infinite") || type.equals("player-wallet") || type.equals("npc-wallet") ) ) {
+		Trader trader = this.traderManager.getOngoingTrades(p.getName());
+		if ( trader == null )
+			return;
+		
+		if ( trader.getWallet().getWalletType().equals(WalletType.NPC_WALLET) ) 
+		{	
+			
+			DecimalFormat f = new DecimalFormat("#.##");
+			
+			p.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.WHITE + f.format(trader.getWallet().getMoney()) + "");
+		} 
+		else 
+		{
+			p.sendMessage(ChatColor.RED + "This npc does not have his own wallet");
+		}
+		
+	}
+
 	private void setWalletType(Player p, String type) {
 		if ( type != null && ( type.equals("server-infinite") || type.equals("player-wallet") || type.equals("npc-wallet") ) ) {
 			Trader trader = this.traderManager.getOngoingTrades(p.getName());
