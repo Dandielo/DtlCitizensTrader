@@ -142,7 +142,7 @@ public class TraderManager implements Listener {
 		Player p = event.getClicker();
 		
 		TraderTrait trait = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
-			System.out.print(trait.getWalletType().toString());
+			//System.out.print(trait.getWalletType().toString());
 
 			if ( p.getItemInHand().getTypeId() != 280 ) {
 				if ( ongoingTrades.containsKey(p.getName()) ) { 
