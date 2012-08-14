@@ -147,7 +147,16 @@ public class TraderManager implements Listener {
 			if ( p.getItemInHand().getTypeId() != 280 ) {
 				if ( ongoingTrades.containsKey(p.getName()) ) { 
 					if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) ) {
-						//
+						
+						//here we should to change the trader we are managing
+						//Weird to open the baker trader when clicking on the blacksmith...
+						if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
+							ongoingTrades.put(p.getName(), new ServerTrader(npc,trait));
+						else if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) {
+							ongoingTrades.put(p.getName(), new PlayerTrader(npc,trait));
+						}
+						
+						
 						ongoingTrades.get(p.getName()).switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
 						ongoingTrades.get(p.getName()).reset(TraderStatus.PLAYER_MANAGE);
 					} else 
@@ -172,6 +181,7 @@ public class TraderManager implements Listener {
 				}
 				p.openInventory(ongoingTrades.get(p.getName()).getInventory());
 			} else {
+				//TODO add a permission check
 				if ( p.isOp() || npc.getTrait(net.citizensnpcs.api.trait.trait.Owner.class).isOwnedBy(p.getName()) ) {
 					if ( ongoingTrades.containsKey(p.getName()) ) {
 						if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) ) {
