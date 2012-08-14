@@ -13,15 +13,18 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class TraderCommandExecutor implements CommandExecutor {
+public final class TraderCommandExecutor implements CommandExecutor {
 	public static CitizensTrader plugin;
 	//private TraderCharacterTrait trader;
 	private TraderManager traderManager;
+	private PermissionsManager permsManager;
 	
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
 		new CitizensTrader();
+		
 		this.traderManager = CitizensTrader.getTraderManager();
+		this.permsManager = new PermissionsManager();
 		//trader = ((TraderCharacterTrait) CitizensAPI.getTraitFactory().getTrait(TraderCharacterTrait.class));
 	}
 	
@@ -37,6 +40,205 @@ public class TraderCommandExecutor implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		//just to be sure we don't get anything more
+		if ( !cmd.getName().equalsIgnoreCase("trader") )
+			return false;
+		
+		//if the we got a player problem
+		if ( sender instanceof Player )
+		{
+			Player player = (Player) sender;
+			
+			Trader trader = traderManager.getOngoingTrades(player.getName());
+			
+			//does we have anything to interact with?
+			if ( trader == null )
+			{
+				player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+				return true;
+			}
+			
+			//check if we can use commands
+			if ( !permsManager.has(player, "dtl.trader.commands") )
+			{
+				
+				//goodbye!
+				player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use commands");
+				return true;
+			}
+			
+			
+			//lets see what arguments we use
+			//looks like we wan't to buy something
+			if ( args[0].equals("sell") )
+			{
+				if ( !permsManager.has(player, "dtl.trader.options.sell") )
+				{
+					
+					//have a good flight!
+					player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use 'sell' commands");
+					return true;
+				}
+				
+				//can we get that list plz?
+				if ( permsManager.has(player, "dtl.trader.commands.list") ) 
+				{
+					
+				}
+				else
+				//More...
+				if ( permsManager.has(player, "dtl.trader.commands.add") )
+				{
+					
+				}
+				else 
+				//My precious... Kill him!
+				if ( permsManager.has(player, "dtl.trader.commands.remove") )
+				{
+					
+				}
+				else 	
+				//Ok, i will give you that cow you will give me 4 diamonds, ok?
+				if ( permsManager.has(player, "dtl.trader.commands.edit") )
+				{
+					
+				}
+				
+			}
+			else
+			//lets sell all the junk! 
+			if ( args[0].equals("buy") )
+			{
+				if ( !permsManager.has(player, "dtl.trader.options.buy") )
+				{
+					
+					//have a good flight! (copied...)
+					player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use 'sell' commands");
+					return true;
+				}
+				
+				//Let's see
+				if ( permsManager.has(player, "dtl.trader.commands.list") ) 
+				{
+					
+				}
+				else
+				//I want that!
+				if ( permsManager.has(player, "dtl.trader.commands.add") )
+				{
+					
+				}
+				else 
+				//just take it away from me...
+				if ( permsManager.has(player, "dtl.trader.commands.remove") )
+				{
+					
+				}
+				else 	
+				//nothing to trade with...
+				if ( permsManager.has(player, "dtl.trader.commands.edit") )
+				{
+					
+				}
+				
+				
+				
+			}
+			else
+			//Hmm, bank or sock?
+			if ( args[0].equals("wallet") )
+			{
+				
+				if ( !permsManager.has(player, "dtl.trader.commands.wallet") )
+				{
+					
+					//have a good flight! (copied...)
+					player.sendMessage(ChatColor.RED + "Sorry, you can't change the traders wallet type");
+					return true;
+				}
+				
+				
+				//why i don't use a switch? because i hate them!
+				//my money, my money... ;>
+				if ( args[1].equals("owner-wallet") 
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) )
+				{
+					
+				}
+				else
+				//put it all there, in one place
+				if ( args[1].equals("owner-bank") 
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) )
+				{
+					
+				}
+				else
+				//here take it and make something useful with it
+				if ( args[1].equals("npc-wallet") 
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) )
+				{
+					
+				}
+				else
+				//any1 wan't a trader eating his bank account savings?
+				if ( args[1].equals("bank") 
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) )
+				{
+					
+				}
+				else
+				//be patient, every1 gets some!
+				if ( args[1].equals("infinite") 
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) )
+				{
+					
+				}
+				
+				//clan-wallet and clan-bank currently not supported
+				player.sendMessage(ChatColor.RED + "Wrong wallet type or insufficient permissions");
+				return true;
+			}
+			else
+			//i don't like my server trader :<
+			if ( args[0].equals("type") )
+			{
+				
+				if ( !permsManager.has(player, "dtl.trader.commands.type") )
+				{
+					
+					//see ya with the same permission ;)
+					player.sendMessage(ChatColor.RED + "Sorry, you can't change the traders type");
+					return true;
+				}
+				
+				
+				//let them have fun with this trader plugin ;P
+				if ( args[1].equals("player")
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) ) 
+				{
+					
+				}
+				else
+				//administrator shops enhanced! (WTF?! server?)
+				if ( args[1].equals("server")
+						&& permsManager.has(player, "dtl.trader.options." + args[1]) ) 
+				{
+					
+				}
+				
+
+				//typo!! We hate it!
+				player.sendMessage(ChatColor.RED + "Wrong trader type or insufficient permissions");
+				return true;
+			}
+		}
+		//is God trying to command a trader? 
+		else
+		{
+			
+			
+		}
+		
 		/*if(cmd.getName().equalsIgnoreCase("trader")||cmd.getName().equalsIgnoreCase("q")) {
 			if ((sender instanceof Player)) {
 				Player p = (Player) sender;
