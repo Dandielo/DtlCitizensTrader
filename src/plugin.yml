@@ -27,6 +27,9 @@ commands:
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
+             
+             /<command> create <type> [wallet]
+             /<command> dismiss [npc-id]
       permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
 permissions:
@@ -116,7 +119,12 @@ permissions:
       dtl.trader.commands.withdraw: 
         description: allows the user to withdraw money from a trader (only npc-walet)
       dtl.trader.commands.deposit: 
-        description: allows the uset to deposit money to a trader (only npc-walet)
+        description: allows the user to deposit money to a trader (only npc-walet)
+      dtl.trader.commands.create: 
+        description: allows the user to create a trader with the given type and wallet (options dependent)
+      dtl.trader.commands.dismiss: 
+        description: allows the user to dismiss a trader
+        
       
       
       
