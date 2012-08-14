@@ -14,21 +14,17 @@ commands:
              /<command> sell add <id> [s:slot] [a:amount,...] [p:price]
              /<command> sell remove <slot>
              /<command> sell edit <slot> [i:id] [v:value] [s:slot] [a:amount,...] [p:price]
-             
              /<command> buy list
              /<command> buy add <id> [s:slot] [a:amount,...] [p:price]
              /<command> buy remove <slot>
              /<command> buy edit <slot> [i:id] [v:value] [s:slot] [a:amount,...] [p:price]
-             
              /<command> mode <mode>
              /<command> wallet <owner-type>
              /<command> type <type>
-             
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
-             
-             /<command> create <type> [wallet]
+             /<command> create <name> [type] [wallet]
              /<command> dismiss [npc-id]
       permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
@@ -80,6 +76,8 @@ permissions:
         description: allows to set global limits in m-m
       dtl.trader.options.wallet.*: 
         description: allows to set (use) different wallet types
+      dtl.trader.options.entity.*:
+        description: allows to create an trader on the given entity type
   dtl.trader.options.wallet.*:
     children:
       dtl.trader.options.wallet.infinite: 

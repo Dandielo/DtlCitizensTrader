@@ -2,8 +2,11 @@ package net.dtl.citizenstrader_new;
 
 import java.text.DecimalFormat;
 
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
+import net.dtl.citizenstrader_new.traits.TraderTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 
@@ -11,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public final class TraderCommandExecutor implements CommandExecutor {
@@ -49,6 +53,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 			Player player = (Player) sender;
 			
+			
+		/*	needs to be recoded!!!
 			Trader trader = traderManager.getOngoingTrades(player.getName());
 			
 			//does we have anything to interact with?
@@ -57,6 +63,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
 				return true;
 			}
+			*/
+			
+			
 			
 			//check if we can use commands
 			if ( !permsManager.has(player, "dtl.trader.commands") )
@@ -231,6 +240,128 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				player.sendMessage(ChatColor.RED + "Wrong trader type or insufficient permissions");
 				return true;
 			}
+			else
+			//lets create a trader!
+			if ( args[0].equals("create") )
+			{
+				
+				if ( !permsManager.has(player, "dtl.trader.commands.create") )
+				{
+					
+					//you can't create life!
+					player.sendMessage(ChatColor.RED + "Sorry, you can't create a trader");
+					return true;
+				}
+				
+				
+				//have we got the needed args?
+				if ( args.length < 2 )
+				{
+					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					return true;
+				}
+				
+				
+				String traderName = args[1];
+				EntityType entityType = EntityType.PLAYER;
+				TraderType traderType = getDefaultTraderType(player);
+				WalletType walletType = getDefaultWalletType(player);
+				
+				
+				//lets fetch the argument list
+				for ( String arg : args )
+				{
+					
+					
+					//trader type set?
+					if ( arg.startsWith("t:") )
+					{
+						
+						
+						//do we have permissions to set this trader type?
+						if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+						{
+							player.sendMessage(ChatColor.RED + "You don't have permission to use this trader type");
+							return true;
+						}
+						traderType = TraderType.getTypeByName(arg.substring(2));
+						
+						
+					}
+					else
+					//wallet type set
+					if ( arg.startsWith("w:") )
+					{
+						
+				
+						//do we have permissions to set this wallet type?
+						if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+						{
+							player.sendMessage(ChatColor.RED + "You don't have permission to use this wallet type");
+							return true;
+						}
+						walletType = WalletType.getTypeByName(arg.substring(2));
+						
+						
+					}
+					else
+					//entity type set
+					if ( arg.startsWith("e:") )
+					{
+						
+						
+						//do we have permissions to set this wallet type?
+						if ( !permsManager.has(player, "dtl.trader.options.entity.*") )
+						{
+							player.sendMessage(ChatColor.RED + "You don't have permission to use this wallet type");
+							return true;
+						}
+						entityType = EntityType.fromName(arg.substring(2));
+						
+						
+					}
+					
+					
+				}
+				
+				
+				
+				if ( walletType == null || traderType == null )
+				{
+					player.sendMessage(ChatColor.RED + "No default available, maybe you don't have permissions to create a trader?");
+					return true;
+				}
+				
+				//creating the npc
+				NPC npc = CitizensAPI.getNPCRegistry().createNPC(entityType, traderName);
+				npc.addTrait(TraderCharacterTrait.class);
+				npc.spawn(player.getLocation());
+				
+				//change the trader settings
+				TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
+				settings.setTraderType(traderType);
+				settings.setWalletType(walletType);
+				
+				
+				player.sendMessage(ChatColor.RED + "You created a trader at you'r position");
+				
+				
+			}
+			//lets create a trader!
+			if ( args[0].equals("dismiss") )
+			{
+				
+				if ( !permsManager.has(player, "dtl.trader.commands.dismiss") )
+				{
+					
+					//you can't create life!
+					player.sendMessage(ChatColor.RED + "Sorry, you can't dismiss this trader");
+					return true;
+				}
+				
+				
+				
+			}
 		}
 		//is God trying to command a trader? 
 		else
@@ -288,6 +419,53 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;*/
 		return false;
 	}
+	
+	public TraderType getDefaultTraderType(Player player) {
+		//server trader as default
+		if ( permsManager.has(player, "dtl.trader.options.server") )
+			return TraderType.SERVER_TRADER;
+		else
+		//next default is player trader 
+		if ( permsManager.has(player, "dtl.trader.options.player") )
+			return TraderType.SERVER_TRADER;
+		
+		//else return no default
+		return null;
+	}
+	
+	public WalletType getDefaultWalletType(Player player) {
+		//server default is infinite
+		if ( permsManager.has(player, "dtl.trader.options.infinite") )
+			return WalletType.SERVER_INFINITE;
+		else
+		//next server default is custom bank
+		if ( permsManager.has(player, "dtl.trader.options.bank") )
+			return WalletType.SERVER_BANK;
+		else
+		//next default is npc wallet
+		if ( permsManager.has(player, "dtl.trader.options.npc-wallet") )
+			return WalletType.NPC_WALLET;
+		else
+		//next default is player wallet
+		if ( permsManager.has(player, "dtl.trader.options.owner-wallet") )
+			return WalletType.PLAYER_WALLET;
+		else
+		//next default is player bank account
+		if ( permsManager.has(player, "dtl.trader.options.owner-bank") )
+			return WalletType.PLAYER_BANK;
+		
+		//else return no default
+		return null;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	private void withdrawTrader(Player p, String amount) {
 		Trader trader = this.traderManager.getOngoingTrades(p.getName());
