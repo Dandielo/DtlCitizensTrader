@@ -37,7 +37,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		if(cmd.getName().equalsIgnoreCase("trader")||cmd.getName().equalsIgnoreCase("q")) {
+		/*if(cmd.getName().equalsIgnoreCase("trader")||cmd.getName().equalsIgnoreCase("q")) {
 			if ((sender instanceof Player)) {
 				Player p = (Player) sender;
 				if ( argsLength(args,0,0) ) {
@@ -83,6 +83,7 @@ public class TraderCommandExecutor implements CommandExecutor {
 				return true;
 			}
 		}
+		return false;*/
 		return false;
 	}
 	
