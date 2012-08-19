@@ -76,13 +76,6 @@ public class TraderManager implements Listener {
 			}
 			else {
 				
-				/*
-				 * Secure mode handling
-				 * 
-				 */
-				if ( config.getMode().equals("secure") ) 
-					ongoingTrades.get(p.getName()).secureMode(event);
-				
 				
 				/*
 				 * Simple mode handling
