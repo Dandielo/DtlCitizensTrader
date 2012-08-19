@@ -13,17 +13,15 @@ public class TraderTrait {
 ;
 
 		public static WalletType getTypeByName(String n) {
-			if ( n.equalsIgnoreCase("player-wallet") ) 
+			if ( n.equalsIgnoreCase("owner-wallet") ) 
 				return WalletType.PLAYER_WALLET;
-			else if ( n.equalsIgnoreCase("player-bank") )
+			else if ( n.equalsIgnoreCase("owner-bank") )
 				return WalletType.PLAYER_BANK;
-			else if ( n.equalsIgnoreCase("group-wallet") )
-				return WalletType.GROUP_WALLET;
 			else if ( n.equalsIgnoreCase("npc-wallet") )
 				return WalletType.NPC_WALLET;
-			else if ( n.equalsIgnoreCase("server-bank") )
+			else if ( n.equalsIgnoreCase("bank") )
 				return WalletType.SERVER_BANK;
-			else if ( n.equalsIgnoreCase("server-infinite") )
+			else if ( n.equalsIgnoreCase("infinite") )
 				return WalletType.SERVER_INFINITE;
 			return WalletType.SERVER_INFINITE;
 		}

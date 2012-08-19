@@ -170,6 +170,62 @@ public class InventoryTrait implements InventoryHolder {
 		return null;
 	}
 	
+	public List<String> getItemList(TraderStatus status, String format, int page) 
+	{
+		//the list we will privide the player 
+		List<String> items = new ArrayList<String>();
+		
+		//the fariable to be fetched through
+		List<StockItem> stockItems = null;
+		
+		
+		//set the stockItems variable
+		if ( TraderStatus.PLAYER_SELL.equals(status) )
+			stockItems = sellStock;
+		if ( TraderStatus.PLAYER_BUY.equals(status) )
+			stockItems = buyStock;	
+
+		
+		//index variable
+		int i = 0;
+		
+		//fetch the list we will display
+		for ( StockItem item : stockItems )
+		{
+			String itemDisplay = format;
+			
+			//item id display
+			itemDisplay = itemDisplay.replace("<ii>", String.valueOf(item.getItemStack().getTypeId()) );
+
+			//item id display
+			itemDisplay = itemDisplay.replace("<id>", String.valueOf(item.getItemStack().getData().getData()) );
+			
+			//amount display
+			itemDisplay = itemDisplay.replace("<a>", String.valueOf(item.getAmount()) );
+			
+			//price display
+			itemDisplay = itemDisplay.replace("<p>", String.valueOf(item.getPrice()) );
+			
+			//slot display
+			itemDisplay = itemDisplay.replace("<s>", String.valueOf(item.getSlot()) );
+			
+			//global limit display
+			itemDisplay = itemDisplay.replace("<gl>", String.valueOf(item.getLimitSystem().getGlobalLimit()) );
+
+			//item name display
+			itemDisplay = itemDisplay.replace("<in>", String.valueOf(item.getItemStack().getType().name().toLowerCase()) );
+			
+			if ( i >= page * 10 && i < ( ( 1 + page ) * 10 ) + 1 )
+				items.add(itemDisplay);
+			
+			++i;
+		}
+		
+		
+		
+		return items;
+	}
+	
 	public StockItem getItem(ItemStack itemStack, TraderStatus status, boolean dura,
 			boolean amount) {
 
