@@ -30,6 +30,7 @@ public class CitizensTrader extends JavaPlugin {
 	private Permission permission;
 	private static TraderManager traderManager;
 	private static PermissionsManager permsManager;
+	private LogManager logManager;
 	
 	
 	@Override
@@ -60,6 +61,7 @@ public class CitizensTrader extends JavaPlugin {
 
 			permsManager = new PermissionsManager();
 			traderManager = new TraderManager();
+			logManager = new LogManager(getConfig());
 						
 			//if ( CitizensAPI.hasImplementation()  )
 			//	CitizensAPI.getCharacterManager().registerCharacter(new CharacterFactory(TraderCharacter.class).withName("trader"));
@@ -79,7 +81,7 @@ public class CitizensTrader extends JavaPlugin {
 			this.getPluginLoader().disablePlugin(this);
 			return;
 		}
-	}
+	} 
 	
 	@Override
 	public void onDisable() {

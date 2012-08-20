@@ -11,9 +11,8 @@ public class TraderConfig {
 	//global trader mode (default simple)
 	private String globalMode;
 	private String listingFormat;
-	private String traderDefault;
+//	private String traderDefault;
 	private String walletDefault;
-	
 	
 	//economy plugin (via vault)
 	private Economy econ;
@@ -23,7 +22,7 @@ public class TraderConfig {
 	public TraderConfig(ConfigurationSection config) {
 		globalMode = config.getString("general.global-mode","simple");
 		listingFormat = config.getString("general.listingFormat","- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]");
-		traderDefault = config.getString("general.trader-default","player-trader");
+//		traderDefault = config.getString("general.trader-default","player-trader");
 		walletDefault = config.getString("general.wallet-default","npc-wallet");
 	}
 	public Economy getEcon() {
@@ -41,5 +40,7 @@ public class TraderConfig {
 	public String getListingFormat() {
 		return this.listingFormat;
 	}
-	
+	public String getWalletDefault() {
+		return walletDefault;
+	}
 }
