@@ -1,5 +1,10 @@
 package net.dtl.citizenstrader_new.traders;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -63,7 +68,7 @@ public abstract class Trader {
 	
 	
 	//the npc id we are using here
-	private int npcID;
+	private NPC npc;
 	
 	/* *
 	 * NpcInventory 
@@ -106,7 +111,7 @@ public abstract class Trader {
 		inventory = traderStock.inventoryView(54, traderNpc.getName() + " trader");
 		traderStatus = TraderStatus.PLAYER_SELL;
 		
-		npcID = traderNpc.getId();
+		npc = traderNpc;
 		
 		/* *
 		 * SetAn Economy plugin to the trader's wallet
@@ -115,7 +120,7 @@ public abstract class Trader {
 	}
 	
 	public int getNpcId() {
-		return npcID;
+		return npc.getId();
 	}
 	
 	/*
@@ -703,6 +708,19 @@ public abstract class Trader {
 		}
 		return new StockItem(itemInfo);
 	}
+	
+	
+	//loging function
+	public void log(String action, String player, int id, byte data, int amount, double price) 
+	{
+		Date date = new Date();
+		DateFormat df = new SimpleDateFormat("HH-mm-ss");
+		
+		DecimalFormat dec = new DecimalFormat("#.##");
+		
+		CitizensTrader.getLogManager().log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
+	}
+	
 	
 	/* * ===============================================================================================
 	 * Abstract Functions (future implementation for custom traders)

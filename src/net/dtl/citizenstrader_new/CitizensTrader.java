@@ -30,7 +30,7 @@ public class CitizensTrader extends JavaPlugin {
 	private Permission permission;
 	private static TraderManager traderManager;
 	private static PermissionsManager permsManager;
-	private LogManager logManager;
+	private static LogManager logManager;
 	
 	
 	@Override
@@ -97,6 +97,10 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public static PermissionsManager getPermissionsManager() {
 		return permsManager;
+	}
+	
+	public static LogManager getLogManager() {
+		return logManager;
 	}
 	
 	public static TraderConfig getTraderConfig() {

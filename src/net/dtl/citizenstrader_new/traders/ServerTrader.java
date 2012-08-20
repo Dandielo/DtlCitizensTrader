@@ -103,6 +103,16 @@ public class ServerTrader extends Trader {
 								 * 
 								 */
 								updateLimits(p.getName());
+								
+								//logging
+								log("buy", 
+									p.getName(), 
+									getSelectedItem().getItemStack().getTypeId(),
+									getSelectedItem().getItemStack().getData().getData(), 
+									getSelectedItem().getAmount(), 
+									getSelectedItem().getPrice() );
+								
+								
 							} else 
 								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 						} else {
@@ -134,6 +144,14 @@ public class ServerTrader extends Trader {
 							 * 
 							 */
 							updateLimits(p.getName(),event.getSlot());
+							
+							//logging
+							log("buy", 
+								p.getName(), 
+								getSelectedItem().getItemStack().getTypeId(),
+								getSelectedItem().getItemStack().getData().getData(), 
+								getSelectedItem().getAmount(event.getSlot()), 
+								getSelectedItem().getPrice(event.getSlot()) );
 							
 						} else
 							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
@@ -183,6 +201,14 @@ public class ServerTrader extends Trader {
 								event.setCurrentItem(new ItemStack(Material.AIR));*/
 							removeFromInventory(event.getCurrentItem(),event);
 							
+							//logging
+							log("sell", 
+								p.getName(), 
+								getSelectedItem().getItemStack().getTypeId(),
+								getSelectedItem().getItemStack().getData().getData(), 
+								getSelectedItem().getAmount()*scale, 
+								getSelectedItem().getPrice()*scale );
+							
 						} else 
 							p.sendMessage(ChatColor.GOLD + "Can't sell it");
 					} else {
@@ -227,6 +253,14 @@ public class ServerTrader extends Trader {
 								event.setCurrentItem(new ItemStack(Material.AIR));
 						} else {*/
 						removeFromInventory(event.getCurrentItem(),event);
+						
+						//logging
+						log("buy", 
+							p.getName(), 
+							getSelectedItem().getItemStack().getTypeId(),
+							getSelectedItem().getItemStack().getData().getData(), 
+							getSelectedItem().getAmount()*scale, 
+							getSelectedItem().getPrice()*scale );
 					//	}
 					}
 					else 

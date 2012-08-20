@@ -39,7 +39,7 @@ public class LogManager {
 			//config.set("general.logs.file", "log.txt");
 		}
 
-		String baseDir = config.getString("general.logs.basedir", "dtlTrader\\logs" );// "plugins/PermissionsEx");
+		String baseDir = config.getString("general.logs.basedir", "plugins\\DtlCitizensTrader\\logs" );// "plugins/PermissionsEx");
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
@@ -98,7 +98,8 @@ public class LogManager {
 			if ( writer == null )
 				return;
 			
-			writer.append(logString);
+			writer.append(logString+"\n");
+			writer.flush();
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
