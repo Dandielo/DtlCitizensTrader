@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 public final class TraderCommandExecutor implements CommandExecutor {
 	public static CitizensTrader plugin;
+	private static TraderConfig config;
 	//private TraderCharacterTrait trader;
 	private TraderManager traderManager;
 	private PermissionsManager permsManager;
@@ -26,9 +27,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
 		new CitizensTrader();
-		
+
+		this.permsManager = CitizensTrader.getPermissionsManager();
 		this.traderManager = CitizensTrader.getTraderManager();
-		this.permsManager = new PermissionsManager();
+		this.config = CitizensTrader.getTraderConfig();
 		//trader = ((TraderCharacterTrait) CitizensAPI.getTraitFactory().getTrait(TraderCharacterTrait.class));
 	}
 	
@@ -141,7 +143,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
 					
 					
-					for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_SELL, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
+					for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_SELL, config.getListingFormat(), page) )
 						player.sendMessage(item);
 					
 					return true;

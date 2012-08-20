@@ -61,6 +61,10 @@ public abstract class Trader {
 	private TraderStatus traderStatus;
 	private TraderTrait traderConfig;
 	
+	
+	//the npc id we are using here
+	private int npcID;
+	
 	/* *
 	 * NpcInventory 
 	 * 
@@ -86,7 +90,7 @@ public abstract class Trader {
 	 * @traderConfiguragion the TraderConfiguration
 	 * 
 	 */
-	public Trader(NPC tradderNpc,TraderTrait traderConfiguragion) {
+	public Trader(NPC traderNpc,TraderTrait traderConfiguragion) {
 		
 		/* *
 		 * Assign the configuration for later changes
@@ -98,9 +102,11 @@ public abstract class Trader {
 		 * Initialize the trader
 		 * 
 		 */
-		traderStock = tradderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
-		inventory = traderStock.inventoryView(54, tradderNpc.getName() + " trader");
+		traderStock = traderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
+		inventory = traderStock.inventoryView(54, traderNpc.getName() + " trader");
 		traderStatus = TraderStatus.PLAYER_SELL;
+		
+		npcID = traderNpc.getId();
 		
 		/* *
 		 * SetAn Economy plugin to the trader's wallet
@@ -108,6 +114,9 @@ public abstract class Trader {
 		traderConfig.getWallet().setEconomy(CitizensTrader.plugin.getEconomy());
 	}
 	
+	public int getNpcId() {
+		return npcID;
+	}
 	
 	/*
 	 * Trader configuration

@@ -38,7 +38,6 @@ public class Wallet {
 	}*/
 	public void deposit(String p, double m, boolean isOwner) {
 		if ( isOwner ) {
-			System.out.print(p + " " + m + " " + isOwner);
 			if ( type.equals(WalletType.PLAYER_WALLET) )
 				economy.depositPlayer(p, m);
 			else if ( type.equals(WalletType.NPC_WALLET) )
@@ -65,7 +64,6 @@ public class Wallet {
 				return true;
 			}
 		} else {
-			System.out.print(p + " " + m + " " + isOwner);
 			if ( economy.getBalance(p) >= m ) {
 				economy.withdrawPlayer(p, m);
 				return true;

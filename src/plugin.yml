@@ -38,7 +38,6 @@ permissions:
         children:
           dtl.trader.options.sell: true
           dtl.trader.options.buy: true
-          dtl.trader.commands.list: true
       dtl.trader.options.*:
         description: trader options to allow/disallow features
         default: op
@@ -52,7 +51,7 @@ permissions:
           dtl.trader.options.simple-mode: 
             description: allows to use the trader in simple-mode
             default: false
-          dtl.trader.options.manage-rmode: 
+          dtl.trader.options.manager-mode: 
             description: allows to use the traders manager-mode (if you'r the owner)
           dtl.trader.options.server: 
             description: allows to create/set a server trader

@@ -1,5 +1,6 @@
 package net.dtl.citizenstrader_new.containers;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,11 +107,12 @@ public class StockItem {
 
 	@Override
 	public String toString() {
+		
 		//saving the item id and data
 		String itemString = "" + item.getTypeId() + ( item.getData().getData() != 0 ? ":" + item.getData().getData() : "" );
 		
 		//saving the item price
-		itemString += " p:" + price;
+		itemString += " p:" + new DecimalFormat("#.##").format(price);
 		
 		//saving the item slot
 		itemString += " s:" + slot;

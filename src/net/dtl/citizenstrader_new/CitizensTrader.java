@@ -29,6 +29,7 @@ public class CitizensTrader extends JavaPlugin {
 	private Economy economy;
 	private Permission permission;
 	private static TraderManager traderManager;
+	private static PermissionsManager permsManager;
 	
 	
 	@Override
@@ -54,10 +55,10 @@ public class CitizensTrader extends JavaPlugin {
 				this.logger.info("["+ pdfFile.getName() + "] Permissions not found!"); 
 	        }
 			
-			config = new TraderConfig();
-			loadConfig();
+			config = new TraderConfig(getConfig());
 			config.setEcon(economy);
-			
+
+			permsManager = new PermissionsManager();
 			traderManager = new TraderManager();
 						
 			//if ( CitizensAPI.hasImplementation()  )
@@ -83,72 +84,17 @@ public class CitizensTrader extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
-		try {
-			this.logger.info("["+ pdfFile.getName() + "] saving config.");
-			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now disabled.");
-			createConfig();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public boolean loadConfig() {
-		File file = new File("plugins/DtlCitizensTrader/config.yml");
-		PluginDescriptionFile pdfFile = getDescription();
-		
-		if ( !file.exists() || file.length() <= 0 ) {
-			logger.info("["+ pdfFile.getName() + "] Generating config file!");
-			try {
-				this.createConfig();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return false;
-		}
-		
-		InputStream inputStream;
-		try {
-			inputStream = new FileInputStream(file);
-			Yaml yaml = new Yaml();
-			HashMap<String,Object> config = (HashMap<String,Object>) yaml.load(inputStream);
-			
-			//QuestName
-			if ( config.containsKey("trader") ) {
-				HashMap<String,Object> trader = (HashMap<String, Object>) config.get("trader");
-				this.config.setTraderConfig((String)trader.get("mode"));
-			}
-				
-			
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return true;
-	}
-	
-	public boolean createConfig() throws IOException {
-		File file = new File("plugins/DtlCitizensTrader/config.yml");
-		
-		if ( !file.exists() ) {
-			new File("plugins/DtlCitizensTrader").mkdirs();
-			file.createNewFile();
-		}
-		
-	    FileWriter out = new FileWriter(file);
-	    
-    	out.write("trader:\n"); 
-    	out.write("  mode: " + config.getMode() + "\n");
-    	
-    	out.flush();
-    	
-		return true;
+
+		this.logger.info("["+ pdfFile.getName() + "] saving config.");
+		this.logger.info("["+ pdfFile.getName() + "] Plugin version " + pdfFile.getVersion() + " is now disabled.");
 	}
 	
 	public static TraderManager getTraderManager() {
 		return traderManager;
+	}
+	
+	public static PermissionsManager getPermissionsManager() {
+		return permsManager;
 	}
 	
 	public static TraderConfig getTraderConfig() {

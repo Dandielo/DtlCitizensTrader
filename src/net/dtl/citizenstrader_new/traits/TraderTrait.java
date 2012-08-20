@@ -87,11 +87,14 @@ public class TraderTrait {
 	public TraderTrait() {
 	//	super("type");
 		w = new Wallet(wType);
-		w.setMoney(100.0);
+		w.setMoney(000.0);
 	}
 	
 	public void setOwner(String owner) {
 		this.owner = owner;
+	}
+	public String getOwner() {
+		return this.owner;
 	}
 	
 	public void setWalletType(WalletType type) {
