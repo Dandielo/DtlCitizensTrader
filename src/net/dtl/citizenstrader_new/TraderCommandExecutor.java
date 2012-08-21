@@ -92,7 +92,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
 					return true;
 				}
 				
@@ -102,14 +102,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight!
-					player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use 'sell' commands");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}				
 				
@@ -117,36 +117,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( permsManager.has(player, "dtl.trader.commands.list") 
 						&& args[1].equals("list") ) 
 				{
-					//defaulr page '0'
-					int page = 0;
-					
-					try 
-					{
 
-						//have we maybe got a page number?
-						if ( args.length > 2 )
-						{
-							//get the page number, My Precious... ;>
-							page = Integer.parseInt(args[2]) - 1;
-						}
-						
-					} 
-					catch (NumberFormatException e)
-					{
-						
-						//come on can;t you write a normal number... ?
-						player.sendMessage(ChatColor.RED + "That number doesn't exist!");
-						return true;
-					}
-					
-					//we got a item list
-					player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
-					
-					
-					for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_SELL, config.getListingFormat(), page) )
-						player.sendMessage(item);
-					
-					return true;
+					return getItemList(player, trader, args);
 				}
 				else
 				//More...
@@ -172,18 +144,27 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			//lets sell all the junk! 
 			if ( args[0].equals("buy") )
 			{
+				
+				//check if we are editing a valid trader
+				if ( trader == null )
+				{
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					return true;
+				}
+				
+				
 				if ( !permsManager.has(player, "dtl.trader.options.buy") )
 				{
 					
 					//have a good flight! (copied...)
-					player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use 'buy' commands");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}				
 				
@@ -191,36 +172,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( permsManager.has(player, "dtl.trader.commands.list") 
 						&& args[1].equals("list") ) 
 				{
-					//default page '0'
-					int page = 0;
 					
-					try 
-					{
-
-						//have we maybe got a page number?
-						if ( args.length > 2 )
-						{
-							//get the page number, My Precious... ;>
-							page = Integer.parseInt(args[2]) - 1;
-						}
-						
-					} 
-					catch (NumberFormatException e)
-					{
-						
-						//come on can;t you write a normal number... ?
-						player.sendMessage(ChatColor.RED + "That number doesn't exist!");
-						return true;
-					}
-					
-					//we got a item list
-					player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
-					
-					
-					for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_BUY, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
-						player.sendMessage(item);
-					
-					return true;
+					return getItemList(player, trader, args);
 				}
 				else
 				//I want that!
@@ -253,90 +206,26 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//can he change the wallet type?
 				if ( !permsManager.has(player, "dtl.trader.commands.wallet") )
 				{
-					
 					//have a good flight! (copied...)
-					player.sendMessage(ChatColor.RED + "Sorry, you can't change the traders wallet type");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
 					return true;
 				}
 				
-
 				//are all on board?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}	
 				
-				
-				//why i don't use a switch? because i hate them!
-				//my money, my money... ;>
-				if ( args[1].equals("owner-wallet") 
-						&& permsManager.has(player, "dtl.trader.options.wallet." + args[1]) )
-				{
-					
-					//we changed the type!
-					trader.getTraderConfig().setWalletType(WalletType.getTypeByName(args[1]));
-					player.sendMessage(ChatColor.RED + "The traders wallet type changed to: " + ChatColor.AQUA + args[1]);
-					
-					return true;
-				}
-				else
-				//put it all there, in one place
-				if ( args[1].equals("owner-bank") 
-						&& permsManager.has(player, "dtl.trader.options.wallet." + args[1]) )
-				{
-					
-					//trader.getTraderConfig().setWalletType(WalletType.getTypeByName(args[1]));
-					player.sendMessage(ChatColor.RED + "We are not supporting this atm, sorry :<");
-					
-					return true;
-				}
-				else
-				//here take it and make something useful with it
-				if ( args[1].equals("npc-wallet") 
-						&& permsManager.has(player, "dtl.trader.options.wallet." + args[1]) )
-				{
-
-					//we changed the type!
-					trader.getTraderConfig().setWalletType(WalletType.getTypeByName(args[1]));
-					player.sendMessage(ChatColor.RED + "The traders wallet type changed to: " + ChatColor.AQUA + args[1]);
-					
-					return true;
-				}
-				else
-				//any1 wan't a trader eating his bank account savings?
-				if ( args[1].equals("bank") 
-						&& permsManager.has(player, "dtl.trader.options.wallet." + args[1]) )
-				{
-					
-					//trader.getTraderConfig().setWalletType(WalletType.getTypeByName(args[1]));
-					player.sendMessage(ChatColor.RED + "We are not supporting this atm, sorry :<");
-					
-					return true;
-				}
-				else
-				//be patient, every1 gets some!
-				if ( args[1].equals("infinite") 
-						&& permsManager.has(player, "dtl.trader.options.wallet." + args[1]) )
-				{
-
-					//we changed the type!
-					trader.getTraderConfig().setWalletType(WalletType.getTypeByName(args[1]));
-					player.sendMessage(ChatColor.RED + "The traders wallet type changed to: " + ChatColor.AQUA + args[1]);
-					
-					return true;
-				}
-				
-				//clan-wallet and clan-bank currently not supported
-				player.sendMessage(ChatColor.RED + "Wrong wallet type or insufficient permissions");
-				return true;
+				return setWallet(player, trader, args[1], ( args.length > 2 ? args[2] : "" ) );
 			}
 			else
 			//i don't like my server trader :<
@@ -345,31 +234,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				
 				if ( !permsManager.has(player, "dtl.trader.commands.type") )
 				{
-					
-					//see ya with the same permission ;)
-					player.sendMessage(ChatColor.RED + "Sorry, you can't change the traders type");
+					//see ya with a better permission ;)
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
-				
-				//let them have fun with this trader plugin ;P
-				if ( args[1].equals("player")
-						&& permsManager.has(player, "dtl.trader.options." + args[1]) ) 
-				{
-					
-				}
-				else
-				//administrator shops enhanced! (WTF?! server?)
-				if ( args[1].equals("server")
-						&& permsManager.has(player, "dtl.trader.options." + args[1]) ) 
-				{
-					
-				}
-				
-
-				//typo!! We hate it!
-				player.sendMessage(ChatColor.RED + "Wrong trader type or insufficient permissions");
-				return true;
+				return setType(player, trader, args[1]);
 			}
 			else
 			//lets create a trader!
@@ -378,9 +248,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				
 				if ( !permsManager.has(player, "dtl.trader.commands.create") )
 				{
-					
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "Sorry, you can't create a trader");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
@@ -388,110 +257,26 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}
 				
-				
-				String traderName = args[1];
-				EntityType entityType = EntityType.PLAYER;
-				TraderType traderType = getDefaultTraderType(player);
-				WalletType walletType = getDefaultWalletType(player);
-				
-				
-				//lets fetch the argument list
-				for ( String arg : args )
-				{
-					
-					
-					//trader type set?
-					if ( arg.startsWith("t:") )
-					{
-						
-						
-						//do we have permissions to set this trader type?
-						if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
-						{
-							player.sendMessage(ChatColor.RED + "You don't have permission to use this trader type");
-							return true;
-						}
-						traderType = TraderType.getTypeByName(arg.substring(2));
-						
-						
-					}
-					else
-					//wallet type set
-					if ( arg.startsWith("w:") )
-					{
-						
-				
-						//do we have permissions to set this wallet type?
-						if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
-						{
-							player.sendMessage(ChatColor.RED + "You don't have permission to use this wallet type");
-							return true;
-						}
-						walletType = WalletType.getTypeByName(arg.substring(2));
-						
-						
-					}
-					else
-					//entity type set
-					if ( arg.startsWith("e:") )
-					{
-						
-						
-						//do we have permissions to set this wallet type?
-						if ( !permsManager.has(player, "dtl.trader.options.entity.*") )
-						{
-							player.sendMessage(ChatColor.RED + "You don't have permission to use this wallet type");
-							return true;
-						}
-						entityType = EntityType.fromName(arg.substring(2));
-						
-						
-					}
-					
-					
-				}
-				
-				
-				
-				if ( walletType == null || traderType == null )
-				{
-					player.sendMessage(ChatColor.RED + "No default available, maybe you don't have permissions to create a trader?");
-					return true;
-				}
-				
-				//creating the npc
-				NPC npc = CitizensAPI.getNPCRegistry().createNPC(entityType, traderName);
-				npc.addTrait(TraderCharacterTrait.class);
-				npc.spawn(player.getLocation());
-				
-				//change the trader settings
-				TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
-				settings.setTraderType(traderType);
-				settings.setWalletType(walletType);
-				
-				
-				player.sendMessage(ChatColor.RED + "You created a trader at your position");
-				
-				return true;
+				return createTrader(player, args);
 			}
 			else
 			//lets create a trader!
 			if ( args[0].equals("dismiss") )
 			{
+				// TODO create a nice dismiss function 
 				
 				if ( !permsManager.has(player, "dtl.trader.commands.dismiss") )
 				{
-					
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "Sorry, you can't dismiss this trader");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
-				
+				return false;
 				
 			}
 			else 
@@ -502,16 +287,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				
 				if ( !permsManager.has(player, "dtl.trader.commands.balance") )
 				{
-					
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "Sorry, you can't dismiss this trader");
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
 					return true;
 				}
 				
@@ -519,17 +303,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//only npc wallets can be managed!
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
-					
-					
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "Only traders with 'npc-wallet' got a balance");
+					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
 					return true;
 				}
-
-				DecimalFormat f = new DecimalFormat("#.##");
-				player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + String.valueOf(f.format(trader.getWallet().getMoney())) );
 				
-				return true;
+				
+				return balance(player, trader);
 			}
 			else 
 			//show me your money!
@@ -539,16 +319,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				
 				if ( !permsManager.has(player, "dtl.trader.commands.withdraw") )
 				{
-					
-					//you can't create life!
-					player.sendMessage(ChatColor.RED + "Sorry, you can't dismiss this trader");
+					//no permissions available
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
 					return true;
 				}
 				
@@ -556,9 +335,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//only npc wallets can be managed!
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
-
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "Only traders with 'npc-wallet' got a balance");
+					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
 					return true;
 				}
 				
@@ -566,59 +344,28 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}
 				
-				
-				double money = trader.getWallet().getMoney();
-				double withdraw = 0.0;
-				try 
-				{
-					withdraw = Double.valueOf(args[1]);
-				} 
-				catch (NumberFormatException e)
-				{
-					player.sendMessage("Wrong amount as argument");
-					return true;
-				}
-				
-				if ( withdraw > money )
-				{
-					player.sendMessage(ChatColor.RED + "This trader cannot give you that amount");
-					return true;
-				}
-				
-				trader.getWallet().setMoney(money - withdraw);
-				DecimalFormat f = new DecimalFormat("#.##");
-
-				plugin.getEconomy().depositPlayer(player.getName(), withdraw);
-				
-				player.sendMessage(ChatColor.RED + "You withdrawed " + ChatColor.AQUA + args[1] + "");
-				player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
-				
-				
-				return true;
+				return withdraw(player, trader, args[1]);
 			}
 			else 
 			//show me your money!
 			if ( args[0].equals("deposit") )
 			{
 
-				
 				if ( !permsManager.has(player, "dtl.trader.commands.deposit") )
 				{
-					
-					//you can't create life!
-					player.sendMessage(ChatColor.RED + "Sorry, you can't dismiss this trader");
+					//no permissions available
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "No trader selected (manager mode)");
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
 					return true;
 				}
 				
@@ -626,9 +373,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//only npc wallets can be managed!
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
-
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "Only traders with 'npc-wallet' got a balance");
+					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
 					return true;
 				}
 				
@@ -636,34 +382,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					
-					player.sendMessage(ChatColor.RED + "Invalid arguments");
+					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return true;
 				}
 				
-				
-				double money = trader.getWallet().getMoney();
-				double deposit = 0.0;
-				try 
-				{
-					deposit = Double.valueOf(args[1]);
-				} 
-				catch (NumberFormatException e)
-				{
-					player.sendMessage("Wrong amount as argument");
-					return true;
-				}
-				
-				plugin.getEconomy().withdrawPlayer(player.getName(), deposit);
-				
-				trader.getWallet().setMoney(money + deposit);
-				DecimalFormat f = new DecimalFormat("#.##");
-				
-				player.sendMessage(ChatColor.RED + "You deposited " + ChatColor.AQUA + args[1] + "");
-				player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
-				
-				
-				return true;
+
+				//a single function is much easier to understand ;P
+				return deposit(player, trader, args[1]);
 			}
 		}
 		//is God trying to command a trader? 
@@ -714,4 +439,241 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return null;
 	}
 
+	
+	
+	public boolean getItemList(Player player, Trader trader, String[] args) 
+	{
+		//default page '0'
+		int page = 0;
+		
+		try 
+		{
+
+			//have we maybe got a page number?
+			if ( args.length > 2 )
+			{
+				//get the page number, My Precious... ;>
+				page = Integer.parseInt(args[2]) - 1;
+			}
+			
+		} 
+		catch (NumberFormatException e)
+		{
+			
+			//come on can;t you write a normal number... ?
+			player.sendMessage(ChatColor.RED + "!INVALID ARGUMENTS!");
+			return true;
+		}
+		
+		//we got a item list
+		player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
+		
+		
+		for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_BUY, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
+			player.sendMessage(item);
+		return true;
+	}
+	
+	public boolean addItem()
+	{
+		return true;
+	}
+	
+	public boolean editItem()
+	{
+		return true;
+	}
+	
+	public boolean removeItem()
+	{
+		return true;
+	}
+	
+	//set the traders wallet type
+	public boolean setWallet(Player player, Trader trader, String walletString, String bankName)
+	{
+		
+		if ( !permsManager.has(player, "dtl.trader.options.wallet." + walletString ) )
+		{
+			player.sendMessage("!WRONG WALLET, NO PERMISSIONS!");
+			return true;
+		}
+		
+		WalletType wallet = WalletType.getTypeByName(walletString);
+		
+		//set the wallet type for both trader and wallet
+		trader.getTraderConfig().setWalletType(wallet);
+		trader.getWallet().setWalletType(wallet);
+		
+		//change the bank name or set a bank wallet
+		if ( !bankName.isEmpty() )
+			trader.getWallet().setBank(bankName);
+		
+		
+		player.sendMessage("!WALLET CHANGED!");
+		return true;
+	}
+	
+	//set the traders type
+	public boolean setType(Player player, Trader trader, String typeString)
+	{
+		
+		if ( !permsManager.has(player, "dtl.trader.options." + typeString ) )
+		{
+			player.sendMessage(ChatColor.RED + "!WRONG TYPE, NO PERMISSIONS!");
+			return true;
+		}
+		
+		TraderType type = TraderType.getTypeByName(typeString);
+		trader.getTraderConfig().setTraderType(type);
+		
+		player.sendMessage("!TYPE CHANGED, RESET MANAGER MODE!");
+		
+		return true;
+	}
+	
+	//show the traders balance
+	public boolean balance(Player player, Trader trader)
+	{
+		DecimalFormat f = new DecimalFormat("#.##");
+		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + String.valueOf(f.format(trader.getWallet().getMoney())) );
+		
+		return true;
+	}
+	
+	//withdraw money from the trader
+	public boolean withdraw(Player player, Trader trader, String withdrawString)
+	{
+		
+		double money = trader.getWallet().getMoney();
+		double withdraw = 0.0;
+		try 
+		{
+			withdraw = Double.valueOf(withdrawString);
+		} 
+		catch (NumberFormatException e)
+		{
+			player.sendMessage("Wrong amount as argument");
+			return true;
+		}
+		
+		if ( withdraw > money )
+		{
+			player.sendMessage(ChatColor.RED + "This trader cannot give you that amount");
+			return true;
+		}
+		
+		trader.getWallet().setMoney(money - withdraw);
+		DecimalFormat f = new DecimalFormat("#.##");
+
+		plugin.getEconomy().depositPlayer(player.getName(), withdraw);
+		
+		player.sendMessage(ChatColor.RED + "You withdrawed " + ChatColor.AQUA + withdrawString + "");
+		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
+		
+		return true;
+	}
+	
+	//deposit money to the trader
+	public boolean deposit(Player player, Trader trader, String depositString)
+	{
+		
+		double money = trader.getWallet().getMoney();
+		double deposit = 0.0;
+		try 
+		{
+			deposit = Double.valueOf(depositString);
+		} 
+		catch (NumberFormatException e)
+		{
+			player.sendMessage("Wrong amount as argument");
+			return true;
+		}
+		
+		plugin.getEconomy().withdrawPlayer(player.getName(), deposit);
+		
+		trader.getWallet().setMoney(money + deposit);
+		DecimalFormat f = new DecimalFormat("#.##");
+		
+		player.sendMessage(ChatColor.RED + "You deposited " + ChatColor.AQUA + depositString + "");
+		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
+		
+		return true;
+	}
+	
+	//creating a trader, its easy ;)
+	public boolean createTrader(Player player, String[] args)
+	{
+		String traderName = args[1];
+		EntityType entityType = EntityType.PLAYER;
+		TraderType traderType = getDefaultTraderType(player);
+		WalletType walletType = getDefaultWalletType(player);
+		
+		
+		//lets fetch the argument list
+		for ( String arg : args )
+		{
+			//trader type set?
+			if ( arg.startsWith("t:") )
+			{
+				//do we have permissions to set this trader type?
+				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+				{
+					player.sendMessage(ChatColor.RED + "!WRONG TYPE, NO PERMISSIONS!");
+					return true;
+				}
+				traderType = TraderType.getTypeByName(arg.substring(2));
+			}
+			else
+			//wallet type set
+			if ( arg.startsWith("w:") )
+			{
+				//do we have permissions to set this wallet type?
+				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+				{
+					player.sendMessage(ChatColor.RED + "!WRONG WALLET, NO PERMISSIONS!");
+					return true;
+				}
+				walletType = WalletType.getTypeByName(arg.substring(2));
+			}
+			else
+			//entity type set
+			if ( arg.startsWith("e:") )
+			{
+				//do we have permissions to set this entity type?
+				if ( !permsManager.has(player, "dtl.trader.options.entity." + arg.substring(2) ) )
+				{
+					player.sendMessage(ChatColor.RED + "!WRONG ENTITY, NO PERMISSIONS!");
+					return true;
+				}
+				entityType = EntityType.fromName(arg.substring(2));
+			}
+		}
+		
+		
+		if ( walletType == null || traderType == null )
+		{
+			player.sendMessage(ChatColor.RED + "!NO DEFAULTS FOUND WHILE CREATING!");
+			return true;
+		}
+		
+		//creating the npc
+		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entityType, traderName);
+		npc.addTrait(TraderCharacterTrait.class);
+		npc.spawn(player.getLocation());
+		
+		//change the trader settings
+		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
+		settings.setTraderType(traderType);
+		settings.setWalletType(walletType);
+		
+		
+		player.sendMessage(ChatColor.RED + "!TRADER CREATED!");
+		return true;
+	}
+	
+	
+	
+	
+	
 }

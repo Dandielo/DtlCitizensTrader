@@ -31,6 +31,16 @@ public class Wallet {
 		return money;
 	}
 	
+	public void setBank(String bankName)
+	{
+		bank = bankName;	
+	}
+	
+	public String getBank()
+	{
+		return bank;
+	}
+	
 	/*public boolean hasMoney(Player p, double m) {
 		if ( type.equals(WalletType.PLAYER_WALLET) ) 
 			return economy.has(p.getName(), m);

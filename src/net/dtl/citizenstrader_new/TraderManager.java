@@ -23,7 +23,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class TraderManager implements Listener {
-	private static TraderConfig config;
+	//private static TraderConfig config;
 	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
 	
 	private HashMap<String,Trader> ongoingTrades = new HashMap<String,Trader>();	
@@ -31,7 +31,7 @@ public class TraderManager implements Listener {
 	
 	public TraderManager() {
 		this.isTraderNpc = new ArrayList<NPC>();
-		config = CitizensTrader.getTraderConfig();
+		//config = CitizensTrader.getTraderConfig();
 	}
 	
 	public Trader getOngoingTrades(String player) {
@@ -74,7 +74,8 @@ public class TraderManager implements Listener {
 				ongoingTrades.get(p.getName()).managerMode(event);
 
 			}
-			else {
+			else 
+			{
 				
 				ongoingTrades.get(p.getName()).simpleMode(event);
 				
