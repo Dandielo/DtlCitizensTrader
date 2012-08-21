@@ -67,8 +67,8 @@ public class TraderManager implements Listener {
 			if ( TraderStatus.hasManageMode(ongoingTrades.get(p.getName()).getTraderStatus()) ) {
 				
 				
-				if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.PLAYER_MANAGE) )
-					ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE_SELL);
+				if ( ongoingTrades.get(p.getName()).equalsTraderStatus(TraderStatus.MANAGE) )
+					ongoingTrades.get(p.getName()).setTraderStatus(TraderStatus.MANAGE_SELL);
 				
 				
 				ongoingTrades.get(p.getName()).managerMode(event);
@@ -104,15 +104,15 @@ public class TraderManager implements Listener {
 		{
 			
 			//have we managed amounts?
-			if (  trader.equalsTraderStatus(TraderStatus.PLAYER_MANAGE_SELL_AMOUNT) ) 
+			if (  trader.equalsTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT) ) 
 			{
 				//save amounts and set the basic managing page
 				trader.saveManagedAmouts();
-				trader.switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
+				trader.switchInventory(TraderStatus.MANAGE_SELL);
 			}
 			
 			//reset the traders status
-			trader.reset(TraderStatus.PLAYER_MANAGE);
+			trader.reset(TraderStatus.MANAGE);
 		}
 		else
 		//no managers here, what a pity 
@@ -212,7 +212,7 @@ public class TraderManager implements Listener {
 
 					
 					//we are managing!
-					ongoingTrades.get(player.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE);
+					ongoingTrades.get(player.getName()).setTraderStatus(TraderStatus.MANAGE);
 					player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 					
 					//we are done ;)
@@ -230,7 +230,7 @@ public class TraderManager implements Listener {
 					}
 					
 					//we are managing!
-					ongoingTrades.get(player.getName()).setTraderStatus(TraderStatus.PLAYER_MANAGE);
+					ongoingTrades.get(player.getName()).setTraderStatus(TraderStatus.MANAGE);
 					player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 					
 					//return lets end this! :D
@@ -249,7 +249,7 @@ public class TraderManager implements Listener {
 			//is some1 managing?
 			if ( trader != null ) 
 			{ 
-				ongoingTrades.get(player.getName()).switchInventory(TraderStatus.PLAYER_MANAGE_SELL);
+				ongoingTrades.get(player.getName()).switchInventory(TraderStatus.MANAGE_SELL);
 				
 			} 
 			else

@@ -118,7 +118,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						&& args[1].equals("list") ) 
 				{
 
-					return getItemList(player, trader, args);
+					return getItemList(player, trader, args, TraderStatus.SELL);
 				}
 				else
 				//More...
@@ -173,7 +173,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						&& args[1].equals("list") ) 
 				{
 					
-					return getItemList(player, trader, args);
+					return getItemList(player, trader, args, TraderStatus.BUY);
 				}
 				else
 				//I want that!
@@ -437,7 +437,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 	
 	
-	public boolean getItemList(Player player, Trader trader, String[] args) 
+	public boolean getItemList(Player player, Trader trader, String[] args, TraderStatus status) 
 	{
 		//default page '0'
 		int page = 0;
@@ -465,7 +465,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
 		
 		
-		for ( String item : trader.getTraderStock().getItemList(TraderStatus.PLAYER_BUY, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
+		for ( String item : trader.getTraderStock().getItemList(status, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
 			player.sendMessage(item);
 		return true;
 	}

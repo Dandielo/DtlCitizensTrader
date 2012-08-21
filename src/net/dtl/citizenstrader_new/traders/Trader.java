@@ -42,16 +42,16 @@ public abstract class Trader {
 	 * 
 	 */
 	public enum TraderStatus {
-		PLAYER_SELL, PLAYER_BUY, PLAYER_SELL_AMOUNT, PLAYER_MANAGE_SELL, PLAYER_MANAGE_LIMIT_GLOBAL, PLAYER_MANAGE_LIMIT_PLAYER, PLAYER_MANAGE_SELL_AMOUNT, PLAYER_MANAGE_PRICE, PLAYER_MANAGE_BUY, PLAYER_MANAGE;
+		SELL, BUY, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE;
 	
 		/* *
 		 * ManagerMode condition
 		 * 
 		 */
 		public static boolean hasManageMode(TraderStatus status) {
-			if ( !status.equals(PLAYER_SELL) && 
-				 !status.equals(PLAYER_SELL_AMOUNT) && 
-				 !status.equals(PLAYER_BUY) )
+			if ( !status.equals(SELL) && 
+				 !status.equals(SELL_AMOUNT) && 
+				 !status.equals(BUY) )
 				return true;
 			return false;
 		}
@@ -109,7 +109,7 @@ public abstract class Trader {
 		 */
 		traderStock = traderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
 		inventory = traderStock.inventoryView(54, traderNpc.getName() + " trader");
-		traderStatus = TraderStatus.PLAYER_SELL;
+		traderStatus = TraderStatus.SELL;
 		
 		npc = traderNpc;
 		
@@ -523,10 +523,10 @@ public abstract class Trader {
 	public TraderStatus getBasicManageModeByWool() 
 	{
 		if ( isSellModeByWool() )
-			return TraderStatus.PLAYER_MANAGE_SELL;
+			return TraderStatus.MANAGE_SELL;
 		if ( isBuyModeByWool() )
-			return TraderStatus.PLAYER_MANAGE_BUY;
-		return TraderStatus.PLAYER_MANAGE;
+			return TraderStatus.MANAGE_BUY;
+		return TraderStatus.MANAGE;
 	}
 	
 	/* * ===============================================================================================

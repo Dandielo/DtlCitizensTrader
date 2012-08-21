@@ -79,7 +79,7 @@ public class InventoryTrait implements InventoryHolder {
 	
 	public Inventory inventoryView(Inventory view,TraderStatus s) {
 
-		if ( s.equals(TraderStatus.PLAYER_SELL) ) {
+		if ( s.equals(TraderStatus.SELL) ) {
 			for( StockItem item : sellStock ) {
 				
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -91,7 +91,7 @@ public class InventoryTrait implements InventoryHolder {
             if ( !buyStock.isEmpty() )
             	view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
             
-		} else if ( s.equals(TraderStatus.PLAYER_BUY ) ) {
+		} else if ( s.equals(TraderStatus.BUY ) ) {
 			for( StockItem item : buyStock ) {
 
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -103,7 +103,7 @@ public class InventoryTrait implements InventoryHolder {
 
 	        }
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));//3
-		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_SELL ) ) {
+		} else if ( s.equals(TraderStatus.MANAGE_SELL ) ) {
 			for( StockItem item : sellStock ) {
 
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -117,7 +117,7 @@ public class InventoryTrait implements InventoryHolder {
             view.setItem(view.getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));//3
             view.setItem(view.getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));//3
             view.setItem(view.getSize()-1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));//3
-		} else if ( s.equals(TraderStatus.PLAYER_MANAGE_BUY ) ) {
+		} else if ( s.equals(TraderStatus.MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
 
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -156,13 +156,13 @@ public class InventoryTrait implements InventoryHolder {
 	}
 	
 	public StockItem getItem(int slot,TraderStatus status) {
-		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) ||
-			 status.equals(TraderStatus.PLAYER_BUY) ) {
+		if ( status.equals(TraderStatus.MANAGE_BUY) ||
+			 status.equals(TraderStatus.BUY) ) {
 			for ( StockItem item : buyStock )
 				if ( item.getSlot() == slot )
 					return item;
-		} if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) ||
-			   status.equals(TraderStatus.PLAYER_SELL ) ) {
+		} if ( status.equals(TraderStatus.MANAGE_SELL) ||
+			   status.equals(TraderStatus.SELL ) ) {
 			for ( StockItem item : sellStock  )
 				if ( item.getSlot() == slot )
 					return item;
@@ -180,9 +180,9 @@ public class InventoryTrait implements InventoryHolder {
 		
 		
 		//set the stockItems variable
-		if ( TraderStatus.PLAYER_SELL.equals(status) )
+		if ( TraderStatus.SELL.equals(status) )
 			stockItems = sellStock;
-		if ( TraderStatus.PLAYER_BUY.equals(status) )
+		if ( TraderStatus.BUY.equals(status) )
 			stockItems = buyStock;	
 
 		
@@ -230,8 +230,8 @@ public class InventoryTrait implements InventoryHolder {
 			boolean amount) {
 
 		boolean equal = false;
-		if ( status.equals(TraderStatus.PLAYER_MANAGE_BUY) ||
-			 status.equals(TraderStatus.PLAYER_BUY) ) {
+		if ( status.equals(TraderStatus.MANAGE_BUY) ||
+			 status.equals(TraderStatus.BUY) ) {
 			for ( StockItem item : buyStock ) {
 				equal = false;
 				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
@@ -246,8 +246,8 @@ public class InventoryTrait implements InventoryHolder {
 				}
 			}
 		} 
-		if ( status.equals(TraderStatus.PLAYER_MANAGE_SELL) ||
-		     status.equals(TraderStatus.PLAYER_SELL ) ) {
+		if ( status.equals(TraderStatus.MANAGE_SELL) ||
+		     status.equals(TraderStatus.SELL ) ) {
 			for ( StockItem item : sellStock ) {
 				equal = false;
 				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
