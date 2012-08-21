@@ -417,11 +417,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public WalletType getDefaultWalletType(Player player) {
 		//server default is infinite
 		if ( permsManager.has(player, "dtl.trader.options.infinite") )
-			return WalletType.SERVER_INFINITE;
+			return WalletType.INFINITE;
 		else
 		//next server default is custom bank
 		if ( permsManager.has(player, "dtl.trader.options.bank") )
-			return WalletType.SERVER_BANK;
+			return WalletType.BANK;
 		else
 		//next default is npc wallet
 		if ( permsManager.has(player, "dtl.trader.options.npc-wallet") )
@@ -429,11 +429,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		else
 		//next default is player wallet
 		if ( permsManager.has(player, "dtl.trader.options.owner-wallet") )
-			return WalletType.PLAYER_WALLET;
-		else
-		//next default is player bank account
-		if ( permsManager.has(player, "dtl.trader.options.owner-bank") )
-			return WalletType.PLAYER_BANK;
+			return WalletType.OWNER_WALLET;
 		
 		//else return no default
 		return null;
@@ -503,11 +499,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		//set the wallet type for both trader and wallet
 		trader.getTraderConfig().setWalletType(wallet);
-		trader.getWallet().setWalletType(wallet);
 		
 		//change the bank name or set a bank wallet
 		if ( !bankName.isEmpty() )
-			trader.getWallet().setBank(bankName);
+			trader.getWallet().setBank(player.getName(), bankName);
 		
 		
 		player.sendMessage("!WALLET CHANGED!");

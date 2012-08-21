@@ -9,37 +9,31 @@ import net.dtl.citizenstrader_new.containers.Wallet;
 public class TraderTrait {
 
 	public enum WalletType {
-		PLAYER_WALLET, PLAYER_BANK, NPC_WALLET, SERVER_BANK, SERVER_INFINITE, GROUP_WALLET //Future CLAN_WALLET
+		OWNER_WALLET, NPC_WALLET, BANK, INFINITE //Future CLAN_WALLET
 ;
 
 		public static WalletType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("owner-wallet") ) 
-				return WalletType.PLAYER_WALLET;
-			else if ( n.equalsIgnoreCase("owner-bank") )
-				return WalletType.PLAYER_BANK;
+				return WalletType.OWNER_WALLET;
 			else if ( n.equalsIgnoreCase("npc-wallet") )
 				return WalletType.NPC_WALLET;
 			else if ( n.equalsIgnoreCase("bank") )
-				return WalletType.SERVER_BANK;
+				return WalletType.BANK;
 			else if ( n.equalsIgnoreCase("infinite") )
-				return WalletType.SERVER_INFINITE;
-			return WalletType.SERVER_INFINITE;
+				return WalletType.INFINITE;
+			return null;
 		}
 		
 		public static String toString(WalletType w) {
 			switch( w ) {
-			case PLAYER_WALLET:
-				return "player-wallet";
-			case PLAYER_BANK:
-				return "player-bank";
-			case GROUP_WALLET:
-				return "group-wallet";
+			case OWNER_WALLET:
+				return "owner-wallet";
 			case NPC_WALLET:
 				return "npc-wallet";
-			case SERVER_BANK:
-				return "server-bank";
-			case SERVER_INFINITE:
-				return "server-infinite";
+			case BANK:
+				return "bank";
+			case INFINITE:
+				return "infinite";
 			}
 			return "";
 		}
@@ -78,7 +72,7 @@ public class TraderTrait {
 		}
 	}
 
-	private WalletType wType = WalletType.SERVER_INFINITE;
+	private WalletType wType = WalletType.INFINITE;
 	private TraderType tType = TraderType.SERVER_TRADER;
 	
 	private Wallet w;
@@ -107,7 +101,7 @@ public class TraderTrait {
 		if ( tType.equals(TraderType.SERVER_TRADER) ) {
 			
 			//disallow infinite money
-			if ( type.equals(WalletType.SERVER_INFINITE) )
+			if ( type.equals(WalletType.INFINITE) )
 				return;
 			
 			
@@ -123,7 +117,7 @@ public class TraderTrait {
 		}
 		if ( type.equals(TraderType.SERVER_TRADER) ) {
 			tType = TraderType.SERVER_TRADER;
-			wType = WalletType.SERVER_INFINITE;
+			wType = WalletType.INFINITE;
 			return;
 		}
 	}
