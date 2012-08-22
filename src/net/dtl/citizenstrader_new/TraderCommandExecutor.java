@@ -494,6 +494,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			player.sendMessage("!WRONG WALLET, NO PERMISSIONS!");
 			return true;
 		}
+
+		//have w a bank we can use?
+		if ( !bankName.isEmpty() )
+			if ( !trader.getWallet().setBank(player.getName(), bankName) )
+			{
+				player.sendMessage("!WRONG BANK, NO PERMISSIONS!");
+				return true;
+			}
+		
 		
 		WalletType wallet = WalletType.getTypeByName(walletString);
 		
@@ -501,8 +510,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		trader.getTraderConfig().setWalletType(wallet);
 		
 		//change the bank name or set a bank wallet
-		if ( !bankName.isEmpty() )
-			trader.getWallet().setBank(player.getName(), bankName);
 		
 		
 		player.sendMessage("!WALLET CHANGED!");

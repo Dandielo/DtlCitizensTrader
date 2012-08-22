@@ -820,11 +820,10 @@ public class ServerTrader extends Trader {
 						getTraderStock().removeItem(false, getSelectedItem().getSlot());
 					selectItem(null);
 				} else {
-					/*
-					 * Select an item to add it to the trader inventory
-					 * 
-					 */
-					selectItem(toStockItem(event.getCurrentItem()));
+					
+					//we don't want to have air in our stock, dont we?
+					if ( event.getCurrentItem().getTypeId() != 0 )
+						selectItem(toStockItem(event.getCurrentItem()));
 				}
 			} 
 			setInventoryClicked(false);
