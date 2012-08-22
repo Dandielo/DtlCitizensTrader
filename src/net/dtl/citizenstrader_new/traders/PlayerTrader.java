@@ -655,6 +655,10 @@ public class PlayerTrader extends Trader {
 		//bottom inventory management
 		else 
 		{
+			if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE) )
+			{
+				return;
+			}
 			
 			//cancel the event, bottom always canceled
 			event.setCancelled(true);

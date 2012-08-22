@@ -21,6 +21,8 @@ public class TraderTrait {
 				return WalletType.BANK;
 			else if ( n.equalsIgnoreCase("infinite") )
 				return WalletType.INFINITE;
+			else if ( n.equalsIgnoreCase("server-infinite") )
+				return WalletType.INFINITE;
 			return null;
 		}
 		
@@ -154,7 +156,7 @@ public class TraderTrait {
 			System.out.print(tType.toString());
 		}
 		if ( data.keyExists("wallet-type") ) {
-			wType = WalletType.getTypeByName(data.getString("wallet-type", "server-infinite"));
+			wType = WalletType.getTypeByName(data.getString("wallet-type", "infinite"));
 			w.setWalletType(wType);
 		}
 		if ( data.keyExists("owner") ) {

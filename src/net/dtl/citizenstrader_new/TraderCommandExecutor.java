@@ -69,7 +69,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				
 				//goodbye!
-				player.sendMessage(ChatColor.RED + "Sorry, you don't have permission to use commands");
+				player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
 				return true;
 			}
 			
@@ -390,6 +390,35 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//a single function is much easier to understand ;P
 				return deposit(player, trader, args[1]);
 			}
+			else 
+			//show me your money!
+			if ( args[0].equals("owner") )
+			{
+				//can he change the wallet type?
+				if ( !permsManager.has(player, "dtl.trader.commands.owner") )
+				{
+					//have a good flight! (copied...)
+					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					return true;
+				}
+				
+				//check if we are editing a valid trader
+				if ( trader == null )
+				{
+					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					return true;
+				}
+				
+				//are all on board?
+				if ( args.length < 2 )
+				{
+					//player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					return getOwner(player, trader);
+				}	
+				
+				
+				return setOwner(player, trader, args[1]);
+			}
 		}
 		//is God trying to command a trader? 
 		else
@@ -401,6 +430,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+
 	public TraderType getDefaultTraderType(Player player) {
 		//server trader as default
 		if ( permsManager.has(player, "dtl.trader.options.server") )
@@ -599,6 +629,24 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		player.sendMessage(ChatColor.RED + "You deposited " + ChatColor.AQUA + depositString + "");
 		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
+		
+		return true;
+	}
+	
+	//setting the traders owner
+	private boolean setOwner(Player player, Trader trader, String owner) {
+		
+		trader.getTraderConfig().setOwner(owner);
+		player.sendMessage(ChatColor.RED + "!OWNER CHANGED!");
+		
+		return true;
+	}
+	
+	//getting the traders owner
+	private boolean getOwner(Player player, Trader trader) {
+		
+		player.sendMessage(ChatColor.AQUA + trader.getTraderConfig().getOwner() + ChatColor.RED + " is the owner of this trader");
+		//player.sendMessage("!OWNER CHANGED!");
 		
 		return true;
 	}

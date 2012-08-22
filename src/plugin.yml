@@ -38,6 +38,15 @@ permissions:
         children:
           dtl.trader.options.sell: true
           dtl.trader.options.buy: true
+          dtl.trader.options.simple-mode: true
+      dtl.trader.bypass.*:
+        description: admin bypasses
+        default: op
+        children: 
+          dtl.trader.bypass.creative: 
+            description: allows to bypass the creative restriction when managing a player trader
+          dtl.trader.options.manager-mode-bypass: 
+            description: allows to use the traders manager-mode (if you'r the owner)
       dtl.trader.options.*:
         description: trader options to allow/disallow features
         default: op
@@ -47,10 +56,9 @@ permissions:
           dtl.trader.options.buy: 
             description: allows the user to sell items
           dtl.trader.options.secure-mode: 
-            description: allows to use the trader in secure-mode, !!UNUSED!!
+            description: allows to use the trader in secure-mode, # UNUSED #
           dtl.trader.options.simple-mode: 
             description: allows to use the trader in simple-mode
-            default: false
           dtl.trader.options.manager-mode: 
             description: allows to use the traders manager-mode (if you'r the owner)
           dtl.trader.options.server: 
@@ -58,9 +66,9 @@ permissions:
           dtl.trader.options.player: 
             description: allows to create/set a player trader
           dtl.trader.options.bank: 
-            description: allows to create/set a banker # NOT SUPPORTED!!
+            description: allows to create/set a banker # NOT SUPPORTED #
           dtl.trader.options.auction: 
-            description: allows to create/set an auctioner # NOT SUPPORTED!!
+            description: allows to create/set an auctioner # NOT SUPPORTED #
           dtl.trader.options.stack-price: 
             description: allows to toggle teh stack price in m-m
           dtl.trader.options.multiple-amounts: 
@@ -75,19 +83,25 @@ permissions:
               dtl.trader.options.wallet.infinite: 
                 description: allows to set a infinite wallet (no cash will be send to the traders owner, server-trader default)
               dtl.trader.options.wallet.bank: 
-                description: allows to bind a trader with a bank account (auctioner default) # NOT SUPPORTED!!
+                description: allows to bind a trader with a bank account (auctioner default)
               dtl.trader.options.wallet.owner-wallet: 
                 description: allows to bind a trader with the owners wallet
-              dtl.trader.options.wallet.owner-bank: 
-                description: allows to bind a trader with the owners bank account # NOT SUPPORTED
               dtl.trader.options.wallet.npc-wallet: 
                 description: allows to set an independent wallet for the trader (player-trader default)
               dtl.trader.options.wallet.clan-wallet: 
-                description: allows to bind a trader with the clan default bank account
+                description: allows to bind a trader with the clan default bank account # NOT SUPPORTED #
               dtl.trader.options.wallet.clan-bank:  
-                description: allows to bind a trader with a clan bank account
+                description: allows to bind a trader with a clan bank account # NOT SUPPORTED #
           dtl.trader.options.entity.*:
             description: allows to create an trader on the given entity type
+            children:
+              dtl.trader.options.entity.pig: true
+              dtl.trader.options.entity.wolf: true
+              dtl.trader.options.entity.sheep: true
+              dtl.trader.options.entity.blaze: true
+              dtl.trader.options.entity.zombie: true
+              dtl.trader.options.entity.creeper: true
+              dtl.trader.options.entity.skeleton: true
       dtl.trader.commands.*: 
         description: all trader commands
         default: op
@@ -97,17 +111,19 @@ permissions:
           dtl.trader.commands.list: 
             description: allows the user to list items from the selected trader (options dependent)
           dtl.trader.commands.add: 
-            description: allows the user to add items with a command (options dependent) # NOT SUPPORTED (BUGGY)
+            description: allows the user to add items with a command (options dependent) # NOT SUPPORTED (BUGGY) #
           dtl.trader.commands.remove: 
-            description: allows the user to remove items with a command (options dependent) # NOT SUPPORTED (BUGGY)  
+            description: allows the user to remove items with a command (options dependent) # NOT SUPPORTED (BUGGY) #  
           dtl.trader.commands.edit: 
-            description: allows the user to edit items with a command (options dependent)
+            description: allows the user to edit items with a command (options dependent) # NOT SUPPORTED #
           dtl.trader.commands.mode: 
             description: allows the user to change the global mode (options dependent)
           dtl.trader.commands.wallet: 
             description: allows the user to change a traders wallet type (options dependent)
           dtl.trader.commands.type: 
             description: allows the user to change a traders type (options dependent)
+          dtl.trader.commands.owner: 
+            description: allows the user to change a traders owner
           dtl.trader.commands.balance: 
             description: allows the user to show a traders wallet balance (only npc-walet)
           dtl.trader.commands.withdraw: 

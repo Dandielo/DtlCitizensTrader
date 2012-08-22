@@ -15,6 +15,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -182,9 +183,10 @@ public class TraderManager implements Listener {
 		//if we got the magic stick!
 		if ( player.getItemInHand().getTypeId() == 280 ) 
 		{
-			if ( permManager.has(player, "dtl.trader.options.manager-mode")
-					|| trait.getOwner().equals(player.getName())
-					|| player.isOp() )
+			if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
+					&& trait.getOwner().equals(player.getName()) )
+					|| player.isOp()
+					|| permManager.has(player, "dtl.trader.bypass.manager-mode") )
 			{
 				
 				//sth is already managed!
@@ -204,9 +206,21 @@ public class TraderManager implements Listener {
 					
 					//is it a server trader?
 					if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
+					{
 						ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
+					}
 					//nah it's a player trader
-					else if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) {
+					else 
+					if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) 
+					{
+						
+						if ( player.getGameMode().equals(GameMode.CREATIVE) 
+								&& !permManager.has(player, "dtl.trader.bypass.creative") )
+						{
+							player.sendMessage("!NO PERMISSIONS, CREATIVE!");
+							return;
+						}
+						
 						ongoingTrades.put(player.getName(), new PlayerTrader(npc,trait));
 					}
 
@@ -239,6 +253,10 @@ public class TraderManager implements Listener {
 				
 				
 			}
+			else
+			{
+				player.sendMessage(ChatColor.RED + "!CAN'T MANAGE TRADERS!");
+			}
 			//nothing to do...
 			return;
 		}
@@ -255,6 +273,12 @@ public class TraderManager implements Listener {
 			else
 			//only void ;<
 			{
+				if ( !permManager.has(player, "dtl.trader.options.simple-mode") )
+				{
+					player.sendMessage(ChatColor.RED + "!CAN'T USE TRADERS!");
+					return;
+				}
+				
 				if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
 					ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
 				else 
