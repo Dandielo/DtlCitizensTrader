@@ -16,6 +16,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.TraderCharacterTrait;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
@@ -62,6 +63,8 @@ public abstract class Trader {
 	 * @traderConfig - currently not edit-able in-game
 	 * 
 	 */
+	protected LocaleManager locale;
+	
 	private InventoryTrait traderStock;
 	private TraderStatus traderStatus;
 	private TraderTrait traderConfig;
@@ -97,16 +100,13 @@ public abstract class Trader {
 	 */
 	public Trader(NPC traderNpc,TraderTrait traderConfiguragion) {
 		
-		/* *
-		 * Assign the configuration for later changes
-		 * 
-		 */
+		// Assign the configuration for later changes
 		traderConfig = traderConfiguragion;
 		
-		/* *
-		 * Initialize the trader
-		 * 
-		 */
+		//locale
+		locale = CitizensTrader.getLocale();
+		
+		// Initialize the trader
 		traderStock = traderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
 		inventory = traderStock.inventoryView(54, traderNpc.getName() + " trader");
 		traderStatus = TraderStatus.SELL;

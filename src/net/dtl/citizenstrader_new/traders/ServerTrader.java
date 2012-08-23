@@ -90,7 +90,7 @@ public class ServerTrader extends Trader {
 							 * 
 							 */
 							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
-								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+								p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 								
 								/* *
 								 * better version of Inventory.addItem();
@@ -114,15 +114,15 @@ public class ServerTrader extends Trader {
 								
 								
 							} else 
-								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
+								p.sendMessage(locale.getMessage("transaction-falied"));
 						} else {
 							/*
 							 * First click will display the price and instructions.
 							 * Future: language support
 							 * 
 							 */
-							p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice()) + ".");
-							p.sendMessage(ChatColor.GOLD + "Now click to {transaction} it");
+							p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
 							setClickedSlot(event.getSlot());
 						}
 					}
@@ -131,7 +131,7 @@ public class ServerTrader extends Trader {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == event.getSlot() ) { 
 						if ( checkLimits(p,event.getSlot()) && inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
-							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
+							p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount(event.getSlot()) ).replace("{price}", f.format(getSelectedItem().getPrice(event.getSlot())) ) );
 							
 							/* *
 							 * better version of Inventory.addItem();
@@ -154,17 +154,17 @@ public class ServerTrader extends Trader {
 								getSelectedItem().getPrice(event.getSlot()) );
 							
 						} else
-							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
+							p.sendMessage( locale.getMessage("transaction-falied") );
 					} else {
-						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice(event.getSlot())) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
 						setClickedSlot(event.getSlot());
 					}
 				}
 			} else if ( equalsTraderStatus(TraderStatus.BUY) ) {
 				if ( selectItem(event.getSlot(), TraderStatus.BUY).hasSelectedItem() ) {
 					
-					p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()) + " for this item.");
+					p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 				
 				}
 			}
@@ -180,7 +180,7 @@ public class ServerTrader extends Trader {
 
 						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
 							int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-							p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount()*scale + " for " + f.format(getSelectedItem().getPrice()*scale) + ".");
+							p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 							
 							/* *
 							 * needs to be recoded
@@ -210,15 +210,15 @@ public class ServerTrader extends Trader {
 								getSelectedItem().getPrice()*scale );
 							
 						} else 
-							p.sendMessage(ChatColor.GOLD + "Can't sell it");
+							p.sendMessage( locale.getMessage("transaction-falied") );
 					} else {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) + " for this item.");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
 						setClickedSlot(event.getSlot());
 					}
 				}
 			} else if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) { 
-				p.sendMessage(ChatColor.GOLD + "You can't sell anything when selecting amounts");
+				p.sendMessage( locale.getMessage("amount-exception") );
 				event.setCancelled(true);
 				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
@@ -226,7 +226,7 @@ public class ServerTrader extends Trader {
 					
 					if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
 						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-						p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount()*scale + " for " + f.format(getSelectedItem().getPrice()*scale) + ".");
+						p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						/* *
 						 * needs to be recoded
@@ -264,12 +264,13 @@ public class ServerTrader extends Trader {
 					//	}
 					}
 					else 
-						p.sendMessage(ChatColor.GOLD + "Can't sell it");
+						p.sendMessage( locale.getMessage("transaction-falied") );
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) + " for this item.");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
+						
 						setClickedSlot(event.getSlot());
 					}
 				}

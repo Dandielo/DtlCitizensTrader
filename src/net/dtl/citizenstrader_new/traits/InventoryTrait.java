@@ -195,25 +195,25 @@ public class InventoryTrait implements InventoryHolder {
 			String itemDisplay = format;
 			
 			//item id display
-			itemDisplay = itemDisplay.replace("<ii>", String.valueOf(item.getItemStack().getTypeId()) );
+			itemDisplay = itemDisplay.replace("{id}", String.valueOf(item.getItemStack().getTypeId()) );
 
 			//item id display
-			itemDisplay = itemDisplay.replace("<id>", String.valueOf(item.getItemStack().getData().getData()) );
+			itemDisplay = itemDisplay.replace("{data}", String.valueOf(item.getItemStack().getData().getData()) );
 			
 			//amount display
-			itemDisplay = itemDisplay.replace("<a>", String.valueOf(item.getAmount()) );
+			itemDisplay = itemDisplay.replace("{amount}", String.valueOf(item.getAmount()) );
 			
 			//price display
-			itemDisplay = itemDisplay.replace("<p>", String.valueOf(item.getPrice()) );
+			itemDisplay = itemDisplay.replace("{price}", String.valueOf(item.getPrice()) );
 			
 			//slot display
-			itemDisplay = itemDisplay.replace("<s>", String.valueOf(item.getSlot()) );
+			itemDisplay = itemDisplay.replace("{slot}", String.valueOf(item.getSlot()) );
 			
 			//global limit display
-			itemDisplay = itemDisplay.replace("<gl>", String.valueOf(item.getLimitSystem().getGlobalLimit()) );
+			itemDisplay = itemDisplay.replace("{gl}", String.valueOf(item.getLimitSystem().getGlobalLimit()) );
 
 			//item name display
-			itemDisplay = itemDisplay.replace("<in>", String.valueOf(item.getItemStack().getType().name().toLowerCase()) );
+			itemDisplay = itemDisplay.replace("{name}", String.valueOf(item.getItemStack().getType().name().toLowerCase()) );
 			
 			if ( i >= page * 10 && i < ( ( 1 + page ) * 10 ) + 1 )
 				items.add(itemDisplay);

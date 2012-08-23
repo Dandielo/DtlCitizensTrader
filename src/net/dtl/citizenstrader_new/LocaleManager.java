@@ -81,7 +81,7 @@ public class LocaleManager {
 				localeStrings.put("trader-created", ChatColor.RED + "Trader was created at your position");
 				localeStrings.put("amount-unavailable", ChatColor.RED + "This trader cannot give you that amount");
 				localeStrings.put("list-header", ChatColor.RED + "Trader stock list " + ChatColor.AQUA + " {curp}/{allp}");
-				localeStrings.put("list-message", "- " + ChatColor.RED + "{in} " + ChatColor.WHITE + " {a} {p} " + ChatColor.YELLOW + " [{s}]");
+				localeStrings.put("list-message", "- " + ChatColor.RED + "{name} ({id}:{data}) " + ChatColor.WHITE + " {amount} {price} " + ChatColor.YELLOW + " [{slot}]");
 				localeStrings.put("balance-message", ChatColor.RED + "Traders balance: " + ChatColor.AQUA + "{balance}");
 				localeStrings.put("withdraw-message", ChatColor.RED + "You withdrawed " + ChatColor.AQUA + "{amount}");
 				localeStrings.put("deposit-message", ChatColor.RED + "You deposited " + ChatColor.AQUA + "{amount}");
@@ -89,7 +89,7 @@ public class LocaleManager {
 				localeStrings.put("owner-message", ChatColor.AQUA + "{player}" + ChatColor.RED + " is the owner of this trader");
 				localeStrings.put("buy-message", ChatColor.GOLD + "You bought {amount} for {price}");
 				localeStrings.put("sell-message", ChatColor.GOLD + "You sold {amount} for {price}");
-				localeStrings.put("transaction falied", ChatColor.GOLD + "Transaction falied");
+				localeStrings.put("transaction-falied", ChatColor.GOLD + "Transaction falied");
 				localeStrings.put("price-message", ChatColor.GOLD + "The items price is {price}");
 				localeStrings.put("amount-exception", ChatColor.GOLD + "You can't sell anything when selecting amounts");
 				localeStrings.put("click-to-continue", ChatColor.GOLD + "Now click to {transaction} it");
