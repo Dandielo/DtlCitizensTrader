@@ -2,6 +2,8 @@ package net.dtl.citizenstrader_new;
 
 import java.util.logging.Logger;
 
+import org.anjocaido.groupmanager.GroupManager;
+import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -14,7 +16,7 @@ public class PermissionsManager {
 	private DtlPermissions dtlPerms;
 //	private Permission vaultPerms;
 //	private PexPermissions pexPerms;
-//	private GroupManager gmPerms;
+	private GroupManager gmPerms;
 	
 	public PermissionsManager() {
 		this.initializeDtlPermissions();
@@ -38,15 +40,27 @@ public class PermissionsManager {
 		logger.info(pluginPrefix + "SuperPerms enabled");
 	}
 	public void initializeGroupManager() {
-		logger.info(pluginPrefix + "GroupManager not supported atm, sorry :<");
-		logger.info(pluginPrefix + "SuperPerms enabled");
+		gmPerms = (GroupManager) Bukkit.getPluginManager().getPlugin("GroupManager");
+		if ( gmPerms == null )
+			return;
+		logger.info(pluginPrefix + gmPerms.getDescription().getFullName() + " ver" + gmPerms.getDescription().getVersion() + " hooked!");
 	}
 	
-	public boolean has(Player player, String permission) {
+	public boolean has(final Player player, final String permission) {
 		//if using dtlPermissions System
 		if ( dtlPerms != null ) 
 		{
 			return dtlPerms.has(player, permission);
+		}
+		else
+		if ( gmPerms != null )
+		{
+			final AnjoPermissionsHandler handler = gmPerms.getWorldsHolder().getWorldPermissions(player);
+			if (handler == null)
+			{
+				return false;
+			}
+			return handler.has(player, permission);
 		}
 		//if no system was found, use superperms
 		else
