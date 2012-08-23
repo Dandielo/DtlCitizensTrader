@@ -145,7 +145,7 @@ public class LocaleManager {
 			
 			for ( String key : locale.getConfigurationSection("strings").getKeys(false) )
 			{
-				localeCache.put(key, locale.getString(buildPath("strings",key)) );
+				localeCache.put(key, locale.getString(buildPath("strings",key)).replace('^', '§') );
 			}
 		} 
 		catch (FileNotFoundException e)
