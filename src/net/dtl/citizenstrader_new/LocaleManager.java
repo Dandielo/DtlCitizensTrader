@@ -28,14 +28,16 @@ public class LocaleManager {
 
 	public void initialize() {
 		// TODO check configuration
-		String permissionFilename = config.getString("backends.file.file");
+		String localeFilename = config.getString("trader.locale.file");
 
 		// Default settings
-		if ( permissionFilename == null ) 
+		if ( localeFilename == null ) 
 		{
-			permissionFilename = "locale.eng";
-			config.set("locale.file", "locale.eng");
+			localeFilename = "locale.eng";
+			config.set("trader.locale.file", "locale.eng");
 		}
+		
+		CitizensTrader.plugin.saveConfig();
 
 		String baseDir = config.getString("locale.basedir", "plugins/DtlCitizensTrader/locale" );// "plugins/PermissionsEx");
 
@@ -50,7 +52,7 @@ public class LocaleManager {
 			baseDirectory.mkdirs();
 		}
 
-		this.localeFile = new File(baseDir, permissionFilename);
+		this.localeFile = new File(baseDir, localeFilename);
 
 		this.reload();
 

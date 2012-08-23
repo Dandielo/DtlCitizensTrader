@@ -59,9 +59,11 @@ public class CitizensTrader extends JavaPlugin {
 			config = new TraderConfig(getConfig());
 			config.setEcon(economy);
 
+			plugin = this;
+
 			locale = new LocaleManager(getConfig());
 			permsManager = new PermissionsManager();
-			traderManager = new TraderManager();
+			traderManager = new TraderManager(getConfig());
 			logManager = new LogManager(getConfig());
 						
 			//if ( CitizensAPI.hasImplementation()  )
@@ -74,7 +76,6 @@ public class CitizensTrader extends JavaPlugin {
 			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
 			//((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
 			
-			plugin = this;
 			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");
 		} else {
 			this.logger.info("Vault plugin not found. Disabling plugin");

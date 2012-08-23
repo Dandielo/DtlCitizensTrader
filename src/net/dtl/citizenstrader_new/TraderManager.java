@@ -3,6 +3,8 @@ package net.dtl.citizenstrader_new;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
@@ -16,6 +18,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,11 +30,27 @@ public class TraderManager implements Listener {
 	//private static TraderConfig config;
 	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
 	
+	//for laggy servers...
+	private List<String> playersAntiDclick;
+	private Timer antiDClickTimer;
+	private long timerDelay;
+	
 	private HashMap<String,Trader> ongoingTrades = new HashMap<String,Trader>();	
 	private List<NPC> isTraderNpc;
 	
-	public TraderManager() {
+	public TraderManager(ConfigurationSection config) {
 		this.isTraderNpc = new ArrayList<NPC>();
+		playersAntiDclick = new ArrayList<String>();
+		antiDClickTimer = new Timer("anti-dclick");
+		
+		
+		if ( !config.contains("trader.rclick-interval") )
+		{
+			config.set("trader.rclick-interval", 1000);
+			CitizensTrader.plugin.saveConfig();
+		}
+		else
+			timerDelay = config.getLong("trader.rclick-interval");
 		//config = CitizensTrader.getTraderConfig();
 	}
 	
@@ -166,7 +185,24 @@ public class TraderManager implements Listener {
 		//bad touch hurts forever...
 		if ( !this.isTraderNpc.contains(event.getNPC()) ) 
 			return;
+
 		
+		final String playerName = event.getClicker().getName();
+		
+		if ( playersAntiDclick.contains(playerName) )
+			return;
+		
+		playersAntiDclick.add(playerName);
+		
+		TimerTask task = new TimerTask() {
+			
+			@Override
+			public void run() {
+				playersAntiDclick.remove(playerName);
+			}
+		};
+		
+		antiDClickTimer.schedule(task, timerDelay);
 		
 		//get the touched and the toucher
 		NPC npc = event.getNPC();
