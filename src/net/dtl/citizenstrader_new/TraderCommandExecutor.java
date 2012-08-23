@@ -693,7 +693,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}
 		
 		
-		if ( walletType == null || traderType == null )
+		if ( walletType == null || traderType == null || entityType == null )
 		{
 			player.sendMessage( locale.getMessage("no-defaults") );
 			return true;
