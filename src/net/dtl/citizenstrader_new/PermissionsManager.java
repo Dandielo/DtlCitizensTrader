@@ -53,6 +53,7 @@ public class PermissionsManager {
 			return dtlPerms.has(player, permission);
 		}
 		else
+		//using essentials group manager 
 		if ( gmPerms != null )
 		{
 			final AnjoPermissionsHandler handler = gmPerms.getWorldsHolder().getWorldPermissions(player);
