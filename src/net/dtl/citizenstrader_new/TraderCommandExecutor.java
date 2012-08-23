@@ -19,29 +19,21 @@ import org.bukkit.entity.Player;
 
 public final class TraderCommandExecutor implements CommandExecutor {
 	public static CitizensTrader plugin;
-	private static TraderConfig config;
-	//private TraderCharacterTrait trader;
 	private TraderManager traderManager;
 	private PermissionsManager permsManager;
+	
+	//locale manager
+	private LocaleManager locale;
 	
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
 		new CitizensTrader();
 
+		this.locale = CitizensTrader.getLocale();
 		this.permsManager = CitizensTrader.getPermissionsManager();
 		this.traderManager = CitizensTrader.getTraderManager();
-		config = CitizensTrader.getTraderConfig();
+	//	config = CitizensTrader.getTraderConfig();
 		//trader = ((TraderCharacterTrait) CitizensAPI.getTraitFactory().getTrait(TraderCharacterTrait.class));
-	}
-	
-	public boolean argsLength(String args[],int min,int max) {
-		if ( args.length < min ) {
-			return false;
-		}
-		if ( args.length > max ) {
-			return false;
-		}
-		return true;
 	}
 	
 	@Override
@@ -69,7 +61,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				
 				//goodbye!
-				player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+				player.sendMessage( locale.getMessage("no-permissions") );
 				return true;
 			}
 			
@@ -92,7 +84,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -102,14 +94,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight!
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}				
 				
@@ -148,7 +140,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -157,14 +149,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight! (copied...)
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}				
 				
@@ -207,21 +199,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.wallet") )
 				{
 					//have a good flight! (copied...)
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
 				//are all on board?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}	
 				
@@ -235,7 +227,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.type") )
 				{
 					//see ya with a better permission ;)
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
@@ -249,7 +241,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.create") )
 				{
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
@@ -257,7 +249,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}
 				
@@ -272,7 +264,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.dismiss") )
 				{
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
@@ -288,14 +280,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.balance") )
 				{
 					//you can't create life!
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -304,7 +296,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
+					player.sendMessage( locale.getMessage("invalid-wallet") );
 					return true;
 				}
 				
@@ -320,14 +312,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.withdraw") )
 				{
 					//no permissions available
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -336,7 +328,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
+					player.sendMessage( locale.getMessage("invalid-wallet") );
 					return true;
 				}
 				
@@ -344,7 +336,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}
 				
@@ -358,14 +350,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.deposit") )
 				{
 					//no permissions available
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -374,7 +366,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage(ChatColor.RED + "!INVALID WALLET!");
+					player.sendMessage( locale.getMessage("invalid-wallet") );
 					return true;
 				}
 				
@@ -382,7 +374,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
+					player.sendMessage( locale.getMessage("missing-args") );
 					return true;
 				}
 				
@@ -398,14 +390,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.owner") )
 				{
 					//have a good flight! (copied...)
-					player.sendMessage(ChatColor.RED + "!NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage(ChatColor.RED + "!NO TRADER SELECTED!");
+					player.sendMessage( locale.getMessage("no-trader-selected") );
 					return true;
 				}
 				
@@ -487,15 +479,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 			
 			//come on can;t you write a normal number... ?
-			player.sendMessage(ChatColor.RED + "!INVALID ARGUMENTS!");
+			player.sendMessage( locale.getMessage("invalid-args") );
 			return true;
 		}
 		
 		//we got a item list
-		player.sendMessage(ChatColor.RED + "Trader stock list " + ChatColor.AQUA + "# page " + String.valueOf(page+1));
+		player.sendMessage( locale.getMessage("list-header") );
 		
 		
-		for ( String item : trader.getTraderStock().getItemList(status, "- " + ChatColor.RED + "<in> " + ChatColor.WHITE + " <a> <p> " + ChatColor.YELLOW + " [<s>]", page) )
+		for ( String item : trader.getTraderStock().getItemList(status, locale.getMessage("list-message"), page) )
 			player.sendMessage(item);
 		return true;
 	}
@@ -521,7 +513,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( !permsManager.has(player, "dtl.trader.options.wallet." + walletString ) )
 		{
-			player.sendMessage("!WRONG WALLET, NO PERMISSIONS!");
+			player.sendMessage( locale.getMessage("invalid-wallet-perm") );
 			return true;
 		}
 
@@ -529,7 +521,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( !bankName.isEmpty() )
 			if ( !trader.getWallet().setBank(player.getName(), bankName) )
 			{
-				player.sendMessage("!WRONG BANK, NO PERMISSIONS!");
+				player.sendMessage( locale.getMessage("invalid-wallet-bank") );
 				return true;
 			}
 		
@@ -542,7 +534,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//change the bank name or set a bank wallet
 		
 		
-		player.sendMessage("!WALLET CHANGED!");
+		player.sendMessage( locale.getMessage("wallet-changed").replace("{wallet}", walletString) );
 		return true;
 	}
 	
@@ -552,14 +544,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( !permsManager.has(player, "dtl.trader.options." + typeString ) )
 		{
-			player.sendMessage(ChatColor.RED + "!WRONG TYPE, NO PERMISSIONS!");
+			player.sendMessage( locale.getMessage("invalid-ttype-perm") );
 			return true;
 		}
 		
 		TraderType type = TraderType.getTypeByName(typeString);
 		trader.getTraderConfig().setTraderType(type);
 		
-		player.sendMessage("!TYPE CHANGED, RESET MANAGER MODE!");
+		player.sendMessage( locale.getMessage("type-changed").replace("{type}", typeString) );
 		
 		return true;
 	}
@@ -568,7 +560,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean balance(Player player, Trader trader)
 	{
 		DecimalFormat f = new DecimalFormat("#.##");
-		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + String.valueOf(f.format(trader.getWallet().getMoney())) );
+		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -585,13 +577,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage("Wrong amount as argument");
+			player.sendMessage( locale.getMessage("invalid-args") );
 			return true;
 		}
 		
 		if ( withdraw > money )
 		{
-			player.sendMessage(ChatColor.RED + "This trader cannot give you that amount");
+			player.sendMessage( locale.getMessage("amount-unavailable") );
 			return true;
 		}
 		
@@ -600,8 +592,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 		plugin.getEconomy().depositPlayer(player.getName(), withdraw);
 		
-		player.sendMessage(ChatColor.RED + "You withdrawed " + ChatColor.AQUA + withdrawString + "");
-		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
+		player.sendMessage( locale.getMessage("withdraw-message").replace("{amount}", withdrawString) );
+		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -618,7 +610,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage("Wrong amount as argument");
+			player.sendMessage( locale.getMessage("invalid-args") );
 			return true;
 		}
 		
@@ -627,8 +619,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		trader.getWallet().setMoney(money + deposit);
 		DecimalFormat f = new DecimalFormat("#.##");
 		
-		player.sendMessage(ChatColor.RED + "You deposited " + ChatColor.AQUA + depositString + "");
-		player.sendMessage(ChatColor.RED + "Traders balance: " + ChatColor.AQUA + f.format(trader.getWallet().getMoney()) + "");
+		player.sendMessage( locale.getMessage("deposit-message").replace("{amount}", depositString) );
+		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -637,15 +629,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	private boolean setOwner(Player player, Trader trader, String owner) {
 		
 		trader.getTraderConfig().setOwner(owner);
-		player.sendMessage(ChatColor.RED + "!OWNER CHANGED!");
+		player.sendMessage( locale.getMessage("owner-changed").replace("{player}", owner) );
 		
 		return true;
 	}
 	
 	//getting the traders owner
 	private boolean getOwner(Player player, Trader trader) {
-		
-		player.sendMessage(ChatColor.AQUA + trader.getTraderConfig().getOwner() + ChatColor.RED + " is the owner of this trader");
+
+		player.sendMessage( locale.getMessage("owner-message").replace("{player}", trader.getTraderConfig().getOwner() ) );
 		//player.sendMessage("!OWNER CHANGED!");
 		
 		return true;
@@ -669,7 +661,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this trader type?
 				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
 				{
-					player.sendMessage(ChatColor.RED + "!WRONG TYPE, NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("invalid-ttype-perm") );
 					return true;
 				}
 				traderType = TraderType.getTypeByName(arg.substring(2));
@@ -681,7 +673,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this wallet type?
 				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
 				{
-					player.sendMessage(ChatColor.RED + "!WRONG WALLET, NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("invalid-wallet-perm") );
 					return true;
 				}
 				walletType = WalletType.getTypeByName(arg.substring(2));
@@ -693,7 +685,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this entity type?
 				if ( !permsManager.has(player, "dtl.trader.options.entity." + arg.substring(2) ) )
 				{
-					player.sendMessage(ChatColor.RED + "!WRONG ENTITY, NO PERMISSIONS!");
+					player.sendMessage( locale.getMessage("invalid-entity-perm") );
 					return true;
 				}
 				entityType = EntityType.fromName(arg.substring(2));
@@ -703,7 +695,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( walletType == null || traderType == null )
 		{
-			player.sendMessage(ChatColor.RED + "!NO DEFAULTS FOUND WHILE CREATING!");
+			player.sendMessage( locale.getMessage("no-defaults") );
 			return true;
 		}
 		
@@ -718,7 +710,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		settings.setWalletType(walletType);
 		
 		
-		player.sendMessage(ChatColor.RED + "!TRADER CREATED!");
+		player.sendMessage( locale.getMessage("trader-created") );
 		return true;
 	}
 	

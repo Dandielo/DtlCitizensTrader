@@ -122,7 +122,7 @@ public class ServerTrader extends Trader {
 							 * 
 							 */
 							p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice()) + ".");
-							p.sendMessage(ChatColor.GOLD + "Now click to buy it.");
+							p.sendMessage(ChatColor.GOLD + "Now click to {transaction} it");
 							setClickedSlot(event.getSlot());
 						}
 					}
