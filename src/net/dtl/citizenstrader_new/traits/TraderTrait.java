@@ -54,7 +54,7 @@ public class TraderTrait {
 				return TraderType.AUCTIONHOUSE;
 			else if ( n.equalsIgnoreCase("bank") )
 				return TraderType.BANK;
-			return TraderType.CUSTOM;
+			return null;
 		}
 		
 		public static String toString(TraderType w) {

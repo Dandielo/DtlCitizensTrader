@@ -77,14 +77,6 @@ permissions:
             description: allows to use the trader in simple-mode
           dtl.trader.options.manager-mode: 
             description: allows to use the traders manager-mode (if you'r the owner)
-          dtl.trader.options.server: 
-            description: allows to create/set a server trader
-          dtl.trader.options.player: 
-            description: allows to create/set a player trader
-          dtl.trader.options.bank: 
-            description: allows to create/set a banker # NOT SUPPORTED #
-          dtl.trader.options.auction: 
-            description: allows to create/set an auctioner # NOT SUPPORTED #
           dtl.trader.options.stack-price: 
             description: allows to toggle teh stack price in m-m
           dtl.trader.options.multiple-amounts: 
@@ -93,6 +85,17 @@ permissions:
             description: allows to set player limits in m-m
           dtl.trader.options.global-limits: 
             description: allows to set global limits in m-m
+          dtl.trader.options.type.*:
+            description: allows to set specific trader types
+            childern:
+              dtl.trader.options.type.server: 
+                description: allows to create/set/use/manage a server trader
+              dtl.trader.options.type.player: 
+                description: allows to create/set/use/manage a player trader
+              dtl.trader.options.type.bank: 
+                description: allows to create/set/use/manage a banker # NOT SUPPORTED #
+              dtl.trader.options.type.auction: 
+                description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
           dtl.trader.options.wallet.*: 
             description: allows to set (use) different wallet types
             children:

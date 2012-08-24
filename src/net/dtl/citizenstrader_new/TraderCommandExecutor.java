@@ -440,11 +440,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 	public TraderType getDefaultTraderType(Player player) {
 		//server trader as default
-		if ( permsManager.has(player, "dtl.trader.options.server") )
+		if ( permsManager.has(player, "dtl.trader.options.type.server") )
 			return TraderType.SERVER_TRADER;
 		else
 		//next default is player trader 
-		if ( permsManager.has(player, "dtl.trader.options.player") )
+		if ( permsManager.has(player, "dtl.trader.options.type.player") )
 			return TraderType.SERVER_TRADER;
 		
 		//else return no default
@@ -453,19 +453,19 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	
 	public WalletType getDefaultWalletType(Player player) {
 		//server default is infinite
-		if ( permsManager.has(player, "dtl.trader.options.infinite") )
+		if ( permsManager.has(player, "dtl.trader.options.wallet.infinite") )
 			return WalletType.INFINITE;
 		else
 		//next server default is custom bank
-		if ( permsManager.has(player, "dtl.trader.options.bank") )
+		if ( permsManager.has(player, "dtl.trader.options.wallet.bank") )
 			return WalletType.BANK;
 		else
 		//next default is npc wallet
-		if ( permsManager.has(player, "dtl.trader.options.npc-wallet") )
+		if ( permsManager.has(player, "dtl.trader.options.wallet.npc-wallet") )
 			return WalletType.NPC_WALLET;
 		else
 		//next default is player wallet
-		if ( permsManager.has(player, "dtl.trader.options.owner-wallet") )
+		if ( permsManager.has(player, "dtl.trader.options.wallet.owner-wallet") )
 			return WalletType.OWNER_WALLET;
 		
 		//else return no default
@@ -543,6 +543,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		WalletType wallet = WalletType.getTypeByName(walletString);
 		
+		if ( wallet == null )
+		{
+			player.sendMessage( locale.getMessage("invalid-wallet") );
+			return true;
+		}
 		//set the wallet type for both trader and wallet
 		trader.getTraderConfig().setWalletType(wallet);
 		
@@ -557,13 +562,20 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean setType(Player player, Trader trader, String typeString)
 	{
 		
-		if ( !permsManager.has(player, "dtl.trader.options." + typeString ) )
+		if ( !permsManager.has(player, "dtl.trader.options.type." + typeString ) )
 		{
 			player.sendMessage( locale.getMessage("invalid-ttype-perm") );
 			return true;
 		}
 		
 		TraderType type = TraderType.getTypeByName(typeString);
+		
+		if ( type == null )
+		{
+			player.sendMessage( locale.getMessage("invalid-ttype") );
+			return true;
+		}
+		
 		trader.getTraderConfig().setTraderType(type);
 		
 		player.sendMessage( locale.getMessage("type-changed").replace("{type}", typeString) );
@@ -661,7 +673,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//creating a trader, its easy ;)
 	public boolean createTrader(Player player, String[] args)
 	{
-		String traderName = args[1];
+		String traderName = "";
 		EntityType entityType = EntityType.PLAYER;
 		TraderType traderType = getDefaultTraderType(player);
 		WalletType walletType = getDefaultWalletType(player);
@@ -674,7 +686,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("t:") )
 			{
 				//do we have permissions to set this trader type?
-				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+				if ( !permsManager.has(player, "dtl.trader.options.type." + arg.substring(2) ) )
 				{
 					player.sendMessage( locale.getMessage("invalid-ttype-perm") );
 					return true;
@@ -686,7 +698,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("w:") )
 			{
 				//do we have permissions to set this wallet type?
-				if ( !permsManager.has(player, "dtl.trader.options." + arg.substring(2) ) )
+				if ( !permsManager.has(player, "dtl.trader.options.wallet." + arg.substring(2) ) )
 				{
 					player.sendMessage( locale.getMessage("invalid-wallet-perm") );
 					return true;
@@ -705,8 +717,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				entityType = EntityType.fromName(arg.substring(2));
 			}
+			else
+			{
+				traderName += arg + " ";
+			}
 		}
-		
+
+		if ( traderName.isEmpty() )
+			traderName = "NPC";
+		else
+			traderName.substring(0, traderName.length()-1);
 		
 		if ( walletType == null || traderType == null || entityType == null )
 		{

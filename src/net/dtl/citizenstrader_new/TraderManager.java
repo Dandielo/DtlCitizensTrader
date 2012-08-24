@@ -239,10 +239,16 @@ public class TraderManager implements Listener {
 						return;
 					}
 					
+					if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
+					{
+						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADERs!");
+						return;
+					}
 					
 					//is it a server trader?
 					if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
 					{
+						
 						ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
 					}
 					//nah it's a player trader
@@ -271,6 +277,12 @@ public class TraderManager implements Listener {
 				else
 				//nothing exists
 				{
+					if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
+					{
+						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADER!");
+						return;
+					}
+					
 					//is it a server trader?
 					if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
 						ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
@@ -312,7 +324,13 @@ public class TraderManager implements Listener {
 			{
 				if ( !permManager.has(player, "dtl.trader.options.simple-mode") )
 				{
-					player.sendMessage(ChatColor.RED + "!CAN'T USE TRADERS!");
+					player.sendMessage(ChatColor.RED + "!CAN'T USE ALL TRADERS!");
+					return;
+				}
+				
+				if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
+				{
+					player.sendMessage("!NO PERMISSIONS, CAN USE THIS TRADER!");
 					return;
 				}
 				
