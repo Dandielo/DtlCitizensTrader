@@ -301,7 +301,8 @@ public class TraderManager implements Listener {
 		{
 			
 			//is some1 managing?
-			if ( trader != null ) 
+			if ( trader != null 
+					&& TraderStatus.hasManageMode(trader.getTraderStatus()) ) 
 			{ 
 				ongoingTrades.get(player.getName()).switchInventory(TraderStatus.MANAGE_SELL);
 				

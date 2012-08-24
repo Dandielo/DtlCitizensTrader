@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
@@ -230,6 +231,20 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
+				
+				//check if we are editing a valid trader
+				if ( trader == null )
+				{
+					player.sendMessage( locale.getMessage("no-trader-selected") );
+					return true;
+				}
+				
+				//are all on board?
+				if ( args.length < 2 )
+				{
+					player.sendMessage( locale.getMessage("missing-args") );
+					return true;
+				}	
 				
 				return setType(player, trader, args[1]);
 			}
@@ -702,13 +717,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//creating the npc
 		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entityType, traderName);
 		npc.addTrait(TraderCharacterTrait.class);
+		npc.addTrait(MobType.class);
+		npc.getTrait(MobType.class).setType(entityType);
 		npc.spawn(player.getLocation());
 		
 		//change the trader settings
 		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
 		settings.setTraderType(traderType);
 		settings.setWalletType(walletType);
-		
+		settings.setOwner(player.getName());
 		
 		player.sendMessage( locale.getMessage("trader-created") );
 		return true;

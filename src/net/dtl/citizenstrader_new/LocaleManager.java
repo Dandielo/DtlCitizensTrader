@@ -67,34 +67,34 @@ public class LocaleManager {
 				
 				Map<String, String> localeStrings = new HashMap<String,String>();
 
-				localeStrings.put("no-permissions", ChatColor.RED + "You don't have required permissions");
-				localeStrings.put("missing-args", ChatColor.RED + "You are missing arguments");
-				localeStrings.put("invalid-wallet", ChatColor.RED + "This wallet type is invalid");
-				localeStrings.put("invalid-wallet-perm", ChatColor.RED + "You don't got permissions to use this wallet");
-				localeStrings.put("invalid-wallet-bank", ChatColor.RED + "You can't use this bank account");
-				localeStrings.put("wallet-changed", ChatColor.RED + "You changed the wallet type to {wallet}");
-				localeStrings.put("invalid-ttype", ChatColor.RED + "This trader type is invalid");
-				localeStrings.put("invalid-ttype-perm", ChatColor.RED + "You don't got permissions to use this trader type");
-				localeStrings.put("type-changed", ChatColor.RED + "Type changed to {type}, reset the trader manager mode");
-				localeStrings.put("no-trader-selected", ChatColor.RED + "You haven't selected any trader");
-				localeStrings.put("invalid-args", ChatColor.RED + "Wrong arguments wahere supplied");
-				localeStrings.put("invalid-entity", ChatColor.RED + "You can't use this entity as a trader");
-				localeStrings.put("no-defaults", ChatColor.RED + "No defaults found while creating a trader");
-				localeStrings.put("trader-created", ChatColor.RED + "Trader was created at your position");
-				localeStrings.put("amount-unavailable", ChatColor.RED + "This trader cannot give you that amount");
-				localeStrings.put("list-header", ChatColor.RED + "Trader stock list " + ChatColor.AQUA + " {curp}/{allp}");
-				localeStrings.put("list-message", "- " + ChatColor.RED + "{name} ({id}:{data}) " + ChatColor.WHITE + " {amount} {price} " + ChatColor.YELLOW + " [{slot}]");
-				localeStrings.put("balance-message", ChatColor.RED + "Traders balance: " + ChatColor.AQUA + "{balance}");
-				localeStrings.put("withdraw-message", ChatColor.RED + "You withdrawed " + ChatColor.AQUA + "{amount}");
-				localeStrings.put("deposit-message", ChatColor.RED + "You deposited " + ChatColor.AQUA + "{amount}");
-				localeStrings.put("owner-changed", ChatColor.RED + "New owner of this trader is " + ChatColor.AQUA + "{player}");
-				localeStrings.put("owner-message", ChatColor.AQUA + "{player}" + ChatColor.RED + " is the owner of this trader");
-				localeStrings.put("buy-message", ChatColor.GOLD + "You bought {amount} for {price}");
-				localeStrings.put("sell-message", ChatColor.GOLD + "You sold {amount} for {price}");
-				localeStrings.put("transaction-falied", ChatColor.GOLD + "Transaction falied");
-				localeStrings.put("price-message", ChatColor.GOLD + "The items price is {price}");
-				localeStrings.put("amount-exception", ChatColor.GOLD + "You can't sell anything when selecting amounts");
-				localeStrings.put("click-to-continue", ChatColor.GOLD + "Now click to {transaction} it");
+				localeStrings.put("no-permissions", "^cYou don't have required permissions");
+				localeStrings.put("missing-args", "^cYou are missing arguments");
+				localeStrings.put("invalid-wallet", "^cThis wallet type is invalid");
+				localeStrings.put("invalid-wallet-perm", "^cYou don't got permissions to use this wallet");
+				localeStrings.put("invalid-wallet-bank", "^cYou can't use this bank account");
+				localeStrings.put("wallet-changed", "^cYou changed the wallet type to {wallet}");
+				localeStrings.put("invalid-ttype", "^cThis trader type is invalid");
+				localeStrings.put("invalid-ttype-perm", "^cYou don't got permissions to use this trader type");
+				localeStrings.put("type-changed", "^cType changed to {type}, reset the trader manager mode");
+				localeStrings.put("no-trader-selected", "^cYou haven't selected any trader");
+				localeStrings.put("invalid-args", "^cWrong arguments wahere supplied");
+				localeStrings.put("invalid-entity", "^cYou can't use this entity as a trader");
+				localeStrings.put("no-defaults", "^cNo defaults found while creating a trader");
+				localeStrings.put("trader-created", "^cTrader was created at your position");
+				localeStrings.put("amount-unavailable", "^cThis trader cannot give you that amount");
+				localeStrings.put("list-header", "^cTrader stock list ^b {curp}/{allp}");
+				localeStrings.put("list-message", "- ^c{name} ({id}:{data}) ^f{amount} {price} ^e[{slot}]");
+				localeStrings.put("balance-message", "^cTraders balance: ^b{balance}");
+				localeStrings.put("withdraw-message", "^cYou withdrawed ^b{amount}");
+				localeStrings.put("deposit-message", "^cYou deposited ^b{amount}");
+				localeStrings.put("owner-changed", "^cNew owner of this trader is ^b{player}");
+				localeStrings.put("owner-message", "^b{player}^c is the owner of this trader");
+				localeStrings.put("buy-message", "^6You bought {amount} for {price}");
+				localeStrings.put("sell-message", "^6You sold {amount} for {price}");
+				localeStrings.put("transaction-falied", "^6Transaction falied");
+				localeStrings.put("price-message", "^6The items price is {price}");
+				localeStrings.put("amount-exception", "^6You can't sell anything when selecting amounts");
+				localeStrings.put("click-to-continue", "^6Now click to {transaction} it");
 				
 				this.localeCache = localeStrings;
 				
@@ -107,6 +107,7 @@ public class LocaleManager {
 			//	locale.set("groups/default/permissions", defaultPermissions);
 
 				this.save();
+				this.reload();
 			} 
 			catch (IOException e)
 			{

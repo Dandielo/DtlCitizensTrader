@@ -78,7 +78,7 @@ public class TraderTrait {
 	private TraderType tType = TraderType.SERVER_TRADER;
 	
 	private Wallet w;
-	private String owner = "server";
+	private String owner;
 	
 	public TraderTrait() {
 	//	super("type");
@@ -95,12 +95,15 @@ public class TraderTrait {
 	
 	public void setWalletType(WalletType type) {
 		// if the trader is a server trader (admin shop) allow to sat anny walet
-		if ( tType.equals(TraderType.SERVER_TRADER) ) {
+		if ( tType.equals(TraderType.SERVER_TRADER) ) 
+		{
 			wType = type;
 			w.setWalletType(wType);
 		}
+		else
 		// if the trader is a player trader
-		if ( tType.equals(TraderType.SERVER_TRADER) ) {
+		if ( tType.equals(TraderType.PLAYER_TRADER) ) 
+		{
 			
 			//disallow infinite money
 			if ( type.equals(WalletType.INFINITE) )
@@ -153,14 +156,13 @@ public class TraderTrait {
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("trader-type") ) {
 			tType = TraderType.getTypeByName(data.getString("trader-type", "server"));
-			System.out.print(tType.toString());
 		}
 		if ( data.keyExists("wallet-type") ) {
 			wType = WalletType.getTypeByName(data.getString("wallet-type", "infinite"));
 			w.setWalletType(wType);
 		}
 		if ( data.keyExists("owner") ) {
-			owner = data.getString("owner");
+			owner = data.getString("owner","no-owner");
 		}
 		if ( data.keyExists("money") ) {
 			w.setMoney(data.getDouble("money"));
