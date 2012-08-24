@@ -57,6 +57,8 @@ permissions:
         description: admin bypasses
         default: op
         children: 
+          dtl.trader.bypass.drop-item:
+            description: allows to throw out items when clicking outside the inventory
           dtl.trader.bypass.creative: 
             description: allows to bypass the creative restriction when managing a player trader
           dtl.trader.options.manager-mode-bypass: 

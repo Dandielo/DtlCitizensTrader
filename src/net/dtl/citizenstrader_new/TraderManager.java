@@ -162,11 +162,11 @@ public class TraderManager implements Listener {
 		}
 				
 		//are we managing?
-		if ( !TraderStatus.hasManageMode(trader.getTraderStatus()) )
-		{
-			//sorry we can't allow drop you that item :P
-			event.setCancelled(true);
-		}
+		if ( this.permManager.has(player, "dtl.trader.bypass.drop-item") )
+			return;
+		
+		//sorry we can't allow drop you that item :P
+		event.setCancelled(true);
 		
 	}
 	
