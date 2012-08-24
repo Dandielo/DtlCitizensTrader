@@ -57,6 +57,22 @@ public class TraderTrait {
 			return null;
 		}
 		
+		@Override
+		public String toString() {
+			switch( this ) {
+			case PLAYER_TRADER:
+				return "player";
+			case SERVER_TRADER:
+				return "server";
+			case AUCTIONHOUSE:
+				return "auctionhouse";
+			case BANK:
+				return "bank";
+			default:
+				break;
+			}
+			return "";
+		}
 		public static String toString(TraderType w) {
 			switch( w ) {
 			case PLAYER_TRADER:
