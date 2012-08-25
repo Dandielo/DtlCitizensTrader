@@ -39,6 +39,8 @@ permissions:
           dtl.trader.options.sell: true
           dtl.trader.options.buy: true
           dtl.trader.options.simple-mode: true
+          dtl.trader.options.type.player: true
+          dtl.trader.options.type.server: true
       dtl.trader.user.manager:
         description: default commands for player traders for a user
         default: false
