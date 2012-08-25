@@ -76,7 +76,7 @@ public class TraderManager implements Listener {
 		if ( !( event.getWhoClicked() instanceof Player ) )
 			return;
 		
-		if ( !( event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) )
+		if ( event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) 
 				&&  event.getView().getType().equals(InventoryType.CREATIVE) )
 			return;
 		
@@ -246,7 +246,7 @@ public class TraderManager implements Listener {
 					
 					if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
 					{
-						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADERs!");
+						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADERS!");
 						return;
 					}
 					
@@ -288,13 +288,35 @@ public class TraderManager implements Listener {
 						return;
 					}
 					
+					
+					//is it a server trader?
+					if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
+					{
+						
+						ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
+					}
+					//nah it's a player trader
+					else 
+					if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) 
+					{
+						
+						if ( player.getGameMode().equals(GameMode.CREATIVE) 
+								&& !permManager.has(player, "dtl.trader.bypass.creative") )
+						{
+							player.sendMessage("!NO PERMISSIONS, CREATIVE!");
+							return;
+						}
+						
+						ongoingTrades.put(player.getName(), new PlayerTrader(npc,trait));
+					}/*
+					
 					//is it a server trader?
 					if ( trait.getTraderType().equals(TraderType.SERVER_TRADER) )
 						ongoingTrades.put(player.getName(), new ServerTrader(npc,trait));
 					//nah it's a player trader
 					else if ( trait.getTraderType().equals(TraderType.PLAYER_TRADER) ) {
 						ongoingTrades.put(player.getName(), new PlayerTrader(npc,trait));
-					}
+					}*/
 					
 					//we are managing!
 					ongoingTrades.get(player.getName()).setTraderStatus(TraderStatus.MANAGE);
