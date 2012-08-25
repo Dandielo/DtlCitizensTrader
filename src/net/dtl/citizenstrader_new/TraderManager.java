@@ -349,6 +349,14 @@ public class TraderManager implements Listener {
 			else
 			//only void ;<
 			{
+
+				if ( player.getGameMode().equals(GameMode.CREATIVE) 
+						&& !permManager.has(player, "dtl.trader.bypass.creative") )
+				{
+					player.sendMessage("!NO PERMISSIONS, CREATIVE!");
+					return;
+				}
+				
 				if ( !permManager.has(player, "dtl.trader.options.simple-mode") )
 				{
 					player.sendMessage(ChatColor.RED + "!CAN'T USE ALL TRADERS!");
