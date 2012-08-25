@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class TraderManager implements Listener {
@@ -73,6 +74,10 @@ public class TraderManager implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		if ( !( event.getWhoClicked() instanceof Player ) )
+			return;
+		
+		if ( !( event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) )
+				&&  event.getView().getType().equals(InventoryType.CREATIVE) )
 			return;
 		
 		Player p = (Player) event.getWhoClicked();
@@ -330,7 +335,7 @@ public class TraderManager implements Listener {
 				
 				if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
 				{
-					player.sendMessage("!NO PERMISSIONS, CAN USE THIS TRADER!");
+					player.sendMessage("!NO PERMISSIONS, CAN USE THIS TRADER TYPE!");
 					return;
 				}
 				
