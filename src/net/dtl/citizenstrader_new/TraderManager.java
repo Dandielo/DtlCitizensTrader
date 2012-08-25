@@ -76,8 +76,15 @@ public class TraderManager implements Listener {
 		if ( !( event.getWhoClicked() instanceof Player ) )
 			return;
 		
+		
 		if ( event.getWhoClicked().getGameMode().equals(GameMode.CREATIVE) 
-				&&  event.getView().getType().equals(InventoryType.CREATIVE) )
+				&&  event.getView().getType().equals(InventoryType.PLAYER) )
+			return;
+		
+
+		if ( ( event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL) 
+				|| event.getWhoClicked().getGameMode().equals(GameMode.SURVIVAL) )
+				&& event.getView().getType().equals(InventoryType.CRAFTING) )
 			return;
 		
 		Player p = (Player) event.getWhoClicked();
