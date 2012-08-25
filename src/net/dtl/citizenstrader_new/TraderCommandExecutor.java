@@ -726,7 +726,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( traderName.isEmpty() )
 			traderName = "NPC";
 		else
-			traderName.substring(0, traderName.length()-1);
+			traderName = traderName.substring(7, traderName.length()-1);
 		
 		if ( walletType == null || traderType == null || entityType == null )
 		{

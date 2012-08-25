@@ -127,6 +127,7 @@ public class TraderTrait {
 			
 			
 			wType = type;
+			w.setWalletType(wType);
 		}
 	}
 	
@@ -154,7 +155,7 @@ public class TraderTrait {
 		return w;
 	}
 	
-	public boolean buyTransaction(Player pBuying, double price) {
+	public boolean buyTransaction(Player pBuying, final double price) {
 		if ( w.withdraw(pBuying.getName(), price, false) ) {
 			w.deposit(owner, price, true);
 			return true;

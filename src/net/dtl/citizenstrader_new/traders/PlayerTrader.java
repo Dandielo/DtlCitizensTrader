@@ -93,17 +93,15 @@ public class PlayerTrader extends Trader {
 							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
 								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
 								
-								/* *
-								 * better version of Inventory.addItem();
-								 * 
-								 */
+								
+								// recoded item adding
 								addSelectedToInventory(p,0);
 								
-								/* *
-								 * needs to be recoded
-								 * 
-								 */
+								
+								// global limits
 								updateLimits(p.getName());
+								
+								
 							} else 
 								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
 						} else {
