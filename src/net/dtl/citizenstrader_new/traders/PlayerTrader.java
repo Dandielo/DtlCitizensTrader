@@ -533,88 +533,38 @@ public class PlayerTrader extends Trader {
 					//check the cursor (if nothing is held just show the items price)
 					if ( event.getCursor().getType().equals(Material.AIR) ) {
 						
+						//select the item to get the information from, and show the price
+						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
+							p.sendMessage( locale.getMessage("show-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
 						
-						// check if it's buy or sell mode
-						if ( isBuyModeByWool() )
-						{
-							
-							//select the item to get the information from, and show the price
-							if ( selectItem(event.getSlot(),TraderStatus.MANAGE_BUY).hasSelectedItem() ) 
-								p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
-							
-							
-							//reset the selection
-							selectItem(null);
-						}
-						else
-						if ( isSellModeByWool() )
-						{
-							
-							//select the item to get the information from, and show the price
-							if ( selectItem(event.getSlot(),TraderStatus.MANAGE_SELL).hasSelectedItem() ) 
-								p.sendMessage(ChatColor.GOLD + "Price: " + f.format(getSelectedItem().getRawPrice()) );
-							
-							
-							//reset the selection
-							selectItem(null);
-						}
 						
 					} 
 					//if some thing is held change the items price
 					else
 					{
-
-						// check if it's buy or sell mode
-						if ( isBuyModeByWool() ) 
+							
+						//select the item if it exists
+						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
 							
-							//select the item if it exists
-							if ( selectItem(event.getSlot(),TraderStatus.MANAGE_BUY).hasSelectedItem() ) 
-							{
-								
-								//if it's right clicked the lower the price, else rise it
-								if ( event.isRightClick() ) 
-									getSelectedItem().lowerPrice(calculatePrice(event.getCursor()));
-								else
-									getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
-								
-								//show the new price
-								p.sendMessage(ChatColor.GOLD + "New price: " + f.format(getSelectedItem().getRawPrice()) );
-								
-								//deselect the item
-								selectItem(null);
-								
-								
-							}
+							//if it's right clicked the lower the price, else rise it
+							if ( event.isRightClick() ) 
+								getSelectedItem().lowerPrice(calculatePrice(event.getCursor()));
+							else
+								getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 							
-							
-						} 
-						else
-						if ( isSellModeByWool() )
-						{
-						
-							//select the item if it exists
-							if ( selectItem(event.getSlot(),TraderStatus.MANAGE_SELL).hasSelectedItem() ) 
-							{
-
-								//if it's right clicked the lower the price, else rise it
-								if ( event.isRightClick() ) 
-									getSelectedItem().lowerPrice(calculatePrice(event.getCursor()));
-								else
-									getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
-								
-								//show the new price
-								p.sendMessage(ChatColor.GOLD + "New price: " + f.format(getSelectedItem().getRawPrice()) );
-								
-								//deselct the item
-								selectItem(null);
-							}
+							//show the new price
+							p.sendMessage( locale.getMessage("change-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
 							
 							
 						}
 						
 						
 					}
+					
+					//reset the selection
+					selectItem(null);
+					
 					event.setCancelled(true);
 					
 					
@@ -647,9 +597,13 @@ public class PlayerTrader extends Trader {
 			
 			
 			//if top inventory was clicked before
-			if ( this.getInventoryClicked() )
-			{
+		//	if ( this.getInventoryClicked() )
+		//	{
 				
+				//we dont support this anymore!
+		//		return;
+				
+				/*
 				
 				//if there is some thing selected
 				if ( hasSelectedItem() ) 
@@ -672,175 +626,181 @@ public class PlayerTrader extends Trader {
 					//doesnt work...
 					//event.getWhoClicked().getInventory().setItem(clickedSlot, new ItemStack(0));
 				
-				}
+				}*/
 				
-			}
+		//	}
 			//if bottom inventory was clicked before
-			else
-			{
+		//	else
+		//	{
 
 
 				
 				//if an item is left-clicked
-				if ( event.isLeftClick() && event.getCurrentItem().getTypeId() != 0 )
+			if ( event.isLeftClick() && event.getCurrentItem().getTypeId() != 0 )
+			{
+				//save the amount 
+				int backUpAmount = event.getCurrentItem().getAmount();
+				
+				
+				//get the item information
+				ItemStack itemToAdd = event.getCurrentItem();
+				itemToAdd.setAmount(1);
+				
+				
+				//if that item already exist, don't put it again
+			//	if ( isSellModeByWool() )
+			//		this.selectItem(itemToAdd, getTraderStatus(), false, false);
+			//	if ( isBuyModeByWool() )
+				this.selectItem(itemToAdd, getBasicManageModeByWool(), false, false);
+				
+				
+				if ( hasSelectedItem() )
 				{
-					//save the amount 
-					int backUpAmount = event.getCurrentItem().getAmount();
 					
 					
-					//get the item information
-					ItemStack itemToAdd = event.getCurrentItem();
-					itemToAdd.setAmount(1);
+					//message the player
+					p.sendMessage( locale.getMessage("alredy-in-stock") );
 					
 					
-					//if that item already exist, don't put it again
-					if ( isSellModeByWool() )
-						this.selectItem(itemToAdd, getTraderStatus(), false, false);
-					if ( isBuyModeByWool() )
-						this.selectItem(itemToAdd, getTraderStatus(), false, false);
+					//reset the selection and set the clicked inventory (false = bottom)
+					itemToAdd.setAmount(backUpAmount);
+					selectItem(null);
+					setInventoryClicked(false);
+					return;
+				}
+				
+				
+				//get the first empty item slot
+				int firstEmpty = getInventory().firstEmpty();
+				
+				
+				
+				//just to be sure nothing will be out of the inventory range (-3 for managing)
+				if ( firstEmpty >= 0 && firstEmpty < getInventory().getSize() - 3 )
+				{
 					
 					
-					if ( hasSelectedItem() )
-					{
-						
-						
-						//message the player
-						p.sendMessage(ChatColor.RED + "That item is alredy in the traders stock");
-						
-						
-						//reset the selection and set the clicked inventory (false = bottom)
-						itemToAdd.setAmount(backUpAmount);
-						selectItem(null);
-						setInventoryClicked(false);
-						return;
-					}
-					
-					
-					//get the first empty item slot
-					int firstEmpty = getInventory().firstEmpty();
+					//set the item to the inventory
+					getInventory().setItem(firstEmpty, itemToAdd.clone());
 					
 					
 					
-					//just to be sure nothing will be out of the inventory range
-					if ( firstEmpty >= 0 && firstEmpty < getInventory().getSize() )
-					{
-						
-						
-						//set the item to the inventory
-						getInventory().setItem(firstEmpty, itemToAdd.clone());
-						
-						
-						
-						//change the item into the stock type
-						StockItem stockItem = toStockItem(itemToAdd.clone());
-						
-						
-						//set the stock items slot
-						stockItem.setSlot(firstEmpty);
+					//change the item into the stock type
+					StockItem stockItem = toStockItem(itemToAdd.clone());
+					
+					
+					//set the stock items slot
+					stockItem.setSlot(firstEmpty);
 
-						
-						//set the limit system to 0/0/-2 (player empty configuration)
-						LimitSystem limitSystem = stockItem.getLimitSystem();
-						limitSystem.setGlobalLimit(0);
-						limitSystem.setGlobalTimeout(-2000);
-						
-						
-						//put it into the stock list
-						if ( isSellModeByWool() )
-							getTraderStock().addItem(true, stockItem);
-						if ( isBuyModeByWool() )
-							getTraderStock().addItem(false, stockItem);
-						
-						
-						
-						itemToAdd.setAmount(backUpAmount);
-					}
+					
+					//set the limit system to 0/0/-2 (player empty configuration)
+					LimitSystem limitSystem = stockItem.getLimitSystem();
+					limitSystem.setGlobalLimit(0);
+					limitSystem.setGlobalTimeout(-2000);
 					
 					
+					//put it into the stock list
+					if ( isSellModeByWool() )
+						getTraderStock().addItem(true, stockItem);
+					if ( isBuyModeByWool() )
+						getTraderStock().addItem(false, stockItem);
+					
+					
+					
+					itemToAdd.setAmount(backUpAmount);
+					
+					//send message
+					p.sendMessage( locale.getMessage("item-added") );
+				}
+				
+				
+			}
+			else
+			//if we are right clicking an item we will add the stock amount the trader will sell
+			if ( event.getCurrentItem().getTypeId() != 0 )
+			{
+				//if it's not shift clicked it has no effect ;P
+				if ( !event.isShiftClick() )
+				{
+					
+					//message the player
+					p.sendMessage( locale.getMessage("amount-add-help") );
+					
+					
+					//reset the selection and set the clicked inventory (false = bottom)
+					selectItem(null);
+					setInventoryClicked(false);
+					return;
+				}
+				
+				
+				//get the item we want to add
+				ItemStack itemToAdd = event.getCurrentItem();
+				
+				
+				//get the item if it exists in the inventory
+			//	if ( isSellModeByWool() )
+			//		this.selectItem(itemToAdd, getTraderStatus(), false, false);
+			//	if ( isBuyModeByWool() )
+				this.selectItem(itemToAdd, getBasicManageModeByWool(), false, false);
+				
+				
+				//if it exist allow the event to occur (let the item disappear)
+				if ( hasSelectedItem() ) 
+				{
+					
+					//let the item disappear
+					event.setCancelled(false);
+					
+					
+					//get the items limit system
+					LimitSystem limitSystem = getSelectedItem().getLimitSystem();
+					
+					
+					//timeout set to no timeout checks (-2000 = it will never reset)
+					limitSystem.setGlobalTimeout(-2000);
+					
+					
+					int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
+					if ( getItemsLeft < 0 )
+						getItemsLeft = 0;
+					
+					//set the new limit (how many items can players buy)
+					limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
+					
+					
+					//set the amount to 0 to push it but don't change the top items amount 
+					itemToAdd.setAmount(0);
+					event.setCurrentItem(itemToAdd);
+					
+					
+					//reset the amount
+					limitSystem.setGlobalAmount(0);
+				
+					
+					//send message
+					p.sendMessage( locale.getMessage("amount-added") );
+					
+					//reset
+					selectItem(null);
 				}
 				else
-				//if we are right clicking an item we will add the stock amount the trader will sell
-				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
-					//if it's not shift clicked it has no effect ;P
-					if ( !event.isShiftClick() )
-					{
-						
-						//message the player
-						p.sendMessage(ChatColor.RED + "Shift click to add an amount");
-						
-						
-						//reset the selection and set the clicked inventory (false = bottom)
-						selectItem(null);
-						setInventoryClicked(false);
-						return;
-					}
-					
-					
-					//get the item we want to add
-					ItemStack itemToAdd = event.getCurrentItem();
-					
-					
-					//get the item if it exists in the inventory
-					if ( isSellModeByWool() )
-						this.selectItem(itemToAdd, getTraderStatus(), false, false);
-					if ( isBuyModeByWool() )
-						this.selectItem(itemToAdd, getTraderStatus(), false, false);
-					
-					
-					//if it exist allow the event to occur (let the item disappear)
-					if ( hasSelectedItem() ) 
-					{
-						
-						//let the item disappear
-						event.setCancelled(false);
-						
-						
-						//get the items limit system
-						LimitSystem limitSystem = getSelectedItem().getLimitSystem();
-						
-						
-						//timeout set to no timeout checks (-2000 = it will never reset)
-						limitSystem.setGlobalTimeout(-2000);
-						
-						
-						int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
-						if ( getItemsLeft < 0 )
-							getItemsLeft = 0;
-						
-						//set the new limit (how many items can players buy)
-						limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
-						
-						
-						//set the amount to 0 to push it but don't change the top items amount 
-						itemToAdd.setAmount(0);
-						event.setCurrentItem(itemToAdd);
-						
-						
-						//reset the amount
-						limitSystem.setGlobalAmount(0);
-					
-						
-						//reset
-						selectItem(null);
-					}
-					else
-					{
-						//that item isn't in the stock
-						p.sendMessage(ChatColor.RED+"You don't have this item in you'r stock");
-						
-					}
-					
+					//that item isn't in the stock
+					p.sendMessage( locale.getMessage("not-in-stock") );
 					
 				}
 				
 				
 			}
 			
-			setInventoryClicked(false);
+			
 		}
 		
+		setInventoryClicked(false);
 	}
+		
+//	}
 
 
 }
