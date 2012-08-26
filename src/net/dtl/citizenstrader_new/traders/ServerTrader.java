@@ -547,8 +547,12 @@ public class ServerTrader extends Trader {
 
 								 //get the real amount
 								 item.resetAmounts(event.getCursor().getAmount());
+								 
 								 //set the item to the stock
-								 getTraderStock().addItem(true, item);
+								 if ( this.isBuyModeByWool() )
+									 getTraderStock().addItem(false, item);
+								 if ( this.isSellModeByWool() )
+									 getTraderStock().addItem(true, item);
 							 }
 							 
 							 //select an item if it exists in the traders inventory
