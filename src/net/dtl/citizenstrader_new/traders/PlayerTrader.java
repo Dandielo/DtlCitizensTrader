@@ -659,7 +659,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					//message the player
-					p.sendMessage( locale.getMessage("alredy-in-stock") );
+					p.sendMessage( locale.getMessage("already-in-stock") );
 					
 					
 					//reset the selection and set the clicked inventory (false = bottom)

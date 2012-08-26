@@ -287,7 +287,7 @@ public class LimitSystem {
 		public void changeLimit(int l) {
 			limit += l;
 			if ( limit < 0 )
-				limit = 0;
+				limit = -1;
 		}
 		public void setLimit(int l) {
 			limit = l;

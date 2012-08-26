@@ -110,8 +110,8 @@ public class LocaleManager {
 				
 				//trader (manager)
 				localeStrings.put("managing-changed-message", "^cSwitched to ^6{managing} ^cmanaging");
-				localeStrings.put("show-limit", "^^6{type} ^climit: ^b{limit}");
-				localeStrings.put("change-limit", "^^6{type} ^climit changed: ^b{limit}");
+				localeStrings.put("show-limit", "^6{type} ^climit: ^b{limit}");
+				localeStrings.put("change-limit", "^6{type} ^climit changed: ^b{limit}");
 				localeStrings.put("show-timeout", "^6{type} ^ctimeout: ^b{timeout}");
 				localeStrings.put("change-timeout", "^6{type} ^ctimeout changed: ^b{timeout}");
 				localeStrings.put("show-price", "^cPrice: ^b{price}");
@@ -129,7 +129,7 @@ public class LocaleManager {
 				
 				//player trader (manager)
 				localeStrings.put("item-removed-pt", "^cItem removed! You got ^b{amount} ^cback");
-				localeStrings.put("alredy-in-stock", "^cThis item is alredy in stock");
+				localeStrings.put("already-in-stock", "^cThis item is alredy in stock");
 				localeStrings.put("item-added", "^cItem was added to the traders stock");
 				localeStrings.put("amount-add-help", "^cShift r.click the item to add it to the stock");
 				localeStrings.put("amount-added", "^cThe amount was added to the trader stock");
