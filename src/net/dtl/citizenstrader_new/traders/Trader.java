@@ -431,7 +431,7 @@ public abstract class Trader {
 	
 	public boolean checkLimits(Player p) {
 		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0) ) {
-			p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
+		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
 			return false;
 		}
 		return true;
@@ -439,7 +439,7 @@ public abstract class Trader {
 	
 	public boolean checkLimits(Player p, int slot) {
 		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),slot) ) {
-			p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
+		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
 			return false;
 		}
 		return true;
