@@ -28,7 +28,7 @@ public class PlayerTrader extends Trader {
 
 	@Override
 	public void simpleMode(InventoryClickEvent event) {
-
+		
 		/* 
 		 * will vanish after i've madeUp the simpleMode 
 		 * 
@@ -36,6 +36,8 @@ public class PlayerTrader extends Trader {
 		
 		Player p = (Player) event.getWhoClicked();
 		DecimalFormat f = new DecimalFormat("#.##");
+		int slot = event.getSlot();
+		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
 		if ( top ) {
@@ -45,7 +47,7 @@ public class PlayerTrader extends Trader {
 			 */
 
 			
-			if ( isManagementSlot(event.getSlot(), 1) ) {
+			if ( isManagementSlot(slot, 1) ) {
 				/*
 				 * Standard wool place (last item slot)
 				 * 
@@ -65,7 +67,7 @@ public class PlayerTrader extends Trader {
 					switchInventory(TraderStatus.SELL);		
 				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
 					/*
-					 * lest go back to the main selling inventory ;)
+					 * lest go to the buy inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.BUY);		
@@ -75,7 +77,7 @@ public class PlayerTrader extends Trader {
 				 * Player is buying from the trader
 				 * 
 				 */
-				if ( selectItem(event.getSlot(), TraderStatus.SELL).hasSelectedItem() ) {
+				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() ) {
 					if ( getSelectedItem().hasMultipleAmouts() ) {
 						/*
 						 * Switching to the amount select inventory
@@ -84,68 +86,88 @@ public class PlayerTrader extends Trader {
 						switchInventory(getSelectedItem());
 						setTraderStatus(TraderStatus.SELL_AMOUNT);
 					} else {
-						if ( getClickedSlot() == event.getSlot() ) {
+						if ( getClickedSlot() == slot ) {
 							/*
 							 * This will trigger if some1 will click more than 1 amount on the same item  
 							 * in the trader inventory
 							 * 
 							 */
 							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
-								p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+								p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 								
-								
-								// recoded item adding
+								/* *
+								 * better version of Inventory.addItem();
+								 * 
+								 */
 								addSelectedToInventory(p,0);
 								
-								
-								// global limits
+								/* *
+								 * needs to be recoded
+								 * 
+								 */
 								updateLimits(p.getName());
+								
+								//logging
+								log("buy", 
+									p.getName(), 
+									getSelectedItem().getItemStack().getTypeId(),
+									getSelectedItem().getItemStack().getData().getData(), 
+									getSelectedItem().getAmount(), 
+									getSelectedItem().getPrice() );
 								
 								
 							} else 
-								p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
+								p.sendMessage(locale.getMessage("transaction-falied"));
 						} else {
 							/*
 							 * First click will display the price and instructions.
 							 * Future: language support
 							 * 
 							 */
-							p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice()) + ".");
-							p.sendMessage(ChatColor.GOLD + "Now click to buy it.");
-							setClickedSlot(event.getSlot());
+							p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
+							setClickedSlot(slot);
 						}
 					}
 				}
 			} else if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
-					if ( getClickedSlot() == event.getSlot() ) { 
-						if ( checkLimits(p,event.getSlot()) && inventoryHasPlace(p,event.getSlot()) && buyTransaction(p,getSelectedItem().getPrice(event.getSlot())) ) {
-							p.sendMessage(ChatColor.GOLD + "You bought " + getSelectedItem().getAmount(event.getSlot()) + " for " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
+					if ( getClickedSlot() == slot ) { 
+						if ( checkLimits(p,slot) && inventoryHasPlace(p,slot) && buyTransaction(p,getSelectedItem().getPrice(slot)) ) {
+							p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
 							
 							/* *
 							 * better version of Inventory.addItem();
 							 * 
 							 */
-							addSelectedToInventory(p,event.getSlot());
+							addSelectedToInventory(p,slot);
 							
 							/* *
 							 * needs to be recoded
 							 * 
 							 */
-							updateLimits(p.getName(),event.getSlot());
+							updateLimits(p.getName(),slot);
+							
+							//logging
+							log("buy", 
+								p.getName(), 
+								getSelectedItem().getItemStack().getTypeId(),
+								getSelectedItem().getItemStack().getData().getData(), 
+								getSelectedItem().getAmount(slot), 
+								getSelectedItem().getPrice(slot) );
 							
 						} else
-							p.sendMessage(ChatColor.GOLD + "You don't have enough money or space.");
+							p.sendMessage( locale.getMessage("transaction-falied") );
 					} else {
-						p.sendMessage(ChatColor.GOLD + "This item costs " + f.format(getSelectedItem().getPrice(event.getSlot())) + ".");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to buy it.");
-						setClickedSlot(event.getSlot());
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
+						setClickedSlot(slot);
 					}
 				}
 			} else if ( equalsTraderStatus(TraderStatus.BUY) ) {
-				if ( selectItem(event.getSlot(), TraderStatus.BUY).hasSelectedItem() ) {
+				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
-					p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()) + " for this item.");
+					p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 				
 				}
 			}
@@ -157,10 +179,11 @@ public class PlayerTrader extends Trader {
 			 */
 			if ( equalsTraderStatus(TraderStatus.BUY) ) {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
-					if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
+					if ( getClickedSlot() == slot && !getInventoryClicked() ) {
 
 						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
-							p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+							int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+							p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 							
 							/* *
 							 * needs to be recoded
@@ -174,24 +197,39 @@ public class PlayerTrader extends Trader {
 							/* *
 							 * need to create removeFromInventory fnc (code cleanup)
 							 * 
-							 */
+							 *//*
 							if ( event.getCurrentItem().getAmount()-getSelectedItem().getAmount() > 0 )
 								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getSelectedItem().getAmount());
 							else 
-								event.setCurrentItem(new ItemStack(Material.AIR));
+								event.setCurrentItem(new ItemStack(Material.AIR));*/
+							removeFromInventory(event.getCurrentItem(),event);
+							
+							//logging
+							log("sell", 
+								p.getName(), 
+								getSelectedItem().getItemStack().getTypeId(),
+								getSelectedItem().getItemStack().getData().getData(), 
+								getSelectedItem().getAmount()*scale, 
+								getSelectedItem().getPrice()*scale );
+							
 						} else 
-							p.sendMessage(ChatColor.GOLD + "Can't sell it");
+							p.sendMessage( locale.getMessage("transaction-falied") );
 					} else {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()) + " for this item.");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
-						setClickedSlot(event.getSlot());
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
+						setClickedSlot(slot);
 					}
 				}
+			} else if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) { 
+				p.sendMessage( locale.getMessage("amount-exception") );
+				event.setCancelled(true);
+				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
-				if ( getClickedSlot() == event.getSlot() && !getInventoryClicked() ) {
+				if ( getClickedSlot() == slot && !getInventoryClicked() ) {
 					
 					if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
-						p.sendMessage(ChatColor.GOLD + "You sold " + getSelectedItem().getAmount() + " for " + f.format(getSelectedItem().getPrice()) + ".");
+						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+						p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						/* *
 						 * needs to be recoded
@@ -211,41 +249,39 @@ public class PlayerTrader extends Trader {
 						 * TEMPORARY!!!!!!
 						 * 
 						 */
-						if ( event.getCurrentItem().getAmount() == 1 ) {
+						/*if ( event.getCurrentItem().getAmount() == 1 ) {
 							if ( event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()) > 0 )
 								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()));
 							else 
 								event.setCurrentItem(new ItemStack(Material.AIR));
-						} else {
-							if ( event.getCurrentItem().getAmount()-getSelectedItem().getAmount() > 0 )
-								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getSelectedItem().getAmount());
-							else 
-								event.setCurrentItem(new ItemStack(Material.AIR));
-						}
+						} else {*/
+						removeFromInventory(event.getCurrentItem(),event);
+						
+						//logging
+						log("buy", 
+							p.getName(), 
+							getSelectedItem().getItemStack().getTypeId(),
+							getSelectedItem().getItemStack().getData().getData(), 
+							getSelectedItem().getAmount()*scale, 
+							getSelectedItem().getPrice()*scale );
+					//	}
 					}
 					else 
-						p.sendMessage(ChatColor.GOLD + "Can't sell it");
+						p.sendMessage( locale.getMessage("transaction-falied") );
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) {
-						p.sendMessage(ChatColor.GOLD + "You get " + f.format(getSelectedItem().getPrice()) + " for this item.");
-						p.sendMessage(ChatColor.GOLD + "Click a second time to sell it.");
-						setClickedSlot(event.getSlot());
+						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
+						
+						setClickedSlot(slot);
 					}
 				}
 			}
 			setInventoryClicked(false);
 		}
-		event.setCancelled(true);		
+		event.setCancelled(true);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 
@@ -264,6 +300,7 @@ public class PlayerTrader extends Trader {
 			
 			if ( isManagementSlot(clickedSlot, 3) ) 
 			{
+				//is white wool clicked
 				if ( isWool(event.getCurrentItem(), (byte) 0) )
 				{
 					
@@ -279,7 +316,8 @@ public class PlayerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
 					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
 					
-					
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
 				}
 				else
 				if ( isWool(event.getCurrentItem(), (byte) 15) )
@@ -294,7 +332,9 @@ public class PlayerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 					
-					
+
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "price") );
 				}
 				else
 				// TODO add a support system ;P
@@ -343,7 +383,9 @@ public class PlayerTrader extends Trader {
 					
 					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
 				
-				
+
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "sell") );
 				}
 				else
 				if ( isWool(event.getCurrentItem(), (byte) 2) )	//unsupported wool data value
@@ -358,7 +400,9 @@ public class PlayerTrader extends Trader {
 					
 					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
 					
-					
+
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
 				}
 				
 				//cancel the event, so no1 can take up wools and end
@@ -403,7 +447,9 @@ public class PlayerTrader extends Trader {
 							
 							//clear the selecton and message the player
 							selectItem(null);
-							p.sendMessage(ChatColor.RED+"You got " + leftAmount + " of this item back");
+
+							//send message
+							p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
 						}
 						
 						
@@ -412,7 +458,7 @@ public class PlayerTrader extends Trader {
 					
 				}
 				//sell management
-				if ( equalsTraderStatus(TraderStatus.MANAGE_SELL) )
+				if ( equalsTraderStatus(getBasicManageModeByWool()) )
 				{
 					
 					//if an item is right-clicked
@@ -424,13 +470,13 @@ public class PlayerTrader extends Trader {
 							if ( getSelectedItem().hasStackPrice() ) 
 							{
 								getSelectedItem().setStackPrice(false);
-								p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
+								p.sendMessage( locale.getMessage("stackprice-toggle").replace("{value}", "disabled") );
 							} 
 							//change the price to a stack-price
 							else
 							{
 								getSelectedItem().setStackPrice(true);
-								p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
+								p.sendMessage( locale.getMessage("stackprice-toggle").replace("{value}", "enabled") );
 							}
 						}
 						
@@ -455,73 +501,11 @@ public class PlayerTrader extends Trader {
 						
 						
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-							getSelectedItem().setSlot(-2);
-						
-						
-						
-						stockItem.setSlot(clickedSlot);
-						
-						
-					}
-					//no item selected, select an item and change it's slot to -2 (in management)
-					else
-					{
-						
-						
-						//try to select an item (if it existis in that slot)
-						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-							getSelectedItem().setSlot(-2);	//found a item for management
-						
-						
-						
-					}
-					return;
-				}
-				else
-				if ( equalsTraderStatus(TraderStatus.MANAGE_BUY) ) 
-				{
-					//if an item is right-clicked
-					if ( event.isRightClick() ) 
-					{
-						if ( selectItem(event.getSlot(), getTraderStatus()).hasSelectedItem() )
 						{
-							//if it has the stack price change it back to "per-item" price
-							if ( getSelectedItem().hasStackPrice() ) 
-							{
-								getSelectedItem().setStackPrice(false);
-								p.sendMessage(ChatColor.GOLD + "StackPrice disabled for this item.");
-							} 
-							//change the price to a stack-price
-							else
-							{
-								getSelectedItem().setStackPrice(true);
-								p.sendMessage(ChatColor.GOLD + "StackPrice enabled for this item.");
-							}
+							getSelectedItem().setSlot(-2);
+							p.sendMessage( locale.getMessage("item-selected") );
 						}
 						
-						//reset the selection
-						selectItem(null);
-						
-						//cancel the event
-						event.setCancelled(true);
-						return;
-					}
-					
-					
-					//has a selected item, can change the position or throw away
-					if ( hasSelectedItem() ) 
-					{
-						//switch the items selected
-						
-						
-						
-						StockItem stockItem = getSelectedItem();
-						
-						
-						
-						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-							getSelectedItem().setSlot(-2);
-						
 						
 						
 						stockItem.setSlot(clickedSlot);
@@ -532,11 +516,11 @@ public class PlayerTrader extends Trader {
 					else
 					{
 						
-						
-						//try to select an item (if it existis in that slot)
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-							getSelectedItem().setSlot(-2);	//found a item for management
-						
+						{
+							getSelectedItem().setSlot(-2);	
+							p.sendMessage( locale.getMessage("item-selected") );
+						}
 						
 						
 					}

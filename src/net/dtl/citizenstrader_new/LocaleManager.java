@@ -128,6 +128,7 @@ public class LocaleManager {
 				//player trader (simple)
 				
 				//player trader (manager)
+				localeStrings.put("item-removed-pt", "^cItem removed! You got ^b{amount} ^cback");
 				
 				
 				this.localeCache = localeStrings;
