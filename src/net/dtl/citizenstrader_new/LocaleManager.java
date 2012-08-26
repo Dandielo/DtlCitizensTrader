@@ -67,34 +67,64 @@ public class LocaleManager {
 				
 				Map<String, String> localeStrings = new HashMap<String,String>();
 
-				localeStrings.put("no-permissions", "^cYou don't have required permissions");
-				localeStrings.put("missing-args", "^cYou are missing arguments");
+				//all
+				localeStrings.put("no-permissions", "^cYou don't have required permissions"); 
+				
+				//commands
+				localeStrings.put("invalid-args", "^cWrong arguments wahere supplied");
 				localeStrings.put("invalid-wallet", "^cThis wallet type is invalid");
 				localeStrings.put("invalid-wallet-perm", "^cYou don't got permissions to use this wallet");
 				localeStrings.put("invalid-wallet-bank", "^cYou can't use this bank account");
-				localeStrings.put("wallet-changed", "^cYou changed the wallet type to {wallet}");
 				localeStrings.put("invalid-ttype", "^cThis trader type is invalid");
 				localeStrings.put("invalid-ttype-perm", "^cYou don't got permissions to use this trader type");
-				localeStrings.put("type-changed", "^cType changed to {type}, reset the trader manager mode");
-				localeStrings.put("no-trader-selected", "^cYou haven't selected any trader");
-				localeStrings.put("invalid-args", "^cWrong arguments wahere supplied");
 				localeStrings.put("invalid-entity", "^cYou can't use this entity as a trader");
-				localeStrings.put("no-defaults", "^cNo defaults found while creating a trader");
-				localeStrings.put("trader-created", "^cTrader was created at your position");
+
 				localeStrings.put("amount-unavailable", "^cThis trader cannot give you that amount");
+				localeStrings.put("no-trader-selected", "^cYou haven't selected any trader");
+				localeStrings.put("missing-args", "^cYou are missing arguments");
+				localeStrings.put("no-defaults", "^cNo defaults found while creating a trader");
+				
+				localeStrings.put("wallet-changed", "^cYou changed the wallet type to ^b{wallet}");
+				localeStrings.put("type-changed", "^cType changed to {type}, reset the trader manager mode");
+				localeStrings.put("trader-created", "^cTrader was created at your position");
+				localeStrings.put("owner-changed", "^cNew owner of this trader is ^b{player}");
+
 				localeStrings.put("list-header", "^cTrader stock list ^b {curp}/{allp}");
 				localeStrings.put("list-message", "- ^c{name} ({id}:{data}) ^f{amount} {price} ^e[{slot}]");
 				localeStrings.put("balance-message", "^cTraders balance: ^b{balance}");
 				localeStrings.put("withdraw-message", "^cYou withdrawed ^b{amount}");
 				localeStrings.put("deposit-message", "^cYou deposited ^b{amount}");
-				localeStrings.put("owner-changed", "^cNew owner of this trader is ^b{player}");
 				localeStrings.put("owner-message", "^b{player}^c is the owner of this trader");
+				
+				//trader (simple)
 				localeStrings.put("buy-message", "^6You bought {amount} for {price}");
 				localeStrings.put("sell-message", "^6You sold {amount} for {price}");
 				localeStrings.put("transaction-falied", "^6Transaction falied");
 				localeStrings.put("price-message", "^6The items price is {price}");
-				localeStrings.put("amount-exception", "^6You can't sell anything when selecting amounts");
 				localeStrings.put("click-to-continue", "^6Now click to {transaction} it");
+				localeStrings.put("amount-exception", "^6You can't sell anything when selecting amounts");
+				
+				//trader (manager)
+				localeStrings.put("managing-changed-message", "^cSwitched to ^6{managing} ^cmanaging");
+				localeStrings.put("show-limit", "^^6{type} ^climit: ^b{limit}");
+				localeStrings.put("change-limit", "^^6{type} ^climit changed: ^b{limit}");
+				localeStrings.put("show-timeout", "^6{type} ^ctimeout: ^b{timeout}");
+				localeStrings.put("change-timeout", "^6{type} ^ctimeout changed: ^b{timeout}");
+				localeStrings.put("show-price", "^cPrice: ^b{price}");
+				localeStrings.put("change-price", "^cPrice changed: ^b{price}");
+				localeStrings.put("stackprice-toggle", "^cStackprice ^b{value}");
+				localeStrings.put("item-selected", "^cA stock item is selected");
+				localeStrings.put("item-removed", "^cThis item was removed from stock");
+				localeStrings.put("invalid-item", "^cInvalid item ^6{reason}");
+				
+				//server trader (simple)
+				
+				//server trader (manager)
+				
+				//player trader (simple)
+				
+				//player trader (manager)
+				
 				
 				this.localeCache = localeStrings;
 				
