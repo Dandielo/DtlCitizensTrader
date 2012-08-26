@@ -95,6 +95,10 @@ public class LocaleManager {
 				localeStrings.put("withdraw-message", "^cYou withdrawed ^b{amount}");
 				localeStrings.put("deposit-message", "^cYou deposited ^b{amount}");
 				localeStrings.put("owner-message", "^b{player}^c is the owner of this trader");
+				localeStrings.put("wallet-message", "^cCurrent wallet type is: ^b{wallet}");
+				localeStrings.put("type-message", "^cCurrent trader type is: ^b{type}");
+				
+				localeStrings.put("command-template", "^c/trader ^6{command} ^f{args}");
 				
 				//trader (simple)
 				localeStrings.put("buy-message", "^6You bought {amount} for {price}");

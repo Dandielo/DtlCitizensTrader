@@ -26,6 +26,23 @@ public class TraderTrait {
 			return null;
 		}
 		
+		public String toString() {
+			switch( this )
+			{
+			case OWNER_WALLET:
+				return "owner-wallet";
+			case NPC_WALLET:
+				return "npc-wallet";
+			case BANK:
+				return "bank";
+			case INFINITE:
+				return "infinite";
+			default: 
+				break;
+			}
+			return "";
+		}
+		
 		public static String toString(WalletType w) {
 			switch( w ) {
 			case OWNER_WALLET:

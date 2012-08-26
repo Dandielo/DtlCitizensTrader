@@ -103,6 +103,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "sell").replace("{args}", "<list>") );
 					return true;
 				}				
 				
@@ -117,18 +118,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//More...
 				if ( permsManager.has(player, "dtl.trader.commands.add") )
 				{
+					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
 					
 				}
 				else 
 				//My precious... Kill him!
 				if ( permsManager.has(player, "dtl.trader.commands.remove") )
 				{
+					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
 					
 				}
 				else 	
 				//Ok, i will give you that cow you will give me 4 diamonds, ok?
 				if ( permsManager.has(player, "dtl.trader.commands.edit") )
 				{
+					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
 					
 				}
 				
@@ -158,6 +162,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "buy").replace("{args}", "<list>") );
 					return true;
 				}				
 				
@@ -215,6 +220,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "wallet").replace("{args}", "[wallet] [bank_account_name]") );
 					return true;
 				}	
 				
@@ -243,6 +249,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "type").replace("{args}", "[type]") );
 					return true;
 				}	
 				
@@ -265,6 +272,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "create").replace("{args}", "<a name anywhere> [t:type] [w:wallet] [e:entity]") );
 					return true;
 				}
 				
@@ -282,6 +290,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getMessage("no-permissions") );
 					return true;
 				}
+				
+				player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
 				
 				return false;
 				
@@ -352,6 +362,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "withdraw").replace("{args}", "<amount>") );
 					return true;
 				}
 				
@@ -390,10 +401,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( args.length < 2 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
+					player.sendMessage( locale.getMessage("command-template").replace("{command}", "deposit").replace("{args}", "<amount>") );
 					return true;
 				}
 				
-
+				
 				//a single function is much easier to understand ;P
 				return deposit(player, trader, args[1]);
 			}
@@ -419,7 +431,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//are all on board?
 				if ( args.length < 2 )
 				{
-					//player.sendMessage(ChatColor.RED + "!MISSING ARGUMENTS!");
 					return getOwner(player, trader);
 				}	
 				
@@ -495,6 +506,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			//come on can;t you write a normal number... ?
 			player.sendMessage( locale.getMessage("invalid-args") );
+			player.sendMessage( locale.getMessage("command-template").replace("{command}", "list").replace("{args}", "[page]") );
 			return true;
 		}
 		
@@ -543,18 +555,25 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		WalletType wallet = WalletType.getTypeByName(walletString);
 		
+		//show wallet
 		if ( wallet == null )
 		{
-			player.sendMessage( locale.getMessage("invalid-wallet") );
-			return true;
+			//send message
+			player.sendMessage( locale.getMessage("wallet-message").replace("{wallet}", trader.getTraderConfig().getWalletType().toString()) );
+			
 		}
-		//set the wallet type for both trader and wallet
-		trader.getTraderConfig().setWalletType(wallet);
+		//change wallet
+		else
+		{
+
+			//set the wallet type for both trader and wallet
+			trader.getTraderConfig().setWalletType(wallet);
+
+			//send message
+			player.sendMessage( locale.getMessage("wallet-changed").replace("{wallet}", walletString) );
+		}
 		
-		//change the bank name or set a bank wallet
 		
-		
-		player.sendMessage( locale.getMessage("wallet-changed").replace("{wallet}", walletString) );
 		return true;
 	}
 	
@@ -570,15 +589,19 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		TraderType type = TraderType.getTypeByName(typeString);
 		
+		//show current trader type
 		if ( type == null )
 		{
-			player.sendMessage( locale.getMessage("invalid-ttype") );
-			return true;
+			player.sendMessage( locale.getMessage("type-message").replace("{type}", trader.getTraderConfig().getTraderType().toString()) );
 		}
-		
-		trader.getTraderConfig().setTraderType(type);
-		
-		player.sendMessage( locale.getMessage("type-changed").replace("{type}", typeString) );
+		//change trader type
+		else
+		{
+
+			trader.getTraderConfig().setTraderType(type);
+			
+			player.sendMessage( locale.getMessage("type-changed").replace("{type}", typeString) );
+		}
 		
 		return true;
 	}
@@ -750,8 +773,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		player.sendMessage( locale.getMessage("trader-created") );
 		return true;
 	}
-	
-	
 	
 	
 	
