@@ -134,7 +134,7 @@ public class LocaleManager {
 				localeStrings.put("amount-add-help", "^cShift r.click the item to add it to the stock");
 				localeStrings.put("amount-added", "^cThe amount was added to the trader stock");
 				localeStrings.put("not-in-stock", "^cItem wasn't founf in stock");
-				localeStrings.put("show-limit-pt", "^6{type} ^climit: ^b{limit}^c/^e{amount}");
+				localeStrings.put("show-limit-pt", "^6{type} ^climit: ^b{amount}^c/^e{limit}");
 				localeStrings.put("item-taken", "^cYou got ^b{amount} ^cfrom the stock");
 				
 				this.localeCache = localeStrings;

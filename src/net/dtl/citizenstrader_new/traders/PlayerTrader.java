@@ -75,7 +75,8 @@ public class PlayerTrader extends Trader {
 			} 
 			else
 			//is slot management
-			if ( equalsTraderStatus(TraderStatus.SELL) ) {
+			if ( equalsTraderStatus(TraderStatus.SELL) ) 
+			{
 				/*
 				 * Player is buying from the trader
 				 * 
@@ -133,7 +134,10 @@ public class PlayerTrader extends Trader {
 						}
 					}
 				}
-			} else if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) {
+			}
+			else 
+			if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) 
+			{
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == slot ) { 
 						if ( checkLimits(p,slot) && inventoryHasPlace(p,slot) && buyTransaction(p,getSelectedItem().getPrice(slot)) ) {
@@ -167,25 +171,32 @@ public class PlayerTrader extends Trader {
 						setClickedSlot(slot);
 					}
 				}
-			} else if ( equalsTraderStatus(TraderStatus.BUY) ) {
+			} else if ( equalsTraderStatus(TraderStatus.BUY) ) 
+			{
 				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
 					p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+					p.sendMessage( locale.getMessage("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 				
 				}
 			}
 			setInventoryClicked(true);
-		} else {
+		} 
+		else
+		{
 			/* *
 			 * change the comparing (lesser it)
 			 * 
 			 */
-			if ( equalsTraderStatus(TraderStatus.BUY) ) {
-				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
-					if ( getClickedSlot() == slot && !getInventoryClicked() ) {
-
-						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
-							int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+			if ( equalsTraderStatus(TraderStatus.BUY) )
+			{
+				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) 
+				{
+					if ( getClickedSlot() == slot && !getInventoryClicked() )
+					{
+						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+						if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
+						//	int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 							p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 							
 							/* *
@@ -194,8 +205,8 @@ public class PlayerTrader extends Trader {
 							 * #Recoded (not tested)
 							 * 
 							 */
-							if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
-								updateLimits(p.getName());
+						//	if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+							updateBuyLimits(p.getName(), scale);
 
 							/* *
 							 * need to create removeFromInventory fnc (code cleanup)
@@ -229,9 +240,10 @@ public class PlayerTrader extends Trader {
 				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == slot && !getInventoryClicked() ) {
+					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 					
-					if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
-						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+					if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
+						
 						p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						/* *
@@ -240,8 +252,8 @@ public class PlayerTrader extends Trader {
 						 * #Recoded (not tested)
 						 * 
 						 */
-						if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
-							updateLimits(p.getName());
+						//if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+						updateBuyLimits(p.getName(), scale);
 						
 						/* *
 						 * need to create removeFromInventoryFunction (code cleanup)
@@ -362,7 +374,7 @@ public class PlayerTrader extends Trader {
 				if ( isWool(event.getCurrentItem(), (byte) 12) )
 				{
 					//trader's status update
-					p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
+					//p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
 					
 					setTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL);
 					
@@ -370,6 +382,10 @@ public class PlayerTrader extends Trader {
 					
 					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
 					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
+					
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "buy limit") );
+					
 					
 				}
 				else
@@ -510,6 +526,9 @@ public class PlayerTrader extends Trader {
 								{
 									//send a item got amount message
 									p.sendMessage( locale.getMessage("item-taken").replace("{amount}", "" + stockedAmount) );
+									
+									//reset the amount
+									getSelectedItem().getLimitSystem().setGlobalAmount(0);
 								}
 									
 								
@@ -525,7 +544,7 @@ public class PlayerTrader extends Trader {
 						}
 						
 					}
-					
+					return;
 					
 				}
 				//sell management
@@ -699,7 +718,8 @@ public class PlayerTrader extends Trader {
 		//bottom inventory management
 		else 
 		{
-			if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE) )
+			if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE)
+					|| equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL) )
 			{
 				return;
 			}

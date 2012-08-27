@@ -176,12 +176,14 @@ public class ServerTrader extends Trader {
 			 * change the comparing (lesser it)
 			 * 
 			 */
-			if ( equalsTraderStatus(TraderStatus.BUY) ) {
-				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
+			if ( equalsTraderStatus(TraderStatus.BUY) ) 
+			{
+				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() )
+				{
 					if ( getClickedSlot() == slot && !getInventoryClicked() ) {
-
-						if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
-							int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+						if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
+						//	int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 							p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 							
 							/* *
@@ -190,8 +192,7 @@ public class ServerTrader extends Trader {
 							 * #Recoded (not tested)
 							 * 
 							 */
-							if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
-								updateLimits(p.getName());
+							updateBuyLimits(p.getName(),scale);
 
 							/* *
 							 * need to create removeFromInventory fnc (code cleanup)
@@ -225,9 +226,9 @@ public class ServerTrader extends Trader {
 				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
 				if ( getClickedSlot() == slot && !getInventoryClicked() ) {
-					
-					if ( checkLimits(p) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
-						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+					if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
+					//	int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 						p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						/* *
@@ -236,24 +237,13 @@ public class ServerTrader extends Trader {
 						 * #Recoded (not tested)
 						 * 
 						 */
-						if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
-							updateLimits(p.getName());
+						//if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+							//updateLimits(p.getName());
 						
-						/* *
-						 * need to create removeFromInventoryFunction (code cleanup)
-						 * 
-						 */
+						//limits update
+						updateBuyLimits(p.getName(),scale);
 						
-						/* *
-						 * TEMPORARY!!!!!!
-						 * 
-						 */
-						/*if ( event.getCurrentItem().getAmount() == 1 ) {
-							if ( event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()) > 0 )
-								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()));
-							else 
-								event.setCurrentItem(new ItemStack(Material.AIR));
-						} else {*/
+						//inventory cleanup
 						removeFromInventory(event.getCurrentItem(),event);
 						
 						//logging

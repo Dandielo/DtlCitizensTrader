@@ -217,14 +217,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				
 				//are all on board?
-				if ( args.length < 2 )
+				if ( args.length < 1 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
 					player.sendMessage( locale.getMessage("command-template").replace("{command}", "wallet").replace("{args}", "[wallet] [bank_account_name]") );
 					return true;
 				}	
 				
-				return setWallet(player, trader, args[1], ( args.length > 2 ? args[2] : "" ) );
+				return setWallet(player, trader, ( args.length > 1 ? args[1] : "" ), ( args.length > 2 ? args[2] : "" ) );
 			}
 			else
 			//i don't like my server trader :<
@@ -246,14 +246,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				
 				//are all on board?
-				if ( args.length < 2 )
+				if ( args.length < 1 )
 				{
 					player.sendMessage( locale.getMessage("missing-args") );
 					player.sendMessage( locale.getMessage("command-template").replace("{command}", "type").replace("{args}", "[type]") );
 					return true;
 				}	
 				
-				return setType(player, trader, args[1]);
+				return setType(player, trader, ( args.length > 1 ? args[1] : "" ) );
 			}
 			else
 			//lets create a trader!

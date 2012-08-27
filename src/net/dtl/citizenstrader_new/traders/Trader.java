@@ -429,6 +429,14 @@ public abstract class Trader {
 	 * 
 	 */
 	
+	public boolean checkBuyLimits(Player p, int scale) {
+		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0,scale) ) {
+		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
+			return false;
+		}
+		return true;
+	}
+	
 	public boolean checkLimits(Player p) {
 		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0) ) {
 		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
@@ -443,6 +451,10 @@ public abstract class Trader {
 			return false;
 		}
 		return true;
+	}
+	
+	public boolean updateBuyLimits(String p, int scale) {
+		return selectedItem.getLimitSystem().updateLimit(0, scale, p);
 	}
 	
 	public boolean updateLimits(String p, int slot) {

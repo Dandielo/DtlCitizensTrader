@@ -44,6 +44,24 @@ public class LimitSystem {
 		linked = item;
 	}
 	
+	// TODO redo this function
+		public boolean checkLimit(String p, int slot, int scale) {
+			if ( limit.timeoutReached(new Date()) )
+				limit.reset();
+			
+			if ( !limit.reachedLimit() ) {
+				if ( playerLimit.hasLimit() ) {
+					if ( players.containsKey(p) ) {
+						if ( playerLimit.reachedLimitWith(players.get(p)+thisItem.getAmount(slot)) )
+							return false;
+					} else {
+						players.put(p, 0);
+					}
+				}
+				return !limit.reachedLimitWith((thisItem.getAmount(slot)*scale)-1);
+			}
+			return false;
+		}
 	
 	// TODO redo this function
 	public boolean checkLimit(String p, int slot) {
@@ -109,6 +127,29 @@ public class LimitSystem {
 		return false;
 	}*/
 	
+	//fur buy update
+	public boolean updateLimit(int slot, int scale, String p) {
+		if ( !limit.reachedLimit() ) {
+			if ( playerLimit.hasLimit() ) {
+				if ( players.containsKey(p) ) {
+					if ( !playerLimit.reachedLimitAs(players.get(p) + thisItem.getAmount(slot)) )
+						return false;
+					players.put(p, players.get(p) + thisItem.getAmount(slot));
+				} else {
+					if ( playerLimit.reachedLimitAs(thisItem.getAmount(slot)) )
+						return false;
+					players.put(p, players.get(p) + thisItem.getAmount(slot));
+				}
+			}
+
+			limit.changeAmount(thisItem.getAmount(slot)*scale);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	//for sell limit update
 	public boolean updateLimit(int slot, String p) {
 		if ( !limit.reachedLimit() ) {
 			if ( playerLimit.hasLimit() ) {
