@@ -134,7 +134,8 @@ public class LocaleManager {
 				localeStrings.put("amount-add-help", "^cShift r.click the item to add it to the stock");
 				localeStrings.put("amount-added", "^cThe amount was added to the trader stock");
 				localeStrings.put("not-in-stock", "^cItem wasn't founf in stock");
-				
+				localeStrings.put("show-limit-pt", "^6{type} ^climit: ^b{limit}^c/^e{amount}");
+				localeStrings.put("item-taken", "^cYou got ^b{amount} ^cfrom the stock");
 				
 				this.localeCache = localeStrings;
 				
@@ -205,7 +206,10 @@ public class LocaleManager {
 	{
 		if ( localeCache.containsKey(messageType) )
 			return localeCache.get(messageType);
-		return "ERROR!";
+		
+		
+		
+		return ChatColor.RED + "ERROR! Reset the locale file!";
 	}
 	
 	public void save() {

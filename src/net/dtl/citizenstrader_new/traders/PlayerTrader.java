@@ -72,7 +72,10 @@ public class PlayerTrader extends Trader {
 					 */
 					switchInventory(TraderStatus.BUY);		
 				}
-			} else if ( equalsTraderStatus(TraderStatus.SELL) ) {
+			} 
+			else
+			//is slot management
+			if ( equalsTraderStatus(TraderStatus.SELL) ) {
 				/*
 				 * Player is buying from the trader
 				 * 
@@ -314,7 +317,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
@@ -355,19 +358,37 @@ public class PlayerTrader extends Trader {
 					
 				}
 				else
-				// TODO add a nice support to this system
-				if ( isWool(event.getCurrentItem(), (byte) 5) )
+				// Only for buy system!
+				if ( isWool(event.getCurrentItem(), (byte) 12) )
 				{
+					//trader's status update
 					p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
 					
-					//switch to buy mode
+					setTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL);
+					
+					
+					
+					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
+					
+				}
+				else
+				// add a nice support to this system
+				if ( isWool(event.getCurrentItem(), (byte) 5) )
+				{
+					
+					//switch to sell mode
 					//status switching included in Inventory switch
-					//switchInventory(TraderStatus.PLAYER_MANAGE_BUY);
+					switchInventory(TraderStatus.MANAGE_BUY);
 					
 					
 					
-					//getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
-					
+					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
+				
+
+					//send message
+					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "buy") );
 					
 				}
 				else
@@ -382,6 +403,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
+					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
 				
 
 					//send message
@@ -419,39 +441,88 @@ public class PlayerTrader extends Trader {
 					//we don't like shift click in the upper inventory ;)
 					event.setCancelled(true);
 					
-					
-					//but any shift click will remove an item from the traders stock ;> 
-					//and return all the remaining amount to the player, (if he has enough space)
-					if ( selectItem(clickedSlot, getBasicManageModeByWool() ).hasSelectedItem() ) 
+					if ( isSellModeByWool() )
 					{
-						//get the amount left in the stock
-						int leftAmount = getSelectedItem().getLimitSystem().getGlobalLimit() - getSelectedItem().getLimitSystem().getGlobalAmount();
 						
-						//check if the player has enough space
-						if ( inventoryHasPlaceAmount(p, leftAmount) )
+						//but any shift click will remove an item from the traders stock ;> 
+						//and return all the remaining amount to the player, (if he has enough space)
+						if ( selectItem(clickedSlot, TraderStatus.MANAGE_SELL ).hasSelectedItem() ) 
 						{
-						
-							//remove that item from stock room
-							if ( isBuyModeByWool() )
-								getTraderStock().removeItem(false, clickedSlot);
-							if ( isSellModeByWool() )
-								getTraderStock().removeItem(true, clickedSlot);
+							//get the amount left in the stock
+							int leftAmount = getSelectedItem().getLimitSystem().getGlobalLimit() - getSelectedItem().getLimitSystem().getGlobalAmount();
 							
+							//check if the player has enough space
+							if ( inventoryHasPlaceAmount(p, leftAmount) )
+							{
 							
-							//add the remaining amount to the player
-							this.addAmountToInventory(p, leftAmount);
+								//remove that item from stock room
+								if ( isBuyModeByWool() )
+									getTraderStock().removeItem(false, clickedSlot);
+								if ( isSellModeByWool() )
+									getTraderStock().removeItem(true, clickedSlot);
+								
+								
+								//add the remaining amount to the player
+								this.addAmountToInventory(p, leftAmount);
+								
+								
+								getInventory().setItem(clickedSlot, new ItemStack(0));
+								
+								
+								//clear the selecton and message the player
+								selectItem(null);
+	
+								//send message
+								p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
+							}
 							
-							
-							getInventory().setItem(clickedSlot, new ItemStack(0));
-							
-							
-							//clear the selecton and message the player
-							selectItem(null);
-
-							//send message
-							p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
 						}
 						
+					}
+					//buy mode acts in another way
+					else if ( isBuyModeByWool() )
+					{
+						
+						if ( selectItem(clickedSlot, TraderStatus.MANAGE_BUY ).hasSelectedItem() ) 
+						{
+							//get the amount left in the stock
+							int stockedAmount = getSelectedItem().getLimitSystem().getGlobalAmount();
+							
+							//check if the player has enough space
+							if ( inventoryHasPlaceAmount(p, stockedAmount) )
+							{
+							
+								if ( event.isLeftClick() )
+								{
+									//remove that item from stock room
+									if ( isBuyModeByWool() )
+										getTraderStock().removeItem(false, clickedSlot);
+									if ( isSellModeByWool() )
+										getTraderStock().removeItem(true, clickedSlot);
+									
+									//clear the inventory
+									getInventory().setItem(clickedSlot, new ItemStack(0));
+
+									//send a remove message
+									p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + stockedAmount) );
+								}
+								else
+								{
+									//send a item got amount message
+									p.sendMessage( locale.getMessage("item-taken").replace("{amount}", "" + stockedAmount) );
+								}
+									
+								
+								//add the remaining amount to the player
+								this.addAmountToInventory(p, stockedAmount);
+								
+								
+								//clear the selection and message the player
+								selectItem(null);
+	
+							}
+							
+						}
 						
 					}
 					
@@ -570,6 +641,47 @@ public class PlayerTrader extends Trader {
 					
 				}
 				else 
+				//global limit as "item limit"
+				if ( equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL) )
+				{
+					//show limits
+					if ( event.getCursor().getType().equals(Material.AIR) )
+					{
+						
+						//select item which limit will be shown up
+						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
+						{
+							p.sendMessage( locale.getMessage("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+						}
+						
+						
+					} 
+					//change limits
+					else 
+					{
+						
+						//select the item
+						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
+						{
+							
+							if ( event.isRightClick() ) 
+								getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
+							else
+								getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
+							
+							p.sendMessage( locale.getMessage("change-limit").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+						
+						}
+
+					}
+					
+					//reset the selected item
+					selectItem(null);
+					
+					//cancel the event
+					event.setCancelled(true);
+				}
+				else 
 				if ( equalsTraderStatus(TraderStatus.MANAGE_LIMIT_PLAYER) )
 				{
 					
@@ -635,7 +747,7 @@ public class PlayerTrader extends Trader {
 
 
 				
-				//if an item is left-clicked
+			//if an item is left-clicked
 			if ( event.isLeftClick() && event.getCurrentItem().getTypeId() != 0 )
 			{
 				//save the amount 
