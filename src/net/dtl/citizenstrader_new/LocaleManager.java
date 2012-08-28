@@ -13,7 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LocaleManager {
 	protected final static char PATH_SEPARATOR = '/';
-	public FileConfiguration locale;
+	protected FileConfiguration locale;
 	protected File localeFile;
 	
 	protected Map<String,String> localeCache;
@@ -133,9 +133,11 @@ public class LocaleManager {
 				localeStrings.put("item-added", "^cItem was added to the traders stock");
 				localeStrings.put("amount-add-help", "^cShift r.click the item to add it to the stock");
 				localeStrings.put("amount-added", "^cThe amount was added to the trader stock");
-				localeStrings.put("not-in-stock", "^cItem wasn't founf in stock");
+				localeStrings.put("not-in-stock", "^cItem wasn't found in stock");
 				localeStrings.put("show-limit-pt", "^6{type} ^climit: ^b{amount}^c/^e{limit}");
 				localeStrings.put("item-taken", "^cYou got ^b{amount} ^cfrom the stock");
+				
+				localeStrings.put("reload-config", "^eConfiguration was reloaded");
 				
 				this.localeCache = localeStrings;
 				

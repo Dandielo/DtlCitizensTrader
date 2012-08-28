@@ -18,6 +18,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.TraderCharacterTrait;
+import net.dtl.citizenstrader_new.TraderConfig;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
@@ -57,6 +58,9 @@ public abstract class Trader {
 			return false;
 		}
 	}
+
+	//trader config
+	protected static TraderConfig config = CitizensTrader.config;
 	
 	/* *
 	 * Npc Traits
@@ -523,10 +527,10 @@ public abstract class Trader {
 	 * 
 	 */
 	public boolean isSellModeByWool() {
-		return isWool(inventory.getItem(inventory.getSize()-1),(byte)5);
+		return isWool(inventory.getItem(inventory.getSize()-1), config.getItemManagement(1));//5
 	}
 	public boolean isBuyModeByWool() {
-		return isWool(inventory.getItem(inventory.getSize()-1),(byte)3);
+		return isWool(inventory.getItem(inventory.getSize()-1), config.getItemManagement(0));//3
 	}
 	
 	/**
@@ -677,8 +681,8 @@ public abstract class Trader {
 	 * Static functions for cleaner code
 	 * 
 	 */
-	public static boolean isWool(ItemStack itemToCompare,byte colorData) {
-		return itemToCompare.equals(new ItemStack(35,1,(short)0,colorData));
+	public static boolean isWool(ItemStack itemToCompare,ItemStack managementItem) {
+		return itemToCompare.equals(new ItemStack(managementItem.getTypeId(),1,(short)0,managementItem.getData().getData()));
 	}
 	
 	public static double calculatePrice(ItemStack is) {

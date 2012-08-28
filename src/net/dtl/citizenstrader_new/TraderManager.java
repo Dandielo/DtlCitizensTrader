@@ -28,6 +28,9 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class TraderManager implements Listener {
+	//trader config
+	protected static TraderConfig config = CitizensTrader.config;
+	
 	//private static TraderConfig config;
 	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
 	
@@ -197,11 +200,14 @@ public class TraderManager implements Listener {
 		//bad touch hurts forever...
 		if ( !this.isTraderNpc.contains(event.getNPC()) ) 
 			return;
+		
+		Player player = event.getClicker();
 
 		
-		final String playerName = event.getClicker().getName();
+		final String playerName = player.getName();
 		
-		if ( playersAntiDclick.contains(playerName) )
+		if ( playersAntiDclick.contains(playerName)
+				&& !permManager.has(player, "dtl.trader.bypass.interval"))
 			return;
 		
 		playersAntiDclick.add(playerName);
@@ -218,7 +224,6 @@ public class TraderManager implements Listener {
 		
 		//get the touched and the toucher
 		NPC npc = event.getNPC();
-		Player player = event.getClicker();
 		
 		//get the desired trait 
 		TraderTrait trait = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
@@ -229,7 +234,7 @@ public class TraderManager implements Listener {
 		
 		
 		//if we got the magic stick!
-		if ( player.getItemInHand().getTypeId() == 280 ) 
+		if ( player.getItemInHand().getTypeId() == config.getMMToggleItem().getTypeId() ) 
 		{
 			if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
 					&& trait.getOwner().equals(player.getName()) )

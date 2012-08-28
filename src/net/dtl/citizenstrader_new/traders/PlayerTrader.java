@@ -53,19 +53,19 @@ public class PlayerTrader extends Trader {
 				 * 
 				 */
 				
-				if ( isWool(event.getCurrentItem(),(byte) 14) ) {
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(),(byte) 3) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) {
 					/*
 					 * lest go to the buy inventory ;)
 					 * 
@@ -316,7 +316,7 @@ public class PlayerTrader extends Trader {
 			if ( isManagementSlot(clickedSlot, 3) ) 
 			{
 				//is white wool clicked
-				if ( isWool(event.getCurrentItem(), (byte) 0) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(6)) )
 				{
 					
 					
@@ -327,15 +327,14 @@ public class PlayerTrader extends Trader {
 						this.setTraderStatus(TraderStatus.MANAGE_BUY);
 					
 					
-					
-					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
+					getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(5) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 15) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(2)) )
 				{
 					
 					
@@ -344,7 +343,7 @@ public class PlayerTrader extends Trader {
 					
 					
 
-					getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(6));
 					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 					
 
@@ -353,7 +352,7 @@ public class PlayerTrader extends Trader {
 				}
 				else
 				// TODO add a support system ;P
-				if ( isWool(event.getCurrentItem(), (byte) 11) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(5)) )
 				{
 					
 
@@ -371,7 +370,7 @@ public class PlayerTrader extends Trader {
 				}
 				else
 				// Only for buy system!
-				if ( isWool(event.getCurrentItem(), (byte) 12) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(3)) )
 				{
 					//trader's status update
 					//p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
@@ -390,7 +389,7 @@ public class PlayerTrader extends Trader {
 				}
 				else
 				// add a nice support to this system
-				if ( isWool(event.getCurrentItem(), (byte) 5) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) )
 				{
 					
 					//switch to sell mode
@@ -399,8 +398,8 @@ public class PlayerTrader extends Trader {
 					
 					
 					
-					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)3));
-					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
+					getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(0));
+					getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(3));
 				
 
 					//send message
@@ -408,7 +407,7 @@ public class PlayerTrader extends Trader {
 					
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 3) )
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) )
 				{
 					
 					
@@ -418,15 +417,15 @@ public class PlayerTrader extends Trader {
 					
 					
 					
-					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
-					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+					getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(1));
+					getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(5));
 				
 
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "sell") );
 				}
 				else
-				if ( isWool(event.getCurrentItem(), (byte) 2) )	//unsupported wool data value
+				if ( isWool(event.getCurrentItem(), new ItemStack(35,0,(short)0,(byte)2)) )	//unsupported wool data value
 				{
 					
 					
@@ -764,8 +763,6 @@ public class PlayerTrader extends Trader {
 			//if bottom inventory was clicked before
 		//	else
 		//	{
-
-
 				
 			//if an item is left-clicked
 			if ( event.isLeftClick() && event.getCurrentItem().getTypeId() != 0 )
@@ -864,6 +861,10 @@ public class PlayerTrader extends Trader {
 					setInventoryClicked(false);
 					return;
 				}
+
+				if ( equalsTraderStatus(TraderStatus.MANAGE_BUY) )
+					return;
+
 				
 				
 				//get the item we want to add

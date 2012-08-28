@@ -14,6 +14,7 @@ import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,8 +57,17 @@ public class CitizensTrader extends JavaPlugin {
 				this.logger.info("["+ pdfFile.getName() + "] Permissions not found!"); 
 	        }
 			
+		//	if ( getConfig().contains("trader") )
+		//	{
+		//		getConfig().options().copyDefaults(true);
+		//		getConfig().addDefaults(getConfig().options().configuration().getDefaults());
+		//		System.out.print(getConfig().options().configuration().getDefaults().getKeys(true));
+				saveDefaultConfig();
+		//		saveConfig();
+			//	traderSection = CitizensTrader.plugin.getConfig().getConfigurationSection("trader");
+		//	}
+			
 			config = new TraderConfig(getConfig());
-			config.setEcon(economy);
 
 			plugin = this;
 

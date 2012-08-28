@@ -52,19 +52,19 @@ public class ServerTrader extends Trader {
 				 * 
 				 */
 				
-				if ( isWool(event.getCurrentItem(),(byte) 14) ) {
+				if ( isWool(event.getCurrentItem(),config.getItemManagement(7)) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(),(byte) 3) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(),(byte) 5) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) {
 					/*
 					 * lest go to the buy inventory ;)
 					 * 
@@ -295,11 +295,11 @@ public class ServerTrader extends Trader {
 				
 				
 				//price managing
-				if ( isWool(event.getCurrentItem(),(byte)15) ) {
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(2)) ) {
 					setTraderStatus(TraderStatus.MANAGE_PRICE);
 
 					//wool updating
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+					getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(6));
 					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.AIR));
 					
 					//send message
@@ -308,17 +308,17 @@ public class ServerTrader extends Trader {
 				} 
 				else 
 				//is any mode used? return to item adding
-				if ( isWool(event.getCurrentItem(),(byte)0) ) 
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(6)) ) 
 				{
 					//restore inventory
-					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)3) )
-						setTraderStatus(TraderStatus.MANAGE_BUY);
-					if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
-						setTraderStatus(TraderStatus.MANAGE_SELL);
+					//if ( isWool(getInventory().getItem(getInventory().getSize()-1), config.getItemManagement(7)) )
+					//	setTraderStatus(TraderStatus.MANAGE_BUY);
+					//if ( isWool(getInventory().getItem(getInventory().getSize()-1),(byte)5) )
+					setTraderStatus(getBasicManageModeByWool());
 					
 					//restore wool
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+					getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(2));
+					getInventory().setItem(getInventory().getSize()-3, config.getItemManagement(4));
 
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
@@ -326,14 +326,14 @@ public class ServerTrader extends Trader {
 				}
 				else 
 				//global limits management
-				if ( isWool(event.getCurrentItem(),(byte)11) ) {
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(4)) ) {
 
 					//status update
 					setTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL);
 					
 					//wool update
-					getInventory().setItem(getInventory().getSize()-3, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)12));
+					getInventory().setItem(getInventory().getSize()-3, config.getItemManagement(6));
+					getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(5));
 
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "global limit") );
@@ -341,14 +341,14 @@ public class ServerTrader extends Trader {
 				} 
 				else 
 				//player limits management
-				if ( isWool(event.getCurrentItem(),(byte)12) ) 
+				if ( isWool(event.getCurrentItem(),config.getItemManagement(5)) ) 
 				{
 					
 					//status update
 					setTraderStatus(TraderStatus.MANAGE_LIMIT_PLAYER);
 					
 					//wool update
-					getInventory().setItem(getInventory().getSize()-2, new ItemStack(Material.WOOL,1,(short)0,(byte)11));
+					getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(4));
 
 					//send message
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "player limit") );
@@ -356,7 +356,7 @@ public class ServerTrader extends Trader {
 				}
 				else
 				//buy mode
-				if ( isWool(event.getCurrentItem(),(byte)5) ) 
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) 
 				{
 					
 					//inventory and status update
@@ -368,7 +368,7 @@ public class ServerTrader extends Trader {
 				} 
 				else 
 				//sell mode
-				if ( isWool(event.getCurrentItem(),(byte)3) ) 
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) 
 				{
 
 					//inventory and status update
@@ -380,7 +380,7 @@ public class ServerTrader extends Trader {
 				} 
 				else 
 				//leaving the amount managing
-				if ( isWool(event.getCurrentItem(),(byte)14) ) {
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) ) {
 
 					//update amounts and status
 					saveManagedAmouts();

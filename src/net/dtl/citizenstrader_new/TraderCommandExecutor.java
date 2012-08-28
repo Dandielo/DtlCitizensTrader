@@ -19,6 +19,10 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 public final class TraderCommandExecutor implements CommandExecutor {
+	//trader config
+	protected TraderConfig config = CitizensTrader.config;
+	
+	//general
 	public static CitizensTrader plugin;
 	private TraderManager traderManager;
 	private PermissionsManager permsManager;
@@ -33,8 +37,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		this.locale = CitizensTrader.getLocale();
 		this.permsManager = CitizensTrader.getPermissionsManager();
 		this.traderManager = CitizensTrader.getTraderManager();
-	//	config = CitizensTrader.getTraderConfig();
-		//trader = ((TraderCharacterTrait) CitizensAPI.getTraitFactory().getTrait(TraderCharacterTrait.class));
 	}
 	
 	@Override
@@ -49,10 +51,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			Player player = (Player) sender;
 			
 			
-		/*	needs to be recoded!!!
-			
-			//does we have anything to interact with?
-			*/
 			Trader trader = traderManager.getOngoingTrades(player.getName());
 			
 			
@@ -78,6 +76,24 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			//lets see what arguments we use
 			//looks like we wan't to buy something
+			if ( args[0].equals("reload") )
+			{
+				//can we edit the traders sell mode?
+				if ( !permsManager.has(player, "dtl.trader.reload") )
+				{
+					
+					//have a good flight!
+					player.sendMessage( locale.getMessage("no-permissions") );
+					return true;
+				}
+				
+				player.sendMessage(locale.getMessage("reload-config"));
+				
+				config.reloadConfig();
+				
+				return true;
+			}
+			else
 			if ( args[0].equals("sell") )
 			{
 				
@@ -442,7 +458,23 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		else
 		{
 			
-			
+			if ( args[0].equals("reload") )
+			{
+				//can we edit the traders sell mode?
+			//	if ( !permsManager.has(s, "dtl.trader.reload") )
+			//	{
+					
+					//have a good flight!
+				//	player.sendMessage( locale.getMessage("no-permissions") );
+				//	return true;
+			//	}
+				
+				sender.sendMessage(locale.getMessage("reload-config"));
+				
+				config.reloadConfig();
+				
+				return true;
+			}
 		}
 		
 		return false;

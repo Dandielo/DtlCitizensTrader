@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizenstrader_new.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager]
-version: 1.6.9Beta
+version: 1.7.0Beta
 description: >
              Citizens Character.
 commands: 
@@ -26,6 +26,7 @@ commands:
              /<command> deposit <amount>
              /<command> create <name> [type] [wallet]
              /<command> dismiss [npc-id]
+             /<command> reload
       permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
 permissions:
@@ -55,10 +56,14 @@ permissions:
           dtl.trader.commands.withdraw: true
           dtl.trader.commands.deposit: true
           dtl.trader.commands.wallet: true
+      dtl.trader.reload: 
+        description: reloading plugin configuration (permission)
       dtl.trader.bypass.*:
         description: admin bypasses
         default: op
         children: 
+          dtl.trader.bypass.interval:
+            description: bypasses the interval betwean opening the traders inventory
           dtl.trader.bypass.drop-item:
             description: allows to throw out items when clicking outside the inventory
           dtl.trader.bypass.creative: 
