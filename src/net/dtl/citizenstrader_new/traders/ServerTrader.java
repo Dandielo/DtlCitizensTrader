@@ -58,13 +58,13 @@ public class ServerTrader extends Trader {
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) {
 					/*
 					 * lest go back to the main selling inventory ;)
 					 * 
 					 */
 					switchInventory(TraderStatus.SELL);		
-				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) {
+				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) {
 					/*
 					 * lest go to the buy inventory ;)
 					 * 
