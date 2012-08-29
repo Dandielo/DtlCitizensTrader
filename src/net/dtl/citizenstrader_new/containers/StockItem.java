@@ -86,8 +86,12 @@ public class StockItem {
 					 * sp => stackPrice
 					 * 
 					 */
+					
+				} else
+				{
 					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
 						stackPrice = true;
+						System.out.print(stackPrice);
 					}
 				}
 			}

@@ -127,6 +127,10 @@ public abstract class Trader {
 		return npc.getId();
 	}
 	
+	public NPC getNpc() {
+		return npc;		
+	}
+	
 	/*
 	 * Trader configuration
 	 */
@@ -423,7 +427,10 @@ public abstract class Trader {
 	 */
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
-		InventoryTrait.setInventoryWith(inventory, item);
+		if ( TraderStatus.hasManageMode(traderStatus) )
+			InventoryTrait.setManagerInventoryWith(inventory, item);
+		else
+			InventoryTrait.setInventoryWith(inventory, item);
 		selectedItem = item;
 	}
 	

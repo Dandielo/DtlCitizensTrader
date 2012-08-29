@@ -269,6 +269,17 @@ public class InventoryTrait implements InventoryHolder {
 		return null;
 	}
 	
+	public static void setManagerInventoryWith(Inventory inv,StockItem si) {
+		int i = 0;
+		for ( Integer amount : si.getAmounts() ) {
+			ItemStack is = si.getItemStack().clone();
+			is.setAmount(amount);
+		//	if ( si.getLimitSystem().checkLimit("", i) )
+				inv.setItem(i++,is);
+		}
+		inv.setItem(inv.getSize()-1, config.getItemManagement(7));
+	}
+	
 	public static void setInventoryWith(Inventory inv,StockItem si) {
 		int i = 0;
 		for ( Integer amount : si.getAmounts() ) {

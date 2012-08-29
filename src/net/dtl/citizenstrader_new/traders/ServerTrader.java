@@ -146,6 +146,7 @@ public class ServerTrader extends Trader {
 							 * 
 							 */
 							updateLimits(p.getName(),slot);
+							switchInventory(getSelectedItem());
 							
 							//logging
 							log("buy", 

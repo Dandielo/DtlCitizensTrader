@@ -156,6 +156,7 @@ public class PlayerTrader extends Trader {
 							 * 
 							 */
 							updateLimits(p.getName(),slot);
+							switchInventory(getSelectedItem());
 							
 							//logging
 							log("buy", 
@@ -434,8 +435,8 @@ public class PlayerTrader extends Trader {
 					// TODO Currently disabled!!
 					//switch to sell mode, out of amount management
 					//this.setTraderStatus(TraderStatus.MANAGE_SELL);
+					this.saveManagedAmouts();
 					this.switchInventory(TraderStatus.MANAGE_SELL);
-					
 					
 					getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(1));
 					
@@ -733,9 +734,14 @@ public class PlayerTrader extends Trader {
 						if ( event.getCurrentItem().getType().equals(Material.AIR) )
 						{
 							ItemStack clonedStack = getSelectedItem().getItemStack().clone();
-							clonedStack.setAmount(1);
+						//	clonedStack.setAmount(1);
+							//event.setCursor(clonedStack);
+						//	this.getNpc();
 							getInventory().setItem(clickedSlot, clonedStack);
-							
+							event.setCancelled(false);
+							//event.setCurrentItem(clonedStack);
+							//getInventory().addItem(clonedStack);
+							//System.out.print(clonedStack.getType().toString());
 						}
 						else
 						{
@@ -757,6 +763,15 @@ public class PlayerTrader extends Trader {
 					//right = you know... -.-
 					else
 					{
+						if ( event.getCurrentItem().getTypeId() == 0 )
+						{
+						//	event.setCancelled(false);
+						//	event.setCursor(null);
+				//			ItemStack is = event.getCursor().clone();
+				//			event.setCurrentItem(is);
+				//			event.setCursor(null);
+							return;
+						}
 						//get amount info
 						int removeAmount = event.getCursor().getAmount();
 						int oldAmount = event.getCurrentItem().getAmount();
