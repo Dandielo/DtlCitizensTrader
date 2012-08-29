@@ -745,9 +745,13 @@ public class PlayerTrader extends Trader {
 						}
 						else
 						{
-							
-							//geta amount info
 							int addAmount = event.getCursor().getAmount();
+							
+							//if the cursor is empty
+							if ( event.getCursor().getTypeId() == 0 )
+								addAmount = 1;
+							
+							
 							int oldAmount = event.getCurrentItem().getAmount();
 							
 							//add the amount
@@ -765,15 +769,17 @@ public class PlayerTrader extends Trader {
 					{
 						if ( event.getCurrentItem().getTypeId() == 0 )
 						{
-						//	event.setCancelled(false);
-						//	event.setCursor(null);
-				//			ItemStack is = event.getCursor().clone();
-				//			event.setCurrentItem(is);
-				//			event.setCursor(null);
 							return;
 						}
+						
+						
 						//get amount info
 						int removeAmount = event.getCursor().getAmount();
+						
+						//if the cursor is empty
+						if ( event.getCursor().getTypeId() == 0 )
+							removeAmount = 1;
+						
 						int oldAmount = event.getCurrentItem().getAmount();
 						
 						//decrease the amount, or delete the item

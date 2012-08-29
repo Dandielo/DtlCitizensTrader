@@ -80,18 +80,12 @@ public class StockItem {
 							item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
 						}
 					}
-					
-					/* *
-					 * StockItem configurations
-					 * sp => stackPrice
-					 * 
-					 */
-					
-				} else
+				} 
+				else
 				{
+					//stack price management
 					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
 						stackPrice = true;
-						System.out.print(stackPrice);
 					}
 				}
 			}
