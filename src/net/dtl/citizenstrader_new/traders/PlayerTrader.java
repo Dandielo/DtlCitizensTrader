@@ -6,11 +6,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
 public class PlayerTrader extends Trader {
@@ -425,17 +427,17 @@ public class PlayerTrader extends Trader {
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "sell") );
 				}
 				else
-				if ( isWool(event.getCurrentItem(), new ItemStack(35,0,(short)0,(byte)2)) )	//unsupported wool data value
+				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) )	//unsupported wool data value
 				{
 					
 					
 					// TODO Currently disabled!!
 					//switch to sell mode, out of amount management
-					this.setTraderStatus(TraderStatus.MANAGE_SELL);
+					//this.setTraderStatus(TraderStatus.MANAGE_SELL);
+					this.switchInventory(TraderStatus.MANAGE_SELL);
 					
 					
-					
-					getInventory().setItem(getInventory().getSize() - 1, new ItemStack(Material.WOOL,1,(short)0,(byte)5));
+					getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(1));
 					
 
 					//send message
@@ -463,32 +465,42 @@ public class PlayerTrader extends Trader {
 						//and return all the remaining amount to the player, (if he has enough space)
 						if ( selectItem(clickedSlot, TraderStatus.MANAGE_SELL ).hasSelectedItem() ) 
 						{
-							//get the amount left in the stock
-							int leftAmount = getSelectedItem().getLimitSystem().getGlobalLimit() - getSelectedItem().getLimitSystem().getGlobalAmount();
-							
-							//check if the player has enough space
-							if ( inventoryHasPlaceAmount(p, leftAmount) )
+							if ( event.isLeftClick() )
 							{
-							
-								//remove that item from stock room
-								if ( isBuyModeByWool() )
-									getTraderStock().removeItem(false, clickedSlot);
-								if ( isSellModeByWool() )
-									getTraderStock().removeItem(true, clickedSlot);
+								//get the amount left in the stock
+								int leftAmount = getSelectedItem().getLimitSystem().getGlobalLimit() - getSelectedItem().getLimitSystem().getGlobalAmount();
 								
+								//check if the player has enough space
+								if ( inventoryHasPlaceAmount(p, leftAmount) )
+								{
 								
-								//add the remaining amount to the player
-								this.addAmountToInventory(p, leftAmount);
-								
-								
-								getInventory().setItem(clickedSlot, new ItemStack(0));
-								
-								
-								//clear the selecton and message the player
-								selectItem(null);
-	
-								//send message
-								p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
+									//remove that item from stock room
+									if ( isBuyModeByWool() )
+										getTraderStock().removeItem(false, clickedSlot);
+									if ( isSellModeByWool() )
+										getTraderStock().removeItem(true, clickedSlot);
+									
+									
+									//add the remaining amount to the player
+									this.addAmountToInventory(p, leftAmount);
+									
+									
+									getInventory().setItem(clickedSlot, new ItemStack(0));
+									
+									
+									//clear the selecton and message the player
+									selectItem(null);
+		
+									//send message
+									p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
+								}
+							} 
+							else
+							//if right clicked open the multiple amounts tab
+							{
+								//inventory and status update
+								switchInventory(getSelectedItem());
+								setTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT); 
 							}
 							
 						}
@@ -708,7 +720,55 @@ public class PlayerTrader extends Trader {
 				else 
 				if ( equalsTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT) )
 				{
+					//should we add a new amount?
+				//	if ( clickedSlot == 1 )
+				//	{
+					event.setCancelled(true);
 					
+					//left = +
+					if ( event.isLeftClick() )
+					{
+						
+						//add a new item in that slot (it will be either rearranged)
+						if ( event.getCurrentItem().getType().equals(Material.AIR) )
+						{
+							ItemStack clonedStack = getSelectedItem().getItemStack().clone();
+							clonedStack.setAmount(1);
+							getInventory().setItem(clickedSlot, clonedStack);
+							
+						}
+						else
+						{
+							
+							//geta amount info
+							int addAmount = event.getCursor().getAmount();
+							int oldAmount = event.getCurrentItem().getAmount();
+							
+							//add the amount
+							if ( event.getCurrentItem().getMaxStackSize() < oldAmount + addAmount )
+								event.getCurrentItem().setAmount(event.getCurrentItem().getMaxStackSize());
+							else
+								event.getCurrentItem().setAmount(oldAmount+addAmount);
+							
+						}
+						
+						
+					}
+					//right = you know... -.-
+					else
+					{
+						//get amount info
+						int removeAmount = event.getCursor().getAmount();
+						int oldAmount = event.getCurrentItem().getAmount();
+						
+						//decrease the amount, or delete the item
+						if ( oldAmount - removeAmount <= 0 )
+							event.setCurrentItem(new ItemStack(Material.AIR, 0));
+						else
+							event.getCurrentItem().setAmount(oldAmount-removeAmount);
+					}
+					
+				 
 				} 
 
 			}
@@ -718,7 +778,8 @@ public class PlayerTrader extends Trader {
 		else 
 		{
 			if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE)
-					|| equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL) )
+					|| equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL)
+					|| equalsTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT) )
 			{
 				return;
 			}
@@ -726,7 +787,16 @@ public class PlayerTrader extends Trader {
 			//cancel the event, bottom always canceled
 			event.setCancelled(true);
 			
+			if ( hasSelectedItem() )
+			{
+				if ( event.getCursor().getTypeId() != 0 )
+				{
+					event.setCursor(null);
+					selectItem(null);
+					switchInventory(getBasicManageModeByWool());
+				}
 			
+			}
 			//if top inventory was clicked before
 		//	if ( this.getInventoryClicked() )
 		//	{
