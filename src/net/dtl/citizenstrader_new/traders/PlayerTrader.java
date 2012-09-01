@@ -354,24 +354,6 @@ public class PlayerTrader extends Trader {
 					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "price") );
 				}
 				else
-				// TODO add a support system ;P
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(5)) )
-				{
-					
-
-					p.sendMessage(ChatColor.RED+"Sorry, atm this is not suported for a player trader");
-					//Only player limit management is enabled
-					//global limit used by this system
-					//this.setTraderStatus(TraderStatus.PLAYER_MANAGE_LIMIT_PLAYER);
-					
-					
-					
-					//getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
-				//	getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
-					
-					
-				}
-				else
 				// Only for buy system!
 				if ( isWool(event.getCurrentItem(), config.getItemManagement(3)) )
 				{

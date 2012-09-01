@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizenstrader_new.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager]
-version: 1.8.0Beta
+version: 1.8.01Beta
 description: >
              Citizens Character.
 commands: 
@@ -11,21 +11,15 @@ commands:
       usage: |
              Usage: 
              /<command> sell list [page]
-             /<command> sell add <id> [s:slot] [a:amount,...] [p:price]
-             /<command> sell remove <slot>
-             /<command> sell edit <slot> [i:id] [v:value] [s:slot] [a:amount,...] [p:price]
              /<command> buy list
-             /<command> buy add <id> [s:slot] [a:amount,...] [p:price]
-             /<command> buy remove <slot>
-             /<command> buy edit <slot> [i:id] [v:value] [s:slot] [a:amount,...] [p:price]
              /<command> mode <mode>
-             /<command> wallet <owner-type>
-             /<command> type <type>
+             /<command> wallet [wallet]
+             /<command> type [type]
+             /<command> owner [owner]
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
              /<command> create <name> [type] [wallet]
-             /<command> dismiss [npc-id]
              /<command> reload
       permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
