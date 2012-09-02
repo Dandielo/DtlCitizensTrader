@@ -32,6 +32,7 @@ import org.bukkit.inventory.ItemStack;
 public class TraderManager implements Listener {
 	//trader config
 	protected static TraderConfig config = CitizensTrader.config;
+	protected static LocaleManager locale = CitizensTrader.getLocale();
 	
 	//private static TraderConfig config;
 	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
@@ -262,7 +263,7 @@ public class TraderManager implements Listener {
 					
 					if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
 					{
-						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADERS!");
+						player.sendMessage( locale.getMessage("no-permissions") );
 						return;
 					}
 					
@@ -278,7 +279,7 @@ public class TraderManager implements Listener {
 					{
 						
 						if ( player.getGameMode().equals(GameMode.CREATIVE) 
-								&& !permManager.has(player, "dtl.trader.bypass.creative") )
+								&& !permManager.has(player, locale.getMessage("no-permissions")) )
 						{
 							player.sendMessage("!NO PERMISSIONS, CREATIVE!");
 							return;
@@ -300,7 +301,7 @@ public class TraderManager implements Listener {
 				{
 					if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
 					{
-						player.sendMessage("!NO PERMISSIONS, CANT MANAGE THIS TRADER!");
+						player.sendMessage( locale.getMessage("no-permissions") );
 						return;
 					}
 					
@@ -319,7 +320,7 @@ public class TraderManager implements Listener {
 						if ( player.getGameMode().equals(GameMode.CREATIVE) 
 								&& !permManager.has(player, "dtl.trader.bypass.creative") )
 						{
-							player.sendMessage("!NO PERMISSIONS, CREATIVE!");
+							player.sendMessage( locale.getMessage("no-permissions") );
 							return;
 						}
 						
@@ -346,7 +347,7 @@ public class TraderManager implements Listener {
 			}
 			else
 			{
-				player.sendMessage(ChatColor.RED + "!CAN'T MANAGE TRADERS!");
+				player.sendMessage(ChatColor.RED + locale.getMessage("no-permissions"));
 			}
 			//nothing to do...
 			return;
@@ -369,19 +370,19 @@ public class TraderManager implements Listener {
 				if ( player.getGameMode().equals(GameMode.CREATIVE) 
 						&& !permManager.has(player, "dtl.trader.bypass.creative") )
 				{
-					player.sendMessage("!NO PERMISSIONS, CREATIVE!");
+					player.sendMessage(locale.getMessage("no-permissions"));
 					return;
 				}
 				
 				if ( !permManager.has(player, "dtl.trader.options.simple-mode") )
 				{
-					player.sendMessage(ChatColor.RED + "!CAN'T USE ALL TRADERS!");
+					player.sendMessage(locale.getMessage("no-permissions"));
 					return;
 				}
 				
 				if ( !permManager.has(player, "dtl.trader.options.type." + trait.getTraderType().toString()) )
 				{
-					player.sendMessage("!NO PERMISSIONS, CAN USE THIS TRADER TYPE!");
+					player.sendMessage(locale.getMessage("no-permissions"));
 					return;
 				}
 				
