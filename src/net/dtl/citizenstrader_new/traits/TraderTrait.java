@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
+import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.containers.Wallet;
 
 public class TraderTrait {
@@ -58,54 +59,7 @@ public class TraderTrait {
 		}
 	}
 	
-	public enum TraderType {
-		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, BANK, CUSTOM
-;
-		
-		public static TraderType getTypeByName(String n) {
-			if ( n.equalsIgnoreCase("server") ) 
-				return TraderType.SERVER_TRADER;
-			else if ( n.equalsIgnoreCase("player") )
-				return TraderType.PLAYER_TRADER;
-			else if ( n.equalsIgnoreCase("auctionhouse") )
-				return TraderType.AUCTIONHOUSE;
-			else if ( n.equalsIgnoreCase("bank") )
-				return TraderType.BANK;
-			return null;
-		}
-		
-		@Override
-		public String toString() {
-			switch( this ) {
-			case PLAYER_TRADER:
-				return "player";
-			case SERVER_TRADER:
-				return "server";
-			case AUCTIONHOUSE:
-				return "auctionhouse";
-			case BANK:
-				return "bank";
-			default:
-				break;
-			}
-			return "";
-		}
-		public static String toString(TraderType w) {
-			switch( w ) {
-			case PLAYER_TRADER:
-				return "player";
-			case SERVER_TRADER:
-				return "server";
-			case AUCTIONHOUSE:
-				return "auctionhouse";
-			case BANK:
-				return "bank";
-			default:
-				break;
-			}
-			return "";
-		}
-	}
+	
 
 	private WalletType wType = WalletType.INFINITE;
 	private TraderType tType = TraderType.SERVER_TRADER;
@@ -188,9 +142,9 @@ public class TraderTrait {
 	}
 	
 	public void load(DataKey data) throws NPCLoadException {
-		if ( data.keyExists("trader-type") ) {
+		/*if ( data.keyExists("trader-type") ) {
 			tType = TraderType.getTypeByName(data.getString("trader-type", "server"));
-		}
+		}*/
 		if ( data.keyExists("wallet-type") ) {
 			wType = WalletType.getTypeByName(data.getString("wallet-type", "infinite"));
 			w.setWalletType(wType);
@@ -204,7 +158,7 @@ public class TraderTrait {
 	}
 
 	public void save(DataKey data) {
-		data.setString("trader-type", TraderType.toString(tType));
+	//	data.setString("trader-type", TraderType.toString(tType));
 		data.setString("wallet-type", WalletType.toString(wType));
 		data.setString("owner", owner);
 		data.setDouble("money", w.getMoney());

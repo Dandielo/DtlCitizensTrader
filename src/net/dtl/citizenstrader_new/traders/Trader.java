@@ -18,12 +18,12 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.TraderCharacterTrait;
+import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.TraderConfig;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
-import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 
 

@@ -4,7 +4,7 @@ depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager]
 version: 1.8.01Beta
 description: >
-             Citizens Character.
+             Citizens Character. 
 commands: 
     trader:
       description: Dtl - CitizensTrader commands.
@@ -93,8 +93,10 @@ permissions:
                 description: allows to create/set/use/manage a server trader
               dtl.trader.options.type.player: 
                 description: allows to create/set/use/manage a player trader
-              dtl.trader.options.type.bank: 
-                description: allows to create/set/use/manage a banker # NOT SUPPORTED #
+              dtl.trader.options.type.enchant: 
+                description: allows to create/set/use/manage a enchant trader
+              dtl.trader.options.type.player-bank: 
+                description: allows to create/set/use/manage a player banker
               dtl.trader.options.type.auction: 
                 description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
           dtl.trader.options.wallet.*: 
@@ -154,16 +156,3 @@ permissions:
             description: allows the user to create a trader with the given type and wallet (options dependent)
           dtl.trader.commands.dismiss: 
             description: allows the user to dismiss a trader
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      

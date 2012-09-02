@@ -1,23 +1,111 @@
 package net.dtl.citizenstrader_new.traders;
 
-import java.util.List;
+import java.util.Map;
+
+import org.bukkit.inventory.Inventory;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizenstrader_new.traits.BankAccount;
-import net.dtl.citizenstrader_new.traits.TraderTrait;
+import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.containers.BankAccount;
+import net.dtl.citizenstrader_new.traits.BankTrait;
 
-abstract public class Banker extends Trader {
+abstract public class Banker implements TypeTemplate {
 	//BankTab System
-	enum BankTab {
-		Tab1, Tab2, Tab3, Tab4, Tab5, Tab6, Tab7, Tab8, Tab9
+	public enum BankTab {
+		Tab1, Tab2, Tab3, Tab4, Tab5, Tab6, Tab7, Tab8, Tab9;
+		
+		@Override 
+		public String toString()
+		{
+			switch( this )
+			{
+			case Tab1:
+				return "tab1";
+			case Tab2:
+				return "tab2";
+			case Tab3:
+				return "tab3";
+			case Tab4:
+				return "tab4";
+			case Tab5:
+				return "tab5";
+			case Tab6:
+				return "tab6";
+			case Tab7:
+				return "tab7";
+			case Tab8:
+				return "tab8";
+			case Tab9:
+				return "tab9";
+			} 
+			return "";
+		}
+		
+		public static BankTab getTabByName(String tabName) 
+		{
+			if ( tabName.equals("tab1") )
+				return Tab1;
+			if ( tabName.equals("tab2") )
+				return Tab2;
+			if ( tabName.equals("tab3") )
+				return Tab3;
+			if ( tabName.equals("tab4") )
+				return Tab4;
+			if ( tabName.equals("tab5") )
+				return Tab5;
+			if ( tabName.equals("tab6") )
+				return Tab6;
+			if ( tabName.equals("tab7") )
+				return Tab7;
+			if ( tabName.equals("tab8") )
+				return Tab8;
+			if ( tabName.equals("tab9") )
+				return Tab9;
+			return null;
+		}
 	}
 	
 	//players using the Banker atm
-	private static List<BankAccount> bankAccounts;
+	private static Map<String, BankAccount> bankAccounts;
 	
-	public Banker(NPC traderNpc, TraderTrait traderConfiguragion) {
-		super(traderNpc, traderConfiguragion);
+	//bank settings
+	private BankTrait bank;
+	private Inventory tabInventory;
+	
+	public Banker(NPC traderNpc, BankTrait bankConfiguration) {
+		
+		//loading accoutns
+		reloadAccounts();
+		
+		tabInventory = bankConfiguration.getInventory();
+		
+		
+		//loading trader bank config
+		bank = bankConfiguration;
 
+		
 	}
 
+	public void reloadAccounts()
+	{
+
+		//loading accounts
+		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
+	}
+	
+	public void setInventory(String player)
+	{
+		bankAccounts.get(player).inventoryView(tabInventory);
+	}
+
+	public Inventory getInventory() {
+		return tabInventory;
+	}
+	
+	
+	
+	
+	
+	
+	
 }

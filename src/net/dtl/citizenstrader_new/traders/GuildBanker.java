@@ -3,12 +3,13 @@ package net.dtl.citizenstrader_new.traders;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.traits.BankTrait;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
 public class GuildBanker extends Banker {
 
-	public GuildBanker(NPC traderNpc, TraderTrait traderConfiguragion) {
-		super(traderNpc, traderConfiguragion);
+	public GuildBanker(NPC traderNpc, BankTrait bankConfiguragion) {
+		super(traderNpc, bankConfiguragion);
 		// TODO Auto-generated constructor stub
 	}
 

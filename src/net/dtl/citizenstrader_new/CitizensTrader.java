@@ -33,6 +33,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static PermissionsManager permsManager;
 	private static LogManager logManager;
 	private static LocaleManager locale;
+	private static BackendManager backends;
 	
 	@Override
 	public void onEnable() {
@@ -70,7 +71,8 @@ public class CitizensTrader extends JavaPlugin {
 			config = new TraderConfig(getConfig());
 
 			plugin = this;
-
+			backends = new BackendManager(getConfig());
+			
 			locale = new LocaleManager(getConfig());
 			permsManager = new PermissionsManager();
 			traderManager = new TraderManager(getConfig());
@@ -118,6 +120,11 @@ public class CitizensTrader extends JavaPlugin {
 	public static LocaleManager getLocale()
 	{
 		return locale;
+	}
+	
+	public static BackendManager getBackendManager()
+	{
+		return backends;
 	}
 	
 	public static TraderConfig getTraderConfig() {

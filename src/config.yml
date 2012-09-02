@@ -24,4 +24,11 @@ trader:
     return: 35
     #amounts selection return
     amounts-return: '35:14'
-    
+  bank:
+    withdraw-fee: 0.0
+    deposit-fee: 0.0
+    max-tabs: 0.0
+    player-accounts:
+      file: player_accounts.yml
+    guild-accounts: 
+      file: guild_accounts.yml

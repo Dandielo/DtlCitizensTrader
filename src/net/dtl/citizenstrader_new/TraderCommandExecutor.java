@@ -5,10 +5,10 @@ import java.text.DecimalFormat;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
+import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
-import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 
 import org.bukkit.ChatColor;
