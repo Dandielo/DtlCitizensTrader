@@ -32,7 +32,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
  * Providing all tools for item selection and managing
  * 
  */
-public abstract class Trader {
+public abstract class Trader implements TypeTemplate {
 	
 	/* *
 	 * TraderStatus
@@ -745,13 +745,4 @@ public abstract class Trader {
 	}
 	
 	
-	/* * ===============================================================================================
-	 * Abstract Functions (future implementation for custom traders)
-	 * 
-	 */
-	public abstract void secureMode(InventoryClickEvent event);
-	
-	public abstract void simpleMode(InventoryClickEvent event);
-	
-	public abstract void managerMode(InventoryClickEvent event);
 }

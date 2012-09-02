@@ -18,6 +18,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait.TraderType;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +27,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class TraderManager implements Listener {
 	//trader config
@@ -95,7 +97,9 @@ public class TraderManager implements Listener {
 		if ( ongoingTrades.containsKey(p.getName()) ) {
 			
 			if ( event.getRawSlot() < 0 ) {
-				event.setCancelled(true);
+				//event.setCancelled(true);
+				if ( ongoingTrades.get(p.getName()).hasSelectedItem() )
+					event.setCursor(new ItemStack(Material.AIR));
 				return;
 			}
 
