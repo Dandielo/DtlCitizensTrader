@@ -11,7 +11,7 @@ public class LimitSystem {
 	//the stocks item limit system
 	private final StockItem thisItem;
 	//the linked stock item (feature)
-	private StockItem linked;
+//	private StockItem linked;
 
 	//global limit for server traders, or amount saving for player traders
 	private Limit limit;
@@ -23,7 +23,7 @@ public class LimitSystem {
 	
 	public LimitSystem(StockItem item) {
 		thisItem = item;
-		linked = null;
+	//	linked = null;
 		
 		limit = new Limit();
 		playerLimit = new Limit();
@@ -41,7 +41,7 @@ public class LimitSystem {
 	
 	// TODO linking system 
 	public void linkWith(StockItem item) {
-		linked = item;
+//		linked = item;
 	}
 	
 	// TODO redo this function

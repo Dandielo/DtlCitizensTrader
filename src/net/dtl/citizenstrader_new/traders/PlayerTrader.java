@@ -6,13 +6,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
-import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
 
 public class PlayerTrader extends Trader {
@@ -99,7 +97,7 @@ public class PlayerTrader extends Trader {
 							 * 
 							 */
 							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
-								p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+								p.sendMessage(locale.getLocaleString("buy-message").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 								
 								/* *
 								 * better version of Inventory.addItem();
@@ -123,15 +121,15 @@ public class PlayerTrader extends Trader {
 								
 								
 							} else 
-								p.sendMessage(locale.getMessage("transaction-falied"));
+								p.sendMessage(locale.getLocaleString("transaction-falied"));
 						} else {
 							/*
 							 * First click will display the price and instructions.
 							 * Future: language support
 							 * 
 							 */
-							p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
-							p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
+							p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							p.sendMessage( locale.getLocaleString("click-to-continue").replace("{transaction}", "buy") );
 							setClickedSlot(slot);
 						}
 					}
@@ -143,7 +141,7 @@ public class PlayerTrader extends Trader {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) {
 					if ( getClickedSlot() == slot ) { 
 						if ( checkLimits(p,slot) && inventoryHasPlace(p,slot) && buyTransaction(p,getSelectedItem().getPrice(slot)) ) {
-							p.sendMessage(locale.getMessage("buy-message").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+							p.sendMessage(locale.getLocaleString("buy-message").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
 							
 							/* *
 							 * better version of Inventory.addItem();
@@ -167,10 +165,10 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getPrice(slot) );
 							
 						} else
-							p.sendMessage( locale.getMessage("transaction-falied") );
+							p.sendMessage( locale.getLocaleString("transaction-falied") );
 					} else {
-						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
-						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "buy") );
+						p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+						p.sendMessage( locale.getLocaleString("click-to-continue").replace("{transaction}", "buy") );
 						setClickedSlot(slot);
 					}
 				}
@@ -178,8 +176,8 @@ public class PlayerTrader extends Trader {
 			{
 				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
-					p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
-					p.sendMessage( locale.getMessage("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+					p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+					p.sendMessage( locale.getLocaleString("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 				
 				}
 			}
@@ -200,7 +198,7 @@ public class PlayerTrader extends Trader {
 						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 						if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
 						//	int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-							p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+							p.sendMessage( locale.getLocaleString("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 							
 							/* *
 							 * needs to be recoded
@@ -230,15 +228,15 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getPrice()*scale );
 							
 						} else 
-							p.sendMessage( locale.getMessage("transaction-falied") );
+							p.sendMessage( locale.getLocaleString("transaction-falied") );
 					} else {
-						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
+						p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("click-to-continue").replace("{transaction}", "sell") );
 						setClickedSlot(slot);
 					}
 				}
 			} else if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) ) { 
-				p.sendMessage( locale.getMessage("amount-exception") );
+				p.sendMessage( locale.getLocaleString("amount-exception") );
 				event.setCancelled(true);
 				return;
 			} else if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) {
@@ -247,7 +245,7 @@ public class PlayerTrader extends Trader {
 					
 					if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {
 						
-						p.sendMessage( locale.getMessage("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+						p.sendMessage( locale.getLocaleString("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						/* *
 						 * needs to be recoded
@@ -285,12 +283,12 @@ public class PlayerTrader extends Trader {
 					//	}
 					}
 					else 
-						p.sendMessage( locale.getMessage("transaction-falied") );
+						p.sendMessage( locale.getLocaleString("transaction-falied") );
 				} else {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) {
-						p.sendMessage( locale.getMessage("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						p.sendMessage( locale.getMessage("click-to-continue").replace("{transaction}", "sell") );
+						p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("click-to-continue").replace("{transaction}", "sell") );
 						
 						setClickedSlot(slot);
 					}
@@ -334,7 +332,7 @@ public class PlayerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(5) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "item") );
 				}
 				else
 				if ( isWool(event.getCurrentItem(), config.getItemManagement(2)) )
@@ -351,7 +349,7 @@ public class PlayerTrader extends Trader {
 					
 
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "price") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "price") );
 				}
 				else
 				// Only for buy system!
@@ -368,7 +366,7 @@ public class PlayerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 					
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "buy limit") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "buy limit") );
 					
 					
 				}
@@ -388,7 +386,7 @@ public class PlayerTrader extends Trader {
 				
 
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "buy") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "buy") );
 					
 				}
 				else
@@ -407,7 +405,7 @@ public class PlayerTrader extends Trader {
 				
 
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "sell") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "sell") );
 				}
 				else
 				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) )	//unsupported wool data value
@@ -424,7 +422,7 @@ public class PlayerTrader extends Trader {
 					
 
 					//send message
-					p.sendMessage( locale.getMessage("managing-changed-message").replace("{managing}", "item") );
+					p.sendMessage( locale.getLocaleString("managing-changed-message").replace("{managing}", "item") );
 				}
 				
 				//cancel the event, so no1 can take up wools and end
@@ -475,7 +473,7 @@ public class PlayerTrader extends Trader {
 									selectItem(null);
 		
 									//send message
-									p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + leftAmount) );
+									p.sendMessage( locale.getLocaleString("item-removed-pt").replace("{amount}", "" + leftAmount) );
 								}
 							} 
 							else
@@ -514,12 +512,12 @@ public class PlayerTrader extends Trader {
 									getInventory().setItem(clickedSlot, new ItemStack(0));
 
 									//send a remove message
-									p.sendMessage( locale.getMessage("item-removed-pt").replace("{amount}", "" + stockedAmount) );
+									p.sendMessage( locale.getLocaleString("item-removed-pt").replace("{amount}", "" + stockedAmount) );
 								}
 								else
 								{
 									//send a item got amount message
-									p.sendMessage( locale.getMessage("item-taken").replace("{amount}", "" + stockedAmount) );
+									p.sendMessage( locale.getLocaleString("item-taken").replace("{amount}", "" + stockedAmount) );
 									
 									//reset the amount
 									getSelectedItem().getLimitSystem().setGlobalAmount(0);
@@ -554,13 +552,13 @@ public class PlayerTrader extends Trader {
 							if ( getSelectedItem().hasStackPrice() ) 
 							{
 								getSelectedItem().setStackPrice(false);
-								p.sendMessage( locale.getMessage("stackprice-toggle").replace("{value}", "disabled") );
+								p.sendMessage( locale.getLocaleString("stackprice-toggle").replace("{value}", "disabled") );
 							} 
 							//change the price to a stack-price
 							else
 							{
 								getSelectedItem().setStackPrice(true);
-								p.sendMessage( locale.getMessage("stackprice-toggle").replace("{value}", "enabled") );
+								p.sendMessage( locale.getLocaleString("stackprice-toggle").replace("{value}", "enabled") );
 							}
 						}
 						
@@ -587,7 +585,7 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);
-							p.sendMessage( locale.getMessage("item-selected") );
+							p.sendMessage( locale.getLocaleString("item-selected") );
 						}
 						
 						
@@ -603,7 +601,7 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);	
-							p.sendMessage( locale.getMessage("item-selected") );
+							p.sendMessage( locale.getLocaleString("item-selected") );
 						}
 						
 						
@@ -619,7 +617,7 @@ public class PlayerTrader extends Trader {
 						
 						//select the item to get the information from, and show the price
 						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
-							p.sendMessage( locale.getMessage("show-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
+							p.sendMessage( locale.getLocaleString("show-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
 						
 						
 					} 
@@ -638,7 +636,7 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 							
 							//show the new price
-							p.sendMessage( locale.getMessage("change-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
+							p.sendMessage( locale.getLocaleString("change-price").replace("{price}", f.format(getSelectedItem().getRawPrice())) );
 							
 							
 						}
@@ -664,7 +662,7 @@ public class PlayerTrader extends Trader {
 						//select item which limit will be shown up
 						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
-							p.sendMessage( locale.getMessage("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+							p.sendMessage( locale.getLocaleString("show-limit-pt").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 						}
 						
 						
@@ -682,7 +680,7 @@ public class PlayerTrader extends Trader {
 							else
 								getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
 							
-							p.sendMessage( locale.getMessage("change-limit").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+							p.sendMessage( locale.getLocaleString("change-limit").replace("{type}", "Item").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 						
 						}
 
@@ -861,7 +859,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					//message the player
-					p.sendMessage( locale.getMessage("already-in-stock") );
+					p.sendMessage( locale.getLocaleString("already-in-stock") );
 					
 					
 					//reset the selection and set the clicked inventory (false = bottom)
@@ -912,7 +910,7 @@ public class PlayerTrader extends Trader {
 					itemToAdd.setAmount(backUpAmount);
 					
 					//send message
-					p.sendMessage( locale.getMessage("item-added") );
+					p.sendMessage( locale.getLocaleString("item-added") );
 				}
 				
 				
@@ -926,7 +924,7 @@ public class PlayerTrader extends Trader {
 				{
 					
 					//message the player
-					p.sendMessage( locale.getMessage("amount-add-help") );
+					p.sendMessage( locale.getLocaleString("amount-add-help") );
 					
 					
 					//reset the selection and set the clicked inventory (false = bottom)
@@ -985,7 +983,7 @@ public class PlayerTrader extends Trader {
 				
 					
 					//send message
-					p.sendMessage( locale.getMessage("amount-added") );
+					p.sendMessage( locale.getLocaleString("amount-added") );
 					
 					//reset
 					selectItem(null);
@@ -993,7 +991,7 @@ public class PlayerTrader extends Trader {
 				else
 				{
 					//that item isn't in the stock
-					p.sendMessage( locale.getMessage("not-in-stock") );
+					p.sendMessage( locale.getLocaleString("not-in-stock") );
 					
 				}
 				

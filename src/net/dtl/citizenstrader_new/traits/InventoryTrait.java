@@ -6,19 +6,18 @@ import java.util.List;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader_new.CitizensTrader;
-import net.dtl.citizenstrader_new.TraderConfig;
+import net.dtl.citizenstrader_new.ItemsConfig;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryTrait implements InventoryHolder {
 	//trader config
-	protected static TraderConfig config = CitizensTrader.config;
+	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
 	private List<StockItem> sellStock = new ArrayList<StockItem>();					//What the trader sells the player
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 

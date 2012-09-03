@@ -3,8 +3,8 @@ package net.dtl.citizenstrader_new.traders;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.BankTrait;
-import net.dtl.citizenstrader_new.traits.TraderTrait;
 
 public class GuildBanker extends Banker {
 
@@ -29,6 +29,24 @@ public class GuildBanker extends Banker {
 	public void managerMode(InventoryClickEvent event) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public TraderStatus getTraderStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTraderStatus(TraderStatus status) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getNpcId() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

@@ -12,34 +12,46 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LocaleManager {
+	//config
+	protected ConfigurationSection config;
+
+	//yaml path separator
 	protected final static char PATH_SEPARATOR = '/';
+	
+	//locale file configuration
 	protected FileConfiguration locale;
 	protected File localeFile;
 	
+	//localeCache
 	protected Map<String,String> localeCache;
 	
-	protected ConfigurationSection config;
-
-	public LocaleManager(ConfigurationSection config) {
-		this.config = config;
-		this.localeCache = new HashMap<String,String>();
+	public LocaleManager() {
+		//Loca config
+		config = CitizensTrader.getInstance().getConfig();
+		
+		//initialize cache holder
+		this.localeCache = new HashMap<String, String>();
+		
+		//initialize the locale
 		initialize();
 	}
 
 	public void initialize() {
-		// TODO check configuration
 		String localeFilename = config.getString("trader.locale.file");
 
 		// Default settings
 		if ( localeFilename == null ) 
 		{
+			//creating a config default
 			localeFilename = "locale.eng";
 			config.set("trader.locale.file", "locale.eng");
+			
+			//saving the new config
+			CitizensTrader.getInstance().saveConfig();
 		}
 		
-		CitizensTrader.plugin.saveConfig();
-
-		String baseDir = config.getString("locale.basedir", "plugins/DtlCitizensTrader/locale" );// "plugins/PermissionsEx");
+		//getting the base dir
+		String baseDir = config.getString("locale.basedir", "plugins/DtlCitizensTrader/locale" );
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
@@ -58,8 +70,10 @@ public class LocaleManager {
 
 		if ( !localeFile.exists() )
 		{
+			
 			try 
 			{
+				
 				localeFile.createNewFile();
 
 				// Load default permissions
@@ -69,6 +83,8 @@ public class LocaleManager {
 
 				//all
 				localeStrings.put("no-permissions", "^cYou don't have required permissions"); 
+				localeStrings.put("no-permissions-type", "^cYou can't use this trader type"); 
+				localeStrings.put("no-permissions-creative", "^cYou can't be in creative mode"); 
 				
 				//commands
 				localeStrings.put("invalid-args", "^cWrong arguments wahere supplied");
@@ -139,16 +155,10 @@ public class LocaleManager {
 				
 				localeStrings.put("reload-config", "^eConfiguration was reloaded");
 				
-				this.localeCache = localeStrings;
-				
+				//set the new locale file
 				locale.set("strings", localeStrings);
-			//	List<String> defaultPermissions = new LinkedList<String>();
-				// Specify here default permissions
-				// TODO chang this permission!
-			//	defaultPermissions.add("modifyworld.*");
 
-			//	locale.set("groups/default/permissions", defaultPermissions);
-
+				//save and reload
 				this.save();
 				this.reload();
 			} 
@@ -159,11 +169,13 @@ public class LocaleManager {
 		}
 	}
 	
-	public static String buildPath(String... path) {
+	//build yaml path
+	public static String buildPath(String... path) 
+	{
 		StringBuilder builder = new StringBuilder();
 
 		boolean first = true;
-		char separator = PATH_SEPARATOR; //permissions.options().pathSeparator();
+		char separator = PATH_SEPARATOR; 
 
 		for ( String node : path ) 
 		{
@@ -193,10 +205,11 @@ public class LocaleManager {
 			{
 				localeCache.put(key, locale.getString(buildPath("strings",key)).replace('^', '§') );
 			}
+			
 		} 
 		catch (FileNotFoundException e)
 		{
-		//	severe(e.getMessage());
+			CitizensTrader.severe(e.getMessage());
 		} 
 		catch (Throwable e)
 		{
@@ -204,12 +217,10 @@ public class LocaleManager {
 		}
 	}
 
-	public String getMessage(String messageType)
+	public String getLocaleString(String messageType)
 	{
 		if ( localeCache.containsKey(messageType) )
 			return localeCache.get(messageType);
-		
-		
 		
 		return ChatColor.RED + "ERROR! Reset the locale file!";
 	}
@@ -221,7 +232,7 @@ public class LocaleManager {
 		} 
 		catch (IOException e) 
 		{
-			//severe("Error during saving permissions file: " + e.getMessage());
+			CitizensTrader.severe("Error during saving permissions file: " + e.getMessage());
 		}
 	}
 

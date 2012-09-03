@@ -5,7 +5,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -19,7 +18,7 @@ import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.TraderCharacterTrait;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
-import net.dtl.citizenstrader_new.TraderConfig;
+import net.dtl.citizenstrader_new.ItemsConfig;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.containers.Wallet;
 import net.dtl.citizenstrader_new.traits.InventoryTrait;
@@ -32,7 +31,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
  * Providing all tools for item selection and managing
  * 
  */
-public abstract class Trader implements TypeTemplate {
+public abstract class Trader implements EconomyNpc {
 	
 	/* *
 	 * TraderStatus
@@ -60,7 +59,7 @@ public abstract class Trader implements TypeTemplate {
 	}
 
 	//trader config
-	protected static TraderConfig config = CitizensTrader.config;
+	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
 	/* *
 	 * Npc Traits
@@ -108,7 +107,7 @@ public abstract class Trader implements TypeTemplate {
 		traderConfig = traderConfiguragion;
 		
 		//locale
-		locale = CitizensTrader.getLocale();
+		locale = CitizensTrader.getLocaleManager();
 		
 		// Initialize the trader
 		traderStock = traderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
@@ -120,7 +119,7 @@ public abstract class Trader implements TypeTemplate {
 		/* *
 		 * SetAn Economy plugin to the trader's wallet
 		 */
-		traderConfig.getWallet().setEconomy(CitizensTrader.plugin.getEconomy());
+		traderConfig.getWallet().setEconomy(CitizensTrader.getInstance().getEconomy());
 	}
 	
 	public int getNpcId() {
@@ -741,7 +740,7 @@ public abstract class Trader implements TypeTemplate {
 		
 		DecimalFormat dec = new DecimalFormat("#.##");
 		
-		CitizensTrader.getLogManager().log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
+		CitizensTrader.getLoggingManager().log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
 	}
 	
 	

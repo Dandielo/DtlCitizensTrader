@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.dtl.permissions.bukkit.DtlPermissions;
-
 public class PermissionsManager {
 	private final Logger logger = Logger.getLogger("Minecraft");
 	private final String pluginPrefix = "[DtlTrader] ";
@@ -29,16 +28,25 @@ public class PermissionsManager {
 		if ( dtlPerms == null )
 			return;
 		logger.info(pluginPrefix + dtlPerms.getDescription().getFullName() + " ver" + dtlPerms.getDescription().getVersion() + " hooked!");
-		
 	}
+	
 	public void initializeVaultPermissions() {
-		logger.info(pluginPrefix + "Vault permissions not supported atm, sorry :<");
-		logger.info(pluginPrefix + "SuperPerms enabled");
+        
+	/*	RegisteredServiceProvider<Permission> rspPerm = CitizensTrader.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
+    
+        if ( rspPerm != null ) {
+        	vaultPerms = rspPerm.getProvider();
+			this.logger.info("["+ pdfFile.getName() + "] Permissions enabled.");
+        } else {
+			this.logger.info("["+ pdfFile.getName() + "] Permissions not found!"); 
+        }*/
 	}
+	
 	public void initializePexPermissions() {
 		logger.info(pluginPrefix + "PermissionsEx not supported atm, sorry :<");
 		logger.info(pluginPrefix + "SuperPerms enabled");
 	}
+	
 	public void initializeGroupManager() {
 		gmPerms = (GroupManager) Bukkit.getPluginManager().getPlugin("GroupManager");
 		if ( gmPerms == null )

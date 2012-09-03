@@ -20,11 +20,11 @@ import org.bukkit.entity.Player;
 
 public final class TraderCommandExecutor implements CommandExecutor {
 	//trader config
-	protected TraderConfig config = CitizensTrader.config;
+	protected ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
 	//general
 	public static CitizensTrader plugin;
-	private TraderManager traderManager;
+	private NpcEcoManager traderManager;
 	private PermissionsManager permsManager;
 	
 	//locale manager
@@ -34,9 +34,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		plugin = instance;
 		new CitizensTrader();
 
-		this.locale = CitizensTrader.getLocale();
-		this.permsManager = CitizensTrader.getPermissionsManager();
-		this.traderManager = CitizensTrader.getTraderManager();
+		locale = CitizensTrader.getLocaleManager();
+		permsManager = CitizensTrader.getPermissionsManager();
+		traderManager = CitizensTrader.getNpcEcoManager();
 	}
 	
 	@Override
@@ -51,7 +51,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			Player player = (Player) sender;
 			
 			
-			Trader trader = traderManager.getOngoingTrades(player.getName());
+			if ( !( traderManager.getInteractionNpc(player.getName()) instanceof Trader ) )
+				return true;
+			
+			Trader trader = (Trader) traderManager.getInteractionNpc(player.getName());
 			
 			
 			
@@ -60,7 +63,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				
 				//goodbye!
-				player.sendMessage( locale.getMessage("no-permissions") );
+				player.sendMessage( locale.getLocaleString("no-permissions") );
 				return true;
 			}
 			
@@ -83,11 +86,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight!
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
-				player.sendMessage(locale.getMessage("reload-config"));
+				player.sendMessage(locale.getLocaleString("reload-config"));
 				
 				config.reloadConfig();
 				
@@ -101,7 +104,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -111,15 +114,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight!
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "sell").replace("{args}", "<list>") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "sell").replace("{args}", "<list>") );
 					return true;
 				}				
 				
@@ -161,7 +164,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -170,15 +173,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					
 					//have a good flight! (copied...)
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "buy").replace("{args}", "<list>") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "buy").replace("{args}", "<list>") );
 					return true;
 				}				
 				
@@ -221,22 +224,22 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.wallet") )
 				{
 					//have a good flight! (copied...)
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
 				//are all on board?
 				if ( args.length < 1 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "wallet").replace("{args}", "[wallet] [bank_account_name]") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "wallet").replace("{args}", "[wallet] [bank_account_name]") );
 					return true;
 				}	
 				
@@ -250,22 +253,22 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.type") )
 				{
 					//see ya with a better permission ;)
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
 				//are all on board?
 				if ( args.length < 1 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "type").replace("{args}", "[type]") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "type").replace("{args}", "[type]") );
 					return true;
 				}	
 				
@@ -279,7 +282,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.create") )
 				{
 					//you can't create life!
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
@@ -287,8 +290,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//have we got the needed args?
 				if ( args.length < 2 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "create").replace("{args}", "<a name anywhere> [t:type] [w:wallet] [e:entity]") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "create").replace("{args}", "<a name anywhere> [t:type] [w:wallet] [e:entity]") );
 					return true;
 				}
 				
@@ -303,7 +306,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.dismiss") )
 				{
 					//you can't create life!
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
@@ -321,14 +324,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.balance") )
 				{
 					//you can't create life!
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -337,7 +340,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage( locale.getMessage("invalid-wallet") );
+					player.sendMessage( locale.getLocaleString("invalid-wallet") );
 					return true;
 				}
 				
@@ -353,14 +356,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.withdraw") )
 				{
 					//no permissions available
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -369,7 +372,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage( locale.getMessage("invalid-wallet") );
+					player.sendMessage( locale.getLocaleString("invalid-wallet") );
 					return true;
 				}
 				
@@ -377,8 +380,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "withdraw").replace("{args}", "<amount>") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "withdraw").replace("{args}", "<amount>") );
 					return true;
 				}
 				
@@ -392,14 +395,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.deposit") )
 				{
 					//no permissions available
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -408,7 +411,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
 				{
 					//lets inform about that mistake
-					player.sendMessage( locale.getMessage("invalid-wallet") );
+					player.sendMessage( locale.getLocaleString("invalid-wallet") );
 					return true;
 				}
 				
@@ -416,8 +419,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//we want to withdraw nothing...
 				if ( args.length < 2 )
 				{
-					player.sendMessage( locale.getMessage("missing-args") );
-					player.sendMessage( locale.getMessage("command-template").replace("{command}", "deposit").replace("{args}", "<amount>") );
+					player.sendMessage( locale.getLocaleString("missing-args") );
+					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "deposit").replace("{args}", "<amount>") );
 					return true;
 				}
 				
@@ -433,14 +436,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				if ( !permsManager.has(player, "dtl.trader.commands.owner") )
 				{
 					//have a good flight! (copied...)
-					player.sendMessage( locale.getMessage("no-permissions") );
+					player.sendMessage( locale.getLocaleString("no-permissions") );
 					return true;
 				}
 				
 				//check if we are editing a valid trader
 				if ( trader == null )
 				{
-					player.sendMessage( locale.getMessage("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
@@ -465,11 +468,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			//	{
 					
 					//have a good flight!
-				//	player.sendMessage( locale.getMessage("no-permissions") );
+				//	player.sendMessage( locale.getLocaleString("no-permissions") );
 				//	return true;
 			//	}
 				
-				sender.sendMessage(locale.getMessage("reload-config"));
+				sender.sendMessage(locale.getLocaleString("reload-config"));
 				
 				config.reloadConfig();
 				
@@ -537,16 +540,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 			
 			//come on can;t you write a normal number... ?
-			player.sendMessage( locale.getMessage("invalid-args") );
-			player.sendMessage( locale.getMessage("command-template").replace("{command}", "list").replace("{args}", "[page]") );
+			player.sendMessage( locale.getLocaleString("invalid-args") );
+			player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "list").replace("{args}", "[page]") );
 			return true;
 		}
 		
 		//we got a item list
-		player.sendMessage( locale.getMessage("list-header") );
+		player.sendMessage( locale.getLocaleString("list-header") );
 		
 		
-		for ( String item : trader.getTraderStock().getItemList(status, locale.getMessage("list-message"), page) )
+		for ( String item : trader.getTraderStock().getItemList(status, locale.getLocaleString("list-message"), page) )
 			player.sendMessage(item);
 		return true;
 	}
@@ -572,7 +575,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( !permsManager.has(player, "dtl.trader.options.wallet." + walletString ) )
 		{
-			player.sendMessage( locale.getMessage("invalid-wallet-perm") );
+			player.sendMessage( locale.getLocaleString("invalid-wallet-perm") );
 			return true;
 		}
 
@@ -580,7 +583,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( !bankName.isEmpty() )
 			if ( !trader.getWallet().setBank(player.getName(), bankName) )
 			{
-				player.sendMessage( locale.getMessage("invalid-wallet-bank") );
+				player.sendMessage( locale.getLocaleString("invalid-wallet-bank") );
 				return true;
 			}
 		
@@ -591,7 +594,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( wallet == null )
 		{
 			//send message
-			player.sendMessage( locale.getMessage("wallet-message").replace("{wallet}", trader.getTraderConfig().getWalletType().toString()) );
+			player.sendMessage( locale.getLocaleString("wallet-message").replace("{wallet}", trader.getTraderConfig().getWalletType().toString()) );
 			
 		}
 		//change wallet
@@ -602,7 +605,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			trader.getTraderConfig().setWalletType(wallet);
 
 			//send message
-			player.sendMessage( locale.getMessage("wallet-changed").replace("{wallet}", walletString) );
+			player.sendMessage( locale.getLocaleString("wallet-changed").replace("{wallet}", walletString) );
 		}
 		
 		
@@ -615,7 +618,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( !permsManager.has(player, "dtl.trader.options.type." + typeString ) )
 		{
-			player.sendMessage( locale.getMessage("invalid-ttype-perm") );
+			player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
 			return true;
 		}
 		
@@ -624,7 +627,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//show current trader type
 		if ( type == null )
 		{
-			player.sendMessage( locale.getMessage("type-message").replace("{type}", trader.getTraderConfig().getTraderType().toString()) );
+			player.sendMessage( locale.getLocaleString("type-message").replace("{type}", trader.getTraderConfig().getTraderType().toString()) );
 		}
 		//change trader type
 		else
@@ -632,7 +635,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 			trader.getTraderConfig().setTraderType(type);
 			
-			player.sendMessage( locale.getMessage("type-changed").replace("{type}", typeString) );
+			player.sendMessage( locale.getLocaleString("type-changed").replace("{type}", typeString) );
 		}
 		
 		return true;
@@ -642,7 +645,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean balance(Player player, Trader trader)
 	{
 		DecimalFormat f = new DecimalFormat("#.##");
-		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
+		player.sendMessage( locale.getLocaleString("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -659,13 +662,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage( locale.getMessage("invalid-args") );
+			player.sendMessage( locale.getLocaleString("invalid-args") );
 			return true;
 		}
 		
 		if ( withdraw > money )
 		{
-			player.sendMessage( locale.getMessage("amount-unavailable") );
+			player.sendMessage( locale.getLocaleString("amount-unavailable") );
 			return true;
 		}
 		
@@ -674,8 +677,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 		plugin.getEconomy().depositPlayer(player.getName(), withdraw);
 		
-		player.sendMessage( locale.getMessage("withdraw-message").replace("{amount}", withdrawString) );
-		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
+		player.sendMessage( locale.getLocaleString("withdraw-message").replace("{amount}", withdrawString) );
+		player.sendMessage( locale.getLocaleString("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -692,7 +695,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage( locale.getMessage("invalid-args") );
+			player.sendMessage( locale.getLocaleString("invalid-args") );
 			return true;
 		}
 		
@@ -701,8 +704,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		trader.getWallet().setMoney(money + deposit);
 		DecimalFormat f = new DecimalFormat("#.##");
 		
-		player.sendMessage( locale.getMessage("deposit-message").replace("{amount}", depositString) );
-		player.sendMessage( locale.getMessage("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
+		player.sendMessage( locale.getLocaleString("deposit-message").replace("{amount}", depositString) );
+		player.sendMessage( locale.getLocaleString("balance-message").replace("{balance}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -711,7 +714,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	private boolean setOwner(Player player, Trader trader, String owner) {
 		
 		trader.getTraderConfig().setOwner(owner);
-		player.sendMessage( locale.getMessage("owner-changed").replace("{player}", owner) );
+		player.sendMessage( locale.getLocaleString("owner-changed").replace("{player}", owner) );
 		
 		return true;
 	}
@@ -719,7 +722,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//getting the traders owner
 	private boolean getOwner(Player player, Trader trader) {
 
-		player.sendMessage( locale.getMessage("owner-message").replace("{player}", trader.getTraderConfig().getOwner() ) );
+		player.sendMessage( locale.getLocaleString("owner-message").replace("{player}", trader.getTraderConfig().getOwner() ) );
 		//player.sendMessage("!OWNER CHANGED!");
 		
 		return true;
@@ -743,7 +746,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this trader type?
 				if ( !permsManager.has(player, "dtl.trader.options.type." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getMessage("invalid-ttype-perm") );
+					player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
 					return true;
 				}
 				traderType = TraderType.getTypeByName(arg.substring(2));
@@ -755,7 +758,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this wallet type?
 				if ( !permsManager.has(player, "dtl.trader.options.wallet." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getMessage("invalid-wallet-perm") );
+					player.sendMessage( locale.getLocaleString("invalid-wallet-perm") );
 					return true;
 				}
 				walletType = WalletType.getTypeByName(arg.substring(2));
@@ -767,7 +770,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this entity type?
 				if ( !permsManager.has(player, "dtl.trader.options.entity." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getMessage("invalid-entity-perm") );
+					player.sendMessage( locale.getLocaleString("invalid-entity-perm") );
 					return true;
 				}
 				entityType = EntityType.fromName(arg.substring(2));
@@ -785,7 +788,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( walletType == null || traderType == null || entityType == null )
 		{
-			player.sendMessage( locale.getMessage("no-defaults") );
+			player.sendMessage( locale.getLocaleString("no-defaults") );
 			return true;
 		}
 		
@@ -802,7 +805,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		settings.setWalletType(walletType);
 		settings.setOwner(player.getName());
 		
-		player.sendMessage( locale.getMessage("trader-created") );
+		player.sendMessage( locale.getLocaleString("trader-created") );
 		return true;
 	}
 	

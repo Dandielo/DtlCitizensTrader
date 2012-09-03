@@ -8,26 +8,26 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
-public class LogManager {
+public class LoggingManager {
+	//config file separator
 	private final static char PATH_SEPARATOR = '/';
 	
+	//settings and files
 	protected boolean separateFiles;
-
 	protected File logFile;
-
-//	private int resetTimeout;
-//	private String keepOldFiles;
-//	private String singleFile;
 	
-	public LogManager(ConfigurationSection config) {	
-
-		String fileName = null;
+	
+	//constructor
+	public LoggingManager()
+	{	
+		//config file
+		FileConfiguration config = CitizensTrader.getInstance().getConfig();
 		
-//		resetTimeout = config.getInt("general.logs.reset",30);
-//		keepOldFiles = config.getString("general.logs.keep-old");
-//		singleFile = config.getString("general.logs.single-file");
+		
+		//filename
+		String fileName = null;
 		
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("dd_MM_yyyy");
@@ -36,11 +36,9 @@ public class LogManager {
 		if ( fileName == null ) 
 		{
 			fileName = df.format(date) + "_log.txt";
-			//config.set("general.logs.file", "log.txt");
 		}
 
-		String baseDir = config.getString("general.logs.basedir", "plugins\\DtlCitizensTrader\\logs" );// "plugins/PermissionsEx");
-
+		String baseDir = config.getString("general.logs.basedir", "plugins\\DtlCitizensTrader\\logs" );
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
 			baseDir = baseDir.replace("\\", File.separator);
@@ -95,9 +93,6 @@ public class LogManager {
 		try {
 			writer = new FileWriter(logFile,true);
 
-			if ( writer == null )
-				return;
-			
 			writer.append(logString+"\n");
 			writer.flush();
 			

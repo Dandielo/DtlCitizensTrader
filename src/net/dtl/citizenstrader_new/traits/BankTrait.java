@@ -6,7 +6,6 @@ import org.bukkit.inventory.InventoryHolder;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizenstrader_new.containers.StockItem;
 
 public class BankTrait implements InventoryHolder {
 	//deposit fee
@@ -18,7 +17,7 @@ public class BankTrait implements InventoryHolder {
 	private int tabSize;
 	
 	//money to "item" converter
-	private boolean moneyConverter;
+//	private boolean moneyConverter;
 	
 	public BankTrait()
 	{

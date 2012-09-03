@@ -10,7 +10,7 @@ import net.dtl.citizenstrader_new.traits.TraderTrait;
 
 public class TraderCharacterTrait extends Trait {
 	
-	private CitizensTrader plugin;
+//	private CitizensTrader plugin;
 	private TraderType type = TraderType.SERVER_TRADER;
 
 	public TraderCharacterTrait() {
@@ -25,9 +25,9 @@ public class TraderCharacterTrait extends Trait {
 	public void onSpawn() {
 		if ( npc.hasTrait(TraderCharacterTrait.class) ) {
 			if ( type.equals(TraderType.PLAYER_BANK) )
-				CitizensTrader.getTraderManager().addBankerNpc(npc);
+				CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
 			else
-				CitizensTrader.getTraderManager().addTraderNpc(npc);
+				CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
 		}
 
 	}
@@ -47,6 +47,11 @@ public class TraderCharacterTrait extends Trait {
 	
 	public BankTrait getBankTrait() {
 		return bankTrait;
+	}
+	
+	public TraderType getTraderType()
+	{
+		return type;
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.traits.BankTrait;
 
-abstract public class Banker implements TypeTemplate {
+abstract public class Banker implements EconomyNpc {
 	//BankTab System
 	public enum BankTab {
 		Tab1, Tab2, Tab3, Tab4, Tab5, Tab6, Tab7, Tab8, Tab9;
@@ -83,7 +83,7 @@ abstract public class Banker implements TypeTemplate {
 		//loading trader bank config
 		bank = bankConfiguration;
 
-		
+		bank.getInventory();
 	}
 
 	public void reloadAccounts()

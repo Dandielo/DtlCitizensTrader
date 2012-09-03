@@ -3,7 +3,7 @@ package net.dtl.citizenstrader_new;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
-public class TraderConfig {	
+public class ItemsConfig {	
 	//check if we need to disable the plugin
 	private boolean disablePlugin = false;
 	
@@ -26,7 +26,7 @@ public class TraderConfig {
 	private ItemStack mmToggleItem;
 
 	//functions
-	public TraderConfig(ConfigurationSection config) {
+	public ItemsConfig(ConfigurationSection config) {
 		ConfigurationSection traderSection = config.getConfigurationSection("trader");
 		
 		this.rclickInterval = traderSection.getLong("rclick-interval");
@@ -49,7 +49,7 @@ public class TraderConfig {
 	
 	public void reloadConfig()
 	{
-		ConfigurationSection traderSection = CitizensTrader.plugin.getConfig().getConfigurationSection("trader");
+		ConfigurationSection traderSection = CitizensTrader.getInstance().getConfig().getConfigurationSection("trader");
 		
 		this.rclickInterval = traderSection.getLong("rclick-interval");
 		this.localeFile = traderSection.getString("locale.file","locale.eng");
@@ -83,9 +83,9 @@ public class TraderConfig {
 		} 
 		catch( NumberFormatException e )
 		{
-			CitizensTrader.plugin.logger.severe("Wrong number format in configFile!");
-			CitizensTrader.plugin.logger.severe("Plugin will be disabled!");
-			CitizensTrader.plugin.logger.info("Error information");
+			CitizensTrader.severe("Wrong number format in config file!");
+			CitizensTrader.severe("Plugin will be disabled!");
+			CitizensTrader.info("Error information");
 			e.printStackTrace();
 			disablePlugin = true;
 			return null;
