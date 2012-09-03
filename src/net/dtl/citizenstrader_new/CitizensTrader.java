@@ -23,11 +23,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.yaml.snakeyaml.Yaml;
 
 public class CitizensTrader extends JavaPlugin {
+	//citizens trader logger
 	public final Logger logger = Logger.getLogger("Minecraft");
 	
-	public static CitizensTrader plugin;
+	//plugin instance
+	private static CitizensTrader instance;
 	
-	public static TraderConfig config;
+	private static TraderConfig config;
 
 	private Economy economy;
 	private Permission permission;
