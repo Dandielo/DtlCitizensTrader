@@ -782,6 +782,10 @@ public class PlayerTrader extends Trader {
 					|| equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL)
 					|| equalsTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT) )
 			{
+				if ( event.isShiftClick() )
+					event.setCancelled(true);
+				
+				
 				return;
 			}
 			
