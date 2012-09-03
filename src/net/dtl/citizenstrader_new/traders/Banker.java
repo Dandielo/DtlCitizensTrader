@@ -94,7 +94,7 @@ abstract public class Banker implements EconomyNpc {
 
 	public void reloadAccounts()
 	{
-		System.out.print("a");
+	//	System.out.print("a");
 		//loading accounts
 		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
 	}

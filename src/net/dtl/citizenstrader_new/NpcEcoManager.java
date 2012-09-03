@@ -83,6 +83,9 @@ public class NpcEcoManager implements Listener {
 		if ( economyNpc == null )
 			return;
 		
+		if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+			return;
+		
 		if ( event.getInventory().getType().equals(InventoryType.PLAYER)
 				|| event.getInventory().getType().equals(InventoryType.CRAFTING) )
 			return;
@@ -284,6 +287,7 @@ public class NpcEcoManager implements Listener {
 				return;
 			
 			//exit mm mode and open the normal inventory
+			
 			player.sendMessage(ChatColor.AQUA + CitizensAPI.getNPCRegistry().getById(economyNpc.getNpcId()).getFullName() + ChatColor.RED + " exited the manager mode");
 	//		playerInteraction.get(playerName).setTraderStatus(TraderStatus.SELL);
 			
@@ -294,6 +298,12 @@ public class NpcEcoManager implements Listener {
 			if ( characterTrait.getTraderType().equals(TraderType.SERVER_TRADER) )
 			{
 				playerInteraction.put(playerName, new ServerTrader(npc, characterTrait.getTraderTrait()));
+			}
+			if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
+			{
+				playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait()));
+				Banker banker = (Banker) playerInteraction.get(playerName);
+				banker.switchInventory(playerName, TraderStatus.BANK);
 			}
 			
 		//	((Trader)playerInteraction.get(playerName)).switchInventory(TraderStatus.SELL);
