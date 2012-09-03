@@ -22,18 +22,18 @@ public class FileBankAccount extends BankAccount {
 		//geting the overall account info
 		ConfigurationSection accountInfo = accounts.getConfigurationSection(buildPath("accounts",accountName));
 
-		System.out.print("ab");
+		//System.out.print("ab");
 		//loading tabs
 		for ( String tab : accountInfo.getConfigurationSection("tabs").getKeys(false) )
 		{
-			System.out.print("a");
+		//	System.out.print("a");
 			//list to save the items
 			List<BankItem> items = new ArrayList<BankItem>();
 			
 			//fetching item list
 			for ( String item : accountInfo.getStringList(buildPath("tabs",tab)) )
 			{
-				System.out.print(BankTab.getTabByName(tab));
+		//		System.out.print(BankTab.getTabByName(tab));
 				items.add(new BankItem(item));
 			}
 

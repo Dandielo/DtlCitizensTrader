@@ -31,22 +31,4 @@ public class PlayerBanker extends Banker {
 		
 	}
 
-	@Override
-	public TraderStatus getTraderStatus() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setTraderStatus(TraderStatus status) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getNpcId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

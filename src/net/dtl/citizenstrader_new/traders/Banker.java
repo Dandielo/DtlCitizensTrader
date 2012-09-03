@@ -7,6 +7,7 @@ import org.bukkit.inventory.Inventory;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.BankAccount;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.BankTrait;
 
 abstract public class Banker implements EconomyNpc {
@@ -71,14 +72,19 @@ abstract public class Banker implements EconomyNpc {
 	//bank settings
 	private BankTrait bank;
 	private Inventory tabInventory;
+	private TraderStatus traderStatus;
+	private NPC npc;
 	
-	public Banker(NPC traderNpc, BankTrait bankConfiguration) {
+	public Banker(NPC bankerNpc, BankTrait bankConfiguration) {
 		
 		//loading accoutns
-		reloadAccounts();
+		if ( bankAccounts == null )
+			reloadAccounts();
+		
+		traderStatus = TraderStatus.BANK;
 		
 		tabInventory = bankConfiguration.getInventory();
-		
+		npc = bankerNpc;
 		
 		//loading trader bank config
 		bank = bankConfiguration;
@@ -88,14 +94,15 @@ abstract public class Banker implements EconomyNpc {
 
 	public void reloadAccounts()
 	{
-
+		System.out.print("a");
 		//loading accounts
 		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
 	}
 	
-	public void setInventory(String player)
+	public void switchInventory(String player, TraderStatus status)
 	{
-		bankAccounts.get(player).inventoryView(tabInventory);
+		if ( status.equals(TraderStatus.BANK) )
+			bankAccounts.get(player).inventoryView(tabInventory);
 	}
 
 	public Inventory getInventory() {
@@ -103,7 +110,20 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	
-	
+	@Override
+	public TraderStatus getTraderStatus() {
+		return traderStatus;
+	}
+
+	@Override
+	public void setTraderStatus(TraderStatus status) {
+		traderStatus = status;
+	}
+
+	@Override
+	public int getNpcId() {
+		return npc.getId();
+	}
 	
 	
 	

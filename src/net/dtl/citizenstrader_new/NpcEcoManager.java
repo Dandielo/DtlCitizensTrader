@@ -9,6 +9,7 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
+import net.dtl.citizenstrader_new.traders.Banker;
 import net.dtl.citizenstrader_new.traders.EconomyNpc;
 import net.dtl.citizenstrader_new.traders.PlayerBanker;
 import net.dtl.citizenstrader_new.traders.PlayerTrader;
@@ -206,6 +207,9 @@ public class NpcEcoManager implements Listener {
 			
 			if ( player.getItemInHand().getTypeId() == config.getMMToggleItem().getTypeId() )
 			{
+				if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
+					return;
+				
 				if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
 						&& characterTrait.getTraderTrait().getOwner().equals(player.getName()) )
 						|| permManager.has(player, "dtl.trader.bypass.manager-mode") 
@@ -284,6 +288,9 @@ public class NpcEcoManager implements Listener {
 		
 		if ( player.getItemInHand().getTypeId() == config.getMMToggleItem().getTypeId() )
 		{
+			if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
+				return;
+			
 			if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
 					&& characterTrait.getTraderTrait().getOwner().equals(player.getName()) )
 					|| permManager.has(player, "dtl.trader.bypass.manager-mode") 
@@ -345,6 +352,8 @@ public class NpcEcoManager implements Listener {
 		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 		{
 			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait()));
+			Banker banker = (Banker) playerInteraction.get(playerName);
+			banker.switchInventory(playerName, TraderStatus.BANK);
 		}
 		
 		player.openInventory(playerInteraction.get(playerName).getInventory());

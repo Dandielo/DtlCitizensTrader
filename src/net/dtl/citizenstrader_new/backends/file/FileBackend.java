@@ -118,22 +118,22 @@ public class FileBackend extends Backend {
 	
 	@Override
 	public Map<String, BankAccount> getAccounts() {
-		System.out.print("ad");
+	//	System.out.print("ad");
 		this.reload();
 		
 		Map<String,BankAccount> accountList = new HashMap<String,BankAccount>();
 
-		System.out.print("ad3");
+	//	System.out.print("ad3");
 		if ( !accounts.contains("accounts") )
 			return accountList;
-		System.out.print("ad2");
+	//	System.out.print("ad2");
 		if ( accounts.getConfigurationSection("accounts").getKeys(false) == null )
 			return accountList;
-		System.out.print("ad");
+	//	System.out.print("ad");
 		
 		for ( String accountName : accounts.getConfigurationSection("accounts").getKeys(false) ) {
 
-			System.out.print("ac");
+		//	System.out.print("ac");
 			BankAccount account = getAccount(accountName);
 			if ( account != null )
 				accountList.put(accountName, account);

@@ -21,4 +21,5 @@ public interface EconomyNpc {
 	public abstract int getNpcId();
 	
 	public abstract Inventory getInventory();
+	
 }
