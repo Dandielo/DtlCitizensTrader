@@ -37,7 +37,7 @@ public class CitizensTrader extends JavaPlugin {
 	@Override
 	public void onLoad()
 	{
-		info("Loading v" + getDescription().getVersion());
+		//info("Loading v" + getDescription().getVersion());
 		
 		//loading the stdConfig
 		saveDefaultConfig();
@@ -50,7 +50,7 @@ public class CitizensTrader extends JavaPlugin {
 		instance = this;
 		
 		//sucessfully loaded
-		info("Loaded v" + getDescription().getVersion());
+	//	info("Loaded v" + getDescription().getVersion());
 	}
 	
 	@Override

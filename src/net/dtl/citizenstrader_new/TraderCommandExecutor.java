@@ -634,6 +634,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 
 			trader.getTraderConfig().setTraderType(type);
+			trader.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);
 			
 			player.sendMessage( locale.getLocaleString("type-changed").replace("{type}", typeString) );
 		}
@@ -801,7 +802,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		//change the trader settings
 		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
-		settings.setTraderType(traderType);
+		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
 		settings.setWalletType(walletType);
 		settings.setOwner(player.getName());
 		

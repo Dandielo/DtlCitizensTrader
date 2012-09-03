@@ -10,6 +10,7 @@ import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.traders.EconomyNpc;
+import net.dtl.citizenstrader_new.traders.PlayerBanker;
 import net.dtl.citizenstrader_new.traders.PlayerTrader;
 import net.dtl.citizenstrader_new.traders.ServerTrader;
 import net.dtl.citizenstrader_new.traders.Trader;
@@ -252,6 +253,8 @@ public class NpcEcoManager implements Listener {
 			//open inventory in mm mode
 			if ( economyNpc.getNpcId() == npc.getId() )
 			{
+				((Trader)playerInteraction.get(playerName)).switchInventory(TraderStatus.MANAGE_SELL);
+				
 				player.openInventory(playerInteraction.get(playerName).getInventory());
 				return;
 			}
@@ -261,7 +264,18 @@ public class NpcEcoManager implements Listener {
 			
 			//exit mm mode and open the normal inventory
 			player.sendMessage(ChatColor.AQUA + CitizensAPI.getNPCRegistry().getById(economyNpc.getNpcId()).getFullName() + ChatColor.RED + " exited the manager mode");
-			playerInteraction.get(playerName).setTraderStatus(TraderStatus.SELL);
+	//		playerInteraction.get(playerName).setTraderStatus(TraderStatus.SELL);
+			
+			if ( characterTrait.getTraderType().equals(TraderType.PLAYER_TRADER) )
+			{
+				playerInteraction.put(playerName, new PlayerTrader(npc, characterTrait.getTraderTrait()));
+			}
+			if ( characterTrait.getTraderType().equals(TraderType.SERVER_TRADER) )
+			{
+				playerInteraction.put(playerName, new ServerTrader(npc, characterTrait.getTraderTrait()));
+			}
+			
+		//	((Trader)playerInteraction.get(playerName)).switchInventory(TraderStatus.SELL);
 			player.openInventory(playerInteraction.get(playerName).getInventory());
 			return;
 		}
@@ -306,6 +320,33 @@ public class NpcEcoManager implements Listener {
 		
 		//exit mm mode and open the normal inventory
 		}
+		
+		if ( !permManager.has(player, "dtl.trader.options.type." + characterTrait.getTraderType().toString() ) )
+		{
+			player.sendMessage( locale.getLocaleString("no-permissions-type") );
+			return;
+		}
+		
+		if ( player.getGameMode().equals(GameMode.CREATIVE) 
+				&& !permManager.has(player, "dtl.trader.bypass.creative") )
+		{
+			player.sendMessage( locale.getLocaleString("no-permissions-creative") );
+			return;
+		}
+		
+		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_TRADER) )
+		{
+			playerInteraction.put(playerName, new PlayerTrader(npc, characterTrait.getTraderTrait()));
+		}
+		if ( characterTrait.getTraderType().equals(TraderType.SERVER_TRADER) )
+		{
+			playerInteraction.put(playerName, new ServerTrader(npc, characterTrait.getTraderTrait()));
+		}
+		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
+		{
+			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait()));
+		}
+		
 		player.openInventory(playerInteraction.get(playerName).getInventory());
 		
 		

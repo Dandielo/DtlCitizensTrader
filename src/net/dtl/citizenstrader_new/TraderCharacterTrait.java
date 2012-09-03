@@ -54,10 +54,17 @@ public class TraderCharacterTrait extends Trait {
 		return type;
 	}
 	
+	public void setTraderType(TraderType type)
+	{
+		this.type = type;
+		traderTrait.setTraderType(type);
+	}
+	
 	@Override
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("trader-type") ) {
 			type = TraderType.getTypeByName(data.getString("trader-type"));
+			traderTrait.setTraderType(type);
 		}
 		
 		if ( type.equals(TraderType.PLAYER_BANK) )
