@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 
@@ -72,6 +73,22 @@ public class NpcEcoManager implements Listener {
 			this.isEconomyNpc.add(npc);
 		}
 	}	
+	
+	//cancel opening all other inventories when in mm
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event)
+	{
+		EconomyNpc economyNpc = playerInteraction.get(event.getPlayer().getName());
+		
+		if ( economyNpc == null )
+			return;
+		
+		if ( event.getInventory().getType().equals(InventoryType.PLAYER)
+				|| event.getInventory().getType().equals(InventoryType.CRAFTING) )
+			return;
+		
+		event.setCancelled(true);
+	}
 	
 	
 	//Events Handling!
