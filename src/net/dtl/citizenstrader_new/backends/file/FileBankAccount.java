@@ -33,6 +33,7 @@ public class FileBankAccount extends BankAccount {
 			//fetching item list
 			for ( String item : accountInfo.getStringList(buildPath("tabs",tab)) )
 			{
+				System.out.print(BankTab.getTabByName(tab));
 				items.add(new BankItem(item));
 			}
 

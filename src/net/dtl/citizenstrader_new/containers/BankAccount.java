@@ -52,10 +52,10 @@ abstract public class BankAccount {
 	public void inventoryView(Inventory inventory)
 	{
 		inventory.clear();
-		
+		int i = 0;
 		for ( BankItem item : storedItems.get(BankTab.Tab1) )
 		{
-			inventory.addItem(item.getItemStack());
+			inventory.setItem(i++, item.getItemStack());
 		}
 	}
 	

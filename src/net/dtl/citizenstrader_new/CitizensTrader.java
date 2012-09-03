@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.citizensnpcs.api.CitizensAPI;
@@ -86,6 +88,7 @@ public class CitizensTrader extends JavaPlugin {
 			//}
 			getServer().getPluginManager().registerEvents(traderManager, this);
 			getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+			
 			//((TraderCharacter) CitizensAPI.getCharacterManager().getCharacter("trader")).setConfig(config);
 			
 			this.logger.info("["+ pdfFile.getName() + "]  Plugin version " + pdfFile.getVersion() + " is now enabled.");

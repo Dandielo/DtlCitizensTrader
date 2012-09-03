@@ -321,11 +321,10 @@ public class TraderManager implements Listener {
 			return;
 		}
 		
-		//if ( trait.getTraderType().equals(TraderType.PLAYER_BANK) )
 		bankManagers.put(player.getName(), new PlayerBanker(npc,trait));
 
-		player.openInventory(bankManagers.get(player.getName()).getInventory());
 		bankManagers.get(player.getName()).setInventory(player.getName());
+		player.openInventory(bankManagers.get(player.getName()).getInventory());
 	
 	}
 

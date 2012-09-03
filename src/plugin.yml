@@ -7,6 +7,7 @@ description: >
              Citizens Character. 
 commands: 
     trader:
+      aliases: dtrader
       description: Dtl - CitizensTrader commands.
       usage: |
              Usage: 
@@ -156,3 +157,4 @@ permissions:
             description: allows the user to create a trader with the given type and wallet (options dependent)
           dtl.trader.commands.dismiss: 
             description: allows the user to dismiss a trader
+            
