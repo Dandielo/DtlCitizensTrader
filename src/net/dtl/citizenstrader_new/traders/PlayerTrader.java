@@ -38,6 +38,12 @@ public class PlayerTrader extends Trader {
 		DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
+		if ( slot < 0 )
+		{
+			event.setCancelled(true);
+			return;
+		}
+		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
 		if ( top ) {
@@ -309,6 +315,14 @@ public class PlayerTrader extends Trader {
 		DecimalFormat f = new DecimalFormat("#.##");
 		
 		int clickedSlot = event.getSlot();
+		
+		if ( clickedSlot < 0 )
+		{
+			//event.setCancelled(true);
+			event.setCursor(null);
+			switchInventory(getBasicManageModeByWool());
+			return;
+		}
 		
 		if ( top ) 
 		{

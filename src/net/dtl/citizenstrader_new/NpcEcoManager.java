@@ -85,12 +85,16 @@ public class NpcEcoManager implements Listener {
 		
 		if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
 			return;
-		
+
+		if ( economyNpc.getInventory().getTitle().equals(event.getInventory().getTitle()) )
+			return;
+			
 		if ( event.getInventory().getType().equals(InventoryType.PLAYER)
 				|| event.getInventory().getType().equals(InventoryType.CRAFTING) )
 			return;
 		
 		event.setCancelled(true);
+		((Player)event.getPlayer()).sendMessage(ChatColor.RED + "You can't open this in manager mode");
 	}
 	
 	
@@ -182,6 +186,7 @@ public class NpcEcoManager implements Listener {
 		
 		if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
 			return;
+		
 		
 		//got permission?
 		if ( this.permManager.has(player, "dtl.trader.bypass.drop") )
