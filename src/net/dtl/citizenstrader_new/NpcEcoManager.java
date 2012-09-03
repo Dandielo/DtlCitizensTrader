@@ -282,14 +282,16 @@ public class NpcEcoManager implements Listener {
 			//open inventory in mm mode
 			if ( economyNpc.getNpcId() == npc.getId() )
 			{
+
+				if ( !TraderStatus.hasManageMode(playerInteraction.get(playerName).getTraderStatus()) )
+					return;
+				
 				((Trader)playerInteraction.get(playerName)).switchInventory(TraderStatus.MANAGE_SELL);
 				
 				player.openInventory(playerInteraction.get(playerName).getInventory());
 				return;
 			}
-			
-			if ( !TraderStatus.hasManageMode(playerInteraction.get(playerName).getTraderStatus()) )
-				return;
+
 			
 			//exit mm mode and open the normal inventory
 			
