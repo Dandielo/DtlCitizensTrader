@@ -32,7 +32,7 @@ public class FileBackend extends Backend {
 			config.set("trader.bank.player-accounts.file", "player_accounts.yml");
 		}
 
-		String baseDir = config.getString("trader.bank.player-accounts.path", "plugins/dtlCitizensTrader/bank" );// "plugins/PermissionsEx");
+		String baseDir = config.getString("trader.bank.player-accounts.path", "plugins/DtlCitizensTrader/bank" );// "plugins/PermissionsEx");
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{

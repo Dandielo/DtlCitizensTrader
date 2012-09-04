@@ -51,8 +51,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			Player player = (Player) sender;
 			
 			
-			if ( !( traderManager.getInteractionNpc(player.getName()) instanceof Trader ) )
-				return true;
+			//if ( !( traderManager.getInteractionNpc(player.getName()) instanceof Trader ) )
+			//	return true;
 			
 			Trader trader = (Trader) traderManager.getInteractionNpc(player.getName());
 			

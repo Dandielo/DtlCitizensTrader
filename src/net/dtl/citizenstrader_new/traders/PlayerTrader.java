@@ -415,7 +415,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(1));
-					getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(5));
+					getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(4));
 				
 
 					//send message

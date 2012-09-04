@@ -33,8 +33,8 @@ public class ItemsConfig {
 		this.localeFile = traderSection.getString("locale.file","locale.eng");
 		this.localeFilePath = traderSection.getString("locale.path","");
 		this.mmToggleItem = convertStringData(traderSection.getString("manager-mode-toggle","280"));
-		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:5"));
-		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:3"));
+		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"));
+		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:5"));
 		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"));
 		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"));
 		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"));
@@ -55,8 +55,8 @@ public class ItemsConfig {
 		this.localeFile = traderSection.getString("locale.file","locale.eng");
 		this.localeFilePath = traderSection.getString("locale.path","");
 		this.mmToggleItem = convertStringData(traderSection.getString("manager-mode-toggle","280"));
-		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"));
-		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:5"));
+		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:5"));
+		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:3"));
 		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"));
 		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"));
 		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"));

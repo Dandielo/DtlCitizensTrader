@@ -9,9 +9,9 @@ trader:
   #management and inventory switch custom items
   inventory-navigation: 
     #the item which appear when in the "buy" tab
-    sell-tab: '35:3'
+    sell-tab: '35:5'
     #the item which appear when in the "sell" tab
-    buy-tab: '35:5'
+    buy-tab: '35:3'
     #Price management
     manage-price: '35:15'
     #Buy limit management (player trader [buy tab])
