@@ -308,9 +308,9 @@ public class NpcEcoManager implements Listener {
 			}
 			if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 			{
-				playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait()));
-				Banker banker = (Banker) playerInteraction.get(playerName);
-				banker.switchInventory(playerName, TraderStatus.BANK);
+				playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait(), playerName));
+			//	Banker banker = (Banker) playerInteraction.get(playerName);
+			//	banker.switchInventory(playerName, TraderStatus.BANK);
 			}
 			
 		//	((Trader)playerInteraction.get(playerName)).switchInventory(TraderStatus.SELL);
@@ -385,9 +385,9 @@ public class NpcEcoManager implements Listener {
 		}
 		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 		{
-			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait()));
-			Banker banker = (Banker) playerInteraction.get(playerName);
-			banker.switchInventory(playerName, TraderStatus.BANK);
+			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait(), playerName));
+		//	Banker banker = (Banker) playerInteraction.get(playerName);
+		//	banker.switchInventory(playerName, TraderStatus.BANK);
 		}
 		
 		player.openInventory(playerInteraction.get(playerName).getInventory());

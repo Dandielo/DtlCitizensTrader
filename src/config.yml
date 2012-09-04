@@ -24,11 +24,35 @@ trader:
     return: 35
     #amounts selection return
     amounts-return: '35:14'
-  bank:
-    withdraw-fee: 0.0
-    deposit-fee: 0.0
-    max-tabs: 0.0
-    player-accounts:
-      file: player_accounts.yml
-    guild-accounts: 
-      file: guild_accounts.yml
+bank: 
+  #when the account should be saved (timeout/item management/bank close) 
+  trigger-save: timeout
+  #timeout in minutes
+  save-timeout: 10
+  #tab rows (1-5) when last_row isn't enabled the rows size is (1-6)
+  tab-size: 5
+  #tab display (trigger on clicking outside the inventory/last_row)
+  tab-display: last_row
+  default-withdraw-fee: 0.0
+  default-deposit-fee: 0.0
+  default-max-tabs: 0
+  player-accounts:
+    file: player_accounts.yml
+  guild-accounts: 
+    file: guild_accounts.yml
+taxes:
+  enabled: false
+  #when the prices are with taxes or they should be reacalculated with the tax system (netto/brutto)
+  prices: netto
+  #the player or bank or npc wallet where the taxes should be deposited
+  tax-deposit: bank
+  #tax percent 
+  tax: 22%
+custom: 
+  permission.name:
+    taxes: 
+      tax: 11%
+      enabled: true
+    
+  
+  

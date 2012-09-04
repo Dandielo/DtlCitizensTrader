@@ -9,12 +9,12 @@ import net.dtl.citizenstrader_new.traits.BankTrait;
 public class GuildBanker extends Banker {
 
 	public GuildBanker(NPC traderNpc, BankTrait bankConfiguragion) {
-		super(traderNpc, bankConfiguragion);
+		super(traderNpc, bankConfiguragion, "");
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public void secureMode(InventoryClickEvent event) {
+	public void settingsMode(InventoryClickEvent event) {
 		// TODO Auto-generated method stub
 		
 	}

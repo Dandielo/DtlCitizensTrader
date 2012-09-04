@@ -5,10 +5,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.dtl.citizenstrader_new.backends.Backend;
 import net.dtl.citizenstrader_new.containers.BankAccount;
+import net.dtl.citizenstrader_new.containers.BankItem;
+import net.dtl.citizenstrader_new.traders.Banker.BankTab;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -23,16 +26,16 @@ public class FileBackend extends Backend {
 	protected File accountsFile;
 	
 	public FileBackend(ConfigurationSection config) {		
-		String accountsFilename = config.getString("trader.bank.player-accounts.file");
+		String accountsFilename = config.getString("bank.player-accounts.file");
 
 		// Default settings
 		if ( accountsFilename == null ) 
 		{
 			accountsFilename = "player_accounts.yml";
-			config.set("trader.bank.player-accounts.file", "player_accounts.yml");
+			config.set("bank.player-accounts.file", "player_accounts.yml");
 		}
 
-		String baseDir = config.getString("trader.bank.player-accounts.path", "plugins/DtlCitizensTrader/bank" );// "plugins/PermissionsEx");
+		String baseDir = config.getString("bank.player-accounts.path", "plugins/DtlCitizensTrader/bank" );// "plugins/PermissionsEx");
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
@@ -141,6 +144,44 @@ public class FileBackend extends Backend {
 
 		return accountList;
 	}
+	
+	public void addItem(String player, BankTab tab, BankItem item)
+	{
+		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString()));
+		list.add(item.toString());
+		
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString()), list);
+
+		if ( saveTrigger.equals("item") )
+			this.save();
+	}
+	
+	public void removeItem(String player, BankTab tab, BankItem item)
+	{
+		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString()));
+	//	System.out.print(list);
+	//	System.out.print(item.toString());
+		list.remove(item.toString());
+		
+		
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString()), list);
+		
+		if ( saveTrigger.equals("item") )
+			this.save();
+			
+	}
+	
+	public BankAccount newAccount(String player)
+	{
+		accounts.set(buildPath("accounts", player, "available-tabs"), 1);
+		accounts.set(buildPath("accounts", player, "tabs", "tab1"), new String[0]);
+		
+		this.save();
+		
+		return new FileBankAccount(player, accounts);
+	}
+	
+	
 	/*
 	public void addWarp(Warp warp, String warpName) {
 		accounts.set(buildPath("warps",warpName,"owner"), warp.getOwner());

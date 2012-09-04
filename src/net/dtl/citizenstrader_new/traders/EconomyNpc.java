@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 public interface EconomyNpc {
 	
 	
-	public abstract void secureMode(InventoryClickEvent event);
+	public abstract void settingsMode(InventoryClickEvent event);
 	
 	public abstract void simpleMode(InventoryClickEvent event);
 	

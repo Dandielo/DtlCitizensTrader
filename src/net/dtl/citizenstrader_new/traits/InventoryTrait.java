@@ -73,8 +73,7 @@ public class InventoryTrait implements InventoryHolder {
 
         for ( StockItem item : sellStock )
         {
-        	if ( item.getSlot() < 0 
-        			|| getItem(item.getSlot(), TraderStatus.SELL) != null )
+        	if ( item.getSlot() < 0 )
         		item.setSlot(inv.firstEmpty());
             inv.setItem( item.getSlot() ,item.getItemStack());
         }
@@ -89,8 +88,7 @@ public class InventoryTrait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
-            	if ( item.getSlot() < 0 
-            			|| getItem(item.getSlot(), TraderStatus.SELL) != null )
+            	if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
 	            view.setItem( item.getSlot() ,chk);
 	            
@@ -106,8 +104,7 @@ public class InventoryTrait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
-	            if ( item.getSlot() < 0 
-            			|| getItem(item.getSlot(), TraderStatus.BUY) != null )
+	            if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
                 view.setItem( item.getSlot() ,chk);
 
@@ -119,8 +116,7 @@ public class InventoryTrait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
-	            if ( item.getSlot() < 0 
-            			|| getItem(item.getSlot(), TraderStatus.MANAGE_SELL) != null )
+	            if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
                 view.setItem( item.getSlot() ,chk);
 
@@ -134,8 +130,7 @@ public class InventoryTrait implements InventoryHolder {
 	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
-	            if ( item.getSlot() < 0 
-            			|| getItem(item.getSlot(), TraderStatus.MANAGE_BUY) != null )
+	            if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
 	            view.setItem( item.getSlot() ,chk);
 
@@ -156,8 +151,7 @@ public class InventoryTrait implements InventoryHolder {
 	        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	        chk.addEnchantments(item.getItemStack().getEnchantments());
 	
-	        if ( item.getSlot() < 0 
-        			|| getItem(item.getSlot(), TraderStatus.SELL) != null )
+	        if ( item.getSlot() < 0 )
         		item.setSlot(view.firstEmpty());
 	        view.setItem(item.getSlot(),chk);
         }

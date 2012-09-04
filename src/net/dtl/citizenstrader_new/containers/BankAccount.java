@@ -7,9 +7,15 @@ import java.util.Map;
 
 import org.bukkit.inventory.Inventory;
 
+import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.backends.Backend;
 import net.dtl.citizenstrader_new.traders.Banker.BankTab;
+import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 abstract public class BankAccount {
+	//
+	protected static Backend backend = CitizensTrader.getBackendManager().getBackend();
+	
 	//Stored items
 	protected Map<BankTab, List<BankItem>> storedItems;	
 	
@@ -52,11 +58,9 @@ abstract public class BankAccount {
 	public void inventoryView(Inventory inventory)
 	{
 		inventory.clear();
-		int i = 0;
+		
 		for ( BankItem item : storedItems.get(BankTab.Tab1) )
-		{
-			inventory.setItem(i++, item.getItemStack());
-		}
+			inventory.setItem(item.getSlot(), item.getItemStack());
 	}
 	
 	public void addItem(BankTab tab, BankItem item)
@@ -67,6 +71,19 @@ abstract public class BankAccount {
 			return;
 		
 		items.add(item);
+		backend.addItem(owner, tab, item);
+	}
+
+	public void updateItem(BankTab tab, BankItem oldItem, BankItem newItem) {
+		removeItem(tab, oldItem);
+		addItem(tab, newItem);
+		/*List<BankItem> items = storedItems.get(tab);
+		
+		if ( items == null )
+			return;
+		
+		items.add(item);
+		backend.addItem(owner, tab, item);*/
 	}
 	
 	public boolean removeItem(BankTab tab, BankItem item)
@@ -76,7 +93,19 @@ abstract public class BankAccount {
 		if ( items == null )
 			return false;
 		
-		return items.remove(item);
+		items.remove(item);
+		backend.removeItem(owner, tab, item);
+		
+		return true;
+	}
+
+	public BankItem getItem(int slot, BankTab tab) {
+		for ( BankItem item : storedItems.get(tab) )
+		{
+			if ( item.getSlot() == slot )
+				return item;
+		}
+		return null;
 	}
 	
 }

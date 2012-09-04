@@ -20,7 +20,7 @@ public class PlayerTrader extends Trader {
 	}
 
 	@Override
-	public void secureMode(InventoryClickEvent event) {
+	public void settingsMode(InventoryClickEvent event) {
 
 		((Player)event.getWhoClicked()).sendMessage(ChatColor.RED+"SecureMode Inactive! Switch to simple mode!");
 		event.setCancelled(true);

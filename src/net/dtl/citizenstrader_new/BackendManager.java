@@ -22,6 +22,11 @@ public class BackendManager {
 		backend = new FileBackend(config);
 	}
 	
+	public Backend getBackend()
+	{
+		return backend;
+	}
+	
 	public Map<String, BankAccount> getBankAccounts()
 	{
 		return backend.getAccounts();

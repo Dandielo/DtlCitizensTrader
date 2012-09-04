@@ -1,7 +1,9 @@
 package net.dtl.citizenstrader_new.backends.file;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
@@ -12,7 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import static net.dtl.citizenstrader_new.backends.file.FileBackend.*;
 
 public class FileBankAccount extends BankAccount {
-
+	
 	public FileBankAccount(String accountName, FileConfiguration accounts) {
 		//super
 		super();
@@ -40,6 +42,9 @@ public class FileBankAccount extends BankAccount {
 			this.storedItems.put(BankTab.getTabByName(tab), items);
 			
 		}
+		
+		if ( storedItems.isEmpty() )
+			storedItems.put(BankTab.Tab1, new ArrayList<BankItem>());
 		
 	}
 
