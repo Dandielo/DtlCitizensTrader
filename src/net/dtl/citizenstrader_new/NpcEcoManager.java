@@ -15,6 +15,7 @@ import net.dtl.citizenstrader_new.traders.PlayerBanker;
 import net.dtl.citizenstrader_new.traders.PlayerTrader;
 import net.dtl.citizenstrader_new.traders.ServerTrader;
 import net.dtl.citizenstrader_new.traders.Trader;
+import net.dtl.citizenstrader_new.traders.Banker.BankStatus;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 import org.bukkit.ChatColor;
@@ -379,6 +380,7 @@ public class NpcEcoManager implements Listener {
 				//	playerInteraction.get(playerName).s
 					Banker banker = (Banker) playerInteraction.get(playerName);
 					banker.settingsInventory();
+					banker.setBankStatus(BankStatus.SETTINGS);
 					
 					player.openInventory(banker.getInventory());
 				}

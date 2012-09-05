@@ -144,7 +144,15 @@ public class FileBackend extends Backend {
 
 		return accountList;
 	}
-	
+
+	@Override
+	public void setBankTabItem(String player, BankTab tab, BankItem item) {
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-item"), item.toString());
+		
+		this.save();
+	}
+
+	@Override
 	public void addItem(String player, BankTab tab, BankItem item)
 	{
 		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));

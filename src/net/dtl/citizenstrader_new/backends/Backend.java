@@ -20,6 +20,7 @@ public abstract class Backend {
 	abstract public void removeItem(String player, BankTab tab, BankItem item);
 	
 	abstract public void addBankTab(String player, BankTab tab);
+	abstract public void setBankTabItem(String player, BankTab tab, BankItem item);
 	
 	abstract public BankAccount newAccount(String player);
 	

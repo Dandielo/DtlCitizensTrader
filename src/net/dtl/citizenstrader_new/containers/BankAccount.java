@@ -111,8 +111,8 @@ abstract public class BankAccount implements InventoryHolder  {
 		for ( BankTab tab : storedItems.keySet() )
 		{
 
-			inventory.setItem(i, tabItems.get("tab"+((i%9)+1)));
-			++i;
+			inventory.setItem(i + Integer.parseInt(tab.toString().substring(3))-1, tabItems.get(tab));
+		//	++i;
 		}
 	//	for ( BankItem item : storedItems.get(tab) )
 	//		inventory.setItem(item.getSlot(), item.getItemStack());
@@ -169,6 +169,12 @@ abstract public class BankAccount implements InventoryHolder  {
 		
 		items.add(item);
 		backend.addItem(owner, tab, item);*/
+	}
+	
+	public void setBankTabItem(BankTab tab, BankItem item)
+	{
+		tabItems.put(tab, item.getItemStack());
+		backend.setBankTabItem(owner, tab, item);
 	}
 	
 	public boolean removeItem(BankTab tab, BankItem item)

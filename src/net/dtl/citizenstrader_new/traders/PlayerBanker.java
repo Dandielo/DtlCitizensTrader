@@ -27,27 +27,60 @@ public class PlayerBanker extends Banker {
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
+		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
-		if ( lastRowClicked(slot) )
+		if ( top )
 		{
-			
-			if ( event.getCurrentItem().getTypeId() != 0 )
-			{
-				if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
-				{
-					this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
-					settingsInventory();
-				}
-			}
-		}
-		
-		//add tab button
-		if ( slot == 0 )
-		{
-			if ( hasAllTabs() )
+			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
 				return;
-			addBankTab();
-			settingsInventory();
+		
+			if ( rowClicked( 6, slot) )
+			{
+				
+				if ( event.getCurrentItem().getTypeId() != 0 )
+				{
+					if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+					{
+						this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
+						settingsInventory();
+					}
+				}
+			
+			} 
+			else 
+			if ( rowClicked( 5, slot) )	
+			{
+				if ( getBankStatus().equals(BankStatus.SETTINGS) )
+					setBankStatus(BankStatus.SETTING_TAB_ITEM);
+				else
+					setBankStatus(BankStatus.SETTINGS);
+			}
+			
+			//add tab button
+			if ( slot == 0 )
+			{
+				if ( hasAllTabs() )
+					return;
+				addBankTab();
+				settingsInventory();
+			}
+			
+		}
+		else
+		{
+			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
+			{
+				if ( event.getCurrentItem().getTypeId() != 0 )
+				{
+					setBankTabItem(event.getCurrentItem());
+					setBankStatus(BankStatus.SETTINGS);
+					settingsInventory();
+					return;
+				}
+				
+			}
+			
+			
 		}
 		
 	}
@@ -92,7 +125,7 @@ public class PlayerBanker extends Banker {
 			if ( top )
 			{
 				
-				if ( this.lastRowClicked(slot) )
+				if ( this.rowClicked( 6, slot) )
 				{
 					if ( event.getCurrentItem().getTypeId() != 0 
 							&& event.getCursor().getTypeId() == 0 )

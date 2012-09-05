@@ -77,7 +77,7 @@ abstract public class Banker implements EconomyNpc {
 	
 	
 	public enum BankStatus {
-		ITEM_MANAGING, TAB_DISPLAY;
+		ITEM_MANAGING, TAB_DISPLAY, SETTING_TAB_ITEM, SETTINGS;
 	}
 	
 	//players using the Banker atm
@@ -166,6 +166,10 @@ abstract public class Banker implements EconomyNpc {
 		return tab;
 	}
 	
+	public void setBankTabItem(ItemStack item)
+	{
+		account.setBankTabItem(tab, toBankItem(item));
+	}
 	//tab function
 	
 	public boolean hasAllTabs()
@@ -475,10 +479,10 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	
-	public boolean lastRowClicked( int slot )
+	public boolean rowClicked( int row, int slot )
 	{
-		int rows = ( tabInventory.getSize() / 9 ) - 1;
-		if ( ( rows * 9 ) <= slot && slot < tabInventory.getSize() )
+		//int rows = ( tabInventory.getSize() / 9 ) - 1;
+		if ( ( ( row - 1 ) * 9 ) <= slot && slot < ( row * 9 ) )
 			return true;
 		return false;
 	}
