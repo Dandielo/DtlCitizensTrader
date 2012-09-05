@@ -2,6 +2,7 @@ package net.dtl.citizenstrader_new.containers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ import org.bukkit.inventory.ItemStack;
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.backends.Backend;
 import net.dtl.citizenstrader_new.traders.Banker.BankTab;
-import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 
 abstract public class BankAccount implements InventoryHolder  {
 	//
@@ -84,6 +84,7 @@ abstract public class BankAccount implements InventoryHolder  {
 			if ( !storedItems.containsKey(tab) )
 			{
 				storedItems.put(tab, new ArrayList<BankItem>());
+				tabItems.put(tab, new ItemStack(35,1));
 				backend.addBankTab(owner, tab);
 				return tab;
 			}
@@ -110,7 +111,7 @@ abstract public class BankAccount implements InventoryHolder  {
 		for ( BankTab tab : storedItems.keySet() )
 		{
 
-			inventory.setItem(i, tabItems.get(tab));
+			inventory.setItem(i, tabItems.get("tab"+((i%9)+1)));
 			++i;
 		}
 	//	for ( BankItem item : storedItems.get(tab) )

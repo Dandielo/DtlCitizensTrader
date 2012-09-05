@@ -30,20 +30,14 @@ public class PlayerBanker extends Banker {
 		
 		if ( lastRowClicked(slot) )
 		{
-			if ( getRowSlot(slot) == 2 && event.getCurrentItem().getTypeId() != 0 )
+			
+			if ( event.getCurrentItem().getTypeId() != 0 )
 			{
-				this.setBankTab(BankTab.Tab3);
-				settingsInventory();
-			}
-			if ( getRowSlot(slot) == 1 && event.getCurrentItem().getTypeId() != 0 )
-			{
-				this.setBankTab(BankTab.Tab2);
-				settingsInventory();
-			}
-			if ( getRowSlot(slot) == 0 && event.getCurrentItem().getTypeId() != 0 )
-			{
-				this.setBankTab(BankTab.Tab1);
-				settingsInventory();
+				if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+				{
+					this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
+					settingsInventory();
+				}
 			}
 		}
 		
@@ -100,12 +94,16 @@ public class PlayerBanker extends Banker {
 				
 				if ( this.lastRowClicked(slot) )
 				{
-					if ( getRowSlot(slot) == 2 && event.getCurrentItem().getTypeId() != 0 )
+					if ( event.getCurrentItem().getTypeId() != 0 
+							&& event.getCursor().getTypeId() == 0 )
 					{
-						this.setBankTab(BankTab.Tab3);
-						switchInventory();
+						if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+						{
+							this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
+							switchInventory();
+						}
 					}
-					if ( getRowSlot(slot) == 1 && event.getCurrentItem().getTypeId() != 0 )
+				/*	if ( getRowSlot(slot) == 1 && event.getCurrentItem().getTypeId() != 0 )
 					{
 						this.setBankTab(BankTab.Tab2);
 						switchInventory();
@@ -114,7 +112,7 @@ public class PlayerBanker extends Banker {
 					{
 						this.setBankTab(BankTab.Tab1);
 						switchInventory();
-					}
+					}*/
 				
 					event.setCancelled(true);
 					return;

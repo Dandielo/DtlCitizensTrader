@@ -135,6 +135,7 @@ public class NpcEcoManager implements Listener {
 		if ( TraderStatus.hasSettingsMode(economyNpc.getTraderStatus()) )
 		{
 			economyNpc.settingsMode(event);
+			return;
 		}
 		
 		economyNpc.simpleMode(event);

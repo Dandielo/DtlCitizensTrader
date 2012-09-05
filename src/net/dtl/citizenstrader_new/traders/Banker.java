@@ -161,6 +161,11 @@ abstract public class Banker implements EconomyNpc {
 		this.tab = tab;
 	}
 	
+	public BankTab getBankTab()
+	{
+		return tab;
+	}
+	
 	//tab function
 	
 	public boolean hasAllTabs()
