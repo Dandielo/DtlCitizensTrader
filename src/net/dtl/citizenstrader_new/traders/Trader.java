@@ -43,7 +43,7 @@ public abstract class Trader implements EconomyNpc {
 	 * 
 	 */
 	public enum TraderStatus {
-		SELL, BUY, BANK, MANAGE_BANK, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE;
+		SELL, BUY, BANK, BANK_SETTINGS, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE;
 	
 		/* *
 		 * ManagerMode condition
@@ -54,7 +54,13 @@ public abstract class Trader implements EconomyNpc {
 				&& !status.equals(SELL_AMOUNT)  
 				&& !status.equals(BUY) 
 				&& !status.equals(BANK)
-				&& !status.equals(MANAGE_BANK) )
+				&& !status.equals(BANK_SETTINGS) )
+				return true;
+			return false;
+		}
+		public static boolean hasSettingsMode(TraderStatus status)
+		{	
+			if ( status.equals(BANK_SETTINGS) )
 				return true;
 			return false;
 		}

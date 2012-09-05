@@ -115,11 +115,11 @@ abstract public class Banker implements EconomyNpc {
 		tab = BankTab.Tab1;
 
 		bank = bankConfiguration;
-		tabInventory = bank.getInventory();
 		npc = bankerNpc;
-		
+
+		tabInventory = account.inventoryView(54, "Banker " + npc.getName());
 		//loading trader bank config
-		this.switchInventory(player, bankStatus);
+		this.switchInventory();
 		
 	}
 
@@ -130,10 +130,20 @@ abstract public class Banker implements EconomyNpc {
 		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
 	}
 	
-	public void switchInventory(String player, BankStatus status)
+	public void switchInventory()
 	{
-		if ( status.equals(BankStatus.ITEM_MANAGING) )
-			bankAccounts.get(player).inventoryView(tabInventory);
+		tabInventory.clear();
+		if ( bankStatus.equals(BankStatus.ITEM_MANAGING) )
+			account.inventoryView(tabInventory, tab);
+		else
+		if ( bankStatus.equals(BankStatus.TAB_DISPLAY) )
+			account.tabSelectionView(tabInventory);
+	}
+	
+	public void settingsInventory()
+	{
+		tabInventory.clear();
+		account.settingsView(tabInventory, tab);
 	}
 	
 	public BankStatus getBankStatus()
@@ -149,6 +159,24 @@ abstract public class Banker implements EconomyNpc {
 	public void setBankTab(BankTab tab)
 	{
 		this.tab = tab;
+	}
+	
+	//tab function
+	
+	public boolean hasAllTabs()
+	{
+		return account.hasAllTabs();
+	}
+	
+	public boolean addBankTab()
+	{
+		BankTab newTab = account.addBankTab();
+		if ( newTab != null )
+		{
+			tab = newTab;
+			return true;
+		}
+		return false;
 	}
 	
 	//selecting items
@@ -442,8 +470,18 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	
+	public boolean lastRowClicked( int slot )
+	{
+		int rows = ( tabInventory.getSize() / 9 ) - 1;
+		if ( ( rows * 9 ) <= slot && slot < tabInventory.getSize() )
+			return true;
+		return false;
+	}
 	
-	
+	public int getRowSlot( int slot )
+	{
+		return slot % 9;
+	}
 	
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
 		if ( item.getAmount() != selectedItem.getItemStack().getAmount() ) {

@@ -128,9 +128,13 @@ public class NpcEcoManager implements Listener {
 		
 		//Npc Manager-mode
 		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
-		{
+		{ 
 			economyNpc.managerMode(event);
 			return;
+		}
+		if ( TraderStatus.hasSettingsMode(economyNpc.getTraderStatus()) )
+		{
+			economyNpc.settingsMode(event);
 		}
 		
 		economyNpc.simpleMode(event);
@@ -235,10 +239,11 @@ public class NpcEcoManager implements Listener {
 				if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 					return;
 				
-				if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
-						&& characterTrait.getTraderTrait().getOwner().equals(player.getName()) )
-						|| permManager.has(player, "dtl.trader.bypass.manager-mode") 
-						|| player.isOp() )
+				if ( characterTrait.getTraderType().isTrader()
+						&& ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
+								&& characterTrait.getTraderTrait().getOwner().equals(player.getName()) )
+								|| permManager.has(player, "dtl.trader.bypass.manager-mode") 
+								|| player.isOp() ) )
 				{
 					
 					if ( economyNpc.getNpcId() == npc.getId() )
@@ -322,13 +327,12 @@ public class NpcEcoManager implements Listener {
 		
 		if ( player.getItemInHand().getTypeId() == config.getMMToggleItem().getTypeId() )
 		{
-			if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
-				return;
 			
-			if ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
+			if ( characterTrait.getTraderType().isTrader()
+					&& ( ( permManager.has(player, "dtl.trader.options.manager-mode") 
 					&& characterTrait.getTraderTrait().getOwner().equals(player.getName()) )
 					|| permManager.has(player, "dtl.trader.bypass.manager-mode") 
-					|| player.isOp() )
+					|| player.isOp() ) )
 			{
 				
 				if ( !permManager.has(player, "dtl.trader.options.type." + characterTrait.getTraderType().toString() ) )
@@ -356,6 +360,28 @@ public class NpcEcoManager implements Listener {
 				playerInteraction.get(playerName).setTraderStatus(TraderStatus.MANAGE);
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 				return;
+			}
+			else
+			if ( permManager.has(player, "dtl.trader.options.settings-mode") 
+					&& characterTrait.getTraderType().isBanker() )
+			{
+				if ( !permManager.has(player, "dtl.trader.options.type." + characterTrait.getTraderType().toString() ) )
+				{
+					player.sendMessage( locale.getLocaleString("no-permissions-type") );
+					return;
+				}
+				
+				if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
+				{
+					playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait(), playerName));
+					playerInteraction.get(playerName).setTraderStatus(TraderStatus.BANK_SETTINGS);
+				//	playerInteraction.get(playerName).s
+					Banker banker = (Banker) playerInteraction.get(playerName);
+					banker.settingsInventory();
+					
+					player.openInventory(banker.getInventory());
+				}
+				
 			}
 			return;
 		

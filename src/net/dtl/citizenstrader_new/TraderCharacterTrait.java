@@ -103,7 +103,20 @@ public class TraderCharacterTrait extends Trait {
 	public enum TraderType {
 		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, GUILD_BANK, CUSTOM, PLAYER_BANK
 ;
-		
+		public boolean isTrader()
+		{
+			if ( this.equals(PLAYER_TRADER) 
+					|| this.equals(SERVER_TRADER) )
+				return true;
+			return false;
+		}
+		public boolean isBanker()
+		{
+			if ( this.equals(PLAYER_BANK) 
+					|| this.equals(GUILD_BANK) )
+				return true;
+			return false;
+		}
 		public static TraderType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("server") ) 
 				return TraderType.SERVER_TRADER;

@@ -8,8 +8,9 @@ import org.bukkit.inventory.InventoryHolder;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.containers.StockItem;
 
-public class BankTrait implements InventoryHolder {
+public class BankTrait {
 	//config variable
 	private static FileConfiguration config;
 	
@@ -68,14 +69,6 @@ public class BankTrait implements InventoryHolder {
 	{
 		return this.withdrawFee;
 	}
-	
-	@Override
-	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this, tabSize, "Banker");
-		
-		return inv;
-	}
-	
 	
 	
 }

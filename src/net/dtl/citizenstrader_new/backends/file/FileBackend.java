@@ -147,10 +147,10 @@ public class FileBackend extends Backend {
 	
 	public void addItem(String player, BankTab tab, BankItem item)
 	{
-		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString()));
+		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
 		list.add(item.toString());
 		
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString()), list);
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "content"), list);
 
 		if ( saveTrigger.equals("item") )
 			this.save();
@@ -158,23 +158,36 @@ public class FileBackend extends Backend {
 	
 	public void removeItem(String player, BankTab tab, BankItem item)
 	{
-		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString()));
+		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
 	//	System.out.print(list);
 	//	System.out.print(item.toString());
 		list.remove(item.toString());
 		
 		
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString()), list);
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "content"), list);
 		
 		if ( saveTrigger.equals("item") )
 			this.save();
 			
 	}
+
+	@Override
+	public void addBankTab(String player, BankTab tab) {
+		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", player, "tabs"));
+		
+		
+		tabs.set(buildPath(tab.toString(), "tab-item"), "35:0 a:1");
+		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
+		
+		//if ( saveTrigger.equals("item") )
+		this.save();
+	}
 	
 	public BankAccount newAccount(String player)
 	{
 		accounts.set(buildPath("accounts", player, "available-tabs"), 1);
-		accounts.set(buildPath("accounts", player, "tabs", "tab1"), new String[0]);
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-tem"), "35:0 a:1");
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "content"), new String[0]);
 		
 		this.save();
 		
@@ -212,5 +225,6 @@ public class FileBackend extends Backend {
 	public FileBankAccount getAccount(String accountName) {
 		return new FileBankAccount(accountName, accounts);
 	}
+
 	
 }

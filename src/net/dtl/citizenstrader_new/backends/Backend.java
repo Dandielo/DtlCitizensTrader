@@ -18,6 +18,9 @@ public abstract class Backend {
 	
 	abstract public void addItem(String player, BankTab tab, BankItem item);
 	abstract public void removeItem(String player, BankTab tab, BankItem item);
+	
+	abstract public void addBankTab(String player, BankTab tab);
+	
 	abstract public BankAccount newAccount(String player);
 	
 }

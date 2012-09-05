@@ -2,6 +2,7 @@ package net.dtl.citizenstrader_new.traders;
 
 import java.text.DecimalFormat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -19,7 +20,41 @@ public class PlayerBanker extends Banker {
 
 	@Override
 	public void settingsMode(InventoryClickEvent event) {
+		//we just click nothing else :P
+		event.setCancelled(true);
 		
+		Player player = (Player) event.getWhoClicked();
+		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		int slot = event.getSlot();
+		
+		
+		if ( lastRowClicked(slot) )
+		{
+			if ( getRowSlot(slot) == 2 && event.getCurrentItem().getTypeId() != 0 )
+			{
+				this.setBankTab(BankTab.Tab3);
+				settingsInventory();
+			}
+			if ( getRowSlot(slot) == 1 && event.getCurrentItem().getTypeId() != 0 )
+			{
+				this.setBankTab(BankTab.Tab2);
+				settingsInventory();
+			}
+			if ( getRowSlot(slot) == 0 && event.getCurrentItem().getTypeId() != 0 )
+			{
+				this.setBankTab(BankTab.Tab1);
+				settingsInventory();
+			}
+		}
+		
+		//add tab button
+		if ( slot == 0 )
+		{
+			if ( hasAllTabs() )
+				return;
+			addBankTab();
+			settingsInventory();
+		}
 		
 	}
 
@@ -43,6 +78,7 @@ public class PlayerBanker extends Banker {
 					if ( item.getSlot() != -1 )
 					{
 						removeItemFromBankAccount(item);
+						selectItem(null);
 					}
 					
 				}
@@ -50,154 +86,174 @@ public class PlayerBanker extends Banker {
 				return;
 			}
 			
-			//status change
-			if ( getBankStatus().equals(BankStatus.TAB_DISPLAY) )
-			{
-				setBankStatus(BankStatus.ITEM_MANAGING);
-			}
-			else	
-			{
-				setBankStatus(BankStatus.TAB_DISPLAY);
-			}
 
 		}
 		
 		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
-		
-		if ( top )
+		if ( this.getBankStatus().equals(BankStatus.ITEM_MANAGING) )
 		{
-			
-			//tabs managing so we can switch through bank/account tabs
-			if ( getBankStatus().equals(BankStatus.TAB_DISPLAY) )
+		
+			if ( top )
 			{
+				
+				if ( this.lastRowClicked(slot) )
+				{
+					if ( getRowSlot(slot) == 2 && event.getCurrentItem().getTypeId() != 0 )
+					{
+						this.setBankTab(BankTab.Tab3);
+						switchInventory();
+					}
+					if ( getRowSlot(slot) == 1 && event.getCurrentItem().getTypeId() != 0 )
+					{
+						this.setBankTab(BankTab.Tab2);
+						switchInventory();
+					}
+					if ( getRowSlot(slot) == 0 && event.getCurrentItem().getTypeId() != 0 )
+					{
+						this.setBankTab(BankTab.Tab1);
+						switchInventory();
+					}
+				
+					event.setCancelled(true);
+					return;
+				}
+				
+				//tabs managing so we can switch through bank/account tabs
+				if ( getBankStatus().equals(BankStatus.TAB_DISPLAY) )
+				{
+					
+				}
+				else
+				{
+					if ( event.isShiftClick() )
+					{
+						
+						
+						BankItem item = getSelectedItem();
+						
+						if ( selectItem(slot).hasSelectedItem() )
+						{
+							if ( !this.playerInventoryHasPlace(player) )
+							{
+								event.setCancelled(true);
+								selectItem(item);
+								return;
+							}
+							
+							event.setCurrentItem(null);
+							this.removeItemFromBankAccount(getSelectedItem());
+							this.addSelectedToPlayerInventory(player);
+							event.setCancelled(true);
+						}
+						
+						selectItem(item);
+						
+						return;
+					}
+				
+					BankItem item = getSelectedItem();
+					
+	
+					selectItem(slot);
+					
+					
+					if ( item != null )
+					{
+						
+						if ( item.getSlot() == -1 )
+						{
+							item.setSlot(slot);
+							item.getItemStack().setAmount(event.getCursor().getAmount());
+							addItemToBankAccount(item);
+							item = null;
+						}
+						
+						
+						
+					}
+	
+					
+						//getSelectedItem().setSlot(-2);
+					
+					if ( item != null ) {
+						BankItem oldItem = toBankItem(item.getItemStack());
+						oldItem.setSlot(item.getSlot());
+						item.setSlot(slot);
+						updateBankAccountItem(oldItem, item);
+					}
+					
+				}
 				
 			}
 			else
 			{
-				if ( event.isShiftClick() )
+				
+				//tabs managing so we can switch through bank/account tabs
+				if ( getBankStatus().equals(BankStatus.TAB_DISPLAY) )
 				{
 					
+				}
+				else
+				{
 					
-					BankItem item = getSelectedItem();
-					
-					if ( selectItem(slot).hasSelectedItem() )
+					if ( event.isShiftClick() )
 					{
-						if ( !this.playerInventoryHasPlace(player) )
+						BankItem item = getSelectedItem();
+						int first = getInventory().firstEmpty();
+						
+						if ( selectItem(toBankItem(event.getCurrentItem())).hasSelectedItem() )
 						{
-							event.setCancelled(true);
-							selectItem(item);
-							return;
+							if ( !this.bankerInventoryHasPlace() )
+							{
+								selectItem(item);
+								event.setCancelled(true);
+								return;
+							}
+								
+							
+						//	getInventory().setItem(first, event.getCurrentItem().clone());
+						//	getSelectedItem().setSlot(first);
+							this.addSelectedToBankerInventory();
+						//	this.addItemToBankAccount(getSelectedItem());
+							
+							event.setCurrentItem(null);
 						}
 						
-						event.setCurrentItem(null);
-						this.removeItemFromBankAccount(getSelectedItem());
-						this.addSelectedToPlayerInventory(player);
-						event.setCancelled(true);
+						selectItem(item);
+						
+						return;
 					}
 					
-					selectItem(item);
+	
+					BankItem item = getSelectedItem();
 					
-					return;
-				}
-			
-				BankItem item = getSelectedItem();
-				
-
-				selectItem(slot);
-				
-				
-				if ( item != null )
-				{
-					
-					if ( item.getSlot() == -1 )
+					if ( item != null )
 					{
-						item.setSlot(slot);
-						item.getItemStack().setAmount(event.getCursor().getAmount());
-						addItemToBankAccount(item);
-						item = null;
+						if ( item.getSlot() != -1 )
+						{
+							removeItemFromBankAccount(item);
+						}
+						
 					}
+	
 					
+					if ( selectItem(toBankItem(event.getCurrentItem())).hasSelectedItem() )
+						getSelectedItem().setSlot(-1);
 					
+				//	selectItem(item);
 					
-				}
-
-				
-					//getSelectedItem().setSlot(-2);
-				
-				if ( item != null ) {
-					BankItem oldItem = toBankItem(item.getItemStack());
-					oldItem.setSlot(item.getSlot());
-					item.setSlot(slot);
-					updateBankAccountItem(oldItem, item);
+	
+			//		if ( item != null )
+			//			item.setSlot(slot);
+					
 				}
 				
 			}
-			
 		}
 		else
 		{
-			
-			//tabs managing so we can switch through bank/account tabs
-			if ( getBankStatus().equals(BankStatus.TAB_DISPLAY) )
-			{
-				
-			}
-			else
-			{
-				
-				if ( event.isShiftClick() )
-				{
-					BankItem item = getSelectedItem();
-					int first = getInventory().firstEmpty();
-					
-					if ( selectItem(toBankItem(event.getCurrentItem())).hasSelectedItem() )
-					{
-						if ( !this.bankerInventoryHasPlace() )
-						{
-							selectItem(item);
-							event.setCancelled(true);
-							return;
-						}
-							
-						
-					//	getInventory().setItem(first, event.getCurrentItem().clone());
-					//	getSelectedItem().setSlot(first);
-						this.addSelectedToBankerInventory();
-					//	this.addItemToBankAccount(getSelectedItem());
-						
-						event.setCurrentItem(null);
-					}
-					
-					selectItem(item);
-					
-					return;
-				}
-				
-
-				BankItem item = getSelectedItem();
-				
-				if ( item != null )
-				{
-					if ( item.getSlot() != -1 )
-					{
-						removeItemFromBankAccount(item);
-					}
-					
-				}
-
-				
-				if ( selectItem(toBankItem(event.getCurrentItem())).hasSelectedItem() )
-					getSelectedItem().setSlot(-1);
-				
-			//	selectItem(item);
-				
-
-		//		if ( item != null )
-		//			item.setSlot(slot);
-				
-			}
 			
 		}
 		
