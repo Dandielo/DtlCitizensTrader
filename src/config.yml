@@ -40,6 +40,9 @@ bank:
     file: player_accounts.yml
   guild-accounts: 
     file: guild_accounts.yml
+money-bank:
+  exchange-item: 388
+  item-value: 10.0   
 taxes:
   enabled: false
   #when the prices are with taxes or they should be reacalculated with the tax system (netto/brutto)

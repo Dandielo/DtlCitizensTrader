@@ -56,6 +56,12 @@ abstract public class BankAccount implements InventoryHolder  {
 		return view;
 	}
 	
+	public Inventory cleanInventory(int size, String name) {
+		Inventory view = Bukkit.createInventory(this, size, name);
+		
+		return view;
+	}
+	
 	@Override
 	public Inventory getInventory() {
 		Inventory inv = Bukkit.createInventory(this, 54, "Banker");

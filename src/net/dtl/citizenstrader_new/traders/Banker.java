@@ -12,6 +12,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
+import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
 import net.dtl.citizenstrader_new.containers.PlayerBankAccount;
@@ -81,22 +82,25 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	//players using the Banker atm
-	private static Map<String, BankAccount> bankAccounts;
+	protected static Map<String, BankAccount> bankAccounts;
+	
+	
+	protected static LocaleManager locale;
 	
 	//bank settings
-	private BankAccount account;
-	private BankTrait bank;
-	private BankTab tab;
+	protected BankAccount account;
+	protected BankTrait bank;
+	protected BankTab tab;
 	
-	private BankItem selectedItem;
+	protected BankItem selectedItem;
 	
-	private Inventory tabInventory;
-	private TraderStatus traderStatus;
-	private BankStatus bankStatus;
-	private NPC npc;
+	protected Inventory tabInventory;
+	protected TraderStatus traderStatus;
+	protected BankStatus bankStatus;
+	protected NPC npc;
 	
 	public Banker(NPC bankerNpc, BankTrait bankConfiguration, String player) {
-		
+		locale = CitizensTrader.getLocaleManager();
 		//loading accoutns
 		if ( bankAccounts == null )
 			reloadAccounts();
@@ -380,7 +384,7 @@ abstract public class Banker implements EconomyNpc {
 		return false;
 	}
 	
-	public final boolean addAmountToBankerInventory(Inventory nInventory, int amount) {
+	public boolean addAmountToBankerInventory(Inventory nInventory, int amount) {
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 		

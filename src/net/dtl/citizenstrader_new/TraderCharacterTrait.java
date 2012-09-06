@@ -24,10 +24,7 @@ public class TraderCharacterTrait extends Trait {
 	@Override
 	public void onSpawn() {
 		if ( npc.hasTrait(TraderCharacterTrait.class) ) {
-			if ( type.equals(TraderType.PLAYER_BANK) )
-				CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
-			else
-				CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+			CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
 		}
 
 	}
@@ -67,11 +64,11 @@ public class TraderCharacterTrait extends Trait {
 			traderTrait.setTraderType(type);
 		}
 		
-		if ( type.equals(TraderType.PLAYER_BANK) )
+		if ( type.isBanker() )
 		{
 			this.bankTrait.load(data);
 		}
-		else
+		else if ( type.isTrader() )
 		{
 			this.traderTrait.load(data);
 			this.inventoryTrait.load(data);
@@ -83,11 +80,11 @@ public class TraderCharacterTrait extends Trait {
 	public void save(DataKey data) {
 		data.setString("trader-type", TraderType.toString(type));
 		
-		if ( type.equals(TraderType.PLAYER_BANK) )
+		if ( type.isBanker() )
 		{
 			this.bankTrait.save(data);
 		}
-		else
+		else if ( type.isTrader() )
 		{
 			this.inventoryTrait.save(data);
 			this.traderTrait.save(data);
@@ -101,7 +98,7 @@ public class TraderCharacterTrait extends Trait {
 	
 	
 	public enum TraderType {
-		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, GUILD_BANK, CUSTOM, PLAYER_BANK
+		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, GUILD_BANK, CUSTOM, PLAYER_BANK, MONEY_BANK
 ;
 		public boolean isTrader()
 		{
@@ -126,6 +123,8 @@ public class TraderCharacterTrait extends Trait {
 				return TraderType.AUCTIONHOUSE;
 			else if ( n.equalsIgnoreCase("player-bank") )
 				return TraderType.PLAYER_BANK;
+			else if ( n.equalsIgnoreCase("money-bank") )
+				return TraderType.MONEY_BANK;
 			return null;
 		}
 		
@@ -140,6 +139,8 @@ public class TraderCharacterTrait extends Trait {
 				return "auctionhouse";
 			case PLAYER_BANK:
 				return "player-bank";
+			case MONEY_BANK:
+				return "money-bank";
 			default:
 				break;
 			}
@@ -155,6 +156,8 @@ public class TraderCharacterTrait extends Trait {
 				return "auctionhouse";
 			case PLAYER_BANK:
 				return "player-bank";
+			case MONEY_BANK:
+				return "money-bank";
 			default:
 				break;
 			}

@@ -98,6 +98,8 @@ permissions:
                 description: allows to create/set/use/manage a enchant trader
               dtl.trader.options.type.player-bank: 
                 description: allows to create/set/use/manage a player banker
+              dtl.trader.options.type.money-bank: 
+                description: allows to create/set/use/manage a player banker
               dtl.trader.options.type.auction: 
                 description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
           dtl.trader.options.wallet.*: 

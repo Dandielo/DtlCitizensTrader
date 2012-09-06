@@ -11,6 +11,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.traders.Banker;
 import net.dtl.citizenstrader_new.traders.EconomyNpc;
+import net.dtl.citizenstrader_new.traders.MoneyBanker;
 import net.dtl.citizenstrader_new.traders.PlayerBanker;
 import net.dtl.citizenstrader_new.traders.PlayerTrader;
 import net.dtl.citizenstrader_new.traders.ServerTrader;
@@ -415,6 +416,12 @@ public class NpcEcoManager implements Listener {
 		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 		{
 			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait(), playerName));
+		//	Banker banker = (Banker) playerInteraction.get(playerName);
+		//	banker.switchInventory(playerName, TraderStatus.BANK);
+		}
+		if ( characterTrait.getTraderType().equals(TraderType.MONEY_BANK) )
+		{
+			playerInteraction.put(playerName, new MoneyBanker(npc, characterTrait.getBankTrait(), playerName));
 		//	Banker banker = (Banker) playerInteraction.get(playerName);
 		//	banker.switchInventory(playerName, TraderStatus.BANK);
 		}

@@ -155,6 +155,14 @@ public class LocaleManager {
 				
 				localeStrings.put("reload-config", "^eConfiguration was reloaded");
 				
+				//money banker
+				localeStrings.put("mbanker-lost-item", "^cYou have deposited ^b{item} ^cto the bank");
+				localeStrings.put("mbanker-got-item", "^cYou got ^b{item} ^cfrom teh bank");
+				localeStrings.put("mbanker-lost-money", "^cYou have paid ^b{money} ^cfor this item");
+				localeStrings.put("mbanker-got-money", "^cYou got ^b{money} ^cfor this item");
+				localeStrings.put("mbanker-wrong-item", "^cThis item is not accepted");
+				
+				
 				//set the new locale file
 				locale.set("strings", localeStrings);
 
