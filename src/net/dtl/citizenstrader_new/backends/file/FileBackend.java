@@ -11,7 +11,7 @@ import java.util.Map;
 import net.dtl.citizenstrader_new.backends.Backend;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
-import net.dtl.citizenstrader_new.traders.Banker.BankTab;
+import net.dtl.citizenstrader_new.traders.Banker.BankTabType;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -146,14 +146,14 @@ public class FileBackend extends Backend {
 	}
 
 	@Override
-	public void setBankTabItem(String player, BankTab tab, BankItem item) {
+	public void setBankTabItem(String player, BankTabType tab, BankItem item) {
 		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-item"), item.toString());
 		
 		this.save();
 	}
 
 	@Override
-	public void addItem(String player, BankTab tab, BankItem item)
+	public void addItem(String player, BankTabType tab, BankItem item)
 	{
 		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
 		list.add(item.toString());
@@ -164,7 +164,7 @@ public class FileBackend extends Backend {
 			this.save();
 	}
 	
-	public void removeItem(String player, BankTab tab, BankItem item)
+	public void removeItem(String player, BankTabType tab, BankItem item)
 	{
 		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
 	//	System.out.print(list);
@@ -180,11 +180,13 @@ public class FileBackend extends Backend {
 	}
 
 	@Override
-	public void addBankTab(String player, BankTab tab) {
+	public void addBankTab(String player, BankTabType tab) {
 		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", player, "tabs"));
 		
 		
 		tabs.set(buildPath(tab.toString(), "tab-item"), "35:0 a:1");
+		tabs.set(buildPath(tab.toString(), "tab-name"), tab.toString());
+		tabs.set(buildPath(tab.toString(), "tab-size"), 1);
 		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
 		
 		//if ( saveTrigger.equals("item") )
@@ -194,7 +196,9 @@ public class FileBackend extends Backend {
 	public BankAccount newAccount(String player)
 	{
 		accounts.set(buildPath("accounts", player, "available-tabs"), 1);
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-tem"), "35:0 a:1");
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-item"), "35:0 a:1");
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-name"), "tab1");
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-size"), 1);
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "content"), new String[0]);
 		
 		this.save();

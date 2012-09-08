@@ -1,14 +1,8 @@
 package net.dtl.citizenstrader_new.containers;
 
-import static net.dtl.citizenstrader_new.backends.file.FileBackend.buildPath;
+import net.dtl.citizenstrader_new.traders.Banker.BankTabType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.dtl.citizenstrader_new.traders.Banker.BankTab;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 
 public class PlayerBankAccount extends BankAccount {
 	//super
@@ -20,8 +14,8 @@ public class PlayerBankAccount extends BankAccount {
 		owner = accountName;
 		
 		backend.newAccount(accountName);
-		storedItems.clear();
+		bankTabs.clear();
 		
-		storedItems.put(BankTab.Tab1, new ArrayList<BankItem>());
+		bankTabs.put(BankTabType.Tab1, new BankTab(new ItemStack(35,1), "tab1", 1));
 	}
 }

@@ -39,9 +39,9 @@ public class PlayerBanker extends Banker {
 				
 				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
-					if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+					if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
 					{
-						this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
+						this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
 						settingsInventory();
 					}
 				}
@@ -130,9 +130,9 @@ public class PlayerBanker extends Banker {
 					if ( event.getCurrentItem().getTypeId() != 0 
 							&& event.getCursor().getTypeId() == 0 )
 					{
-						if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+						if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
 						{
-							this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
+							this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
 							switchInventory();
 						}
 					}

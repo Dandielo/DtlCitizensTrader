@@ -22,7 +22,7 @@ import net.dtl.citizenstrader_new.traits.BankTrait;
 
 abstract public class Banker implements EconomyNpc {
 	//BankTab System
-	public enum BankTab {
+	public enum BankTabType {
 		Tab1, Tab2, Tab3, Tab4, Tab5, Tab6, Tab7, Tab8, Tab9;
 		
 		@Override 
@@ -52,7 +52,7 @@ abstract public class Banker implements EconomyNpc {
 			return "";
 		}
 		
-		public static BankTab getTabByName(String tabName) 
+		public static BankTabType getTabByName(String tabName) 
 		{
 			if ( tabName.equals("tab1") )
 				return Tab1;
@@ -90,7 +90,7 @@ abstract public class Banker implements EconomyNpc {
 	//bank settings
 	protected BankAccount account;
 	protected BankTrait bank;
-	protected BankTab tab;
+	protected BankTabType tab;
 	
 	protected BankItem selectedItem;
 	
@@ -116,7 +116,7 @@ abstract public class Banker implements EconomyNpc {
 		
 		traderStatus = TraderStatus.BANK;
 		bankStatus = BankStatus.ITEM_MANAGING;
-		tab = BankTab.Tab1;
+		tab = BankTabType.Tab1;
 
 		bank = bankConfiguration;
 		npc = bankerNpc;
@@ -160,12 +160,12 @@ abstract public class Banker implements EconomyNpc {
 		bankStatus = status;
 	}
 
-	public void setBankTab(BankTab tab)
+	public void setBankTabType(BankTabType tab)
 	{
 		this.tab = tab;
 	}
 	
-	public BankTab getBankTab()
+	public BankTabType getBankTabType()
 	{
 		return tab;
 	}
@@ -183,7 +183,7 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean addBankTab()
 	{
-		BankTab newTab = account.addBankTab();
+		BankTabType newTab = account.addBankTab();
 		if ( newTab != null )
 		{
 			tab = newTab;
