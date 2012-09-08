@@ -1,8 +1,11 @@
 package net.dtl.citizenstrader_new.traders;
 
+import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -20,6 +23,7 @@ import net.dtl.citizenstrader_new.containers.PlayerBankAccount;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.BankTrait;
+import net.milkbowl.vault.economy.Economy;
 
 abstract public class Banker implements EconomyNpc {
 	//BankTab System
@@ -82,6 +86,14 @@ abstract public class Banker implements EconomyNpc {
 		ITEM_MANAGING, TAB_DISPLAY, SETTING_TAB_ITEM, SETTINGS, INVENTORY_REOPEN;
 	}
 	
+	//static global settigns
+	private static FileConfiguration config;
+	private static double withdrawFee;
+	private static double depositFee;
+	private static Map<BankTabType, Double> tabPrices;
+	
+	private static Economy econ;
+	
 	//players using the Banker atm
 	protected static Map<String, BankAccount> bankAccounts;
 	
@@ -101,14 +113,24 @@ abstract public class Banker implements EconomyNpc {
 	protected NPC npc;
 	
 	public Banker(NPC bankerNpc, BankTrait bankConfiguration, String player) {
+		econ = CitizensTrader.getInstance().getEconomy();
+		//config setup
+		config = CitizensTrader.getInstance().getConfig();
+		withdrawFee = config.getDouble("bank.default-withdraw-fee");
+		depositFee = config.getDouble("bank.default-deposit-fee");
+		initializeTabPrices();
+		
 		locale = CitizensTrader.getLocaleManager();
 		//loading accoutns
-		if ( bankAccounts == null )
-			reloadAccounts();
 		
 		account = bankAccounts.get(player);
 		if ( account == null )
 		{
+			if ( econ.getBalance(player) < tabPrices.get(BankTabType.Tab1) )
+			{
+				Bukkit.getPlayerExact(player).sendMessage( locale.getLocaleString("bank-account-no-money") );
+				return;
+			}
 			//create new account
 			account = new PlayerBankAccount(player);
 			bankAccounts.put(player, account);
@@ -128,10 +150,22 @@ abstract public class Banker implements EconomyNpc {
 		
 	}
 
-	public void reloadAccounts()
+	public static boolean hasAccount(Player player)
 	{
-	//	System.out.print("a");
-		//loading accounts
+		return bankAccounts.containsKey(player.getName());
+	}
+	
+	private static void initializeTabPrices()
+	{
+		tabPrices = new HashMap<BankTabType, Double>();
+		for ( String key : config.getConfigurationSection("bank.tab-prices").getKeys(false) )
+		{
+			tabPrices.put(BankTabType.getTabByName(key), config.getDouble("bank.tab-prices."+key, 0.0));
+		}
+	}
+	
+	public static void reloadAccounts()
+	{
 		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
 	}
 	
@@ -145,8 +179,61 @@ abstract public class Banker implements EconomyNpc {
 			account.tabSelectionView(tabInventory);
 	}
 	
-	public void reopenInventory(Player player)
+	public double getTabPrice(BankTabType type)
 	{
+		if ( type == null || !tabPrices.containsKey(type) )
+			return 0.0;
+		return tabPrices.get(type);
+	}
+	
+	public double getWithdrawFee()
+	{
+		return withdrawFee;
+	}
+	
+	public double getDepositFee()
+	{
+		return depositFee;
+	}
+	
+	public boolean tabTransaction(BankTabType type, String player)
+	{
+		if ( type == null )
+			return false;
+		
+		double price = tabPrices.get(type);
+		if ( price == 0.0 )
+			return true;
+		
+		if ( econ.getBalance(player) >= price )
+		{
+			econ.withdrawPlayer(player, price);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean depositFee(String player)
+	{
+		if ( econ.getBalance(player) >= depositFee )
+		{
+			econ.withdrawPlayer(player, depositFee);
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public boolean withdrawFee(String player)
+	{
+		if ( econ.getBalance(player) >= withdrawFee )
+		{
+			econ.withdrawPlayer(player, withdrawFee);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public NPC getNpc()
@@ -211,6 +298,11 @@ abstract public class Banker implements EconomyNpc {
 	public boolean hasAllTabs()
 	{
 		return account.hasAllTabs();
+	}
+	
+	public BankTabType nextBankTab()
+	{
+		return account.nextTab();
 	}
 	
 	public boolean addBankTab()
@@ -281,7 +373,7 @@ abstract public class Banker implements EconomyNpc {
 	//inventory events
 	public final boolean bankerInventoryHasPlace() {
 		int amountToAdd = selectedItem.getItemStack().getAmount();
-		return this.inventoryHasPlaceAmount(tabInventory, amountToAdd);
+		return this.bankerInventoryHasPlaceAmount(tabInventory, amountToAdd);
 	}
 
 	public final boolean inventoryHasPlaceAmount(Inventory nInventory,int amount) {
@@ -324,6 +416,40 @@ abstract public class Banker implements EconomyNpc {
 		/* *
 		 * if any amount left to add check if there is place in the inventory
 		 */
+		if ( inventory.firstEmpty() < inventory.getSize() 
+				&& inventory.firstEmpty() >= 0 ) {
+			return true;
+		}
+		return false;
+	}
+	
+	public final boolean bankerInventoryHasPlaceAmount(Inventory nInventory,int amount) {
+		Inventory inventory = nInventory;
+		int amountToAdd = amount;
+		/* *
+		 * get all stacks with the same type (hmm... does it compares the data values?)
+		 * 
+		 */
+		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) {
+			ItemStack item = itemEntry.getValue();
+			
+			if ( this.rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
+				continue;
+			
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
+				
+				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
+					return true;
+				
+				if ( item.getAmount() < 64 ) {
+					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				}
+				
+				if ( amountToAdd <= 0 )
+					return true;
+			}
+		}
+		
 		if ( inventory.firstEmpty() < inventory.getSize() 
 				&& inventory.firstEmpty() >= 0 ) {
 			return true;
@@ -439,6 +565,10 @@ abstract public class Banker implements EconomyNpc {
 		 */
 		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) {
 			ItemStack item = itemEntry.getValue();
+			
+			if ( this.rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
+				continue;
+			
 			selectItem(itemEntry.getKey());
 			BankItem oldItem = null;
 			/* *

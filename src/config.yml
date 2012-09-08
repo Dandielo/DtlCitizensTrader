@@ -31,11 +31,17 @@ bank:
   save-timeout: 10
   #tab rows (1-5) when last_row isn't enabled the rows size is (1-6)
   tab-size: 3
-  #tab display (trigger on clicking outside the inventory/last_row)
-  tab-display: last_row
   default-withdraw-fee: 0.0
   default-deposit-fee: 0.0
-  default-max-tabs: 0
+  tab-prices: 
+    tab2: 100.0
+    tab3: 200.0
+    tab4: 500.0
+    tab5: 1000.0
+    tab6: 2000.0
+    tab7: 5000.0
+    tab8: 10000.0
+    tab9: 50000.0
   player-accounts:
     file: player_accounts.yml
   guild-accounts: 

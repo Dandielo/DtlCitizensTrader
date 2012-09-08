@@ -156,12 +156,23 @@ public class LocaleManager {
 				localeStrings.put("reload-config", "^eConfiguration was reloaded");
 				
 				//money banker
-				localeStrings.put("mbanker-lost-item", "^cYou have deposited ^b{item} ^cto the bank");
-				localeStrings.put("mbanker-got-item", "^cYou got ^b{item} ^cfrom teh bank");
-				localeStrings.put("mbanker-lost-money", "^cYou have paid ^b{money} ^cfor this item");
-				localeStrings.put("mbanker-got-money", "^cYou got ^b{money} ^cfor this item");
-				localeStrings.put("mbanker-wrong-item", "^cThis item is not accepted");
+				localeStrings.put("mbanker-lost-item", "^6You have deposited ^b{item} ^6to the bank");
+				localeStrings.put("mbanker-got-item", "^6You got ^b{item} ^6from the bank");
+				localeStrings.put("mbanker-lost-money", "^6You have paid ^b{money} ^6for this item");
+				localeStrings.put("mbanker-got-money", "^6You got ^b{money} ^6for this item");
+				localeStrings.put("mbanker-wrong-item", "^6This item is not accepted");
 				
+				//banker
+				localeStrings.put("bank-deposit-fee", "^6Deposit fee: ^b{fee}");
+				localeStrings.put("bank-withdraw-fee", "^6Withdraw fee: ^b{fee}");
+				localeStrings.put("bank-tab-price", "^6Tab price: ^b{price}");
+				localeStrings.put("bank-tab-bought", "^6You bought a tab");
+				localeStrings.put("select-tab-item", "^6Select a tab item");
+				localeStrings.put("tab-item-selected", "^6Tab item: {name}");
+				localeStrings.put("switch-tab", "^6Current tab: ^b{name}");
+
+				localeStrings.put("bank-no-money", "^6Not enough money");
+				localeStrings.put("bank-account-no-money", "^6Not enough money to create a account!");
 				
 				//set the new locale file
 				locale.set("strings", localeStrings);

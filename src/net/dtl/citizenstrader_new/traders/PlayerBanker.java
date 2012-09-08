@@ -13,14 +13,20 @@ import net.dtl.citizenstrader_new.traits.BankTrait;
 
 public class PlayerBanker extends Banker {
 
+	int lastSlot = -1;
+	
 	public PlayerBanker(NPC traderNpc, BankTrait bankConfiguragion, String player) { 
 		super(traderNpc, bankConfiguragion, player);
-		// TODO Auto-generated constructor stub
 	}
 
+	
+	/**
+	 * Settings mode used by bankers and AuctionHouse
+	 *
+	 * @param event this is a pure InventoryClickEvent, all other functions are available in parent class
+	 */
 	@Override
 	public void settingsMode(InventoryClickEvent event) {
-		//we just click nothing else :P
 		event.setCancelled(true);
 		
 		Player player = (Player) event.getWhoClicked();
@@ -41,8 +47,25 @@ public class PlayerBanker extends Banker {
 				{
 					if ( !isExistingTab(this.getRowSlot(slot+1)) )
 					{
+						if ( lastSlot != slot )
+						{
+							player.sendMessage( locale.getLocaleString("bank-tab-price").replace("{price}", decimalFormat.format(this.getTabPrice(this.nextBankTab()))) );
+
+							lastSlot = slot;
+							return;
+						}
+						
+						if ( !this.tabTransaction(this.nextBankTab(), player.getName()) )
+						{
+
+							player.sendMessage( locale.getLocaleString("bank-no-money") );
+							return;
+						}
+						
+						player.sendMessage( locale.getLocaleString("bank-tab-bought") );
 						if ( addBankTab() )
 							settingsInventory();
+						lastSlot = slot;
 						return;
 					}
 				}
@@ -51,6 +74,7 @@ public class PlayerBanker extends Banker {
 					if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
 					{
 						this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
+						player.sendMessage( locale.getLocaleString("switch-tab").replace("{name}", this.getBankTab().getTabName()) );
 						settingsInventory();
 					}
 				} 
@@ -67,7 +91,10 @@ public class PlayerBanker extends Banker {
 				}*/
 				
 				if ( getBankStatus().equals(BankStatus.SETTINGS) )
+				{
+					player.sendMessage(locale.getLocaleString("select-tab-item"));
 					setBankStatus(BankStatus.SETTING_TAB_ITEM);
+				}
 				else
 					setBankStatus(BankStatus.SETTINGS);
 			}
@@ -80,8 +107,11 @@ public class PlayerBanker extends Banker {
 				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
 					setBankTabItem(event.getCurrentItem());
+					player.sendMessage( locale.getLocaleString("tab-item-selected").replace("{name}", event.getCurrentItem().getType().name().toLowerCase()) );
+					
 					setBankStatus(BankStatus.SETTINGS);
 					settingsInventory();
+					lastSlot = slot;
 					return;
 				}
 				
@@ -89,6 +119,7 @@ public class PlayerBanker extends Banker {
 			
 			
 		}
+		lastSlot = slot;
 		
 	}
 
@@ -111,6 +142,11 @@ public class PlayerBanker extends Banker {
 				{
 					if ( item.getSlot() != -1 )
 					{
+						if ( !withdrawFee(player.getName()) )
+						{
+							event.setCancelled(true);
+							return;
+						}
 						removeItemFromBankAccount(item);
 						selectItem(null);
 					}
@@ -140,6 +176,7 @@ public class PlayerBanker extends Banker {
 						if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
 						{
 							this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
+							player.sendMessage( locale.getLocaleString("switch-tab").replace("{name}", this.getBankTab().getTabName()) );
 							switchInventory();
 							//switchInventory();
 						}
@@ -180,6 +217,14 @@ public class PlayerBanker extends Banker {
 								selectItem(item);
 								return;
 							}
+							if ( !withdrawFee(player.getName()) )
+							{
+
+								player.sendMessage( locale.getLocaleString("bank-no-money") );
+								event.setCancelled(true);
+								selectItem(item);
+								return;
+							}
 							
 							event.setCurrentItem(null);
 							this.removeItemFromBankAccount(getSelectedItem());
@@ -203,6 +248,14 @@ public class PlayerBanker extends Banker {
 						
 						if ( item.getSlot() == -1 )
 						{
+							if ( !depositFee(player.getName()) )
+							{
+								player.sendMessage( locale.getLocaleString("bank-no-money") );
+								event.setCancelled(true);
+								selectItem(item);
+								return;
+							}
+							
 							item.setSlot(slot);
 							item.getItemStack().setAmount(event.getCursor().getAmount());
 							addItemToBankAccount(item);
@@ -250,7 +303,14 @@ public class PlayerBanker extends Banker {
 								event.setCancelled(true);
 								return;
 							}
-								
+
+							if ( !depositFee(player.getName()) )
+							{
+								player.sendMessage( locale.getLocaleString("bank-no-money") );
+								event.setCancelled(true);
+								selectItem(item);
+								return;
+							}
 							
 						//	getInventory().setItem(first, event.getCurrentItem().clone());
 						//	getSelectedItem().setSlot(first);
@@ -272,6 +332,14 @@ public class PlayerBanker extends Banker {
 					{
 						if ( item.getSlot() != -1 )
 						{
+
+							if ( !withdrawFee(player.getName()) )
+							{
+								player.sendMessage( locale.getLocaleString("bank-no-money") );
+								event.setCancelled(true);
+								return;
+							}
+							
 							removeItemFromBankAccount(item);
 						}
 						

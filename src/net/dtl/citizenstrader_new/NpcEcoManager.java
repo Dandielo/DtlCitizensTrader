@@ -1,5 +1,6 @@
 package net.dtl.citizenstrader_new;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -414,8 +415,15 @@ public class NpcEcoManager implements Listener {
 		}
 		if ( characterTrait.getTraderType().equals(TraderType.PLAYER_BANK) )
 		{
+			Banker.reloadAccounts();
 			playerInteraction.put(playerName, new PlayerBanker(npc, characterTrait.getBankTrait(), playerName));
-		//	Banker banker = (Banker) playerInteraction.get(playerName);
+			Banker banker = (Banker) playerInteraction.get(playerName);
+			if ( !Banker.hasAccount(player) ) {
+				playerInteraction.remove(playerName);
+				return;
+			}
+			player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
+			player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
 		//	banker.switchInventory(playerName, TraderStatus.BANK);
 		}
 		if ( characterTrait.getTraderType().equals(TraderType.MONEY_BANK) )

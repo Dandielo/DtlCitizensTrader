@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizenstrader_new.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager]
-version: 1.8.4Beta
+version: 1.9Beta
 description: >
              Citizens Character. 
 commands: 
@@ -65,6 +65,25 @@ permissions:
             description: allows to bypass the creative restriction when managing a player trader
           dtl.trader.options.manager-mode-bypass: 
             description: allows to use the traders manager-mode (if you'r the owner)
+      dtl.economy.types.*:
+        description: allows to set specific trader types
+        childern:
+          dtl.economy.types.server: 
+            description: allows to create/set/use/manage a server trader
+          dtl.trader.options.type.player: 
+            description: allows to create/set/use/manage a player trader
+          dtl.trader.options.type.enchant: 
+            description: allows to create/set/use/manage a enchant trader
+          dtl.trader.options.type.player-bank: 
+            description: allows to create/set/use/manage a player banker
+          dtl.trader.options.type.money-bank: 
+            description: allows to create/set/use/manage a player banker
+          dtl.trader.options.type.auction: 
+            description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
+      dtl.banker.options.*:
+        description: banker available settings
+        children: 
+          
       dtl.trader.options.*:
         description: trader options to allow/disallow features
         default: op
@@ -73,8 +92,6 @@ permissions:
             description: allows the user to buy items
           dtl.trader.options.buy: 
             description: allows the user to sell items
-          dtl.trader.options.secure-mode: 
-            description: allows to use the trader in secure-mode, # UNUSED #
           dtl.trader.options.simple-mode: 
             description: allows to use the trader in simple-mode
           dtl.trader.options.manager-mode: 

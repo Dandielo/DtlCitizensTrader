@@ -95,6 +95,23 @@ abstract public class BankAccount implements InventoryHolder  {
 		return false;
 	}
 	
+	public BankTabType nextTab()
+	{
+		if ( bankTabs.containsKey(BankTabType.Tab9) )
+			return null;
+		
+		final String bankTabName = "tab";
+		for ( int i = 0 ; i < 9 ; ++ i )
+		{
+			BankTabType tab = BankTabType.getTabByName(bankTabName+(i+1));
+			
+			if ( !bankTabs.containsKey(tab) )
+				return tab;
+		}
+		
+		return null;
+	}
+	
 	public BankTabType addBankTab()
 	{
 		if ( bankTabs.containsKey(BankTabType.Tab9) )
