@@ -56,6 +56,25 @@ abstract public class BankAccount implements InventoryHolder  {
 		return view;
 	}
 	
+	public Inventory inventoryTabView(BankTabType type) {
+		BankTab tab = bankTabs.get(type);
+		
+		Inventory view = Bukkit.createInventory(this, ( tab.getTabSize() + 1) * 9, tab.getTabName());
+		
+		for( BankItem item : bankTabs.get(BankTabType.Tab1).getTabItems() ) {
+
+	        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+	        chk.addEnchantments(item.getItemStack().getEnchantments());
+	
+	        if ( item.getSlot() < 0 )
+        		item.setSlot(view.firstEmpty());
+	        view.setItem(item.getSlot(),chk);
+        }
+
+		tabSelectionView(view);
+		return view;
+	}
+	
 	public Inventory cleanInventory(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
@@ -91,7 +110,7 @@ abstract public class BankAccount implements InventoryHolder  {
 			{
 			//	storedItems.put(tab, new ArrayList<BankItem>());
 			//	tabItems.put(tab, new ItemStack(35,1));
-				bankTabs.put(tab, new BankTab(new ItemStack(35,1), tab.toString(), 1));
+				bankTabs.put(tab, new BankTab(new ItemStack(35,1), tab.toString(), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size")));
 				backend.addBankTab(owner, tab);
 				return tab;
 			}
@@ -153,10 +172,10 @@ abstract public class BankAccount implements InventoryHolder  {
 		
 		for ( int j = 0 ; j < 9 ; ++j )
 		{
-			if ( j < bankTab.getTabSize() || j > 4 )
+		//	if ( j < bankTab.getTabSize() || j > 4 )
 				inventory.setItem(((lastRow-1)*9)+j, bankTab.getTabItem() );
-			if ( bankTab.getTabSize() < 5 )
-				inventory.setItem(((lastRow-1)*9)+bankTab.getTabSize(), new ItemStack(35,1) );
+	//		if ( bankTab.getTabSize() < 5 )
+	//			inventory.setItem(((lastRow-1)*9)+bankTab.getTabSize(), new ItemStack(35,1) );
 				
 		}
 		

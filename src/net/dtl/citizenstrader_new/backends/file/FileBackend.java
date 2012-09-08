@@ -1,6 +1,8 @@
 package net.dtl.citizenstrader_new.backends.file;
 
 
+import static net.dtl.citizenstrader_new.backends.file.FileBackend.buildPath;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -8,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.backends.Backend;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
@@ -193,7 +196,7 @@ public class FileBackend extends Backend {
 		
 		tabs.set(buildPath(tab.toString(), "tab-item"), "35:0 a:1");
 		tabs.set(buildPath(tab.toString(), "tab-name"), tab.toString());
-		tabs.set(buildPath(tab.toString(), "tab-size"), 1);
+		tabs.set(buildPath(tab.toString(), "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
 		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
 		
 		//if ( saveTrigger.equals("item") )
@@ -202,10 +205,10 @@ public class FileBackend extends Backend {
 	
 	public BankAccount newAccount(String player)
 	{
-		accounts.set(buildPath("accounts", player, "available-tabs"), 1);
+		accounts.set(buildPath("accounts", player, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("default-max-tabs"));
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-item"), "35:0 a:1");
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-name"), "tab1");
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-size"), 1);
+		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));//buildPath("accounts", player, "tabs", "tab1", "tab-size"), 1);
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "content"), new String[0]);
 		
 		this.save();

@@ -139,7 +139,6 @@ public class NpcEcoManager implements Listener {
 			economyNpc.settingsMode(event);
 			return;
 		}
-		
 		economyNpc.simpleMode(event);
 	}
 	
@@ -170,7 +169,6 @@ public class NpcEcoManager implements Listener {
 			
 			return;
 		}
-		
 		//remove the interaction
 		playerInteraction.remove(player.getName());
 		
@@ -380,6 +378,7 @@ public class NpcEcoManager implements Listener {
 					playerInteraction.get(playerName).setTraderStatus(TraderStatus.BANK_SETTINGS);
 				//	playerInteraction.get(playerName).s
 					Banker banker = (Banker) playerInteraction.get(playerName);
+					banker.useSettingsInv();
 					banker.settingsInventory();
 					banker.setBankStatus(BankStatus.SETTINGS);
 					

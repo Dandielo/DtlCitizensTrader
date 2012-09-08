@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
 import net.dtl.citizenstrader_new.containers.BankTab;
@@ -41,7 +42,7 @@ public class FileBankAccount extends BankAccount {
 			//list to save the items
 			tabItem = new BankItem( accountInfo.getString(buildPath("tabs",tab,"tab-item")) ).getItemStack();
 			tabName = accountInfo.getString(buildPath("tabs",tab,"tab-name"));
-			tabSize = accountInfo.getInt(buildPath("tabs",tab,"tab-size"));
+			tabSize = CitizensTrader.getInstance().getConfig().getInt(buildPath("bank","tab-size"));//accountInfo.getInt(buildPath("tabs",tab,"tab-size"));
 
 			List<BankItem> items = new ArrayList<BankItem>();
 			//fetching item list

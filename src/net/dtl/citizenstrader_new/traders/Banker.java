@@ -79,7 +79,7 @@ abstract public class Banker implements EconomyNpc {
 	
 	
 	public enum BankStatus {
-		ITEM_MANAGING, TAB_DISPLAY, SETTING_TAB_ITEM, SETTINGS;
+		ITEM_MANAGING, TAB_DISPLAY, SETTING_TAB_ITEM, SETTINGS, INVENTORY_REOPEN;
 	}
 	
 	//players using the Banker atm
@@ -122,7 +122,7 @@ abstract public class Banker implements EconomyNpc {
 		bank = bankConfiguration;
 		npc = bankerNpc;
 
-		tabInventory = account.inventoryView(54, "Banker " + npc.getName());
+		tabInventory = account.inventoryTabView(tab);
 		//loading trader bank config
 		this.switchInventory();
 		
@@ -143,6 +143,25 @@ abstract public class Banker implements EconomyNpc {
 		else
 		if ( bankStatus.equals(BankStatus.TAB_DISPLAY) )
 			account.tabSelectionView(tabInventory);
+	}
+	
+	public void reopenInventory(Player player)
+	{
+	}
+	
+	public NPC getNpc()
+	{
+		return npc;
+	}
+	
+	public BankTrait getbankTrait()
+	{
+		return this.bank;
+	}
+	
+	public void useSettingsInv()
+	{
+		tabInventory = account.inventoryView(54, "Bank account settings");
 	}
 	
 	public void settingsInventory()
