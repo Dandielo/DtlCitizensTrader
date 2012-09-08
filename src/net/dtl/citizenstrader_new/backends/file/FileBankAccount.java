@@ -23,7 +23,7 @@ public class FileBankAccount extends BankAccount {
 		super();
 		
 		owner = accountName;
-
+		
 		//geting the overall account info
 		ConfigurationSection accountInfo = accounts.getConfigurationSection(buildPath("accounts",accountName));
 
@@ -32,7 +32,9 @@ public class FileBankAccount extends BankAccount {
 		ItemStack tabItem = new ItemStack(35,1);
 		String tabName = "";
 		int tabSize = 1;
-		
+
+		availableTabs = accountInfo.getInt("available-tabs");
+				
 		for ( String tab : accountInfo.getConfigurationSection("tabs").getKeys(false) )
 		{
 		//	System.out.print("a");

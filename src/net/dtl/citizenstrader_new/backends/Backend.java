@@ -23,5 +23,7 @@ public abstract class Backend {
 	abstract public void setBankTabItem(String player, BankTabType tab, BankItem item);
 	
 	abstract public BankAccount newAccount(String player);
+
+	abstract public void increaseTabSize(String player, BankTabType tabType, int tabSize);
 	
 }

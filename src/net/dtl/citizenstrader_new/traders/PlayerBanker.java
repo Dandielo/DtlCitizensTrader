@@ -36,7 +36,16 @@ public class PlayerBanker extends Banker {
 		
 			if ( rowClicked( 6, slot) )
 			{
-				
+
+				if ( event.getCurrentItem().getTypeId() == 35 )
+				{
+					if ( !isExistingTab(this.getRowSlot(slot+1)) )
+					{
+						if ( addBankTab() )
+							settingsInventory();
+						return;
+					}
+				}
 				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
 					if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
@@ -44,25 +53,23 @@ public class PlayerBanker extends Banker {
 						this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
 						settingsInventory();
 					}
-				}
+				} 
 			
 			} 
 			else 
 			if ( rowClicked( 5, slot) )	
 			{
+				if ( !hasTabSize(getRowSlot(slot+1)) )
+				{
+					increaseTabSize();
+					this.settingsInventory();
+					return;
+				}
+				
 				if ( getBankStatus().equals(BankStatus.SETTINGS) )
 					setBankStatus(BankStatus.SETTING_TAB_ITEM);
 				else
 					setBankStatus(BankStatus.SETTINGS);
-			}
-			
-			//add tab button
-			if ( slot == 0 )
-			{
-				if ( hasAllTabs() )
-					return;
-				addBankTab();
-				settingsInventory();
 			}
 			
 		}

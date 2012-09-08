@@ -15,6 +15,7 @@ import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.LocaleManager;
 import net.dtl.citizenstrader_new.containers.BankAccount;
 import net.dtl.citizenstrader_new.containers.BankItem;
+import net.dtl.citizenstrader_new.containers.BankTab;
 import net.dtl.citizenstrader_new.containers.PlayerBankAccount;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
@@ -170,6 +171,18 @@ abstract public class Banker implements EconomyNpc {
 		return tab;
 	}
 	
+	public BankTab getBankTab()
+	{
+		return account.getBankTab(tab);
+	}
+	
+	public boolean isExistingTab(int slot)
+	{
+		if ( account.getBankTab(BankTabType.getTabByName("tab"+slot)) != null )
+			return true;
+		return false;
+	}
+	
 	public void setBankTabItem(ItemStack item)
 	{
 		account.setBankTabItem(tab, toBankItem(item));
@@ -190,6 +203,19 @@ abstract public class Banker implements EconomyNpc {
 			return true;
 		}
 		return false;
+	}
+	
+	public boolean hasTabSize(int size)
+	{
+		if ( account.getBankTab(tab).getTabSize() < size )
+			return false;
+		return true;
+					
+	}
+	
+	public void increaseTabSize()
+	{
+		account.increaseTabSize(tab);
 	}
 	
 	//selecting items

@@ -146,6 +146,13 @@ public class FileBackend extends Backend {
 	}
 
 	@Override
+	public void increaseTabSize(String player, BankTabType tab, int tabSize) {
+		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-size"), tabSize);
+		
+		this.save();
+	}
+
+	@Override
 	public void setBankTabItem(String player, BankTabType tab, BankItem item) {
 		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-item"), item.toString());
 		
@@ -205,34 +212,6 @@ public class FileBackend extends Backend {
 		
 		return new FileBankAccount(player, accounts);
 	}
-	
-	
-	/*
-	public void addWarp(Warp warp, String warpName) {
-		accounts.set(buildPath("warps",warpName,"owner"), warp.getOwner());
-		accounts.set(buildPath("warps",warpName,"world"), warp.getLocation().getWorld().getName());
-		accounts.set(buildPath("warps",warpName,"x"), warp.getLocation().getX());
-		accounts.set(buildPath("warps",warpName,"y"), warp.getLocation().getY());
-		accounts.set(buildPath("warps",warpName,"z"), warp.getLocation().getZ());
-		accounts.set(buildPath("warps",warpName,"yaw"), warp.getLocation().getYaw());
-		accounts.set(buildPath("warps",warpName,"pitch"), warp.getLocation().getPitch());
-		
-		this.save();
-	}*/
-	
-/*	public void removeWarp(String warpName) {
-		if ( accounts.contains(buildPath("warps",warpName)) ) {
-			Map<String, Object> warpList = new HashMap<String, Object>();
-			for ( String warp : accounts.getConfigurationSection("warps").getKeys(false) ) {
-				if ( warp.equals(warpName) ) {
-					continue;
-				}
-				warpList.put(warp, accounts.get(buildPath("warps", warp)));
-			}
-			accounts.set("warps", warpList);
-		}
-		this.save();
-	}*/
 	
 	public FileBankAccount getAccount(String accountName) {
 		return new FileBankAccount(accountName, accounts);

@@ -1,9 +1,6 @@
 package net.dtl.citizenstrader_new.containers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
@@ -25,6 +22,7 @@ abstract public class BankAccount implements InventoryHolder  {
 	
 	//bank account owner
 	protected String owner;
+	protected int availableTabs;
 	
 	//Constructor
 	public BankAccount()
@@ -101,6 +99,18 @@ abstract public class BankAccount implements InventoryHolder  {
 		
 		return null;
 	}
+	
+	public void increaseTabSize(BankTabType tabType)
+	{
+		BankTab tab = bankTabs.get(tabType);
+		
+		if ( tab.getTabSize() < 5 )
+		{
+			tab.setTabSize(tab.getTabSize()+1);
+		
+			backend.increaseTabSize(owner, tabType, tab.getTabSize());
+		}
+	}
 
 	public void inventoryView(Inventory inventory, BankTabType tab)
 	{
@@ -134,14 +144,20 @@ abstract public class BankAccount implements InventoryHolder  {
 		
 		//tabs
 		//buy new tab
-		inventory.setItem(0, new ItemStack(35,1,(short)0,(byte)1));
+	//	inventory.setItem(0, new ItemStack(35,1,(short)0,(byte)1));
 		
 		//set tab item
-		inventory.setItem(1, new ItemStack(35,1,(short)0,(byte)2));
+	//	inventory.setItem(1, new ItemStack(35,1,(short)0,(byte)2));
+		
+		BankTab bankTab = bankTabs.get(btab);
 		
 		for ( int j = 0 ; j < 9 ; ++j )
 		{
-			inventory.setItem(((lastRow-1)*9)+j, bankTabs.get(btab).getTabItem() );
+			if ( j < bankTab.getTabSize() || j > 4 )
+				inventory.setItem(((lastRow-1)*9)+j, bankTab.getTabItem() );
+			if ( bankTab.getTabSize() < 5 )
+				inventory.setItem(((lastRow-1)*9)+bankTab.getTabSize(), new ItemStack(35,1) );
+				
 		}
 		
 		for ( BankTabType tab : bankTabs.keySet() )
@@ -155,6 +171,8 @@ abstract public class BankAccount implements InventoryHolder  {
 			inventory.setItem((lastRow*9) + Integer.parseInt(tab.toString().substring(3))-1, bankTabs.get(tab).getTabItem() );
 			++i;
 		}
+		if ( i < 53 && availableTabs > i % 45 )
+			inventory.setItem(i, new ItemStack(35,1) );
 	}
 	
 	public void addItem(BankTabType tabType, BankItem item)

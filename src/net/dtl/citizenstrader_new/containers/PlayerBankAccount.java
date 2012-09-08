@@ -12,6 +12,7 @@ public class PlayerBankAccount extends BankAccount {
 		
 		
 		owner = accountName;
+		availableTabs = 1;
 		
 		backend.newAccount(accountName);
 		bankTabs.clear();
