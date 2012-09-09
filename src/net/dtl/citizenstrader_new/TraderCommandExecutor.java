@@ -6,6 +6,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
+import net.dtl.citizenstrader_new.traders.EconomyNpc;
 import net.dtl.citizenstrader_new.traders.Trader;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
@@ -18,21 +19,28 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+/**
+ * 
+ * @author Dandielo
+ *
+ */
 public final class TraderCommandExecutor implements CommandExecutor {
-	//trader config
-	protected ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
-	//general
+	//Config values
+	//	private boolean debug;
+	
+	//plugin instance
 	public static CitizensTrader plugin;
-	private NpcEcoManager traderManager;
-	private PermissionsManager permsManager;
 	
-	//locale manager
-	private LocaleManager locale;
+	//managers
+	private static NpcEcoManager traderManager;
+	private static PermissionsManager permsManager;
+	private static LocaleManager locale;
+
 	
+	//constructor
 	public TraderCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
-		new CitizensTrader();
 
 		locale = CitizensTrader.getLocaleManager();
 		permsManager = CitizensTrader.getPermissionsManager();
@@ -41,441 +49,117 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-		//just to be sure we don't get anything more
-		if ( !cmd.getName().equalsIgnoreCase("trader") )
-			return false;
 		
-		//if the we got a player problem
+		
+		//is player
 		if ( sender instanceof Player )
 		{
 			Player player = (Player) sender;
 			
-			
-			//if ( !( traderManager.getInteractionNpc(player.getName()) instanceof Trader ) )
-			//	return true;
-			
-			Trader trader = (Trader) traderManager.getInteractionNpc(player.getName());
-			
-			
-			
-			//check if we can use commands
-			if ( !permsManager.has(player, "dtl.trader.commands") )
-			{
-				
-				//goodbye!
-				player.sendMessage( locale.getLocaleString("no-permissions") );
-				return true;
-			}
-			
-			
-			//check if we have any arguments
 			if ( args.length < 1 )
 			{
-				
-				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Commands list" );
+				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
 				return false;
 			}
 			
 			
-			//lets see what arguments we use
-			//looks like we wan't to buy something
-			if ( args[0].equals("reload") )
+			//get the selected NPC
+			EconomyNpc economyNpc = traderManager.getInteractionNpc(player.getName());
+			
+
+			
+			//no npc selected
+			if ( economyNpc == null )
 			{
-				//can we edit the traders sell mode?
-				if ( !permsManager.has(player, "dtl.trader.reload") )
+				
+				//reload plugin
+				if ( args[0].equalsIgnoreCase("create") )
 				{
+					if ( !this.generalChecks(player, "create", null, args, 3) )
+						return true;
 					
-					//have a good flight!
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
+					return createTrader(player, args);
 				}
 				
-				player.sendMessage(locale.getLocaleString("reload-config"));
-				
-				config.reloadConfig();
-				locale.reload();
 				
 				return true;
 			}
+			//npc has been selected
 			else
-			if ( args[0].equals("sell") )
 			{
-				
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
+				//is trader type
+				if ( !( economyNpc instanceof Trader ) )
 				{
 					player.sendMessage( locale.getLocaleString("no-trader-selected") );
 					return true;
 				}
 				
+				Trader trader = (Trader) economyNpc;
 				
-				//can we edit the traders sell mode?
-				if ( !permsManager.has(player, "dtl.trader.options.sell") )
+				
+				//list command
+				if ( args[0].equals("list") )
 				{
+					if ( !this.generalChecks(player, "list", ( args.length > 1 ? args[1] : null ), args, 2) )
+						return true;
 					
-					//have a good flight!
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
+					return getItemList(player, trader, args, TraderStatus.getByName(args[1]) );	
 				}
-				
-				//have we got the needed args?
-				if ( args.length < 2 )
+				if ( args[0].equals("type") )
 				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "sell").replace("{args}", "<list>") );
-					return true;
-				}				
-				
-				//can we get that list plz?
-				if ( permsManager.has(player, "dtl.trader.commands.list") 
-						&& args[1].equals("list") ) 
-				{
-
-					return getItemList(player, trader, args, TraderStatus.SELL);
-				}
-				else
-				//More...
-				if ( permsManager.has(player, "dtl.trader.commands.add") )
-				{
-					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
+					if ( !this.generalChecks(player, "type", null, args, 1) )
+						return true;
 					
+					return setType(player, trader, ( args.length > 1 ? args[1] : "" ) );
 				}
-				else 
-				//My precious... Kill him!
-				if ( permsManager.has(player, "dtl.trader.commands.remove") )
+				if ( args[0].equals("wallet") )
 				{
-					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
+					if ( !this.generalChecks(player, "wallet", null, args, 1) )
+						return true;
 					
+					return setWallet(player, trader, ( args.length > 1 ? args[1] : "" ), ( args.length > 2 ? args[2] : "" ) );
 				}
-				else 	
-				//Ok, i will give you that cow you will give me 4 diamonds, ok?
-				if ( permsManager.has(player, "dtl.trader.commands.edit") )
+				if ( args[0].equals("owner") )
 				{
-					player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
+					if ( !this.generalChecks(player, "owner", null, args, 1) )
+						return true;
 					
+					return setOwner(player, trader, ( args.length > 1 ? args[1] : "" ) );
 				}
-				
-			}
-			else
-			//lets sell all the junk! 
-			if ( args[0].equals("buy") )
-			{
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
+				if ( args[0].equals("balance") )
 				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				
-				if ( !permsManager.has(player, "dtl.trader.options.buy") )
-				{
+					if ( !this.generalChecks(player, "balance", null, args, 1) )
+						return true;
 					
-					//have a good flight! (copied...)
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
+					return balance(player, trader);
 				}
-				
-				//have we got the needed args?
-				if ( args.length < 2 )
+				if ( args[0].equals("withdraw") )
 				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "buy").replace("{args}", "<list>") );
-					return true;
-				}				
-				
-				//lets see...
-				if ( permsManager.has(player, "dtl.trader.commands.list") 
-						&& args[1].equals("list") ) 
-				{
+					if ( !this.generalChecks(player, "withdraw", null, args, 2) )
+						return true;
 					
-					return getItemList(player, trader, args, TraderStatus.BUY);
+					return withdraw(player, trader, args[1]);
 				}
-				else
-				//I want that!
-				if ( permsManager.has(player, "dtl.trader.commands.add") )
+				if ( args[0].equals("deposit") )
 				{
+					if ( !this.generalChecks(player, "deposit", null, args, 2) )
+						return true;
 					
-				}
-				else 
-				//just take it away from me...
-				if ( permsManager.has(player, "dtl.trader.commands.remove") )
-				{
-					
-				}
-				else 	
-				//nothing to trade with...
-				if ( permsManager.has(player, "dtl.trader.commands.edit") )
-				{
-					
+					return withdraw(player, trader, args[1]);
 				}
 				
-				
-				
+				return true;
 			}
-			else
-			//Hmm, bank or sock?
-			if ( args[0].equals("wallet") )
-			{
-
 				
-				//can he change the wallet type?
-				if ( !permsManager.has(player, "dtl.trader.commands.wallet") )
-				{
-					//have a good flight! (copied...)
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				//are all on board?
-				if ( args.length < 1 )
-				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "wallet").replace("{args}", "[wallet] [bank_account_name]") );
-					return true;
-				}	
-				
-				return setWallet(player, trader, ( args.length > 1 ? args[1] : "" ), ( args.length > 2 ? args[2] : "" ) );
-			}
-			else
-			//i don't like my server trader :<
-			if ( args[0].equals("type") )
-			{
-				
-				if ( !permsManager.has(player, "dtl.trader.commands.type") )
-				{
-					//see ya with a better permission ;)
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				//are all on board?
-				if ( args.length < 1 )
-				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "type").replace("{args}", "[type]") );
-					return true;
-				}	
-				
-				return setType(player, trader, ( args.length > 1 ? args[1] : "" ) );
-			}
-			else
-			//lets create a trader!
-			if ( args[0].equals("create") )
-			{
-				
-				if ( !permsManager.has(player, "dtl.trader.commands.create") )
-				{
-					//you can't create life!
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				
-				//have we got the needed args?
-				if ( args.length < 2 )
-				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "create").replace("{args}", "<a name anywhere> [t:type] [w:wallet] [e:entity]") );
-					return true;
-				}
-				
-				return createTrader(player, args);
-			}
-			else
-			//lets create a trader!
-			if ( args[0].equals("dismiss") )
-			{
-				// TODO create a nice dismiss function 
-				
-				if ( !permsManager.has(player, "dtl.trader.commands.dismiss") )
-				{
-					//you can't create life!
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				player.sendMessage(ChatColor.RED + "Not supported! Sorry :<");
-				
-				return false;
-				
-			}
-			else 
-			//show me your money!
-			if ( args[0].equals("balance") )
-			{
-
-				
-				if ( !permsManager.has(player, "dtl.trader.commands.balance") )
-				{
-					//you can't create life!
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				
-				//only npc wallets can be managed!
-				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
-				{
-					//lets inform about that mistake
-					player.sendMessage( locale.getLocaleString("invalid-wallet") );
-					return true;
-				}
-				
-				
-				return balance(player, trader);
-			}
-			else 
-			//show me your money!
-			if ( args[0].equals("withdraw") )
-			{
-
-				
-				if ( !permsManager.has(player, "dtl.trader.commands.withdraw") )
-				{
-					//no permissions available
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				
-				//only npc wallets can be managed!
-				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
-				{
-					//lets inform about that mistake
-					player.sendMessage( locale.getLocaleString("invalid-wallet") );
-					return true;
-				}
-				
-				
-				//we want to withdraw nothing...
-				if ( args.length < 2 )
-				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "withdraw").replace("{args}", "<amount>") );
-					return true;
-				}
-				
-				return withdraw(player, trader, args[1]);
-			}
-			else 
-			//show me your money!
-			if ( args[0].equals("deposit") )
-			{
-
-				if ( !permsManager.has(player, "dtl.trader.commands.deposit") )
-				{
-					//no permissions available
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				
-				//only npc wallets can be managed!
-				if ( !trader.equalsWalletType(WalletType.NPC_WALLET) )
-				{
-					//lets inform about that mistake
-					player.sendMessage( locale.getLocaleString("invalid-wallet") );
-					return true;
-				}
-				
-				
-				//we want to withdraw nothing...
-				if ( args.length < 2 )
-				{
-					player.sendMessage( locale.getLocaleString("missing-args") );
-					player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "deposit").replace("{args}", "<amount>") );
-					return true;
-				}
-				
-				
-				//a single function is much easier to understand ;P
-				return deposit(player, trader, args[1]);
-			}
-			else 
-			//show me your money!
-			if ( args[0].equals("owner") )
-			{
-				//can he change the wallet type?
-				if ( !permsManager.has(player, "dtl.trader.commands.owner") )
-				{
-					//have a good flight! (copied...)
-					player.sendMessage( locale.getLocaleString("no-permissions") );
-					return true;
-				}
-				
-				//check if we are editing a valid trader
-				if ( trader == null )
-				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
-					return true;
-				}
-				
-				//are all on board?
-				if ( args.length < 2 )
-				{
-					return getOwner(player, trader);
-				}	
-				
-				
-				return setOwner(player, trader, args[1]);
-			}
-		}
-		//is God trying to command a trader? 
+		}		
 		else
 		{
 			
 			if ( args[0].equals("reload") )
 			{
-				//can we edit the traders sell mode?
-			//	if ( !permsManager.has(s, "dtl.trader.reload") )
-			//	{
-					
-					//have a good flight!
-				//	player.sendMessage( locale.getLocaleString("no-permissions") );
-				//	return true;
-			//	}
 				
 				sender.sendMessage(locale.getLocaleString("reload-config"));
-				
-				config.reloadConfig();
+				CitizensTrader.getInstance().getItemConfig().reloadConfig();
 				
 				return true;
 			}
@@ -483,6 +167,56 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		return false;
 	}
+	
+	public boolean generalChecks(Player player, String commandPermission, String optionsPermission, String[] args, int size)
+	{
+		
+		//check permissions
+		if ( !permsManager.has(player, "dtl.trader.commands." + commandPermission)  )
+		{
+			player.sendMessage( locale.getLocaleString("no-permissions") );
+			return false;
+		}
+		
+		if ( optionsPermission != null )
+		//check permissions
+		if ( !permsManager.has(player, "dtl.trader.options." + optionsPermission)  )
+		{
+			player.sendMessage( locale.getLocaleString("no-permissions") );
+			return false;
+		}
+		
+		//have we got the needed args?
+		if ( args.length > size )
+		{
+			player.sendMessage( locale.getLocaleString("missing-args") );
+			return false;
+		}	
+		
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 
 	public TraderType getDefaultTraderType(Player player) {

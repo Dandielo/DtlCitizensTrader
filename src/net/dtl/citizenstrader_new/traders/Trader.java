@@ -49,6 +49,14 @@ public abstract class Trader implements EconomyNpc {
 		 * ManagerMode condition
 		 * 
 		 */
+		public static TraderStatus getByName(String string)
+		{
+			if ( string.equals("sell") )
+				return SELL;
+			if ( string.equals("buy") )
+				return BUY;
+			return SELL;
+		}
 		public static boolean hasManageMode(TraderStatus status) {
 			if ( !status.equals(SELL) 
 				&& !status.equals(SELL_AMOUNT)  

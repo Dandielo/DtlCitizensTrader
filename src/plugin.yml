@@ -8,21 +8,27 @@ description: >
 commands: 
     trader:
       aliases: dtrader
-      description: Dtl - CitizensTrader commands.
+      description: Dtl - CitizensTrader trader commands.
       usage: |
              Usage: 
              /<command> sell list [page]
              /<command> buy list
-             /<command> mode <mode>
+             /<command> wallet [wallet] [account]
+             /<command> type [type]
+             /<command> owner [owner]
+             /<command> create <name> [type] [wallet] [owner] [account] [entity]
+             /<command> reload
+      permisison-message: You don't have "<permission>" permission, to use commands
+    banker: 
+      aliases: dbanker
+      description: Dtl - CitizensTrader banker commands.
+      usage: |
+             Usage: 
              /<command> wallet [wallet]
              /<command> type [type]
              /<command> owner [owner]
-             /<command> balance
-             /<command> withdraw <amount>
-             /<command> deposit <amount>
-             /<command> create <name> [type] [wallet]
+             /<command> create <name> [type] [entity]
              /<command> reload
-      permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
 permissions:
   dtl.dtlTraders.admin:
