@@ -1,12 +1,16 @@
 package net.dtl.citizenstrader_new.containers;
 
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 public class Wallet {
 	private WalletType type;
 	private Economy economy;
+	private Clan clan; 
 	
 	private double money; 
 	private String bank;
@@ -33,6 +37,15 @@ public class Wallet {
 		return money;
 	}
 	
+	public void setClan(String clanTag) {
+		clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);
+	}
+	
+	public String getClan()
+	{
+		return clan.getTag();
+	}
+	
 	public boolean setBank(String player, String bankName)
 	{
 		//does we support banks?
@@ -40,8 +53,8 @@ public class Wallet {
 			return false;
 		
 		//check if the given bank belongs to the traders owner
-		if ( !economy.isBankMember(bank, player).type.equals(ResponseType.SUCCESS)
-				&& !economy.isBankOwner(bank, player).equals(ResponseType.SUCCESS) )
+		if (// !economy.isBankMember(bank, player).type.equals(ResponseType.SUCCESS)&&
+				 !economy.isBankOwner(bank, player).equals(ResponseType.SUCCESS) )
 			return false;
 		
 		//set the bank
@@ -74,6 +87,9 @@ public class Wallet {
 			else
 			if ( type.equals(WalletType.BANK) )
 				economy.bankDeposit(bank, m);
+			else
+			if ( type.equals(WalletType.SIMPLE_CLANS) )
+				clan.deposit(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
 		} else {
 			economy.depositPlayer(p, m);
 		}
@@ -110,15 +126,35 @@ public class Wallet {
 					return true;
 				}
 			}
+			else
+			if ( type.equals(WalletType.SIMPLE_CLANS) )
+			{
+				if ( clan.getBalance() >= m )
+				{
+					clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+				}
+			}
 			else 
 			if ( type.equals(WalletType.INFINITE) ) 
 			{
 				return true;
 			}
 		} else {
-			if ( economy.getBalance(p) >= m ) {
-				economy.withdrawPlayer(p, m);
-				return true;
+			if ( type.equals(WalletType.SIMPLE_CLANS) )
+			{
+				System.out.print(clan.getTag());
+				System.out.print(CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p).getName());
+				
+				
+				if ( economy.getBalance(p) >= m )
+					return true;
+			}
+			else
+			{
+				if ( economy.getBalance(p) >= m ) {
+					economy.withdrawPlayer(p, m);
+					return true;
+				}
 			}
 		}
 		return false;

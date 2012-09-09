@@ -570,7 +570,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	}
 	
 	//set the traders wallet type
-	public boolean setWallet(Player player, Trader trader, String walletString, String bankName)
+	public boolean setWallet(Player player, Trader trader, String walletString, String bankAccount)
 	{
 		
 		if ( !permsManager.has(player, "dtl.trader.options.wallet." + walletString ) )
@@ -579,16 +579,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			return true;
 		}
 
-		//have w a bank we can use?
-		if ( !bankName.isEmpty() )
-			if ( !trader.getWallet().setBank(player.getName(), bankName) )
-			{
-				player.sendMessage( locale.getLocaleString("invalid-wallet-bank") );
-				return true;
-			}
-		
 		
 		WalletType wallet = WalletType.getTypeByName(walletString);
+		
+		
+		//towny
+		
 		
 		//show wallet
 		if ( wallet == null )
@@ -600,7 +596,28 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//change wallet
 		else
 		{
-
+			//bank
+			if ( wallet.equals(WalletType.BANK) )
+			{
+				if ( bankAccount.isEmpty() )
+					return false;
+				if ( !trader.getWallet().setBank(player.getName(), bankAccount) )
+				{
+					player.sendMessage( locale.getLocaleString("invalid-wallet-bank") );
+					return true;
+				}
+			}
+			else
+			//clan
+			if ( wallet.equals(WalletType.SIMPLE_CLANS) )
+			{
+				if ( bankAccount.isEmpty() )
+					return false;
+				trader.getWallet().setClan(bankAccount);
+				
+			}
+			
+			
 			//set the wallet type for both trader and wallet
 			trader.getTraderConfig().setWalletType(wallet);
 
@@ -733,6 +750,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean createTrader(Player player, String[] args)
 	{
 		String traderName = "";
+		String owner = player.getName();
+		String clanTag = "";
+		
 		EntityType entityType = EntityType.PLAYER;
 		TraderType traderType = getDefaultTraderType(player);
 		WalletType walletType = getDefaultWalletType(player);
@@ -741,6 +761,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//lets fetch the argument list
 		for ( String arg : args )
 		{
+			if ( arg.startsWith("o:") )
+			{
+				owner = arg.substring(2);
+			}
+			else
+			if ( arg.startsWith("sc:") )
+			{
+				clanTag = arg.substring(3);
+			}
+			else
 			//trader type set?
 			if ( arg.startsWith("t:") )
 			{
@@ -804,7 +834,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
 		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
 		settings.setWalletType(walletType);
-		settings.setOwner(player.getName());
+		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
+			settings.getWallet().setClan(clanTag);
+		settings.setOwner(owner);
 		
 		player.sendMessage( locale.getLocaleString("trader-created") );
 		return true;

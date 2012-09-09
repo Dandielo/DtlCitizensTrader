@@ -7,7 +7,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.BankItem;
+import net.dtl.citizenstrader_new.containers.PlayerBankAccount;
+import net.dtl.citizenstrader_new.traders.Banker.BankTabType;
 import net.dtl.citizenstrader_new.traders.Trader.TraderStatus;
 import net.dtl.citizenstrader_new.traits.BankTrait;
 
@@ -17,6 +20,37 @@ public class PlayerBanker extends Banker {
 	
 	public PlayerBanker(NPC traderNpc, BankTrait bankConfiguragion, String player) { 
 		super(traderNpc, bankConfiguragion, player);
+		
+		withdrawFee = config.getDouble("bank.default-withdraw-fee");
+		depositFee = config.getDouble("bank.default-deposit-fee");
+		initializeTabPrices();
+		
+		System.out.print("a");
+		
+		account = bankAccounts.get(player);
+		if ( account == null )
+		{
+			System.out.print("a");
+			if ( tabPrices.containsKey(BankTabType.Tab1) && econ.getBalance(player) < tabPrices.get(BankTabType.Tab1) )
+			{
+				Bukkit.getPlayerExact(player).sendMessage( locale.getLocaleString("bank-account-no-money") );
+				return;
+			}
+			System.out.print("ac");
+			//create new account
+			account = new PlayerBankAccount(player, true);
+			System.out.print("a");
+			bankAccounts.put(player, account);
+			System.out.print("a");
+		}
+
+		System.out.print("ab");
+		tabInventory = account.inventoryTabView(tab);
+		System.out.print("a");
+
+		//loading trader bank config
+		this.switchInventory();
+		System.out.print("da");
 	}
 
 	

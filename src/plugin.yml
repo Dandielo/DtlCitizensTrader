@@ -1,8 +1,8 @@
 name: DtlCitizensTrader
 main: net.dtl.citizenstrader_new.CitizensTrader
 depend: [Citizens,Vault]
-soft-depend: [DtlPermissions,PexPermissions,GroupManager]
-version: 1.9Beta
+soft-depend: [DtlPermissions,PexPermissions,GroupManager,Towny,SimpleClans]
+version: 1.9.02Beta
 description: >
              Citizens Character. 
 commands: 
@@ -130,10 +130,8 @@ permissions:
                 description: allows to bind a trader with the owners wallet
               dtl.trader.options.wallet.npc-wallet: 
                 description: allows to set an independent wallet for the trader (player-trader default)
-              dtl.trader.options.wallet.clan-wallet: 
-                description: allows to bind a trader with the clan default bank account # NOT SUPPORTED #
-              dtl.trader.options.wallet.clan-bank:  
-                description: allows to bind a trader with a clan bank account # NOT SUPPORTED #
+              dtl.trader.options.wallet.simple-clans: 
+                description: allows to bind a trader with the simple-clan default bank account 
           dtl.trader.options.entity.*:
             description: allows to create an trader on the given entity type
             children:

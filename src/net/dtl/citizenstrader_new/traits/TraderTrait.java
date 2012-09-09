@@ -11,6 +11,7 @@ public class TraderTrait {
 
 	public enum WalletType {
 		OWNER_WALLET, NPC_WALLET, BANK, INFINITE //Future CLAN_WALLET
+, SIMPLE_CLANS
 ;
 
 		public static WalletType getTypeByName(String n) {
@@ -24,6 +25,8 @@ public class TraderTrait {
 				return WalletType.INFINITE;
 			else if ( n.equalsIgnoreCase("server-infinite") )
 				return WalletType.INFINITE;
+			else if ( n.startsWith("simple-clans") )
+				return WalletType.SIMPLE_CLANS;
 			return null;
 		}
 		
@@ -38,6 +41,8 @@ public class TraderTrait {
 				return "bank";
 			case INFINITE:
 				return "infinite";
+			case SIMPLE_CLANS:
+				return "simle-clans";
 			default: 
 				break;
 			}
@@ -54,6 +59,8 @@ public class TraderTrait {
 				return "bank";
 			case INFINITE:
 				return "infinite";
+			case SIMPLE_CLANS:
+				return "simple-clans";
 			}
 			return "";
 		}
@@ -70,7 +77,7 @@ public class TraderTrait {
 	public TraderTrait() {
 	//	super("type");
 		w = new Wallet(wType);
-		w.setMoney(000.0);
+		w.setMoney(0.0);
 	}
 	
 	public void setOwner(String owner) {
@@ -146,7 +153,15 @@ public class TraderTrait {
 			tType = TraderType.getTypeByName(data.getString("trader-type", "server"));
 		}*/
 		if ( data.keyExists("wallet-type") ) {
-			wType = WalletType.getTypeByName(data.getString("wallet-type", "infinite"));
+			String walletType = data.getString("wallet-type", "infinite");
+			if ( walletType.startsWith("simple-clans") )
+			{
+				wType = WalletType.SIMPLE_CLANS;
+				w.setClan(walletType.substring(12));
+			}
+			else
+				wType = WalletType.getTypeByName(walletType);
+			
 			w.setWalletType(wType);
 		}
 		if ( data.keyExists("owner") ) {
@@ -158,8 +173,8 @@ public class TraderTrait {
 	}
 
 	public void save(DataKey data) {
-	//	data.setString("trader-type", TraderType.toString(tType));
-		data.setString("wallet-type", WalletType.toString(wType));
+	//	data.setString("trader-type", TraderType.toString(tType))
+		data.setString("wallet-type", WalletType.toString(wType) + ( w.getWalletType().equals(WalletType.SIMPLE_CLANS) ? "." + w.getClan() : ""  ));
 		data.setString("owner", owner);
 		data.setDouble("money", w.getMoney());
 	}

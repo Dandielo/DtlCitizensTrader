@@ -5,11 +5,15 @@ import java.util.logging.Logger;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.milkbowl.vault.economy.Economy;
+import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import com.palmergames.bukkit.towny.Towny;
 
 public class CitizensTrader extends JavaPlugin {
 	//citizens trader logger
@@ -17,6 +21,8 @@ public class CitizensTrader extends JavaPlugin {
 	
 	//plugin instance
 	private static CitizensTrader instance;
+	private static SimpleClans clans;
+	private static Towny towny;
 	
 	//CitizensTrader Managers
 	private static PermissionsManager permsManager;
@@ -101,7 +107,8 @@ public class CitizensTrader extends JavaPlugin {
 			return;
 		}
 		
-
+        initializeSoftDependPlugins();
+        
         //register the DtlTraderTrait
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("trader"));
 		
@@ -124,6 +131,26 @@ public class CitizensTrader extends JavaPlugin {
 		logger.info("["+ pdfFile.getName() + "] v" + pdfFile.getVersion() + " disabled.");
 	}
 	
+	//Hooking into clans and towny bank account
+	public void initializeSoftDependPlugins()
+	{
+		clans = (SimpleClans) Bukkit.getPluginManager().getPlugin("SimpleClans");
+		if ( clans != null )
+		{
+			info("Hooked into " + clans.getDescription().getFullName());
+		}
+		towny = (Towny) Bukkit.getPluginManager().getPlugin("Towny");
+		if ( towny != null )
+		{
+		//	towny.getTownyUniverse().getTownsMap().get("").get
+			info("Hooked into " + towny.getDescription().getFullName());
+		}
+	}
+	
+	public static SimpleClans getSimpleClans()
+	{
+		return clans;
+	}
 	
 	//static functions
 	public static PermissionsManager getPermissionsManager()

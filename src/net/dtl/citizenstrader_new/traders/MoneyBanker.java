@@ -13,12 +13,11 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.containers.BankItem;
+import net.dtl.citizenstrader_new.containers.PlayerBankAccount;
 import net.dtl.citizenstrader_new.traits.BankTrait;
 import net.milkbowl.vault.economy.Economy;
 
 public class MoneyBanker extends Banker {
-	private static Economy economy;
-	private static FileConfiguration config;
 	
 	private static ItemStack exchangeItem;
 	private static double itemValue; 
@@ -27,9 +26,9 @@ public class MoneyBanker extends Banker {
 	public MoneyBanker(NPC traderNpc, BankTrait bankConfiguragion, String player) { 
 		super(traderNpc, bankConfiguragion, player);
 
-		economy = CitizensTrader.getInstance().getEconomy();
+		account = new PlayerBankAccount(player, false);
+		
 		this.player = player;
-		config = CitizensTrader.getInstance().getConfig();
 
 		exchangeItem = new BankItem(config.getString("money-bank.exchange-item", "388")).getItemStack();
 		itemValue = config.getDouble("money-bank.item-value", 10.0);
@@ -42,7 +41,7 @@ public class MoneyBanker extends Banker {
 
 	public void switchInventory2()
 	{
-		double balance = economy.getBalance(this.player);
+		double balance = econ.getBalance(this.player);
 		int amount = (int) (balance / itemValue);
 		selectItem(toBankItem(exchangeItem));
 		this.addAmountToBankerInventory(tabInventory, amount);
@@ -150,7 +149,7 @@ public class MoneyBanker extends Banker {
 				if ( current.getTypeId() != 0 )
 				{
 					double withdraw = current.getAmount()*itemValue;
-					economy.withdrawPlayer(player, withdraw);
+					econ.withdrawPlayer(player, withdraw);
 					p.sendMessage( locale.getLocaleString("mbanker-got-item").replace("{item}", current.getType().name()) );
 					p.sendMessage( locale.getLocaleString("mbanker-lost-money").replace("{money}", decimalFormat.format(withdraw)) );
 				}
@@ -167,7 +166,7 @@ public class MoneyBanker extends Banker {
 					if ( event.isRightClick() )
 						withdraw = ((current.getAmount()/2)+1)*itemValue;
 						
-					economy.withdrawPlayer(player, withdraw);
+					econ.withdrawPlayer(player, withdraw);
 					p.sendMessage( locale.getLocaleString("mbanker-got-item").replace("{item}", current.getType().name()) );
 					p.sendMessage( locale.getLocaleString("mbanker-lost-money").replace("{money}", decimalFormat.format(withdraw)) );
 				}
@@ -184,7 +183,7 @@ public class MoneyBanker extends Banker {
 					if ( event.isRightClick() )
 						deposit = itemValue;
 					
-					economy.depositPlayer(player, deposit);
+					econ.depositPlayer(player, deposit);
 					p.sendMessage( locale.getLocaleString("mbanker-lost-item").replace("{item}", cursor.getType().name()) );
 					p.sendMessage( locale.getLocaleString("mbanker-got-money").replace("{money}", decimalFormat.format(deposit)) );
 				}
@@ -204,7 +203,7 @@ public class MoneyBanker extends Banker {
 				if ( current.getTypeId() != 0 )
 				{
 					double deposit = current.getAmount()*itemValue;
-					economy.depositPlayer(player, deposit);
+					econ.depositPlayer(player, deposit);
 					p.sendMessage( locale.getLocaleString("mbanker-lost-item").replace("{item}", current.getType().name()) );
 					p.sendMessage( locale.getLocaleString("mbanker-got-money").replace("{money}", decimalFormat.format(deposit)) );
 				}

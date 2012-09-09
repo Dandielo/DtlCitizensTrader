@@ -33,6 +33,7 @@ bank:
   tab-size: 3
   default-withdraw-fee: 0.0
   default-deposit-fee: 0.0
+  default-max-tabs: 9
   tab-prices: 
     tab2: 100.0
     tab3: 200.0

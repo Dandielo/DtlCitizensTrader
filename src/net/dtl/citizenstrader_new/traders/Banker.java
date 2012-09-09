@@ -87,12 +87,12 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	//static global settigns
-	private static FileConfiguration config;
-	private static double withdrawFee;
-	private static double depositFee;
-	private static Map<BankTabType, Double> tabPrices;
+	protected static FileConfiguration config;
+	protected static double withdrawFee;
+	protected static double depositFee;
+	protected static Map<BankTabType, Double> tabPrices;
 	
-	private static Economy econ;
+	protected static Economy econ;
 	
 	//players using the Banker atm
 	protected static Map<String, BankAccount> bankAccounts;
@@ -113,28 +113,12 @@ abstract public class Banker implements EconomyNpc {
 	protected NPC npc;
 	
 	public Banker(NPC bankerNpc, BankTrait bankConfiguration, String player) {
+
 		econ = CitizensTrader.getInstance().getEconomy();
-		//config setup
 		config = CitizensTrader.getInstance().getConfig();
-		withdrawFee = config.getDouble("bank.default-withdraw-fee");
-		depositFee = config.getDouble("bank.default-deposit-fee");
-		initializeTabPrices();
 		
 		locale = CitizensTrader.getLocaleManager();
 		//loading accoutns
-		
-		account = bankAccounts.get(player);
-		if ( account == null )
-		{
-			if ( econ.getBalance(player) < tabPrices.get(BankTabType.Tab1) )
-			{
-				Bukkit.getPlayerExact(player).sendMessage( locale.getLocaleString("bank-account-no-money") );
-				return;
-			}
-			//create new account
-			account = new PlayerBankAccount(player);
-			bankAccounts.put(player, account);
-		}
 		
 		
 		traderStatus = TraderStatus.BANK;
@@ -143,10 +127,6 @@ abstract public class Banker implements EconomyNpc {
 
 		bank = bankConfiguration;
 		npc = bankerNpc;
-
-		tabInventory = account.inventoryTabView(tab);
-		//loading trader bank config
-		this.switchInventory();
 		
 	}
 
@@ -155,7 +135,7 @@ abstract public class Banker implements EconomyNpc {
 		return bankAccounts.containsKey(player.getName());
 	}
 	
-	private static void initializeTabPrices()
+	protected static void initializeTabPrices()
 	{
 		tabPrices = new HashMap<BankTabType, Double>();
 		for ( String key : config.getConfigurationSection("bank.tab-prices").getKeys(false) )
