@@ -107,7 +107,10 @@ public class Wallet {
 				economy.bankDeposit(bank, m);
 			else
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
-				clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+			{
+				clan.setBalance(clan.getBalance()+m);
+			//	clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+			}
 			else
 			if ( type.equals(WalletType.TOWNY) )
 			{
@@ -166,7 +169,9 @@ public class Wallet {
 			{
 				if ( clan.getBalance() >= m )
 				{
-					clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+
+					clan.setBalance(clan.getBalance()-m);
+					//clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
 					return true;
 				}
 			}
@@ -203,10 +208,10 @@ public class Wallet {
 			else
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
 			{
-				
-				
-				if ( economy.getBalance(p) >= m )
+				if ( economy.getBalance(p) >= m ) {
+					economy.withdrawPlayer(p, money);
 					return true;
+				}
 			}
 			else
 			{
