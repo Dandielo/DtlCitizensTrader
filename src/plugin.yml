@@ -11,12 +11,14 @@ commands:
       description: Dtl - CitizensTrader trader commands.
       usage: |
              Usage: 
-             /<command> sell list [page]
-             /<command> buy list
+             /<command> create <name> [type] [wallet] [owner] [account] [entity]
+             /<command> list <transaction> [page]
              /<command> wallet [wallet] [account]
              /<command> type [type]
              /<command> owner [owner]
-             /<command> create <name> [type] [wallet] [owner] [account] [entity]
+             /<command> balance
+             /<command> withdraw <amount>
+             /<command> deposit <amount>
              /<command> reload
       permisison-message: You don't have "<permission>" permission, to use commands
     banker: 
