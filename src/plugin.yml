@@ -25,153 +25,131 @@ commands:
       permission: dtl.trader.commands
       permisison-message: You don't have "<permission>" permission, to use commands
 permissions:
+  dtl.dtlTraders.admin:
+    default: op
+    children: 
+      dtl.trader.*: true
+      dtl.banker.*: true
+  dtl.dtlTraders.user:
+    default: true
+    children:
+      dtl.dtlTraders.bank-user: true
+      dtl.dtlTraders.trader-user: true
+  dtl.dtlTraders.trader-user: 
+    default: false
+    children:
+      dtl.trader.options.*: true
+      dtl.trader.types.*: true
+  dtl.dtlTraders.bank-user: 
+    default: false
+    children:
+      dtl.banker.options.*: true
+      dtl.banker.types.*: true
   dtl.trader.*:
     default: op
     children:
-      dtl.trader.user.default:
-        description: default commands for users
-        default: true
-        children:
-          dtl.trader.options.sell: true
-          dtl.trader.options.buy: true
-          dtl.trader.options.simple-mode: true
-          dtl.trader.options.type.player: true
-          dtl.trader.options.type.server: true
-      dtl.trader.user.manager:
-        description: default commands for player traders for a user
-        default: false
-        children:
-          dtl.trader.options.manager-mode: true
-          dtl.trader.options.player: true
-          dtl.trader.options.wallet.owner-wallet: true
-          dtl.trader.options.wallet.npc-wallet: true
-          dtl.trader.commands: true
-          dtl.trader.commands.list: true
-          dtl.trader.commands.balance: true
-          dtl.trader.commands.withdraw: true
-          dtl.trader.commands.deposit: true
-          dtl.trader.commands.wallet: true
-      dtl.trader.reload: 
-        description: reloading plugin configuration (permission)
-      dtl.trader.bypass.*:
-        description: admin bypasses
-        default: op
-        children: 
-          dtl.trader.bypass.interval:
-            description: bypasses the interval betwean opening the traders inventory
-          dtl.trader.bypass.drop-item:
-            description: allows to throw out items when clicking outside the inventory
-          dtl.trader.bypass.creative: 
-            description: allows to bypass the creative restriction when managing a player trader
-          dtl.trader.options.manager-mode-bypass: 
-            description: allows to use the traders manager-mode (if you'r the owner)
-      dtl.economy.types.*:
-        description: allows to set specific trader types
-        childern:
-          dtl.economy.types.server: 
-            description: allows to create/set/use/manage a server trader
-          dtl.trader.options.type.player: 
-            description: allows to create/set/use/manage a player trader
-          dtl.trader.options.type.enchant: 
-            description: allows to create/set/use/manage a enchant trader
-          dtl.trader.options.type.player-bank: 
-            description: allows to create/set/use/manage a player banker
-          dtl.trader.options.type.money-bank: 
-            description: allows to create/set/use/manage a player banker
-          dtl.trader.options.type.auction: 
-            description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
-      dtl.banker.options.*:
-        description: banker available settings
-        children: 
-          
-      dtl.trader.options.*:
-        description: trader options to allow/disallow features
-        default: op
-        children:
-          dtl.trader.options.sell: 
-            description: allows the user to buy items
-          dtl.trader.options.buy: 
-            description: allows the user to sell items
-          dtl.trader.options.simple-mode: 
-            description: allows to use the trader in simple-mode
-          dtl.trader.options.manager-mode: 
-            description: allows to use the traders manager-mode (if you'r the owner)
-          dtl.trader.options.stack-price: 
-            description: allows to toggle teh stack price in m-m
-          dtl.trader.options.multiple-amounts: 
-            description: allows to set multiple amounts in m-m
-          dtl.trader.options.player-limits: 
-            description: allows to set player limits in m-m
-          dtl.trader.options.global-limits: 
-            description: allows to set global limits in m-m
-          dtl.trader.options.type.*:
-            description: allows to set specific trader types
-            childern:
-              dtl.trader.options.type.server: 
-                description: allows to create/set/use/manage a server trader
-              dtl.trader.options.type.player: 
-                description: allows to create/set/use/manage a player trader
-              dtl.trader.options.type.enchant: 
-                description: allows to create/set/use/manage a enchant trader
-              dtl.trader.options.type.player-bank: 
-                description: allows to create/set/use/manage a player banker
-              dtl.trader.options.type.money-bank: 
-                description: allows to create/set/use/manage a player banker
-              dtl.trader.options.type.auction: 
-                description: allows to create/set/use/manage an auctioner # NOT SUPPORTED #
-          dtl.trader.options.wallet.*: 
-            description: allows to set (use) different wallet types
-            children:
-              dtl.trader.options.wallet.infinite: 
-                description: allows to set a infinite wallet (no cash will be send to the traders owner, server-trader default)
-              dtl.trader.options.wallet.bank: 
-                description: allows to bind a trader with a bank account (auctioner default)
-              dtl.trader.options.wallet.owner-wallet: 
-                description: allows to bind a trader with the owners wallet
-              dtl.trader.options.wallet.npc-wallet: 
-                description: allows to set an independent wallet for the trader (player-trader default)
-              dtl.trader.options.wallet.simple-clans: 
-                description: allows to bind a trader with the simple-clan default bank account 
-          dtl.trader.options.entity.*:
-            description: allows to create an trader on the given entity type
-            children:
-              dtl.trader.options.entity.pig: true
-              dtl.trader.options.entity.wolf: true
-              dtl.trader.options.entity.sheep: true
-              dtl.trader.options.entity.blaze: true
-              dtl.trader.options.entity.zombie: true
-              dtl.trader.options.entity.creeper: true
-              dtl.trader.options.entity.skeleton: true
-      dtl.trader.commands.*: 
-        description: all trader commands
-        default: op
-        children:
-          dtl.trader.commands:
-            description: allows using commands
-          dtl.trader.commands.list: 
-            description: allows the user to list items from the selected trader (options dependent)
-          dtl.trader.commands.add: 
-            description: allows the user to add items with a command (options dependent) # NOT SUPPORTED (BUGGY) #
-          dtl.trader.commands.remove: 
-            description: allows the user to remove items with a command (options dependent) # NOT SUPPORTED (BUGGY) #  
-          dtl.trader.commands.edit: 
-            description: allows the user to edit items with a command (options dependent) # NOT SUPPORTED #
-          dtl.trader.commands.mode: 
-            description: allows the user to change the global mode (options dependent)
-          dtl.trader.commands.wallet: 
-            description: allows the user to change a traders wallet type (options dependent)
-          dtl.trader.commands.type: 
-            description: allows the user to change a traders type (options dependent)
-          dtl.trader.commands.owner: 
-            description: allows the user to change a traders owner
-          dtl.trader.commands.balance: 
-            description: allows the user to show a traders wallet balance (only npc-walet)
-          dtl.trader.commands.withdraw: 
-            description: allows the user to withdraw money from a trader (only npc-walet)
-          dtl.trader.commands.deposit: 
-            description: allows the user to deposit money to a trader (only npc-walet)
-          dtl.trader.commands.create: 
-            description: allows the user to create a trader with the given type and wallet (options dependent)
-          dtl.trader.commands.dismiss: 
-            description: allows the user to dismiss a trader
-            
+      dtl.trader.options.*: true
+      dtl.trader.types.*: true
+      dtl.trader.wallets.*: true
+      dtl.trader.managing.*: true
+      dtl.trader.commands.*: true
+      dtl.trader.bypass.*: true
+  dtl.trader.options.*:
+    default: false
+    children:
+      dtl.trader.options.sell: true
+      dtl.trader.options.buy: true
+  dtl.trader.types.*:
+    default: false
+    children: 
+      dtl.trader.types.player: true
+      dtl.trader.types.server: true
+      dtl.trader.types.enchant: true
+  dtl.trader.wallets.*:
+    default: false
+    children: 
+      dtl.trader.wallets.npc: true
+      dtl.trader.wallets.owner: true
+      dtl.trader.wallets.bank: true
+      dtl.trader.wallets.infinite: true
+      dtl.trader.wallets.towny: true
+      dtl.trader.wallets.simple-clans: true
+  dtl.trader.managing.*: 
+    default: false
+    children: 
+      dtl.trader.managing.prices: true
+      dtl.trader.managing.global-limits: true
+      dtl.trader.managing.player-limits: true
+      dtl.trader.managing.buy-limits: true
+      dtl.trader.managing.stack-price: true
+      dtl.trader.managing.multiple-amounts: true
+  dtl.trader.commands.*:
+    default: false
+    children:
+      dtl.trader.commands.create: true
+      dtl.trader.commands.list: true
+      dtl.trader.commands.wallet: true
+      dtl.trader.commands.type: true
+      dtl.trader.commands.owner: true
+      dtl.trader.commands.balance: true
+      dtl.trader.commands.withdraw: true
+      dtl.trader.commands.deposit: true
+  dtl.trader.bypass.*:
+    default: false
+    children: 
+      dtl.trader.bypass.creative: true
+      dtl.trader.bypass.managing: true
+      dtl.trader.bypass.drop-managing: true
+  dtl.banker.*:
+    default: op
+    children: 
+      dtl.banker.options.*: true
+      dtl.banker.types.*: true
+      dtl.banker.commands.*: true
+      dtl.banker.managing.*: true
+      dtl.banker.settings.*: true
+      dtl.banker.bypass.*: true
+  dtl.banker.options.*:
+    default: false
+    children: 
+      dtl.banker.options.settings: true
+      dtl.banker.options.banking: true
+      dtl.banker.options.remote-banking: true
+  dtl.banker.types.*:
+    default: false
+    children:
+      dtl.banker.types.player: true
+      dtl.banker.types.guild: true
+      dtl.banker.types.money: true
+  dtl.banker.managing.*: 
+    default: false
+    children: 
+      dtl.banker.managing.withdraw-fee: true
+      dtl.banker.managing.deposit-fee: true
+      dtl.banker.managing.settings-enabled: true
+      dtl.banker.managing.tab-buying: true
+  dtl.banker.settings.*:
+    default: false
+    children: 
+      dtl.banker.settings.tab-item: true
+      dtl.banker.settings.tab-buying: true
+      dtl.banker.settings.tab-resize: true
+  dtl.banker.commands.*:
+    default: false
+    children: 
+      dtl.banker.commands.withdraw-fee: true
+      dtl.banker.commands.deposit-fee: true
+      dtl.banker.commands.settings: true
+      dtl.banker.commands.tab-buying: true
+      dtl.banker.commands.tab-resize: true
+      dtl.banker.commands.tab-item: true
+      dtl.banker.commands.tab-name: true
+      dtl.banker.commands.remote: true
+      dtl.banker.commands.remote-admin: true
+      
+      
+      
+      
+      
+      
+      
