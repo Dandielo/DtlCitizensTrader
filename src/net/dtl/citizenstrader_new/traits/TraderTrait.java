@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
+import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.TraderCharacterTrait.TraderType;
 import net.dtl.citizenstrader_new.containers.Wallet;
 
@@ -11,7 +12,7 @@ public class TraderTrait {
 
 	public enum WalletType {
 		OWNER_WALLET, NPC_WALLET, BANK, INFINITE //Future CLAN_WALLET
-, SIMPLE_CLANS
+, SIMPLE_CLANS, TOWNY
 ;
 
 		public static WalletType getTypeByName(String n) {
@@ -27,6 +28,8 @@ public class TraderTrait {
 				return WalletType.INFINITE;
 			else if ( n.startsWith("simple-clans") )
 				return WalletType.SIMPLE_CLANS;
+			else if ( n.startsWith("towny") )
+				return WalletType.TOWNY;
 			return null;
 		}
 		
@@ -43,6 +46,8 @@ public class TraderTrait {
 				return "infinite";
 			case SIMPLE_CLANS:
 				return "simle-clans";
+			case TOWNY:
+				return "towny";
 			default: 
 				break;
 			}
@@ -61,6 +66,8 @@ public class TraderTrait {
 				return "infinite";
 			case SIMPLE_CLANS:
 				return "simple-clans";
+			case TOWNY:
+				return "towny";
 			}
 			return "";
 		}
@@ -156,8 +163,29 @@ public class TraderTrait {
 			String walletType = data.getString("wallet-type", "infinite");
 			if ( walletType.startsWith("simple-clans") )
 			{
-				wType = WalletType.SIMPLE_CLANS;
-				w.setClan(walletType.substring(12));
+				if ( CitizensTrader.getSimpleClans() == null )
+				{
+					wType = WalletType.NPC_WALLET;
+				}
+				else
+				{
+					wType = WalletType.SIMPLE_CLANS;
+					w.setClan(walletType.substring(13));
+				}
+			}
+			else
+			if ( walletType.startsWith("towny") )
+			{
+				if ( CitizensTrader.getTowny() == null )
+				{
+					wType = WalletType.NPC_WALLET;
+					
+				}
+				else
+				{
+					wType = WalletType.TOWNY;
+					w.setTown(walletType.substring(6));
+				}
 			}
 			else
 				wType = WalletType.getTypeByName(walletType);
@@ -173,8 +201,15 @@ public class TraderTrait {
 	}
 
 	public void save(DataKey data) {
+		String account = ""; 
+		if ( getWalletType().equals(WalletType.TOWNY) )
+			account = getWallet().getTown();
+		if (  getWalletType().equals(WalletType.SIMPLE_CLANS) )
+			account =  getWallet().getClan();
+		if (  getWalletType().equals(WalletType.BANK) )
+			account =  getWallet().getBank();
 	//	data.setString("trader-type", TraderType.toString(tType))
-		data.setString("wallet-type", WalletType.toString(wType) + ( w.getWalletType().equals(WalletType.SIMPLE_CLANS) ? "." + w.getClan() : ""  ));
+		data.setString("wallet-type", WalletType.toString(wType) + ( account.isEmpty() ? "" : "." + account ) );
 		data.setString("owner", owner);
 		data.setDouble("money", w.getMoney());
 	}

@@ -93,6 +93,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				player.sendMessage(locale.getLocaleString("reload-config"));
 				
 				config.reloadConfig();
+				locale.reload();
 				
 				return true;
 			}
@@ -589,8 +590,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//show wallet
 		if ( wallet == null )
 		{
+			String account = ""; 
+			if ( trader.getTraderConfig().getWalletType().equals(WalletType.TOWNY) )
+				account = trader.getWallet().getTown();
+			if ( trader.getTraderConfig().getWalletType().equals(WalletType.SIMPLE_CLANS) )
+				account = trader.getWallet().getClan();
+			if ( trader.getTraderConfig().getWalletType().equals(WalletType.BANK) )
+				account = trader.getWallet().getBank();
+			
 			//send message
-			player.sendMessage( locale.getLocaleString("wallet-message").replace("{wallet}", trader.getTraderConfig().getWalletType().toString()) );
+			player.sendMessage( locale.getLocaleString("wallet-message").replace("{wallet}", trader.getTraderConfig().getWalletType().toString()).replace("{account}", account) );
 			
 		}
 		//change wallet
@@ -600,7 +609,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( wallet.equals(WalletType.BANK) )
 			{
 				if ( bankAccount.isEmpty() )
-					return false;
+					return true;
 				if ( !trader.getWallet().setBank(player.getName(), bankAccount) )
 				{
 					player.sendMessage( locale.getLocaleString("invalid-wallet-bank") );
@@ -611,9 +620,29 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			//clan
 			if ( wallet.equals(WalletType.SIMPLE_CLANS) )
 			{
+				if ( CitizensTrader.getSimpleClans() == null ) {
+					player.sendMessage( locale.getLocaleString("invalid-wallet") );
+					return true;
+				}
+				
 				if ( bankAccount.isEmpty() )
-					return false;
+					return true;
 				trader.getWallet().setClan(bankAccount);
+				
+			}
+			else
+			//towny
+			if ( wallet.equals(WalletType.TOWNY) )
+			{
+				if ( CitizensTrader.getTowny() == null )
+				{
+					player.sendMessage( locale.getLocaleString("invalid-wallet") );
+					return true;
+				}
+				
+				if ( bankAccount.isEmpty() )
+					return true;
+				trader.getWallet().setTown(bankAccount);
 				
 			}
 			
@@ -752,6 +781,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		String traderName = "";
 		String owner = player.getName();
 		String clanTag = "";
+		String townName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
 		TraderType traderType = getDefaultTraderType(player);
@@ -769,6 +799,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("sc:") )
 			{
 				clanTag = arg.substring(3);
+			}
+			else
+			if ( arg.startsWith("town:") )
+			{
+				townName = arg.substring(5);
 			}
 			else
 			//trader type set?
@@ -836,6 +871,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		settings.setWalletType(walletType);
 		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
 			settings.getWallet().setClan(clanTag);
+		if ( walletType.equals(WalletType.TOWNY) )
+			settings.getWallet().setTown(townName);
 		settings.setOwner(owner);
 		
 		player.sendMessage( locale.getLocaleString("trader-created") );

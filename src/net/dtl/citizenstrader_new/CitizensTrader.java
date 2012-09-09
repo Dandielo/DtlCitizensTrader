@@ -147,6 +147,10 @@ public class CitizensTrader extends JavaPlugin {
 		}
 	}
 	
+	public static Towny getTowny() {
+		return towny;
+	}
+	
 	public static SimpleClans getSimpleClans()
 	{
 		return clans;

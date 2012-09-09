@@ -1,5 +1,12 @@
 package net.dtl.citizenstrader_new.containers;
 
+import com.palmergames.bukkit.towny.TownySettings;
+import com.palmergames.bukkit.towny.exceptions.EconomyException;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+
 import net.dtl.citizenstrader_new.CitizensTrader;
 import net.dtl.citizenstrader_new.traits.TraderTrait.WalletType;
 import net.milkbowl.vault.economy.Economy;
@@ -11,6 +18,7 @@ public class Wallet {
 	private WalletType type;
 	private Economy economy;
 	private Clan clan; 
+	private Town town;
 	
 	private double money; 
 	private String bank;
@@ -35,6 +43,16 @@ public class Wallet {
 	}
 	public double getMoney() {
 		return money;
+	}
+	
+	public void setTown(String townName)
+	{
+		town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(townName);
+	}
+	
+	public String getTown()
+	{
+		return town.getName();
 	}
 	
 	public void setClan(String clanTag) {
@@ -89,7 +107,24 @@ public class Wallet {
 				economy.bankDeposit(bank, m);
 			else
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
-				clan.deposit(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+				clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+			else
+			if ( type.equals(WalletType.TOWNY) )
+			{
+				if ( CitizensTrader.getTowny() != null )
+				{
+					try {
+						double bankcap = TownySettings.getTownBankCap();
+						if (bankcap > 0) 
+							if (m + town.getHoldingBalance() > bankcap)
+								return;
+						
+						town.setBalance(town.getHoldingBalance()+m, "Trader income");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		} else {
 			economy.depositPlayer(p, m);
 		}
@@ -132,6 +167,24 @@ public class Wallet {
 				if ( clan.getBalance() >= m )
 				{
 					clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+					return true;
+				}
+			}
+			else
+			if ( type.equals(WalletType.TOWNY) )
+			{
+				if ( CitizensTrader.getTowny() != null )
+				{
+					try {
+						if ( town.getHoldingBalance() >= m )
+						{
+							town.setBalance(town.getHoldingBalance()-m);
+							return true;
+						}
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 				}
 			}
 			else 
@@ -140,10 +193,16 @@ public class Wallet {
 				return true;
 			}
 		} else {
+			if ( type.equals(WalletType.TOWNY) )
+			{
+				if ( economy.getBalance(p) >= m ) {
+					economy.withdrawPlayer(p, money);
+					return true;
+				}
+			}
+			else
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
 			{
-				System.out.print(clan.getTag());
-				System.out.print(CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p).getName());
 				
 				
 				if ( economy.getBalance(p) >= m )
