@@ -101,18 +101,18 @@ public class LocaleManager {
 				localeStrings.put("no-defaults", "^cNo defaults found while creating a trader");
 				
 				localeStrings.put("wallet-changed", "^cYou changed the wallet type to ^b{wallet}");
-				localeStrings.put("type-changed", "^cType changed to {type}, reset the trader manager mode");
+				localeStrings.put("type-changed", "^cType changed to {type}, reset the manager mode");
 				localeStrings.put("trader-created", "^cTrader was created at your position");
 				localeStrings.put("owner-changed", "^cNew owner of this trader is ^b{player}");
 
 				localeStrings.put("list-header", "^cTrader stock list ^b {curp}/{allp}");
-				localeStrings.put("list-message", "- ^c{name} ({id}:{data}) ^f{amount} {price} ^e[{slot}]");
+				localeStrings.put("list-message", "{nr}. ^c{name} ({id}:{data}) ^f{amount} {price} ^e[{slot}]");
 				localeStrings.put("balance-message", "^cTraders balance: ^b{balance}");
 				localeStrings.put("withdraw-message", "^cYou withdrawed ^b{amount}");
 				localeStrings.put("deposit-message", "^cYou deposited ^b{amount}");
 				localeStrings.put("owner-message", "^b{player}^c is the owner of this trader");
 				localeStrings.put("wallet-message", "^cCurrent wallet type is: ^b{wallet}^c | ^6{account}");
-				localeStrings.put("type-message", "^cCurrent trader type is: ^b{type}");
+				localeStrings.put("type-message", "^cCurrent type is: ^b{type}");
 				
 				localeStrings.put("command-template", "^c/trader ^6{command} ^f{args}");
 				
@@ -142,6 +142,8 @@ public class LocaleManager {
 				//server trader (manager)
 				
 				//player trader (simple)
+				localeStrings.put("item-sold", "^b{item} ^6was bought by ^b{player}");
+				localeStrings.put("item-bought", "^b{item} ^6was sold to ^b{player}");
 				
 				//player trader (manager)
 				localeStrings.put("item-removed-pt", "^cItem removed! You got ^b{amount} ^cback");

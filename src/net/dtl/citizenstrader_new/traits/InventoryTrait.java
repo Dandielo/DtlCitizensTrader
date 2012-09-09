@@ -177,6 +177,13 @@ public class InventoryTrait implements InventoryHolder {
 		return null;
 	}
 	
+	public int getStockSize(TraderStatus status) 
+	{
+		if ( status.equals(TraderStatus.SELL) )
+			return sellStock.size();
+		return buyStock.size();
+	}
+	
 	public List<String> getItemList(TraderStatus status, String format, int page) 
 	{
 		//the list we will privide the player 
@@ -202,6 +209,9 @@ public class InventoryTrait implements InventoryHolder {
 			String itemDisplay = format;
 			
 			//item id display
+			itemDisplay = itemDisplay.replace("{nr}", String.valueOf(i+1) );
+			
+			//item id display
 			itemDisplay = itemDisplay.replace("{id}", String.valueOf(item.getItemStack().getTypeId()) );
 
 			//item id display
@@ -222,7 +232,7 @@ public class InventoryTrait implements InventoryHolder {
 			//item name display
 			itemDisplay = itemDisplay.replace("{name}", String.valueOf(item.getItemStack().getType().name().toLowerCase()) );
 			
-			if ( i >= page * 10 && i < ( ( 1 + page ) * 10 ) + 1 )
+			if ( i >= page * 10 && i < ( ( 1 + page ) * 10 ) )
 				items.add(itemDisplay);
 			
 			++i;

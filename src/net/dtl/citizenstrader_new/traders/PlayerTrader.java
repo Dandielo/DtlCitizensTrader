@@ -2,6 +2,7 @@ package net.dtl.citizenstrader_new.traders;
 
 import java.text.DecimalFormat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -9,6 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizenstrader_new.TraderCommandExecutor;
 import net.dtl.citizenstrader_new.containers.LimitSystem;
 import net.dtl.citizenstrader_new.containers.StockItem;
 import net.dtl.citizenstrader_new.traits.TraderTrait;
@@ -47,35 +49,19 @@ public class PlayerTrader extends Trader {
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
 		if ( top ) {
-			/*
-			 * top is for mostly for the "BuyFromTraderEvents"
-			 * 	
-			 */
-
 			
 			if ( isManagementSlot(slot, 1) ) {
-				/*
-				 * Standard wool place (last item slot)
-				 * 
-				 */
 				
 				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) ) {
-					/*
-					 * lest go back to the main selling inventory ;)
-					 * 
-					 */
+					
 					switchInventory(TraderStatus.SELL);		
+					
 				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) ) {
-					/*
-					 * lest go back to the main selling inventory ;)
-					 * 
-					 */
-					switchInventory(TraderStatus.SELL);		
+
+					switchInventory(TraderStatus.SELL);	
+					
 				} else if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) {
-					/*
-					 * lest go to the buy inventory ;)
-					 * 
-					 */
+
 					switchInventory(TraderStatus.BUY);		
 				}
 			} 
@@ -83,38 +69,23 @@ public class PlayerTrader extends Trader {
 			//is slot management
 			if ( equalsTraderStatus(TraderStatus.SELL) ) 
 			{
-				/*
-				 * Player is buying from the trader
-				 * 
-				 */
+
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() ) {
 					if ( getSelectedItem().hasMultipleAmouts() ) {
-						/*
-						 * Switching to the amount select inventory
-						 * 
-						 */
+
 						switchInventory(getSelectedItem());
 						setTraderStatus(TraderStatus.SELL_AMOUNT);
+						
 					} else {
 						if ( getClickedSlot() == slot ) {
-							/*
-							 * This will trigger if some1 will click more than 1 amount on the same item  
-							 * in the trader inventory
-							 * 
-							 */
+
 							if ( checkLimits(p) && inventoryHasPlace(p,0) && buyTransaction(p,getSelectedItem().getPrice()) ) {
 								p.sendMessage(locale.getLocaleString("buy-message").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
-								
-								/* *
-								 * better version of Inventory.addItem();
-								 * 
-								 */
+
+
 								addSelectedToInventory(p,0);
-								
-								/* *
-								 * needs to be recoded
-								 * 
-								 */
+
+
 								updateLimits(p.getName());
 								
 								//logging
@@ -125,6 +96,8 @@ public class PlayerTrader extends Trader {
 									getSelectedItem().getAmount(), 
 									getSelectedItem().getPrice() );
 								
+								//sending a message to the traders owner
+								this.messageOwner("sold", p.getName(), getSelectedItem());
 								
 							} else 
 								p.sendMessage(locale.getLocaleString("transaction-falied"));
@@ -170,6 +143,9 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getAmount(slot), 
 								getSelectedItem().getPrice(slot) );
 							
+							//sending a message to the traders owner
+							this.messageOwner("sold", p.getName(), getSelectedItem());
+							
 						} else
 							p.sendMessage( locale.getLocaleString("transaction-falied") );
 					} else {
@@ -205,24 +181,10 @@ public class PlayerTrader extends Trader {
 						if ( checkBuyLimits(p, scale) && sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) ) {//*event.getCurrentItem().getAmount()
 						//	int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 							p.sendMessage( locale.getLocaleString("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
-							
-							/* *
-							 * needs to be recoded
-							 * 
-							 * #Recoded (not tested)
-							 * 
-							 */
-						//	if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
+
+
 							updateBuyLimits(p.getName(), scale);
 
-							/* *
-							 * need to create removeFromInventory fnc (code cleanup)
-							 * 
-							 *//*
-							if ( event.getCurrentItem().getAmount()-getSelectedItem().getAmount() > 0 )
-								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getSelectedItem().getAmount());
-							else 
-								event.setCurrentItem(new ItemStack(Material.AIR));*/
 							removeFromInventory(event.getCurrentItem(),event);
 							
 							//logging
@@ -232,6 +194,9 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount()*scale, 
 								getSelectedItem().getPrice()*scale );
+
+							//sending a message to the traders owner
+							this.messageOwner("bought", p.getName(), getSelectedItem());
 							
 						} else 
 							p.sendMessage( locale.getLocaleString("transaction-falied") );
@@ -253,30 +218,9 @@ public class PlayerTrader extends Trader {
 						
 						p.sendMessage( locale.getLocaleString("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
-						/* *
-						 * needs to be recoded
-						 * 
-						 * #Recoded (not tested)
-						 * 
-						 */
-						//if ( !updateLimitsTem(p.getName(),event.getCurrentItem()) )
 						updateBuyLimits(p.getName(), scale);
 						
-						/* *
-						 * need to create removeFromInventoryFunction (code cleanup)
-						 * 
-						 */
 						
-						/* *
-						 * TEMPORARY!!!!!!
-						 * 
-						 */
-						/*if ( event.getCurrentItem().getAmount() == 1 ) {
-							if ( event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()) > 0 )
-								event.getCurrentItem().setAmount(event.getCurrentItem().getAmount()-getMaxAmount(event.getCurrentItem()));
-							else 
-								event.setCurrentItem(new ItemStack(Material.AIR));
-						} else {*/
 						removeFromInventory(event.getCurrentItem(),event);
 						
 						//logging
@@ -286,7 +230,9 @@ public class PlayerTrader extends Trader {
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount()*scale, 
 							getSelectedItem().getPrice()*scale );
-					//	}
+
+						//sending a message to the traders owner
+						this.messageOwner("bought", p.getName(), getSelectedItem());
 					}
 					else 
 						p.sendMessage( locale.getLocaleString("transaction-falied") );
@@ -1023,6 +969,14 @@ public class PlayerTrader extends Trader {
 	}
 		
 //	}
+	
+	public void messageOwner(String action, String buyer, StockItem item)
+	{
+		Player player = Bukkit.getPlayer(getTraderConfig().getOwner());
+		if ( player == null )
+			return;
+		player.sendMessage( locale.getLocaleString("item-"+action).replace("{player}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()) );
+	}
 
 
 }

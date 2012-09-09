@@ -117,6 +117,7 @@ public class CitizensTrader extends JavaPlugin {
 		
 		//register command executor
 		getCommand("trader").setExecutor(new TraderCommandExecutor(this));
+		getCommand("banker").setExecutor(new BankerCommandExecutor(this));
 		
 		//plugin enabled
 		logger.info("["+ pdfFile.getName() + "] v" + pdfFile.getVersion() + " enabled.");

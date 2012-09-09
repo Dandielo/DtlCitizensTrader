@@ -196,36 +196,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
 	public TraderType getDefaultTraderType(Player player) {
+		
 		//server trader as default
-		if ( permsManager.has(player, "dtl.trader.options.type.server") )
+		if ( permsManager.has(player, "dtl.trader.types.server") )
 			return TraderType.SERVER_TRADER;
 		else
 		//next default is player trader 
-		if ( permsManager.has(player, "dtl.trader.options.type.player") )
+		if ( permsManager.has(player, "dtl.trader.types.player") )
 			return TraderType.SERVER_TRADER;
 		
 		//else return no default
@@ -234,20 +213,20 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	
 	public WalletType getDefaultWalletType(Player player) {
 		//server default is infinite
-		if ( permsManager.has(player, "dtl.trader.options.wallet.infinite") )
+		if ( permsManager.has(player, "dtl.trader.wallets.infinite") )
 			return WalletType.INFINITE;
 		else
-		//next server default is custom bank
-		if ( permsManager.has(player, "dtl.trader.options.wallet.bank") )
-			return WalletType.BANK;
-		else
 		//next default is npc wallet
-		if ( permsManager.has(player, "dtl.trader.options.wallet.npc-wallet") )
+		if ( permsManager.has(player, "dtl.trader.wallets.npc") )
 			return WalletType.NPC_WALLET;
 		else
 		//next default is player wallet
-		if ( permsManager.has(player, "dtl.trader.options.wallet.owner-wallet") )
+		if ( permsManager.has(player, "dtl.trader.wallets.owner") )
 			return WalletType.OWNER_WALLET;
+		else
+		//next server default is custom bank
+		if ( permsManager.has(player, "dtl.trader.wallets.bank") )
+			return WalletType.BANK;
 		
 		//else return no default
 		return null;
@@ -276,12 +255,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			//come on can;t you write a normal number... ?
 			player.sendMessage( locale.getLocaleString("invalid-args") );
-			player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "list").replace("{args}", "[page]") );
+			player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "list").replace("{args}", "<transaction> [page]") );
 			return true;
 		}
 		
+		int size = trader.getTraderStock().getStockSize(status);
+		int totalPages = ( size % 10 == 0 ? ( size / 10 ) : ( size / 10 ) + 1 );
+		
+		
 		//we got a item list
-		player.sendMessage( locale.getLocaleString("list-header") );
+		player.sendMessage( locale.getLocaleString("list-header").replace("{curp}", "" + page).replace("{allp}", "" + totalPages) );
 		
 		
 		for ( String item : trader.getTraderStock().getItemList(status, locale.getLocaleString("list-message"), page) )
@@ -289,26 +272,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 	
-	public boolean addItem()
-	{
-		return true;
-	}
-	
-	public boolean editItem()
-	{
-		return true;
-	}
-	
-	public boolean removeItem()
-	{
-		return true;
-	}
-	
 	//set the traders wallet type
 	public boolean setWallet(Player player, Trader trader, String walletString, String bankAccount)
 	{
 		
-		if ( !permsManager.has(player, "dtl.trader.options.wallet." + walletString ) )
+		if ( !permsManager.has(player, "dtl.trader.wallets." + walletString ) )
 		{
 			player.sendMessage( locale.getLocaleString("invalid-wallet-perm") );
 			return true;
@@ -396,7 +364,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean setType(Player player, Trader trader, String typeString)
 	{
 		
-		if ( !permsManager.has(player, "dtl.trader.options.type." + typeString ) )
+		if ( !permsManager.has(player, "dtl.trader.types." + typeString ) )
 		{
 			player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
 			return true;
@@ -544,7 +512,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("t:") )
 			{
 				//do we have permissions to set this trader type?
-				if ( !permsManager.has(player, "dtl.trader.options.type." + arg.substring(2) ) )
+				if ( !permsManager.has(player, "dtl.trader.types." + arg.substring(2) ) )
 				{
 					player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
 					return true;
@@ -556,7 +524,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("w:") )
 			{
 				//do we have permissions to set this wallet type?
-				if ( !permsManager.has(player, "dtl.trader.options.wallet." + arg.substring(2) ) )
+				if ( !permsManager.has(player, "dtl.trader.wallets." + arg.substring(2) ) )
 				{
 					player.sendMessage( locale.getLocaleString("invalid-wallet-perm") );
 					return true;
@@ -567,12 +535,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			//entity type set
 			if ( arg.startsWith("e:") )
 			{
-				//do we have permissions to set this entity type?
-				if ( !permsManager.has(player, "dtl.trader.options.entity." + arg.substring(2) ) )
-				{
-					player.sendMessage( locale.getLocaleString("invalid-entity-perm") );
-					return true;
-				}
 				entityType = EntityType.fromName(arg.substring(2));
 			}
 			else

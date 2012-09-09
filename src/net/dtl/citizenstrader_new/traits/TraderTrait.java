@@ -16,8 +16,12 @@ public class TraderTrait {
 ;
 
 		public static WalletType getTypeByName(String n) {
+			if ( n.equalsIgnoreCase("owner") ) 
+				return WalletType.OWNER_WALLET;
 			if ( n.equalsIgnoreCase("owner-wallet") ) 
 				return WalletType.OWNER_WALLET;
+			else if ( n.equalsIgnoreCase("npc") )
+				return WalletType.NPC_WALLET;
 			else if ( n.equalsIgnoreCase("npc-wallet") )
 				return WalletType.NPC_WALLET;
 			else if ( n.equalsIgnoreCase("bank") )
@@ -37,9 +41,9 @@ public class TraderTrait {
 			switch( this )
 			{
 			case OWNER_WALLET:
-				return "owner-wallet";
+				return "owner";
 			case NPC_WALLET:
-				return "npc-wallet";
+				return "npc";
 			case BANK:
 				return "bank";
 			case INFINITE:
@@ -57,9 +61,9 @@ public class TraderTrait {
 		public static String toString(WalletType w) {
 			switch( w ) {
 			case OWNER_WALLET:
-				return "owner-wallet";
+				return "owner";
 			case NPC_WALLET:
-				return "npc-wallet";
+				return "npc";
 			case BANK:
 				return "bank";
 			case INFINITE:
