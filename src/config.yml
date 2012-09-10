@@ -1,39 +1,23 @@
+locale: 
+  file: locale.eng
+wands:
+  manage: 280
+  settings: 386
 trader: 
-  #allows to change how ofthen a player can open a trader (can be by passed)
-  rclick-interval: 1000
-  #locale settings
-  locale:
-    file: locale.eng
-  #allows to change the item to toggle mm (stick is default)
-  manager-mode-toggle: 280
-  #management and inventory switch custom items
   inventory-navigation: 
-    #the item which appear when in the "buy" tab
     sell-tab: '35:5'
-    #the item which appear when in the "sell" tab
     buy-tab: '35:3'
-    #Price management
     manage-price: '35:15'
-    #Buy limit management (player trader [buy tab])
     manage-buy-limit: '35:12'
-    #Global limit management (server trader)
     manage-global-limit: '35:11'
-    #Player limit management (server trader and player trader [sell tab])
     manage-player-limit: '35:12'
-    #managing-return item 
     return: 35
-    #amounts selection return
     amounts-return: '35:14'
 bank: 
-  #when the account should be saved (timeout/item management/bank close) 
-  trigger-save: timeout
-  #timeout in minutes
-  save-timeout: 10
-  #tab rows (1-5) when last_row isn't enabled the rows size is (1-6)
   tab-size: 3
-  default-withdraw-fee: 0.0
-  default-deposit-fee: 0.0
-  default-max-tabs: 9
+  withdraw-fee: 0.0
+  deposit-fee: 0.0
+  max-tabs: 9
   tab-prices: 
     tab2: 100.0
     tab3: 200.0
@@ -50,19 +34,6 @@ bank:
 money-bank:
   exchange-item: 388
   item-value: 10.0   
-taxes:
-  enabled: false
-  #when the prices are with taxes or they should be reacalculated with the tax system (netto/brutto)
-  prices: netto
-  #the player or bank or npc wallet where the taxes should be deposited
-  tax-deposit: bank
-  #tax percent 
-  tax: 22%
-custom: 
-  permission.name:
-    taxes: 
-      tax: 11%
-      enabled: true
-    
-  
+logging:
+  basedir: ''
   

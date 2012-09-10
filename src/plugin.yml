@@ -1,8 +1,8 @@
 name: DtlCitizensTrader
-main: net.dtl.citizenstrader_new.CitizensTrader
+main: net.dtl.citizens.trader.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager,Towny,SimpleClans]
-version: 1.9.04Beta
+version: 1.9.1Beta
 description: >
              Citizens Character. 
 commands: 
@@ -66,7 +66,9 @@ permissions:
     default: false
     children:
       dtl.trader.options.sell: true
+      dtl.trader.options.sell-amounts: true
       dtl.trader.options.buy: true
+      dtl.trader.options.manage: true
   dtl.trader.types.*:
     default: false
     children: 
@@ -117,18 +119,22 @@ permissions:
       dtl.banker.managing.*: true
       dtl.banker.settings.*: true
       dtl.banker.bypass.*: true
+  dtl.banker.bypass.*: 
+    default: false
+    children: 
+      dtl.banker.bypass.creative: true
   dtl.banker.options.*:
     default: false
     children: 
       dtl.banker.options.settings: true
-      dtl.banker.options.banking: true
+      dtl.banker.options.account: true
       dtl.banker.options.remote-banking: true
   dtl.banker.types.*:
     default: false
     children:
-      dtl.banker.types.player: true
-      dtl.banker.types.guild: true
-      dtl.banker.types.money: true
+      dtl.banker.types.player-bank: true
+      dtl.banker.types.guild-bank: true
+      dtl.banker.types.money-bank: true
   dtl.banker.managing.*: 
     default: false
     children: 
@@ -140,7 +146,7 @@ permissions:
     default: false
     children: 
       dtl.banker.settings.tab-item: true
-      dtl.banker.settings.tab-buying: true
+      dtl.banker.settings.tab-buy: true
       dtl.banker.settings.tab-resize: true
   dtl.banker.commands.*:
     default: false
