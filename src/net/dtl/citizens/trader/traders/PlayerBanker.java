@@ -160,7 +160,6 @@ public class PlayerBanker extends Banker {
 		
 		
 		Player player = (Player) event.getWhoClicked();
-		DecimalFormat decimalFormat = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -325,7 +324,6 @@ public class PlayerBanker extends Banker {
 					if ( event.isShiftClick() )
 					{
 						BankItem item = getSelectedItem();
-						int first = getInventory().firstEmpty();
 						
 						if ( selectItem(toBankItem(event.getCurrentItem())).hasSelectedItem() )
 						{

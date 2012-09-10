@@ -58,7 +58,16 @@ public class PermissionsManager {
 		logger.info(pluginPrefix + gmPerms.getDescription().getName() + " ver" + gmPerms.getDescription().getVersion() + " hooked!");
 	}
 	
-	public boolean has(final Player player, final String permission) {
+	public boolean has(final Player player, final String permission)
+	{
+		if ( !hasPermission(player, permission) )
+		{
+			return player.hasPermission(permission);
+		}
+		return true;
+	}
+	
+	public boolean hasPermission(final Player player, final String permission) {
 		//if using dtlPermissions System
 		if ( dtlPerms != null ) 
 		{
@@ -81,10 +90,6 @@ public class PermissionsManager {
 		{
 			return permissionsEx.has(player, permission, player.getWorld().getName());
 		}
-		//if no system was found, use superperms
-		else
-		{
-			return player.hasPermission(permission);
-		}
+		return false;
 	}
 }
