@@ -1,0 +1,94 @@
+lang: US_en 
+definitions: 
+#{action} keywords
+  withdrawed: 'withdrawed'
+  deposited: 'deposited'
+  balance: 'has'
+
+#manging {action} keywords
+  added: 'Added'
+  selected: 'Selected'
+  removed: 'Removed'
+  updated: 'Updated'
+  invalid: 'Invalid'
+  
+#{transaction} keywords
+  bought: 'bought'
+  buy: 'buy'
+  sold: 'sold'
+  sell: 'sell'
+  
+#{type}, {argument}, {object}, {value} keyworkds
+  wallet: 'Wallet'
+  type: 'Type'
+  tab-price: 'Tab price'
+  withdraw-fee: 'Withdraw fee'
+  deposit-fee: 'Deposit fee'
+  
+#{entity}, {setting} keywords
+  trader: 'Trader'
+  banker: 'Banker'
+  player: 'You' 
+  
+#{reason} keywords
+  no-money: 'no money'
+  limit-reached: 'limit reached'
+  full-inventory: 'inventory full' 
+  
+#{manage} keywords
+  global-limit: 'Global limit'
+  player-limit: 'Player limit'
+  player-timeout: 'Player timeout'
+  global-timeout: 'Global timeout'
+  stack-price: 'Stack price'
+  price: 'Price'
+  
+messages: 
+#General Trader messages
+  xxx-item-cost-xxx: ^6This item costs ^8{price}$
+  xxx-transaction-xxx-item: ^8{entity} ^6{transaction} this item for ^8{amount}$
+  xxx-transaction-falied-xxx: ^6{transaction} falied, ^8{reason}
+  xxx-transaction-continue: ^6To {transaction}, click a second time
+  
+#Player trader messages
+  item-amount-recover: ^6You got ^8{amount}
+  item-in-stock: ^6Item already in stock
+  item-added-selling: ^6Added ^8{amount} ^6items for sell
+  item-buy-limit: '^6Buy limit: ^8{amount}^6/^c{limit}' 
+  
+#Commands
+  xxx-argument-invalid: ^8{argument} ^6argument is invalid
+  xxx-argument-missing: ^8{argument} ^6argument is missing
+  xxx-setting-changed: ^8{setting} ^6has ben changed to ^8{value}
+  xxx-setting-value: ^6Current ^8{setting} ^6is ^8{value}
+  xxx-not-selected: ^6You haven't selected any ^8{type}
+  save-config: ^6Configuration was saved
+  reload-config: ^6Configuration was reloaded
+  
+#money messages
+  xxx-not-enough-money: ^6{type} ^c{name} ^6has not enough money
+  xxx-money-xxx: ^8{entity} ^6{action} ^8{money}$ 
+  player-not-enough-money: ^6You don't have enought money
+  
+#manager messages
+  xxx-managing-toggled: ^6{entity} toggled the ^8{manage} ^6mode 
+  xxx-value: '^6{manage}: ^8{value}' 
+  xxx-value-changed: '^6Changed {manage}: ^8{value}' 
+  xxx-item: ^6{action} item
+  
+#List command format
+  list-header: ^6Trader stock list, page ^8{curp} ^6of ^c{allp}
+  list-message: ^7{nr}. ^8{item} ^7(^e{id}^8/^c{data}^8) ^f{amount} {price} ^e[{slot}] 
+  
+#Warnings, errors etc
+  player-lacks-permissions: ^6You don't have permission
+  player-lacks-permissions-xxx: ^6You don't have permission, to use this ^b{object}
+  player-lacks-permissions-creative: ^6You can't use this while in creative mode
+
+#money banker messages
+  mbank-item-xxx: ^6You {action} ^8{amount} ^6items
+        
+#banker
+  tab-xxx: ^6You {action} a tab {value}
+  tab-switched: ^6You switched to ^8{tab} ^6tab
+  cant-create-account: ^6You can't create an account
