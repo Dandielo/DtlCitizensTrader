@@ -1,5 +1,5 @@
 locale: 
-  file: locale.eng
+  file: english.loc
 wands:
   manage: 280
   settings: 386

@@ -14,6 +14,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.massivecraft.factions.Factions;
+import com.massivecraft.factions.P;
 import com.palmergames.bukkit.towny.Towny;
 
 public class CitizensTrader extends JavaPlugin {
@@ -24,6 +26,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static CitizensTrader instance;
 	private static SimpleClans clans;
 	private static Towny towny;
+	private static P factions;
 	
 	//CitizensTrader Managers
 	private static PermissionsManager permsManager;
@@ -152,10 +155,20 @@ public class CitizensTrader extends JavaPlugin {
 		//	towny.getTownyUniverse().getTownsMap().get("").get
 			info("Hooked into " + towny.getDescription().getFullName());
 		}
+		factions = (P) Bukkit.getPluginManager().getPlugin("Factions");
+		if ( factions != null )
+		{
+		//	towny.getTownyUniverse().getTownsMap().get("").get
+			info("Hooked into " + factions.getDescription().getFullName());
+		}
 	}
 	
 	public static Towny getTowny() {
 		return towny;
+	}
+	
+	public static P getFactions() {
+		return factions;
 	}
 	
 	public static SimpleClans getSimpleClans()
@@ -203,17 +216,17 @@ public class CitizensTrader extends JavaPlugin {
 	//logger info
 	public static void info(String message)
 	{
-		logger.info("["+getInstance().getDescription().getFullName()+"] " + message);
+		logger.info("["+getInstance().getDescription().getName()+"] " + message);
 	}
 	//logger warning
 	public static void warning(String message)
 	{
-		logger.warning("["+getInstance().getDescription().getFullName()+"] " + message);
+		logger.warning("["+getInstance().getDescription().getName()+"] " + message);
 	}
 	//logger severe
 	public static void severe(String message)
 	{
-		logger.severe("["+getInstance().getDescription().getFullName()+"] " + message);
+		logger.severe("["+getInstance().getDescription().getName()+"] " + message);
 	}
 	
 	//plugin instance

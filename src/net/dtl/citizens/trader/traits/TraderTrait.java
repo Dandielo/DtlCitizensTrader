@@ -12,7 +12,7 @@ public class TraderTrait {
 
 	public enum WalletType {
 		OWNER_WALLET, NPC_WALLET, BANK, INFINITE //Future CLAN_WALLET
-, SIMPLE_CLANS, TOWNY
+, SIMPLE_CLANS, TOWNY, FACTIONS
 ;
 
 		public static WalletType getTypeByName(String n) {
@@ -34,6 +34,8 @@ public class TraderTrait {
 				return WalletType.SIMPLE_CLANS;
 			else if ( n.startsWith("towny") )
 				return WalletType.TOWNY;
+			else if ( n.startsWith("factions") )
+				return WalletType.FACTIONS;
 			return null;
 		}
 		
@@ -52,6 +54,8 @@ public class TraderTrait {
 				return "simle-clans";
 			case TOWNY:
 				return "towny";
+			case FACTIONS:
+				return "factions";
 			default: 
 				break;
 			}
@@ -72,6 +76,8 @@ public class TraderTrait {
 				return "simple-clans";
 			case TOWNY:
 				return "towny";
+			case FACTIONS:
+				return "factions";
 			}
 			return "";
 		}
@@ -89,6 +95,7 @@ public class TraderTrait {
 	//	super("type");
 		w = new Wallet(wType);
 		w.setMoney(0.0);
+		owner = "no owner";
 	}
 	
 	public void setOwner(String owner) {
@@ -192,6 +199,20 @@ public class TraderTrait {
 				}
 			}
 			else
+			if ( walletType.startsWith("factions") )
+				{
+					if ( CitizensTrader.getFactions() == null )
+					{
+						wType = WalletType.NPC_WALLET;
+						
+					}
+					else
+					{
+						wType = WalletType.FACTIONS;
+						w.setFaction(walletType.substring(9));
+					}
+				}
+			else
 				wType = WalletType.getTypeByName(walletType);
 			
 			w.setWalletType(wType);
@@ -210,6 +231,8 @@ public class TraderTrait {
 			account = getWallet().getTown();
 		if (  getWalletType().equals(WalletType.SIMPLE_CLANS) )
 			account =  getWallet().getClan();
+		if (  getWalletType().equals(WalletType.FACTIONS) )
+			account =  getWallet().getFaction();
 		if (  getWalletType().equals(WalletType.BANK) )
 			account =  getWallet().getBank();
 	//	data.setString("trader-type", TraderType.toString(tType))

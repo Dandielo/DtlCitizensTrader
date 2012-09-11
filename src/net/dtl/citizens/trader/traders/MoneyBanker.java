@@ -51,68 +51,7 @@ public class MoneyBanker extends Banker {
 	
 	@Override
 	public void settingsMode(InventoryClickEvent event) {
-		//we just click nothing else :P
-	/*	event.setCancelled(true);
 		
-		Player player = (Player) event.getWhoClicked();
-		DecimalFormat decimalFormat = new DecimalFormat("#.##");
-		int slot = event.getSlot();
-		
-		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
-		
-		if ( top )
-		{
-			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
-				return;
-		
-			if ( rowClicked( 6, slot) )
-			{
-				
-				if ( event.getCurrentItem().getTypeId() != 0 )
-				{
-					if ( !getBankTab().equals(BankTab.getTabByName("tab"+(getRowSlot(slot)+1))) )							
-					{
-						this.setBankTab(BankTab.getTabByName("tab"+(getRowSlot(slot)+1)));
-						settingsInventory();
-					}
-				}
-			
-			} 
-			else 
-			if ( rowClicked( 5, slot) )	
-			{
-				if ( getBankStatus().equals(BankStatus.SETTINGS) )
-					setBankStatus(BankStatus.SETTING_TAB_ITEM);
-				else
-					setBankStatus(BankStatus.SETTINGS);
-			}
-			
-			//add tab button
-			if ( slot == 0 )
-			{
-				if ( hasAllTabs() )
-					return;
-				addBankTab();
-				settingsInventory();
-			}
-			
-		}
-		else
-		{
-			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
-			{
-				if ( event.getCurrentItem().getTypeId() != 0 )
-				{
-					setBankTabItem(event.getCurrentItem());
-					setBankStatus(BankStatus.SETTINGS);
-					settingsInventory();
-					return;
-				}
-				
-			}
-			
-			
-		}*/
 		
 	}
 
@@ -126,7 +65,7 @@ public class MoneyBanker extends Banker {
 		
 		if ( slot < 0 )
 		{
-			
+			//
 			return;
 		}
 		
@@ -141,7 +80,7 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					p.sendMessage( locale.getLocaleString("mbanker-wrong-item") );
+					p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 					event.setCancelled(true);
 					return;
 				}
@@ -150,8 +89,8 @@ public class MoneyBanker extends Banker {
 				{
 					double withdraw = current.getAmount()*itemValue;
 					econ.withdrawPlayer(player, withdraw);
-					p.sendMessage( locale.getLocaleString("mbanker-got-item").replace("{item}", current.getType().name()) );
-					p.sendMessage( locale.getLocaleString("mbanker-lost-money").replace("{money}", decimalFormat.format(withdraw)) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
@@ -167,14 +106,14 @@ public class MoneyBanker extends Banker {
 						withdraw = ((current.getAmount()/2)+1)*itemValue;
 						
 					econ.withdrawPlayer(player, withdraw);
-					p.sendMessage( locale.getLocaleString("mbanker-got-item").replace("{item}", current.getType().name()) );
-					p.sendMessage( locale.getLocaleString("mbanker-lost-money").replace("{money}", decimalFormat.format(withdraw)) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
 					if ( cursor.getTypeId() != exchangeItem.getTypeId() )
 					{
-						p.sendMessage( locale.getLocaleString("mbanker-wrong-item") );
+						p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 						event.setCancelled(true);
 						return;
 					}
@@ -184,8 +123,8 @@ public class MoneyBanker extends Banker {
 						deposit = itemValue;
 					
 					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbanker-lost-item").replace("{item}", cursor.getType().name()) );
-					p.sendMessage( locale.getLocaleString("mbanker-got-money").replace("{money}", decimalFormat.format(deposit)) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}
@@ -195,7 +134,7 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					p.sendMessage( locale.getLocaleString("mbanker-wrong-item") );
+					p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 					event.setCancelled(true);
 					return;
 				}
@@ -204,8 +143,8 @@ public class MoneyBanker extends Banker {
 				{
 					double deposit = current.getAmount()*itemValue;
 					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbanker-lost-item").replace("{item}", current.getType().name()) );
-					p.sendMessage( locale.getLocaleString("mbanker-got-money").replace("{money}", decimalFormat.format(deposit)) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}

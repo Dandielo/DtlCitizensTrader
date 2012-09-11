@@ -32,27 +32,7 @@ commands:
              /<command> create <name> [type] [entity]
              /<command> reload
       permisison-message: You don't have "<permission>" permission, to use commands
-permissions:
-  dtl.dtlTraders.admin:
-    default: op
-    children: 
-      dtl.trader.*: true
-      dtl.banker.*: true
-  dtl.dtlTraders.user:
-    default: true
-    children:
-      dtl.dtlTraders.bank-user: true
-      dtl.dtlTraders.trader-user: true
-  dtl.dtlTraders.trader-user: 
-    default: false
-    children:
-      dtl.trader.options.*: true
-      dtl.trader.types.*: true
-  dtl.dtlTraders.bank-user: 
-    default: false
-    children:
-      dtl.banker.options.*: true
-      dtl.banker.types.*: true
+permissions: 
   dtl.trader.*:
     default: op
     children:
@@ -63,20 +43,20 @@ permissions:
       dtl.trader.commands.*: true
       dtl.trader.bypass.*: true
   dtl.trader.options.*:
-    default: false
+    default: true
     children:
       dtl.trader.options.sell: true
       dtl.trader.options.sell-amounts: true
       dtl.trader.options.buy: true
-      dtl.trader.options.manage: true
+      dtl.trader.options.manage: false
   dtl.trader.types.*:
-    default: false
+    default: true
     children: 
       dtl.trader.types.player: true
       dtl.trader.types.server: true
       dtl.trader.types.enchant: true
   dtl.trader.wallets.*:
-    default: false
+    default: op
     children: 
       dtl.trader.wallets.npc: true
       dtl.trader.wallets.owner: true
@@ -85,7 +65,7 @@ permissions:
       dtl.trader.wallets.towny: true
       dtl.trader.wallets.simple-clans: true
   dtl.trader.managing.*: 
-    default: false
+    default: op
     children: 
       dtl.trader.managing.prices: true
       dtl.trader.managing.global-limits: true
@@ -94,7 +74,7 @@ permissions:
       dtl.trader.managing.stack-price: true
       dtl.trader.managing.multiple-amounts: true
   dtl.trader.commands.*:
-    default: false
+    default: op
     children:
       dtl.trader.commands.create: true
       dtl.trader.commands.list: true
@@ -105,7 +85,7 @@ permissions:
       dtl.trader.commands.withdraw: true
       dtl.trader.commands.deposit: true
   dtl.trader.bypass.*:
-    default: false
+    default: op
     children: 
       dtl.trader.bypass.creative: true
       dtl.trader.bypass.managing: true
@@ -120,36 +100,36 @@ permissions:
       dtl.banker.settings.*: true
       dtl.banker.bypass.*: true
   dtl.banker.bypass.*: 
-    default: false
+    default: op
     children: 
       dtl.banker.bypass.creative: true
   dtl.banker.options.*:
-    default: false
+    default: op
     children: 
       dtl.banker.options.settings: true
       dtl.banker.options.account: true
       dtl.banker.options.remote-banking: true
   dtl.banker.types.*:
-    default: false
+    default: op
     children:
       dtl.banker.types.player-bank: true
       dtl.banker.types.guild-bank: true
       dtl.banker.types.money-bank: true
   dtl.banker.managing.*: 
-    default: false
+    default: op
     children: 
       dtl.banker.managing.withdraw-fee: true
       dtl.banker.managing.deposit-fee: true
       dtl.banker.managing.settings-enabled: true
       dtl.banker.managing.tab-buying: true
   dtl.banker.settings.*:
-    default: false
+    default: op
     children: 
       dtl.banker.settings.tab-item: true
       dtl.banker.settings.tab-buy: true
       dtl.banker.settings.tab-resize: true
   dtl.banker.commands.*:
-    default: false
+    default: op
     children: 
       dtl.banker.commands.withdraw-fee: true
       dtl.banker.commands.deposit-fee: true

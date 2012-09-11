@@ -53,7 +53,16 @@ public class BankerCommandExecutor implements CommandExecutor {
 			//get the selected NPC
 			EconomyNpc economyNpc = bankerManager.getInteractionNpc(player.getName());
 			
-
+			if ( args[0].equals("reload") )
+			{
+				
+				sender.sendMessage( locale.getLocaleString("reload-config") );
+				CitizensTrader.getInstance().getItemConfig().reloadConfig();
+				CitizensTrader.getInstance().reloadConfig();
+				CitizensTrader.getLocaleManager().reload();
+				
+				return true;
+			}
 			
 			//no npc selected
 			if ( economyNpc == null )
@@ -69,6 +78,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 				}
 				
 				
+				
 				return true;
 			}
 			//npc has been selected
@@ -77,7 +87,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 				//is trader type
 				if ( !( economyNpc instanceof Banker ) )
 				{
-					player.sendMessage( locale.getLocaleString("no-trader-selected") );
+					player.sendMessage( locale.getLocaleString("xxx-not-selected", "object:banker") );
 					return true;
 				}
 				
@@ -104,6 +114,8 @@ public class BankerCommandExecutor implements CommandExecutor {
 				
 				sender.sendMessage(locale.getLocaleString("reload-config"));
 				CitizensTrader.getInstance().getItemConfig().reloadConfig();
+				CitizensTrader.getInstance().reloadConfig();
+				CitizensTrader.getLocaleManager().reload();
 				
 				return true;
 			}
@@ -118,7 +130,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		//check permissions
 		if ( !permsManager.has(player, "dtl.banker.commands." + commandPermission)  )
 		{
-			player.sendMessage( locale.getLocaleString("no-permissions") );
+			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return false;
 		}
 		
@@ -126,16 +138,16 @@ public class BankerCommandExecutor implements CommandExecutor {
 		//check permissions
 		if ( !permsManager.has(player, "dtl.banker.options." + optionsPermission)  )
 		{
-			player.sendMessage( locale.getLocaleString("no-permissions") );
+			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return false;
 		}
 		
 		//have we got the needed args?
-		if ( args.length > size )
+	/*	if ( args.length > size )
 		{
 			player.sendMessage( locale.getLocaleString("missing-args") );
 			return false;
-		}	
+		}	*/
 		
 		return true;
 	}
@@ -160,18 +172,18 @@ public class BankerCommandExecutor implements CommandExecutor {
 	public boolean setType(Player player, Banker banker, String typeString)
 	{
 		
-		if ( !permsManager.has(player, "dtl.trader.types." + typeString ) )
+		if ( !permsManager.has(player, "dtl.banker.types." + typeString + "-bank" ) )
 		{
-			player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
+			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 			return true;
 		}
 		
-		TraderType type = TraderType.getTypeByName(typeString);
+		TraderType type = TraderType.getTypeByName(typeString+"-bank");
 		
 		//show current trader type
 		if ( type == null )
 		{			
-			player.sendMessage( locale.getLocaleString("type-message").replace("{type}", banker.getNpc().getTrait(TraderCharacterTrait.class).getTraderType().toString()) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:banker").replace("{value}", banker.getNpc().getTrait(TraderCharacterTrait.class).getTraderType().toString().split("-")[0]) );
 		}
 		//change trader type
 		else
@@ -180,7 +192,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		//	banker.getTraderConfig().setTraderType(type);
 			banker.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);
 			
-			player.sendMessage( locale.getLocaleString("type-changed").replace("{type}", typeString) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:banker").replace("{value}", typeString) );
 		}
 		
 		return true;
@@ -205,13 +217,13 @@ public class BankerCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this trader type?
 				if ( !permsManager.has(player, "dtl.trader.types." + arg.substring(2) + "-bank" ) )
 				{
-					player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;
 				}
 				traderType = TraderType.getTypeByName(arg.substring(2)+ "-bank");
 				if ( traderType == null || traderType.isTrader() )
 				{
-					player.sendMessage( locale.getLocaleString("invalid-ttype-perm") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
 					return true;
 				}
 			}
@@ -234,7 +246,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		
 		if ( traderType == null || entityType == null )
 		{
-			player.sendMessage( locale.getLocaleString("no-defaults") );
+			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return true;
 		}
 		
@@ -248,7 +260,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		//change the trader settings
 		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
 		
-		player.sendMessage( locale.getLocaleString("trader-created") );
+		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:banker") );
 		return true;
 	}
 }

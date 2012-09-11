@@ -1,5 +1,7 @@
 package net.dtl.citizens.trader.containers;
 
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
@@ -19,6 +21,7 @@ public class Wallet {
 	private Economy economy;
 	private Clan clan; 
 	private Town town;
+	private Faction faction;
 	
 	private double money; 
 	private String bank;
@@ -62,6 +65,16 @@ public class Wallet {
 	public String getClan()
 	{
 		return clan.getTag();
+	}
+	
+	public void setFaction(String sFaction)
+	{
+		faction = Factions.i.getByTag(sFaction);
+	}
+	
+	public String getFaction()
+	{
+		return faction.getTag();
 	}
 	
 	public boolean setBank(String player, String bankName)
@@ -109,7 +122,12 @@ public class Wallet {
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
 			{
 				clan.setBalance(clan.getBalance()+m);
-			//	clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+				//clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+			}
+			else
+			if ( type.equals(WalletType.FACTIONS) )
+			{
+				faction.money += m;
 			}
 			else
 			if ( type.equals(WalletType.TOWNY) )
@@ -171,7 +189,7 @@ public class Wallet {
 				{
 
 					clan.setBalance(clan.getBalance()-m);
-					//clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
+				//	clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
 					return true;
 				}
 			}
@@ -192,6 +210,18 @@ public class Wallet {
 					}
 				}
 			}
+			else
+			if ( type.equals(WalletType.FACTIONS) )
+			{
+				if ( CitizensTrader.getFactions() != null )
+				{
+					if ( faction.money >= m )
+					{
+						faction.money -= m;
+						return true;
+					}
+				}
+			}
 			else 
 			if ( type.equals(WalletType.INFINITE) ) 
 			{
@@ -207,6 +237,14 @@ public class Wallet {
 			}
 			else
 			if ( type.equals(WalletType.SIMPLE_CLANS) )
+			{
+				if ( economy.getBalance(p) >= m ) {
+					economy.withdrawPlayer(p, money);
+					return true;
+				}
+			}
+			else
+			if ( type.equals(WalletType.FACTIONS) )
 			{
 				if ( economy.getBalance(p) >= m ) {
 					economy.withdrawPlayer(p, money);
