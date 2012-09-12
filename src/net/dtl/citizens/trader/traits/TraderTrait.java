@@ -2,11 +2,16 @@ package net.dtl.citizens.trader.traits;
 
 import org.bukkit.entity.Player;
 
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
+import com.palmergames.bukkit.towny.object.Town;
+
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
 import net.dtl.citizens.trader.containers.Wallet;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 public class TraderTrait {
 
@@ -180,8 +185,12 @@ public class TraderTrait {
 				}
 				else
 				{
-					wType = WalletType.SIMPLE_CLANS;
-					w.setClan(walletType.substring(13));
+					Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(walletType.substring(13));
+					if ( clan != null )
+					{
+						wType = WalletType.SIMPLE_CLANS;
+						w.setClan(clan);
+					}
 				}
 			}
 			else
@@ -194,8 +203,12 @@ public class TraderTrait {
 				}
 				else
 				{
-					wType = WalletType.TOWNY;
-					w.setTown(walletType.substring(6));
+					Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(walletType.substring(6));
+					if ( town != null )
+					{
+						wType = WalletType.TOWNY;
+						w.setTown(town);
+					}
 				}
 			}
 			else
@@ -208,8 +221,16 @@ public class TraderTrait {
 					}
 					else
 					{
-						wType = WalletType.FACTIONS;
-						w.setFaction(walletType.substring(9));
+						Faction faction = Factions.i.getByTag(walletType.substring(9));
+						if ( faction != null )
+						{
+
+							wType = WalletType.FACTIONS;
+							w.setFaction(faction);
+							
+						}
+						wType = WalletType.NPC_WALLET;
+							
 					}
 				}
 			else

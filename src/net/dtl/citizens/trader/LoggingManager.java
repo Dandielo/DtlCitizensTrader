@@ -38,12 +38,13 @@ public class LoggingManager {
 			fileName = df.format(date) + "_log.txt";
 		}
 
-		String baseDir = config.getString("logging.basedir", "plugins\\DtlCitizensTrader\\logs" );
+		String baseDir = config.getString("logging.basedir", "plugins\\DtlCitizensTrader\\logs");
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
 			baseDir = baseDir.replace("\\", File.separator);
 		}
 
+		
 		File baseDirectory = new File(baseDir);
 		if ( !baseDirectory.exists() ) 
 		{
@@ -57,6 +58,7 @@ public class LoggingManager {
 			try 
 			{
 				logFile.createNewFile();
+				System.out.print(logFile.exists());
 
 			} 
 			catch (IOException e)

@@ -101,12 +101,16 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != 0 )
 				{
-					double withdraw = current.getAmount()*itemValue;
+					
+					int amount = current.getAmount();
 					if ( event.isRightClick() )
-						withdraw = ((current.getAmount()/2)+1)*itemValue;
+						amount = ( current.getAmount() % 2 == 0 ? current.getAmount()/2 : (current.getAmount()/2)+1);
+
+
+					double withdraw = amount*itemValue;
 						
 					econ.withdrawPlayer(player, withdraw);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
 					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
@@ -123,7 +127,7 @@ public class MoneyBanker extends Banker {
 						deposit = itemValue;
 					
 					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", cursor.getType().name()).replace("{amount}", ""+ cursor.getAmount()) );
 					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
@@ -143,8 +147,8 @@ public class MoneyBanker extends Banker {
 				{
 					double deposit = current.getAmount()*itemValue;
 					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
-					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(deposit)) );
+					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}

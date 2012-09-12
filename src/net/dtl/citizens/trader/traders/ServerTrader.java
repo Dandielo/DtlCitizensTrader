@@ -260,8 +260,8 @@ public class ServerTrader extends Trader {
 					} 
 					else
 					{
-						p.sendMessage( locale.getLocaleString("price-message").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						p.sendMessage( locale.getLocaleString("click-to-continue").replace("{transaction}", "sell") );
+						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						setClickedSlot(slot);
 					}
 				}
@@ -297,8 +297,8 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						p.sendMessage( locale.getLocaleString("sell-message").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
-						
+						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+
 						
 						//limits update
 						updateBuyLimits(p.getName(),scale);
@@ -307,7 +307,7 @@ public class ServerTrader extends Trader {
 						removeFromInventory(event.getCurrentItem(),event);
 						
 						//logging
-						log("buy", 
+						log("sell", 
 							p.getName(), 
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 

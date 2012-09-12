@@ -107,7 +107,7 @@ messages:
   xxx-setting-value: ^6Current ^e{setting} ^6is ^e{value}
   xxx-not-selected: ^6You haven't selected any ^e{object}
   xxx-wallet: '^6{action}: {value}$'
-  xxx-created-xxx: '{entity} created a {entity}'
+  xxx-created-xxx: '^6{entity} created a ^e{entity}'
   save-config: ^6Configuration was saved
   reload-config: ^6Configuration was reloaded
   

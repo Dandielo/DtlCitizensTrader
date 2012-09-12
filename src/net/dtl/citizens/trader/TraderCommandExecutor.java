@@ -12,6 +12,7 @@ import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
 import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -19,6 +20,10 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+
+import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
+import com.palmergames.bukkit.towny.object.Town;
 
 /**
  * 
@@ -318,6 +323,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				account = trader.getWallet().getTown();
 			if ( trader.getTraderConfig().getWalletType().equals(WalletType.SIMPLE_CLANS) )
 				account = trader.getWallet().getClan();
+			if ( trader.getTraderConfig().getWalletType().equals(WalletType.FACTIONS) )
+				account = trader.getWallet().getFaction();
 			if ( trader.getTraderConfig().getWalletType().equals(WalletType.BANK) )
 				account = trader.getWallet().getBank();
 			
@@ -356,7 +363,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				trader.getWallet().setClan(bankAccount);
+				Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(bankAccount);
+				if ( clan == null )
+				{
+					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+					return true;
+				}
+				trader.getWallet().setClan(clan);
 				
 			}
 			else
@@ -374,14 +387,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				trader.getWallet().setTown(bankAccount);
+				Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(bankAccount);
+				if ( town == null )
+				{
+					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+					return true;
+				}
+				
+				trader.getWallet().setTown(town);
 				
 			}
 			else
 			//towny
 			if ( wallet.equals(WalletType.FACTIONS) )
 			{
-				if ( CitizensTrader.getTowny() == null )
+				if ( CitizensTrader.getFactions() == null )
 				{
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:wallet") );
 					return true;
@@ -392,8 +412,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				trader.getWallet().setTown(bankAccount);
-				
+				Faction faction = Factions.i.getByTag(bankAccount);
+				if ( faction == null )
+				{
+					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+					return true;
+				}
+				trader.getWallet().setFaction(faction);
 			}
 			
 			
@@ -536,6 +561,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		String owner = player.getName();
 		String clanTag = "";
 		String townName = "";
+		String factionName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
 		TraderType traderType = getDefaultTraderType(player);
@@ -558,6 +584,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("town:") )
 			{
 				townName = arg.substring(5);
+			}
+			else
+			if ( arg.startsWith("f:") )
+			{
+				factionName = arg.substring(2);
 			}
 			else
 			//trader type set?
@@ -623,9 +654,36 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
 		settings.setWalletType(walletType);
 		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
-			settings.getWallet().setClan(clanTag);
+		{
+			Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);
+			if ( clan == null )
+			{
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+				return true;
+			}
+			settings.getWallet().setClan(clan);
+		}
 		if ( walletType.equals(WalletType.TOWNY) )
-			settings.getWallet().setTown(townName);
+		{
+
+			Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(townName);
+			if ( town == null )
+			{
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+				return true;
+			}
+			settings.getWallet().setTown(town);
+		}
+		if ( walletType.equals(WalletType.FACTIONS) )
+		{
+			Faction faction = Factions.i.getByTag(factionName);
+			if ( faction == null )
+			{
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+				return true;
+			}
+			settings.getWallet().setFaction(faction);
+		}
 		settings.setOwner(owner);
 		
 		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:trader").replace("{name}", player.getName()) );

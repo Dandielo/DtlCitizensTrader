@@ -34,6 +34,4 @@ bank:
 money-bank:
   exchange-item: 388
   item-value: 10.0   
-logging:
-  basedir: ''
   

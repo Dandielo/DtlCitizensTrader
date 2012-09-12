@@ -176,7 +176,7 @@ public class LocaleManager {
 	{
 		if ( keyword1.isEmpty() )
 			return this.getLocaleString(messageType);
-		return this.getLocaleString(messageType).replace("{"+keyword1.split(":")[0]+"}", ( keyword1.split(":")[1].startsWith("{") ? keyword1.split(":")[1] : keywordsCache.get(keyword1) ) );
+		return this.getLocaleString(messageType).replaceFirst("\\{"+keyword1.split(":")[0]+"\\}", ( keyword1.split(":")[1].startsWith("{") ? keyword1.split(":")[1] : keywordsCache.get(keyword1) ) );
 	}
 	
 	public String getLocaleString(String messageType, String keyword1, String keyword2)
