@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.containers;
+package net.dtl.citizens.trader.objects;
 
 import static net.dtl.citizens.trader.backends.file.FileBackend.buildPath;
 import net.dtl.citizens.trader.CitizensTrader;

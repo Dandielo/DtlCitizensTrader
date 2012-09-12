@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.containers.BankItem;
-import net.dtl.citizens.trader.containers.PlayerBankAccount;
+import net.dtl.citizens.trader.objects.BankItem;
+import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.traits.BankTrait;
 
 public class PlayerBanker extends Banker {

@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.containers;
+package net.dtl.citizens.trader.objects;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;

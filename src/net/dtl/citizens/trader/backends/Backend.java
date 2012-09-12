@@ -3,8 +3,8 @@ package net.dtl.citizens.trader.backends;
 import java.io.File;
 import java.util.Map;
 
-import net.dtl.citizens.trader.containers.BankAccount;
-import net.dtl.citizens.trader.containers.BankItem;
+import net.dtl.citizens.trader.objects.BankAccount;
+import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.traders.Banker.BankTabType;
 
 public abstract class Backend {

@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.containers;
+package net.dtl.citizens.trader.objects;
 
 import java.util.Date;
 import java.util.HashMap;

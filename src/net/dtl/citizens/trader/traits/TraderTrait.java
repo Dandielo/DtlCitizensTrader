@@ -10,7 +10,7 @@ import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
-import net.dtl.citizens.trader.containers.Wallet;
+import net.dtl.citizens.trader.objects.Wallet;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 public class TraderTrait {
@@ -95,6 +95,8 @@ public class TraderTrait {
 	
 	private Wallet w;
 	private String owner;
+	private String pattern;
+	private boolean enabled;
 	
 	public TraderTrait() {
 	//	super("type");
@@ -241,6 +243,12 @@ public class TraderTrait {
 		if ( data.keyExists("owner") ) {
 			owner = data.getString("owner","no-owner");
 		}
+		if ( data.keyExists("pattern") ) {
+			pattern = data.getString("pattern","");
+		}
+		if ( data.keyExists("enabled") ) {
+			enabled = data.getBoolean("enabled",true);
+		}
 		if ( data.keyExists("money") ) {
 			w.setMoney(data.getDouble("money"));
 		}
@@ -259,6 +267,8 @@ public class TraderTrait {
 	//	data.setString("trader-type", TraderType.toString(tType))
 		data.setString("wallet-type", WalletType.toString(wType) + ( account.isEmpty() ? "" : "." + account ) );
 		data.setString("owner", owner);
+		data.setString("pattern", pattern);
+		data.setBoolean("enabled", enabled);
 		data.setDouble("money", w.getMoney());
 	}
 

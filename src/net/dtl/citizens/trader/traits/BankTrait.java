@@ -8,7 +8,7 @@ import org.bukkit.inventory.InventoryHolder;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.containers.StockItem;
+import net.dtl.citizens.trader.objects.StockItem;
 
 public class BankTrait {
 	//config variable

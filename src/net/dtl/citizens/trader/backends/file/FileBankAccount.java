@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.containers.BankAccount;
-import net.dtl.citizens.trader.containers.BankItem;
-import net.dtl.citizens.trader.containers.BankTab;
+import net.dtl.citizens.trader.objects.BankAccount;
+import net.dtl.citizens.trader.objects.BankItem;
+import net.dtl.citizens.trader.objects.BankTab;
 import net.dtl.citizens.trader.traders.Banker.BankTabType;
 
 import org.bukkit.configuration.ConfigurationSection;

@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.containers.BankItem;
-import net.dtl.citizens.trader.containers.PlayerBankAccount;
+import net.dtl.citizens.trader.objects.BankItem;
+import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.traits.BankTrait;
 import net.milkbowl.vault.economy.Economy;
 

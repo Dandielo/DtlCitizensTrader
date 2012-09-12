@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCommandExecutor;
-import net.dtl.citizens.trader.containers.LimitSystem;
-import net.dtl.citizens.trader.containers.StockItem;
+import net.dtl.citizens.trader.objects.LimitSystem;
+import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class PlayerTrader extends Trader {

@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import net.dtl.citizens.trader.backends.Backend;
 import net.dtl.citizens.trader.backends.file.FileBackend;
-import net.dtl.citizens.trader.containers.BankAccount;
+import net.dtl.citizens.trader.objects.BankAccount;
 
 public class BackendManager {
 	//PluginConfig

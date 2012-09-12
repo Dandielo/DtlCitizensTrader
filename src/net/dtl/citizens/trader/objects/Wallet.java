@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.containers;
+package net.dtl.citizens.trader.objects;
 
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
