@@ -274,9 +274,11 @@ public class LimitSystem {
 		limit.setLimit(l);
 	}
 	public void changeGlobalLimit(int l) {
+		thisItem.setAsPatternItem(false);
 		limit.changeLimit(l);
 	}
 	public void changePlayerLimit(int l) {
+		thisItem.setAsPatternItem(false);
 		playerLimit.changeLimit(l);
 	}
 	

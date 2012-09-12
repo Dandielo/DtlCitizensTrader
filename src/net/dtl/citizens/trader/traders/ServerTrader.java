@@ -10,13 +10,17 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.objects.StockItem;
+import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class ServerTrader extends Trader {
 
+	private TransactionPattern pattern;
+	
 	public ServerTrader(NPC n, TraderTrait c) {
 		super(n, c);
+		pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
 
 	@Override
@@ -658,7 +662,14 @@ public class ServerTrader extends Trader {
 								 if ( this.isSellModeByWool() )
 									 getTraderStock().addItem(true, item);
 								 
-
+								 if ( pattern != null )
+								 {
+									 if ( isBuyModeByWool() )
+										 pattern.getItemPrice(item, "buy");
+									 if ( isSellModeByWool() )
+										 pattern.getItemPrice(item, "sell");
+								 }
+									 
 								 p.sendMessage( locale.getLocaleString("xxx-item", "action:added") );
 							 }
 							 

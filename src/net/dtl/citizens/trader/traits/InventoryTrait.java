@@ -51,10 +51,21 @@ public class InventoryTrait implements InventoryHolder {
 	{
 		return pattern;
 	}
-	public void setPattern(String newPattern)
+	
+	public void removePattern()
 	{
+		pattern = "";
+		this.reloadStock();
+	}
+	
+	public boolean setPattern(String newPattern)
+	{
+		if ( patterns.getPattern(newPattern) == null )
+			return false;
+		
 		pattern = newPattern;
 		this.reloadStock();
+		return true;
 	}
 	
 	public void load(DataKey data) throws NPCLoadException {
@@ -92,12 +103,11 @@ public class InventoryTrait implements InventoryHolder {
 		}
 		
 		
-		sellStock.clear();
-		buyStock.clear();
-		
-		sellStock.addAll( patterns.getPattern(pattern).getStockItems("sell") );
-		buyStock.addAll( patterns.getPattern(pattern).getStockItems("buy") );
-		
+		if ( !pattern.isEmpty() )
+		{
+			sellStock.addAll( patterns.getPattern(pattern).getStockItems("sell") );
+			buyStock.addAll( patterns.getPattern(pattern).getStockItems("buy") );
+		}
 		
 		for ( StockItem item : tempSellStock ) {
 			sellStock.remove(item);
@@ -110,13 +120,27 @@ public class InventoryTrait implements InventoryHolder {
 		}
 		
 		for ( StockItem item : sellStock ) {
-			if ( item.isPatternListening() )
+			if ( item.isPatternListening() && !pattern.isEmpty() )
 				patterns.getPattern(pattern).getItemPrice(item, "sell");
 		}
 
 		for ( StockItem item : buyStock ) {
-			if ( item.isPatternListening() )
+			if ( item.isPatternListening() && !pattern.isEmpty() )
 				patterns.getPattern(pattern).getItemPrice(item, "buy");
+		}
+	}
+	
+	public void clearStock(String stock)
+	{
+		if ( stock.equals("sell") )
+			sellStock.clear();
+		else
+		if ( stock.equals("buy") )
+			buyStock.clear();
+		else
+		{
+			sellStock.clear();
+			buyStock.clear();
 		}
 	}
 	

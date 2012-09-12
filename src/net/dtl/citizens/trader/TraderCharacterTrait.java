@@ -70,8 +70,11 @@ public class TraderCharacterTrait extends Trait {
 		{
 			this.traderTrait.load(data);
 			this.inventoryTrait.load(data);
-			if ( !traderTrait.getPattern().isEmpty() )
-				this.inventoryTrait.setPattern(traderTrait.getPattern());
+			traderTrait.setTraderType(type);
+			
+			if ( type.equals(TraderType.SERVER_TRADER) )
+				if ( !traderTrait.getPattern().isEmpty() )
+					this.inventoryTrait.setPattern(traderTrait.getPattern());
 		}
 		
 	}

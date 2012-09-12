@@ -68,7 +68,7 @@ public class TransactionPattern {
 				for ( String item : items.getStringList("all") )
 				{
 					StockItem stockItem = new StockItem(item);
-					stockItem.setAsPetternItem(true);
+					stockItem.setAsPatternItem(true);
 					sell.add(stockItem);
 					buy.add(stockItem);
 				}
@@ -79,7 +79,7 @@ public class TransactionPattern {
 				for ( String item : items.getStringList("sell") )
 				{
 					StockItem stockItem = new StockItem(item);
-					stockItem.setAsPetternItem(true);
+					stockItem.setAsPatternItem(true);
 					sell.add(stockItem);
 				}
 			}
@@ -89,7 +89,7 @@ public class TransactionPattern {
 				for ( String item : items.getStringList("buy") )
 				{
 					StockItem stockItem = new StockItem(item);
-					stockItem.setAsPetternItem(true);
+					stockItem.setAsPatternItem(true);
 					buy.add(stockItem);
 				}
 			}

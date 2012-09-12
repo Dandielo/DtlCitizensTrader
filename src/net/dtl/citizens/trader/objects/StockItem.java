@@ -143,10 +143,12 @@ public class StockItem {
 		return stackPrice;
 	}
 	public void setStackPrice(boolean b) {
+		patternItem = false;
 		stackPrice = b;
 	}
 	
 	public void increasePrice(double d) {
+		patternItem = false;
 		price += d;
 	}
 	public void lowerPrice(double p) {
@@ -154,6 +156,7 @@ public class StockItem {
 			price = 0;
 			return;
 		}
+		patternItem = false;
 		price -= p;
 	}
 	
@@ -190,6 +193,7 @@ public class StockItem {
 		return slot;
 	}
 	public void setSlot(int s) {
+		patternItem = false;
 		slot = s;
 	}
 	public void resetAmounts(int a) {
@@ -198,6 +202,7 @@ public class StockItem {
 		amouts.add(a);
 	}
 	public void addAmount(int a) {
+		patternItem = false;
 		amouts.add(a);
 	}
 	public int getAmount() {
@@ -214,7 +219,7 @@ public class StockItem {
 	{
 		return patternItem;
 	}
-	public void setAsPetternItem(boolean pItem)
+	public void setAsPatternItem(boolean pItem)
 	{
 		patternItem = pItem;
 	}
@@ -247,5 +252,6 @@ public class StockItem {
 			return true;
 		return false;
 	}
+
 	
 }

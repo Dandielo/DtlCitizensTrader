@@ -13,11 +13,15 @@ commands:
              Usage: 
              /<command> help
              /<command> create <name> [type] [wallet] [owner] [account] [entity]
-             /<command> list <transaction> [page]
+             /<command> list <stock> [page]
              /<command> wallet [wallet] [account]
              /<command> type [type]
              /<command> owner [owner]
-             /<command> log [trader] [clear]
+             /<command> log [trader name] 
+             /<command> clearlog [trader name] 
+             /<command> clear [stock]
+             /<command> pattern [pattern]
+             /<command> removepattern 
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
@@ -84,9 +88,13 @@ permissions:
       dtl.trader.commands.type: true
       dtl.trader.commands.owner: true
       dtl.trader.commands.log: true
+      dtl.trader.commands.clearlog: true
       dtl.trader.commands.balance: true
       dtl.trader.commands.withdraw: true
       dtl.trader.commands.deposit: true
+      dtl.trader.commands.pattern: true
+      dtl.trader.commands.removepattern: true
+      dtl.trader.commands.clear: true
   dtl.trader.bypass.*:
     default: op
     children: 

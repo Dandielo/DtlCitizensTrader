@@ -64,23 +64,40 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( sender instanceof Player )
 		{
 			Player player = (Player) sender;
+
+			//get the selected NPC
+			EconomyNpc economyNpc = traderManager.getInteractionNpc(player.getName());
 			
 			if ( args.length < 1 )
 			{
 				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
-				return false;
+				
+				if ( economyNpc != null && economyNpc instanceof Trader )
+				{
+					
+					Trader trader = (Trader) economyNpc;
+					player.sendMessage(ChatColor.GOLD + "==== " + ChatColor.YELLOW + trader.getNpc().getName() + ChatColor.GOLD + " ====");
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getTraderConfig().getTraderType().toString()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getTraderConfig().getOwner()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getWalletType().toString()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getTraderConfig().getPattern()));
+					
+				}
+				return true;
+				//return false;
 			}
 			
 			
-			//get the selected NPC
-			EconomyNpc economyNpc = traderManager.getInteractionNpc(player.getName());
 			
 
 			
 			//no npc selected
 			if ( economyNpc == null )
 			{
-				
+				if ( args[0].equalsIgnoreCase("help") )
+				{
+					return false;
+				}
 				//reload plugin
 				if ( args[0].equalsIgnoreCase("create") )
 				{
@@ -91,7 +108,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				if ( args[0].equals("log") )
 				{
-					return log(player, ( args.length > 1 ? args[1] : ""), ( args.length > 2 ? args[2] : ""));
+					if ( !this.generalChecks(player, "log", null, args, 1) )
+						return true;
+					return log(player, "", args);
+				}
+				if ( args[0].equals("clearlog") )
+				{
+					if ( !this.generalChecks(player, "clearlog", null, args, 1) )
+						return true;
+					
+					return clearLog(player, "", args);
 				}
 				if ( args[0].equals("reload") )
 				{
@@ -110,6 +136,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			//npc has been selected
 			else
 			{
+				
 				//is trader type
 				if ( !( economyNpc instanceof Trader ) )
 				{
@@ -119,7 +146,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				
 				Trader trader = (Trader) economyNpc;
 				
-				
+				if ( args[0].equalsIgnoreCase("help") )
+				{
+					return false;
+				}
 				//list command
 				if ( args[0].equals("list") )
 				{
@@ -157,12 +187,40 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					else
 						return getOwner(player, trader);
 				}
+				if ( args[0].equals("clear") )
+				{
+					if ( !this.generalChecks(player, "clear", null, args, 1) )
+						return true;
+					
+					return clear(player, trader, args);
+				}
+				if ( args[0].equals("removepattern") )
+				{
+					if ( !this.generalChecks(player, "removepattern", null, args, 1) )
+						return true;
+					
+					return removePattern(player, trader);
+				}
+				if ( args[0].equals("pattern") )
+				{
+					if ( !this.generalChecks(player, "pattern", null, args, 1) )
+						return true;
+					
+					return pattern(player, trader, args);
+				}
 				if ( args[0].equals("log") )
 				{
 					if ( !this.generalChecks(player, "log", null, args, 1) )
 						return true;
 					
-					return log(player, trader.getNpc().getName(), ( args.length > 1 ? args[1] : ""));
+					return log(player, trader.getNpc().getName(), args);
+				}
+				if ( args[0].equals("clearlog") )
+				{
+					if ( !this.generalChecks(player, "clearlog", null, args, 1) )
+						return true;
+					
+					return clearLog(player, trader.getNpc().getName(), args);
 				}
 				if ( args[0].equals("balance") )
 				{
@@ -210,13 +268,93 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
-	private boolean log(Player player, String trader, String secArg ) {
+	private boolean removePattern(Player player, Trader trader) {
 		
-		if ( secArg.equals("clear") )
+		trader.getTraderStock().removePattern();
+		trader.getTraderConfig().setPattern("");
+		player.sendMessage( locale.getLocaleString("removed-pattern") );
+		
+		return true;
+	}
+	
+	private boolean pattern(Player player, Trader trader, String[] args) {
+		
+		if ( args.length <= 1 )
 		{
-			logManager.clearPlayerLogs(player.getName(), trader);
+			player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:pattern") );
 			return true;
 		}
+		
+		
+		if ( trader.getTraderStock().setPattern(args[1]) )
+		{
+			trader.getTraderConfig().setPattern(args[1]);
+			player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[1].toLowerCase()) );
+		}
+		else
+		{
+			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:pattern") );
+		}
+		return true;
+	}
+
+	private boolean clear(Player player, Trader trader, String[] args) {
+		if ( args.length > 1 )
+		{
+			if ( !args[1].toLowerCase().equals("sell") || !args[1].toLowerCase().equals("buy") )
+			{
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:stock") );
+				return true;
+			}
+			trader.getTraderStock().clearStock(args[1]);
+			
+			player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:" + args[1], "action:cleared") );
+			return true;
+		}
+		
+		trader.getTraderStock().clearStock("");
+		
+		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:sell", "action:cleared") );
+		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:buy", "action:cleared") );
+		return true;
+	}
+
+	private boolean clearLog(Player player, String trader, String[] args)
+	{
+		if ( trader.isEmpty() )
+		{
+			for ( int i = 0 ; i < args.length ; ++i )
+			{
+				if ( i + 1 < args.length )
+				{
+					trader += args[i+1] + " ";
+				}
+			}
+			if ( !trader.isEmpty() )
+				trader = trader.substring(0, trader.length()-1);
+		}
+		
+		logManager.clearPlayerLogs(player.getName(), trader);
+		player.sendMessage( locale.getLocaleString("log-xxx", "log:trader", "action:cleared") );
+		
+		return true;
+	}
+	
+	private boolean log(Player player, String trader, String[] args) {
+		
+		if ( trader.isEmpty() )
+		{
+			for ( int i = 0 ; i < args.length ; ++i )
+			{
+				if ( i + 1 < args.length )
+				{
+					trader += args[i+1] + " ";
+				}
+			}
+			if ( !trader.isEmpty() )
+				trader = trader.substring(0, trader.length()-1);
+		}
+		
 		List<String> logs = logManager.getPlayerLogs(player.getName(), trader);
 		
 		if ( logs == null )

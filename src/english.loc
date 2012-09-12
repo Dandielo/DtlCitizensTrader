@@ -1,7 +1,11 @@
 lang: US_en 
-keywords: 
+keywords:     
+  log:
+    trader: 'Trader transaction log'
+     
 #{action} keywords
   action: 
+    cleared: 'Cleared'
     withdrawed: 'Withdrawed'
     deposited: 'Deposited'
     balance: 'Balance'
@@ -38,6 +42,8 @@ keywords:
     account: 'Wallet account'
     type: 'Type'
     amount: 'Amount'
+    stock: 'Stock'
+    pattern: 'Pattern'
     
   object: 
     command: 'command'
@@ -61,6 +67,7 @@ keywords:
     wallet: 'Wallet type'
     owner: 'Owner'
     tab-item: 'tab item'
+    pattern: 'Pattern'
   
 #{reason} keywords
   reason:
@@ -107,6 +114,8 @@ messages:
   xxx-setting-value: ^6Current ^e{setting} ^6is ^e{value}
   xxx-not-selected: ^6You haven't selected any ^e{object}
   xxx-wallet: '^6{action}: {value}$'
+  removed-pattern: ^6Pattern removed' 
+  xxx-stock-cleared: ^6{manage} stock ^e{action}
   xxx-created-xxx: '^6{entity} created a ^e{entity}'
   save-config: ^6Configuration was saved
   reload-config: ^6Configuration was reloaded
@@ -121,6 +130,8 @@ messages:
   xxx-value: '^6{manage}: ^e{value}' 
   xxx-value-changed: '^6Changed {manage}: ^e{value}' 
   xxx-item: ^6{action} item
+  
+  log-xxx: ^6{log} has been {action}
   
 #List command format
   list-header: ^6Trader stock list, page ^e{curp} ^6of ^c{allp}

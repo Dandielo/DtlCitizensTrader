@@ -18,6 +18,7 @@ import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.LocaleManager;
 import net.dtl.citizens.trader.LoggingManager;
+import net.dtl.citizens.trader.PatternsManager;
 import net.dtl.citizens.trader.PermissionsManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
@@ -32,6 +33,7 @@ public abstract class Trader implements EconomyNpc {
 	
 	protected PermissionsManager permissions;
 	protected LoggingManager logging;
+	protected PatternsManager patterns;
 	
 	//Trader status
 	public enum TraderStatus {
@@ -111,6 +113,7 @@ public abstract class Trader implements EconomyNpc {
 	 * 
 	 */
 	public Trader(NPC traderNpc,TraderTrait traderConfiguragion) {
+		patterns = CitizensTrader.getPatternsManager();
 		permissions = CitizensTrader.getPermissionsManager();
 		logging = CitizensTrader.getLoggingManager();
 		// Assign the configuration for later changes
@@ -737,7 +740,7 @@ public abstract class Trader implements EconomyNpc {
 			itemInfo += " e:";
 			for ( Enchantment ench : is.getEnchantments().keySet() ) 
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
-		}
+		}		
 		return new StockItem(itemInfo);
 	}
 	
@@ -753,8 +756,8 @@ public abstract class Trader implements EconomyNpc {
 		logging.log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
 	}
 	
-	public void playerLog(String owner, String buyer, String action, StockItem item)
+	public void playerLog(String owner, String buyer, String action, StockItem item, int slot)
 	{
-		logging.playerLog(owner, npc.getName(), locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount()) );
+		logging.playerLog(owner, npc.getName(), locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
 	}
 }

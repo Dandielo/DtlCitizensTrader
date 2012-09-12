@@ -138,7 +138,7 @@ public class PlayerTrader extends Trader {
 									getSelectedItem().getPrice() );
 								
 								//sending a message to the traders owner
-								this.messageOwner("bought", p.getName(), getSelectedItem());
+								this.messageOwner("bought", p.getName(), getSelectedItem(), 0);
 								
 							}
 						} 
@@ -199,7 +199,7 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getPrice(slot) );
 							
 							//sending a message to the traders owner
-							this.messageOwner("bought", p.getName(), getSelectedItem());
+							this.messageOwner("bought", p.getName(), getSelectedItem(), slot);
 							
 						} 
 					}
@@ -263,7 +263,7 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getPrice()*scale );
 
 							//sending a message to the traders owner
-							this.messageOwner("sold", p.getName(), getSelectedItem());
+							this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
 							
 						} 
 					}
@@ -322,7 +322,7 @@ public class PlayerTrader extends Trader {
 							getSelectedItem().getPrice()*scale );
 
 						//sending a message to the traders owner
-						this.messageOwner("sold", p.getName(), getSelectedItem());
+						this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
 					
 					}
 				} 
@@ -1053,14 +1053,14 @@ public class PlayerTrader extends Trader {
 		
 //	}
 	
-	public void messageOwner(String action, String buyer, StockItem item)
+	public void messageOwner(String action, String buyer, StockItem item, int slot)
 	{
 		Player player = Bukkit.getPlayer(getTraderConfig().getOwner());
-		playerLog(getTraderConfig().getOwner(), buyer, action, item);
+		playerLog(getTraderConfig().getOwner(), buyer, action, item, slot);
 		
 		if ( player == null )
 			return;
-		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount()) );
+		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
 	}
 

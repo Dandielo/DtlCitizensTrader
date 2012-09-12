@@ -251,7 +251,7 @@ public class TraderTrait {
 			owner = data.getString("owner","no-owner");
 		}
 		if ( data.keyExists("pattern") ) {
-			pattern = data.getString("pattern","");
+			pattern = data.getString("pattern", CitizensTrader.getInstance().getConfig().getString("trader.patterns.default",""));
 		}
 		if ( data.keyExists("transactions-enabled") ) {
 			enabled = data.getBoolean("enabled",true);
@@ -277,6 +277,10 @@ public class TraderTrait {
 		data.setString("pattern", pattern);
 		data.setBoolean("transactions-enabled", enabled);
 		data.setDouble("money", w.getMoney());
+	}
+
+	public void setPattern(String string) {
+		pattern = string;
 	}
 
 }
