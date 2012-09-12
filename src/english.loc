@@ -93,7 +93,7 @@ messages:
   xxx-transaction-tab: ^6Switched to ^e{transaction} ^6tab
   
 #Player trader messages
-  xxx-transaction-xxx-item-log: ^e{entity} ^6{transaction} ^e{item}
+  xxx-transaction-xxx-item-log: ^e{entity} ^6{transaction} ^e{amount} {item}
   item-amount-recover: ^6You got ^e{amount}
   item-in-stock: ^6Item already in stock
   item-not-in-stock: ^6Item is not stock
@@ -103,7 +103,7 @@ messages:
 #Commands
   xxx-argument-invalid: ^e{argument} ^6argument is invalid
   xxx-argument-missing: ^e{argument} ^6argument is missing
-  xxx-setting-changed: ^e{setting} ^6has ben changed to ^e{value}
+  xxx-setting-changed: ^e{setting} ^6has been changed to ^e{value}
   xxx-setting-value: ^6Current ^e{setting} ^6is ^e{value}
   xxx-not-selected: ^6You haven't selected any ^e{object}
   xxx-wallet: '^6{action}: {value}$'

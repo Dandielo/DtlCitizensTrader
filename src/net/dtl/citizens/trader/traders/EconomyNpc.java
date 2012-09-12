@@ -10,16 +10,14 @@ public interface EconomyNpc {
 	
 	
 	public abstract void settingsMode(InventoryClickEvent event);
-	
 	public abstract void simpleMode(InventoryClickEvent event);
-	
 	public abstract void managerMode(InventoryClickEvent event);
+	
 	
 	public abstract TraderStatus getTraderStatus();
 	public abstract void setTraderStatus(TraderStatus status);
-	
 	public abstract int getNpcId();
-	
 	public abstract Inventory getInventory();
+	
 	
 }

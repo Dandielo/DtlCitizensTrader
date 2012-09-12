@@ -1,6 +1,7 @@
 package net.dtl.citizens.trader;
 
 import java.text.DecimalFormat;
+import java.util.List;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -41,6 +42,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//managers
 	private static NpcEcoManager traderManager;
 	private static PermissionsManager permsManager;
+	private static LoggingManager logManager;
 	private static LocaleManager locale;
 
 	
@@ -51,6 +53,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		locale = CitizensTrader.getLocaleManager();
 		permsManager = CitizensTrader.getPermissionsManager();
 		traderManager = CitizensTrader.getNpcEcoManager();
+		logManager = CitizensTrader.getLoggingManager();
 	}
 	
 	@Override
@@ -85,6 +88,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						return true;
 					
 					return createTrader(player, args);
+				}
+				if ( args[0].equals("log") )
+				{
+					return log(player, ( args.length > 1 ? args[1] : ""), ( args.length > 2 ? args[2] : ""));
 				}
 				if ( args[0].equals("reload") )
 				{
@@ -150,6 +157,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					else
 						return getOwner(player, trader);
 				}
+				if ( args[0].equals("log") )
+				{
+					if ( !this.generalChecks(player, "log", null, args, 1) )
+						return true;
+					
+					return log(player, trader.getNpc().getName(), ( args.length > 1 ? args[1] : ""));
+				}
 				if ( args[0].equals("balance") )
 				{
 					if ( !this.generalChecks(player, "balance", null, args, 1) )
@@ -178,6 +192,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}		
 		else
 		{
+			if ( args.length < 1 )
+				return false;
 			
 			if ( args[0].equals("reload") )
 			{
@@ -194,6 +210,23 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private boolean log(Player player, String trader, String secArg ) {
+		
+		if ( secArg.equals("clear") )
+		{
+			logManager.clearPlayerLogs(player.getName(), trader);
+			return true;
+		}
+		List<String> logs = logManager.getPlayerLogs(player.getName(), trader);
+		
+		if ( logs == null )
+			return true;
+		
+		for ( String log : logs )
+			player.sendMessage(log);
+		return true;
+	}
+
 	public boolean generalChecks(Player player, String commandPermission, String optionsPermission, String[] args, int size)
 	{
 		
@@ -457,7 +490,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			trader.getTraderConfig().setTraderType(type);
 			trader.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);
 			
-			player.sendMessage( locale.getLocaleString("xxx-setting-canged", "setting:trader").replace("{value}", typeString) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:trader").replace("{value}", typeString) );
 		}
 		
 		return true;

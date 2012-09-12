@@ -34,4 +34,10 @@ bank:
 money-bank:
   exchange-item: 388
   item-value: 10.0   
+logging: 
+  general: 
+    enable: true
+  player-trader: 
+    enable: true 
+    file: player_trader_logs.yml
   

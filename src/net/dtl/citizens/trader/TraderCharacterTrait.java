@@ -23,9 +23,7 @@ public class TraderCharacterTrait extends Trait {
 	
 	@Override
 	public void onSpawn() {
-		if ( npc.hasTrait(TraderCharacterTrait.class) ) {
-			CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
-		}
+		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
 
 	}
 
@@ -59,8 +57,8 @@ public class TraderCharacterTrait extends Trait {
 	
 	@Override
 	public void load(DataKey data) throws NPCLoadException {
-		if ( data.keyExists("trader-type") ) {
-			type = TraderType.getTypeByName(data.getString("trader-type"));
+		if ( data.keyExists("type") ) {
+			type = TraderType.getTypeByName(data.getString("type"));
 			traderTrait.setTraderType(type);
 		}
 		
@@ -78,7 +76,7 @@ public class TraderCharacterTrait extends Trait {
 
 	@Override
 	public void save(DataKey data) {
-		data.setString("trader-type", TraderType.toString(type));
+		data.setString("type", TraderType.toString(type));
 		
 		if ( type.isBanker() )
 		{

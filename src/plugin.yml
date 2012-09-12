@@ -11,11 +11,13 @@ commands:
       description: Dtl - CitizensTrader trader commands.
       usage: |
              Usage: 
+             /<command> help
              /<command> create <name> [type] [wallet] [owner] [account] [entity]
              /<command> list <transaction> [page]
              /<command> wallet [wallet] [account]
              /<command> type [type]
              /<command> owner [owner]
+             /<command> log [trader] [clear]
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
@@ -81,6 +83,7 @@ permissions:
       dtl.trader.commands.wallet: true
       dtl.trader.commands.type: true
       dtl.trader.commands.owner: true
+      dtl.trader.commands.log: true
       dtl.trader.commands.balance: true
       dtl.trader.commands.withdraw: true
       dtl.trader.commands.deposit: true

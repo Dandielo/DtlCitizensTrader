@@ -103,6 +103,8 @@ public class TraderTrait {
 		w = new Wallet(wType);
 		w.setMoney(0.0);
 		owner = "no owner";
+		enabled = true;
+		pattern = "";
 	}
 	
 	public void setOwner(String owner) {
@@ -246,7 +248,7 @@ public class TraderTrait {
 		if ( data.keyExists("pattern") ) {
 			pattern = data.getString("pattern","");
 		}
-		if ( data.keyExists("enabled") ) {
+		if ( data.keyExists("transactions-enabled") ) {
 			enabled = data.getBoolean("enabled",true);
 		}
 		if ( data.keyExists("money") ) {
@@ -264,11 +266,11 @@ public class TraderTrait {
 			account =  getWallet().getFaction();
 		if (  getWalletType().equals(WalletType.BANK) )
 			account =  getWallet().getBank();
-	//	data.setString("trader-type", TraderType.toString(tType))
+
 		data.setString("wallet-type", WalletType.toString(wType) + ( account.isEmpty() ? "" : "." + account ) );
 		data.setString("owner", owner);
 		data.setString("pattern", pattern);
-		data.setBoolean("enabled", enabled);
+		data.setBoolean("transactions-enabled", enabled);
 		data.setDouble("money", w.getMoney());
 	}
 

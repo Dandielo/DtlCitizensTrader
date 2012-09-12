@@ -490,7 +490,7 @@ public class PlayerTrader extends Trader {
 					
 
 					//send message
-					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "manage:stock") );
+					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "manage:stock", "entity:player") );
 				}
 				
 				//cancel the event, so no1 can take up wools and end
@@ -1020,7 +1020,7 @@ public class PlayerTrader extends Trader {
 					limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
 
 					//send message
-					p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() == 1 ? "{ending}" : ""), "s" ) );
+					p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
 					
 					
 					//set the amount to 0 to push it but don't change the top items amount 
@@ -1056,9 +1056,12 @@ public class PlayerTrader extends Trader {
 	public void messageOwner(String action, String buyer, StockItem item)
 	{
 		Player player = Bukkit.getPlayer(getTraderConfig().getOwner());
+		playerLog(getTraderConfig().getOwner(), buyer, action, item);
+		
 		if ( player == null )
 			return;
-		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()) );
+		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount()) );
+		
 	}
 
 

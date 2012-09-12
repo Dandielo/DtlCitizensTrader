@@ -9,6 +9,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.Trait;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
@@ -539,6 +540,14 @@ public class NpcEcoManager implements Listener {
 		
 		
 	}
+	
+	@EventHandler
+	public void onNpcSpawn(net.citizensnpcs.api.event.NPCSpawnEvent event)
+	{
+		for ( Trait trait : event.getNPC().getTraits() )
+			System.out.print(trait.getName());
+	}
+	
 	
 	public TraderStatus getStartStatus(Player player) {
 		if ( permManager.has(player, "dtl.trader.options.sell") )
