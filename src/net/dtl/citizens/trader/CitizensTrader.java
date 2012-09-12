@@ -34,6 +34,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static NpcEcoManager npcEcoManager;
 	private static LocaleManager localeManager;
 	private static LoggingManager logManager;
+	private static PatternsManager patternsManager;
 	
 	//Trader configuration
 	private static ItemsConfig itemConfig;
@@ -80,6 +81,8 @@ public class CitizensTrader extends JavaPlugin {
 		info("Loading locale");
 		localeManager = new LocaleManager();
 		
+		info("loading patterns");
+		patternsManager = new PatternsManager();
 		
 		npcEcoManager = new NpcEcoManager();
 		logManager = new LoggingManager();
@@ -152,13 +155,11 @@ public class CitizensTrader extends JavaPlugin {
 		towny = (Towny) Bukkit.getPluginManager().getPlugin("Towny");
 		if ( towny != null )
 		{
-		//	towny.getTownyUniverse().getTownsMap().get("").get
 			info("Hooked into " + towny.getDescription().getFullName());
 		}
 		factions = (P) Bukkit.getPluginManager().getPlugin("Factions");
 		if ( factions != null )
 		{
-		//	towny.getTownyUniverse().getTownsMap().get("").get
 			info("Hooked into " + factions.getDescription().getFullName());
 		}
 	}
@@ -200,6 +201,11 @@ public class CitizensTrader extends JavaPlugin {
 	public static NpcEcoManager getNpcEcoManager()
 	{
 		return npcEcoManager;
+	}
+	
+	public static PatternsManager getPatternsManager()
+	{
+		return patternsManager;
 	}
 	
 	public Economy getEconomy()

@@ -15,19 +15,15 @@ public class StockItem {
 	private int slot = -1;
 	private LimitSystem limit;
 	
+	private boolean listenPattern = true;
+	private boolean patternItem = false;
+	
 	public StockItem(String data) {
 		limit = new LimitSystem(this);
 		String[] values = data.split(" ");
 		for ( String value : values ) {
 			if ( item == null ) {
 				
-				
-				/* *
-				 * StockItem required properties
-				 * id => ItemId
-				 * data => itemData
-				 * 
-				 */
 				if ( value.contains(":") ) {
 					String[] itemData = value.split(":");
 					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
@@ -40,16 +36,6 @@ public class StockItem {
 				if ( value.length() > 2 ) {
 					
 					
-					/* *
-					 * Additional StockItem properties
-					 * p => price
-					 * s => slot
-					 * d => durability
-					 * a => amounts (list)
-					 * e => enchants (list)
-					 * l => limit
-					 *  
-					 */
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
 						price = Double.parseDouble(value.substring(2));
 					}
@@ -86,6 +72,10 @@ public class StockItem {
 					//stack price management
 					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
 						stackPrice = true;
+					}
+					//stack price management
+					if ( value.equals("pat") ) { //&& !value.contains("/") && !value.contains(";") ) {
+						listenPattern = true;
 					}
 				}
 			}
@@ -143,6 +133,8 @@ public class StockItem {
 		//saving additional configurations
 		if ( stackPrice )
 			itemString += " sp";
+		if ( listenPattern )
+			itemString += " pat";
 		
 		return itemString;
 	}
@@ -214,145 +206,37 @@ public class StockItem {
 		return amouts;
 	}
 	
-	/* *
-	 * getLimitSystem
-	 * 
-	 */
+	public boolean isPatternItem()
+	{
+		return patternItem;
+	}
+	public void setAsPetternItem(boolean pItem)
+	{
+		patternItem = pItem;
+	}
+	
+	public boolean isPatternListening()
+	{
+		return listenPattern;
+	}
+	public void setPetternListening(boolean listen)
+	{
+		listenPattern = listen;
+	}
+	
 	public LimitSystem getLimitSystem() {
 		return limit;
 	}
-	
-	
-	
-	/* *
-	 * Limit handling
-	 * 
-	 *//*
-	public boolean checkLimit() {
-		if ( limit.checkTimer(new Date()).reachedLimit() ) 
-			return false;
-		return true;
-	}
-	public String getLimitReset() {
-		return limit.getNextReset();
-	}
-	public void changeLimitAmount(int a) {
-		limit.changeAmount(a);
-	}
-	public boolean hasLimitAmount(int a) { 
-		if ( limit.hasLimit() )
-			return limit.hasAmount(a);
-		return true;
-	}
-	public void changeLimit(int l) { 
-		limit.changeLimit(l);
-	}
-	public int getLimit() {
-		return limit.getLimit();
-	}
-	
-	public void changeTimeout(int t) { 
-		limit.changeTimeout(t);
-	}
-	public String getTimeout() {
-		return limit.getTimeout();
-	}
-	
-	public class Limit {
-		private int limit = -1;
-		private int amount = 0;
-		private Date timer = new Date();
-		private long timeout = 0;
-		
-		 * Limit and amount management
-		 *
-		public void setLimit(int l) {
-			limit = l;
-		}
-		public int getLimit() {
-			return limit;
-		}
-		public void changeTimeout(int t) {
-			timeout += t*1000;
-			if ( timeout < 0 )
-				timeout = 0;
-		}
-		public void changeLimit(int l) {
-			limit += l;
-			if ( limit < 0 )
-				limit = -1;
-		}
-		public void setAmount(int a) {
-			amount = a;
-		}
-		public void changeAmount(int a) {
-			amount += a;
-		}
-		public void resetAmount() {
-			amount = 0;
-		}
-		public boolean hasAmount(int a) {
-			return ( limit - amount ) >= a ;
-		}
-		
-		public boolean reachedLimit() {
-			if ( limit < 1 )
-				return false;
-			return limit <= amount;
-		}
-		public boolean hasLimit() {
-			if ( limit < 0 )
-				return false;
+
+	@Override
+	public boolean equals(Object obj)
+	{
+		StockItem item = (StockItem) obj;
+		if ( //item.getSlot() == slot 
+				 item.getItemStack().getTypeId() == this.item.getTypeId()
+				&& item.getItemStack().getData().getData() == this.item.getData().getData() )
 			return true;
-		}
-		
-		* *
-		 * Time and reset management
-		 * 
-		 *
-		public Limit setTimeout(long t) {
-			timeout = t;
-			return this;
-		}
-		public Limit resetTimer() {
-			timer = new Date();
-			return this;
-		}
-		public Limit checkTimer(Date d) {
-			if ( limit < 0 )
-				return this;
-			if ( d.getTime() - timer.getTime() > timeout ) {
-				reset();
-			}
-			return this;
-		}
-		public String getNextReset() {
-			Date d = new Date();
-			d.setTime(new Date().getTime() - timer.getTime());
-			return new SimpleDateFormat("HH mm ss").format(d);
-		}
-		public String getTimeout() {
-			Date d = new Date();
-			d.setTime(timeout);
-			return new SimpleDateFormat("dd HH mm ss").format(d);
-		}
-		
-		* *
-		 * mainReset
-		 * 
-		 *
-		public void reset() {
-			resetTimer();
-			resetAmount();
-		}
-		
-		* *
-		 * toString Override
-		 * 
-		 *
-		@Override
-		public String toString() {
-			return limit + "/" + amount + "/" + ( timeout / 1000 );
-		}*/
-//	}
+		return false;
+	}
+	
 }

@@ -7,6 +7,7 @@ import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
+import net.dtl.citizens.trader.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
@@ -16,15 +17,27 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryTrait implements InventoryHolder {
+	//patterns manager
+	private PatternsManager patterns;
+	
 	//trader config
 	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
 	private List<StockItem> sellStock = new ArrayList<StockItem>();					//What the trader sells the player
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 
 	private int size;
+	private String pattern;
+	
+	public InventoryTrait(String pattern)
+	{
+		this(54); 
+		pattern = "pattern";
+	}
 	
 	public InventoryTrait() {
-		this(54); 
+		this(""); 
+		
+		patterns = CitizensTrader.getPatternsManager();
 	}
 	
 	private InventoryTrait(int stockSize){
@@ -34,19 +47,68 @@ public class InventoryTrait implements InventoryHolder {
         	throw new IllegalArgumentException("Size must be between 1 and 54");}
     }
 	
+	public String getPattern()
+	{
+		return pattern;
+	}
+	public void setPattern(String newPattern)
+	{
+		pattern = newPattern;
+		this.reloadStock();
+	}
+	
 	public void load(DataKey data) throws NPCLoadException {
 		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
-				sellStock.add(new StockItem(item));
+				StockItem stockItem = new StockItem(item);
+				sellStock.remove(stockItem);
+				sellStock.add(stockItem);
 			}
 		}
 
 		if ( data.keyExists("buy") ) {
-			for ( String item :  (List<String>) data.getRaw("buy") ) 
-				buyStock.add(new StockItem(item));
+			for ( String item :  (List<String>) data.getRaw("buy") ) {
+				StockItem stockItem = new StockItem(item);
+				buyStock.remove(stockItem);
+				buyStock.add(stockItem);
+			}
 		}
 	}
 	
+	public void reloadStock()
+	{
+		List<StockItem> tempSellStock = new ArrayList<StockItem>();
+		for ( StockItem item : sellStock )
+		{
+			if ( !item.isPatternItem() )
+				tempSellStock.add(item);
+		}
+		
+		List<StockItem> tempBuyStock = new ArrayList<StockItem>();
+		for ( StockItem item : buyStock )
+		{
+			if ( !item.isPatternItem() )
+				tempBuyStock.add(item);
+		}
+		
+		
+		sellStock.clear();
+		buyStock.clear();
+		
+		sellStock.addAll( patterns.getPattern(pattern).getStockItems(TraderStatus.SELL) );
+		buyStock.addAll( patterns.getPattern(pattern).getStockItems(TraderStatus.BUY) );
+		
+		
+		for ( StockItem item : tempSellStock ) {
+			sellStock.remove(item);
+			sellStock.add(item);
+		}
+
+		for ( StockItem item : tempBuyStock ) {
+			buyStock.remove(item);
+			buyStock.add(item);
+		}
+	}
 	
 	public void save(DataKey data) {
 	//	System.out.print(data);
@@ -54,12 +116,18 @@ public class InventoryTrait implements InventoryHolder {
         List<String> sellList = new ArrayList<String>();
 		if ( !sellStock.isEmpty() )
 	        for ( StockItem item : sellStock )
-	            	sellList.add(item.toString());
+	        {
+				if ( !item.isPatternItem() )
+					sellList.add(item.toString());
+	        }
         
 		List<String> buyList = new ArrayList<String>();
 		if ( !buyStock.isEmpty() )
 			for ( StockItem item : buyStock )
-				buyList.add(item.toString());
+			{
+				if ( !item.isPatternItem() )
+					buyList.add(item.toString());
+			}
 
 		data.setRaw("sell", sellList);
 		data.setRaw("buy", buyList);

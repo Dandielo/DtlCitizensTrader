@@ -160,6 +160,11 @@ public class TraderTrait {
 		return w;
 	}
 	
+	public String getPattern()
+	{
+		return pattern;
+	}
+	
 	public boolean buyTransaction(Player pBuying, final double price) {
 		if ( w.withdraw(pBuying.getName(), price, false) ) {
 			w.deposit(owner, price, true);

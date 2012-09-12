@@ -4,6 +4,9 @@ wands:
   manage: 280
   settings: 386
 trader: 
+  patterns:
+    file: 'patterns.yml'
+  general-pattern: 'default'
   inventory-navigation: 
     sell-tab: '35:5'
     buy-tab: '35:3'
