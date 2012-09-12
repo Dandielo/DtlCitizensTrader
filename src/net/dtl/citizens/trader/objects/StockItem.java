@@ -171,6 +171,10 @@ public class StockItem {
 	public double getRawPrice() {
 		return price;
 	}
+	public void setRawPrice(double newPrice)
+	{
+		price = newPrice;
+	}
 	public double getPrice(int i) {
 		if ( i < amouts.size() )
 			return price*amouts.get(i);
@@ -228,6 +232,11 @@ public class StockItem {
 		return limit;
 	}
 
+	public String getIdAndData()
+	{
+		return item.getTypeId() + ( item.getData().getData() == 0 ? "" : ":" + item.getData().getData() );
+	}
+	
 	@Override
 	public boolean equals(Object obj)
 	{

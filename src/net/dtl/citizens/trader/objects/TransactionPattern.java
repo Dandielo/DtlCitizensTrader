@@ -3,6 +3,7 @@ package net.dtl.citizens.trader.objects;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
@@ -51,6 +52,8 @@ public class TransactionPattern {
 				}
 			}
 		}
+		patternPrices.put("sell", sell);
+		patternPrices.put("buy", buy);
 	}
 	
 	public void loadItems(ConfigurationSection items)
@@ -95,19 +98,29 @@ public class TransactionPattern {
 		patternItems.put("buy", buy);
 	}
 	
-	public List<StockItem> getStockItems(TraderStatus status)
+	public List<StockItem> getStockItems(String transation)
 	{
-		if ( status.equals(TraderStatus.SELL)
-				|| status.equals(TraderStatus.MANAGE_SELL) )
+		return patternItems.get(transation);
+	}
+
+	public boolean getItemPrice(StockItem item, String transation) {
+		if ( patternPrices.get(transation) == null )
+			return false;
+		if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
 		{
-			return patternItems.get("sell");
+			item.setRawPrice(patternPrices.get(transation).get(item.getIdAndData()));
+			return true;
 		}
-		if ( status.equals(TraderStatus.BUY) 
-				|| status.equals(TraderStatus.MANAGE_BUY) )
+			
+		for ( Map.Entry<String, Double> entry : patternPrices.get(transation).entrySet() )
 		{
-			return patternItems.get("buy");
+			if ( item.getIdAndData().startsWith(entry.getKey()) )
+			{
+				item.setRawPrice(entry.getValue());
+				return true;
+			}
 		}
-		return null;
+		return false;
 	}
 	
 	

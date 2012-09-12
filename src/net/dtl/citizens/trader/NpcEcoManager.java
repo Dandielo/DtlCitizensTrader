@@ -541,12 +541,12 @@ public class NpcEcoManager implements Listener {
 		
 	}
 	
-	@EventHandler
+/*	@EventHandler
 	public void onNpcSpawn(net.citizensnpcs.api.event.NPCSpawnEvent event)
 	{
 		for ( Trait trait : event.getNPC().getTraits() )
 			System.out.print(trait.getName());
-	}
+	}*/
 	
 	
 	public TraderStatus getStartStatus(Player player) {

@@ -95,8 +95,8 @@ public class InventoryTrait implements InventoryHolder {
 		sellStock.clear();
 		buyStock.clear();
 		
-		sellStock.addAll( patterns.getPattern(pattern).getStockItems(TraderStatus.SELL) );
-		buyStock.addAll( patterns.getPattern(pattern).getStockItems(TraderStatus.BUY) );
+		sellStock.addAll( patterns.getPattern(pattern).getStockItems("sell") );
+		buyStock.addAll( patterns.getPattern(pattern).getStockItems("buy") );
 		
 		
 		for ( StockItem item : tempSellStock ) {
@@ -107,6 +107,16 @@ public class InventoryTrait implements InventoryHolder {
 		for ( StockItem item : tempBuyStock ) {
 			buyStock.remove(item);
 			buyStock.add(item);
+		}
+		
+		for ( StockItem item : sellStock ) {
+			if ( item.isPatternListening() )
+				patterns.getPattern(pattern).getItemPrice(item, "sell");
+		}
+
+		for ( StockItem item : buyStock ) {
+			if ( item.isPatternListening() )
+				patterns.getPattern(pattern).getItemPrice(item, "buy");
 		}
 	}
 	
