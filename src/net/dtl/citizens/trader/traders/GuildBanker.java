@@ -1,8 +1,10 @@
 package net.dtl.citizens.trader.traders;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.BankTrait;
 
@@ -47,6 +49,12 @@ public class GuildBanker extends Banker {
 	public int getNpcId() {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

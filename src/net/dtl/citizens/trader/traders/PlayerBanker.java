@@ -3,12 +3,16 @@ package net.dtl.citizens.trader.traders;
 import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
+import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.BankTrait;
 
 public class PlayerBanker extends Banker {
@@ -16,11 +20,11 @@ public class PlayerBanker extends Banker {
 	
 	int lastSlot = -1;
 	
-	public PlayerBanker(NPC traderNpc, BankTrait bankConfiguragion, String player) { 
-		super(traderNpc, bankConfiguragion, player);
+	public PlayerBanker(NPC bankerNpc, BankTrait bankConfiguragion, String player) { 
+		super(bankerNpc, bankConfiguragion, player);
 		
-		withdrawFee = config.getDouble("bank.withdraw-fee");
-		depositFee = config.getDouble("bank.deposit-fee");
+	//	withdrawFee = bankerNpc.getTrait(TraderCharacterTrait.class).getBankTrait().getWithdrawFee();//config.getDouble("bank.withdraw-fee");
+	//	depositFee = bankerNpc.getTrait(TraderCharacterTrait.class).getBankTrait().getDepositFee();//config.getDouble("bank.deposit-fee");
 		initializeTabPrices();
 		
 		account = bankAccounts.get(player);
@@ -94,9 +98,10 @@ public class PlayerBanker extends Banker {
 							return;
 						}
 						
-						player.sendMessage( locale.getLocaleString("tab-xxx", "action:{transaction}", "transaction:bought") );
 						if ( addBankTab() )
 							settingsInventory();
+						
+						player.sendMessage( locale.getLocaleString("tab-xxx", "action:{transaction}", "transaction:bought").replace("{tab}", this.getBankTab().getTabName()) );
 						lastSlot = slot;
 						return;
 					}
@@ -387,6 +392,71 @@ public class PlayerBanker extends Banker {
 	public void managerMode(InventoryClickEvent event) {
 
 		
+	}
+
+
+	@Override
+	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		
+		if ( player.getGameMode().equals(GameMode.CREATIVE) 
+				&& permissions.has(player, "dtl.banker.bypass.creative") )
+		{
+			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
+			return;
+		}
+		
+		if ( player.getItemInHand().getTypeId() == itemConfig.getManageWand().getTypeId() )
+		{
+			
+			if ( !permissions.has(player, "dtl.banker.options.manage") 
+					&& !permissions.has(player, "dtl.banker.bypass.managing")
+					&& !player.isOp() )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:banker") );
+				return;
+			}
+				
+			
+			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+			{
+				setTraderStatus(TraderStatus.BANK);
+				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
+				
+				return;
+			}	
+			
+			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
+			setTraderStatus(TraderStatus.MANAGE);
+			
+			return;
+		}
+		else
+		if ( player.getItemInHand().getTypeId() == itemConfig.getSettingsWand().getTypeId() )
+		{
+			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+			{
+				setTraderStatus(TraderStatus.BANK);
+				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
+				
+				return;
+			}	
+			
+			setTraderStatus(TraderStatus.BANK_SETTINGS);
+			useSettingsInv();
+			settingsInventory();
+			setBankStatus(BankStatus.SETTINGS);
+		}
+		else
+		{
+			player.sendMessage( locale.getLocaleString("xxx-value", "manage:withdraw-fee").replace("{value}", new DecimalFormat("#.##").format(getWithdrawFee()) ) );
+			player.sendMessage( locale.getLocaleString("xxx-value", "manage:deposit-fee").replace("{value}", new DecimalFormat("#.##").format(getDepositFee()) ) );
+			
+			//player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(getDepositFee())) );
+			//player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(getWithdrawFee())) );
+		}
+
+		if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
+			player.openInventory(getInventory());
 	}
 
 }

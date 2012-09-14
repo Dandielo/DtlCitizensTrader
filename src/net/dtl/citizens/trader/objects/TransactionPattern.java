@@ -69,8 +69,17 @@ public class TransactionPattern {
 				{
 					StockItem stockItem = new StockItem(item);
 					stockItem.setAsPatternItem(true);
-					sell.add(stockItem);
-					buy.add(stockItem);
+					if ( stockItem.getSlot() < 0 )
+						sell.add(stockItem);
+					else
+						sell.add(0, stockItem);
+					
+					stockItem = new StockItem(item);
+					stockItem.setAsPatternItem(true);
+					if ( stockItem.getSlot() < 0 )
+						buy.add(stockItem);
+					else
+						buy.add(0, stockItem);
 				}
 			}
 			else
@@ -80,7 +89,10 @@ public class TransactionPattern {
 				{
 					StockItem stockItem = new StockItem(item);
 					stockItem.setAsPatternItem(true);
-					sell.add(stockItem);
+					if ( stockItem.getSlot() < 0 )
+						sell.add(stockItem);
+					else
+						sell.add(0, stockItem);
 				}
 			}
 			else
@@ -90,7 +102,10 @@ public class TransactionPattern {
 				{
 					StockItem stockItem = new StockItem(item);
 					stockItem.setAsPatternItem(true);
-					buy.add(stockItem);
+					if ( stockItem.getSlot() < 0 )
+						buy.add(stockItem);
+					else
+						buy.add(0, stockItem);
 				}
 			}
 		}
@@ -114,7 +129,7 @@ public class TransactionPattern {
 			
 		for ( Map.Entry<String, Double> entry : patternPrices.get(transation).entrySet() )
 		{
-			if ( item.getIdAndData().startsWith(entry.getKey()) )
+			if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
 			{
 				item.setRawPrice(entry.getValue());
 				return true;

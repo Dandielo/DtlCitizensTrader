@@ -4,15 +4,17 @@ import java.text.DecimalFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCommandExecutor;
+import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.StockItem;
+import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class PlayerTrader extends Trader {
@@ -1061,6 +1063,57 @@ public class PlayerTrader extends Trader {
 		if ( player == null )
 			return;
 		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
+		
+	}
+
+	@Override
+	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		
+		if ( player.getGameMode().equals(GameMode.CREATIVE) 
+				&& permissions.has(player, "dtl.trader.bypass.creative") )
+		{
+			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
+			return;
+		}
+		
+		if ( player.getItemInHand().getTypeId() == config.getManageWand().getTypeId() )
+		{
+			
+			if ( !permissions.has(player, "dtl.trader.options.manage") )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+				return;
+			}
+			if ( !trait.getTraderTrait().getOwner().equals(player.getName()) )
+			{
+				
+				if ( !permissions.has(player, "dtl.trader.bypass.managing") )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					return;
+				}
+				else
+				if ( !player.isOp() )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					return;
+				}
+				
+			}
+			
+			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+			{
+				switchInventory( getStartStatus(player) );
+				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
+				return;
+			}	
+			
+			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
+			switchInventory( getManageStartStatus(player) );
+			return;
+		}
+
+		player.openInventory(getInventory());
 		
 	}
 

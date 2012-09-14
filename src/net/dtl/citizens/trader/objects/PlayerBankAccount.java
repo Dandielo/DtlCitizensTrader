@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader.objects;
 
-import static net.dtl.citizens.trader.backends.file.FileBackend.buildPath;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.traders.Banker.BankTabType;
 
@@ -17,7 +16,7 @@ public class PlayerBankAccount extends BankAccount {
 		
 		
 		owner = accountName;
-		availableTabs = CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("default-max-tabs");
+		availableTabs = CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("max-tabs");
 		
 		if ( save )
 			backend.newAccount(accountName);

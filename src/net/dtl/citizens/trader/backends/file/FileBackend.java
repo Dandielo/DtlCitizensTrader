@@ -202,7 +202,7 @@ public class FileBackend extends Backend {
 	
 	public BankAccount newAccount(String player)
 	{
-		accounts.set(buildPath("accounts", player, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("default-max-tabs"));
+		accounts.set(buildPath("accounts", player, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("max-tabs"));
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-item"), "35:0 a:1");
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-name"), "tab1");
 		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));//buildPath("accounts", player, "tabs", "tab1", "tab-size"), 1);

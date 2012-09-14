@@ -31,9 +31,9 @@ import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
 
 public abstract class Trader implements EconomyNpc {
 	
-	protected PermissionsManager permissions;
-	protected LoggingManager logging;
-	protected PatternsManager patterns;
+	protected static PermissionsManager permissions;
+	protected static LoggingManager logging;
+	protected static PatternsManager patterns;
 	
 	//Trader status
 	public enum TraderStatus {
@@ -742,6 +742,22 @@ public abstract class Trader implements EconomyNpc {
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
 		}		
 		return new StockItem(itemInfo);
+	}
+	
+	public static TraderStatus getStartStatus(Player player) {
+		if ( permissions.has(player, "dtl.trader.options.sell") )
+			return TraderStatus.SELL;
+		else if ( permissions.has(player, "dtl.trader.options.buy") )
+			return TraderStatus.BUY;
+		return null;
+	}
+	
+	public static TraderStatus getManageStartStatus(Player player) {
+		if ( permissions.has(player, "dtl.trader.options.sell") )
+			return TraderStatus.MANAGE_SELL;
+		else if ( permissions.has(player, "dtl.trader.options.buy") )
+			return TraderStatus.MANAGE_BUY;
+		return null;
 	}
 	
 	

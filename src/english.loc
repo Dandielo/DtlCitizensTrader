@@ -44,6 +44,8 @@ keywords:
     amount: 'Amount'
     stock: 'Stock'
     pattern: 'Pattern'
+    action: 'Action'
+    fee: 'Fee'
     
   object: 
     command: 'command'
@@ -89,6 +91,9 @@ keywords:
     global-timeout: 'Global timeout'
     stack-price: 'Stack price'
     price: 'Price'
+    settings: 'Settings tab'
+    withdraw-fee: 'Withdraw fee'
+    deposit-fee: 'Deposit fee'
   
 messages: 
 #General Trader messages
@@ -150,7 +155,7 @@ messages:
 #banker
   tab-price: '^6Tab price: {value}'
   tab-setting-xxx: '^6{tab} tab ^e{setting} ^6{action}'
-  tab-xxx: '^6{tab} tab {action}'
+  tab-xxx: '^e{tab} ^6tab {action}'
   tab-switched: ^6You switched to ^e{tab} ^6tab
   select-tab-item: '^6Select the ^e{tab} ^6tab item'
   cant-create-account: ^6{entity} can't open an account

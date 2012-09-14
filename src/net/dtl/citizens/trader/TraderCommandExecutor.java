@@ -70,7 +70,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			if ( args.length < 1 )
 			{
-				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
+				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + "" );
 				
 				if ( economyNpc != null && economyNpc instanceof Trader )
 				{
@@ -96,6 +96,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				if ( args[0].equalsIgnoreCase("help") )
 				{
+					player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
 					return false;
 				}
 				//reload plugin
@@ -194,13 +195,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					return clear(player, trader, args);
 				}
-				if ( args[0].equals("removepattern") )
-				{
-					if ( !this.generalChecks(player, "removepattern", null, args, 1) )
-						return true;
-					
-					return removePattern(player, trader);
-				}
 				if ( args[0].equals("pattern") )
 				{
 					if ( !this.generalChecks(player, "pattern", null, args, 1) )
@@ -244,7 +238,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					return withdraw(player, trader, args[1]);
 				}
 				
-				return true;
+				return false;
 			}
 				
 		}		
@@ -268,10 +262,24 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private boolean reloadPatterns(Player player, Trader trader) 
+	{
+		CitizensTrader.getPatternsManager().reload();
+		
+		for ( NPC npc : this.traderManager.getAllServerTraders() )
+		{
+			npc.getTrait(TraderCharacterTrait.class).getInventoryTrait().reloadStock();
+		}
+		
+		return true;
+	}
+
 	private boolean removePattern(Player player, Trader trader) {
 		
 		trader.getTraderStock().removePattern();
 		trader.getTraderConfig().setPattern("");
+		trader.getInventory().clear();
+	//	trader.switchInventory(trader.getTraderStatus());
 		player.sendMessage( locale.getLocaleString("removed-pattern") );
 		
 		return true;
@@ -281,15 +289,39 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( args.length <= 1 )
 		{
+			player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:action") );
+			return true;
+		}
+		
+		if ( args[1].toLowerCase().equals("remove") )
+		{
+			return this.removePattern(player, trader);
+		}
+		if ( args[1].toLowerCase().equals("reload") )
+		{
+			if ( !permsManager.has(player, "dtl.trader.commands.patternreload") )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+				return true;
+			}
+			return this.reloadPatterns(player, trader);
+		}
+		if ( !args[1].equals("set") )
+		{
+			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:action") );
+			return true;
+		}
+		
+		if ( args.length <= 2 )
+		{
 			player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:pattern") );
 			return true;
 		}
 		
-		
-		if ( trader.getTraderStock().setPattern(args[1]) )
+		if ( trader.getTraderStock().setPattern(args[2]) )
 		{
-			trader.getTraderConfig().setPattern(args[1]);
-			player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[1].toLowerCase()) );
+			trader.getTraderConfig().setPattern(args[2]);
+			player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[2].toLowerCase()) );
 		}
 		else
 		{
@@ -383,13 +415,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			return false;
 		}
 		
-		//have we got the needed args?
-	/*	if ( args.length < size )
-		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-missing") );
-			return false;
-		}	*/
-		
 		return true;
 	}
 	
@@ -472,12 +497,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//set the traders wallet type
 	public boolean setWallet(Player player, Trader trader, String walletString, String bankAccount)
 	{
-		
-		if ( !permsManager.has(player, "dtl.trader.wallets." + walletString ) )
-		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
-			return true;
-		}
 
 		
 		WalletType wallet = WalletType.getTypeByName(walletString);
@@ -506,6 +525,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//change wallet
 		else
 		{
+			
+			if ( !permsManager.has(player, "dtl.trader.wallets." + walletString ) )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
+				return true;
+			}
+			
 			//bank
 			if ( wallet.equals(WalletType.BANK) )
 			{
@@ -608,12 +634,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean setType(Player player, Trader trader, String typeString)
 	{
 		
-		if ( !permsManager.has(player, "dtl.trader.types." + typeString ) )
-		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
-			return true;
-		}
-		
 		TraderType type = TraderType.getTypeByName(typeString);
 		
 		//show current trader type
@@ -624,6 +644,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//change trader type
 		else
 		{
+			
+			if ( !permsManager.has(player, "dtl.trader.types." + typeString ) )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
+				return true;
+			}
 
 			trader.getTraderConfig().setTraderType(type);
 			trader.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);

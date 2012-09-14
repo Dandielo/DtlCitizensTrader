@@ -15,6 +15,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.LocaleManager;
 import net.dtl.citizens.trader.PermissionsManager;
 import net.dtl.citizens.trader.objects.BankAccount;
@@ -89,8 +90,9 @@ abstract public class Banker implements EconomyNpc {
 	
 	//static global settigns
 	protected static FileConfiguration config;
-	protected static double withdrawFee;
-	protected static double depositFee;
+	protected static ItemsConfig itemConfig;
+//	protected static double withdrawFee;
+//	protected static double depositFee;
 	protected static Map<BankTabType, Double> tabPrices;
 	
 	protected static Economy econ;
@@ -119,6 +121,7 @@ abstract public class Banker implements EconomyNpc {
 		
 		econ = CitizensTrader.getInstance().getEconomy();
 		config = CitizensTrader.getInstance().getConfig();
+		itemConfig = CitizensTrader.getInstance().getItemConfig();
 		
 		locale = CitizensTrader.getLocaleManager();
 		//loading accoutns
@@ -171,12 +174,12 @@ abstract public class Banker implements EconomyNpc {
 	
 	public double getWithdrawFee()
 	{
-		return withdrawFee;
+		return this.getbankTrait().getWithdrawFee();
 	}
 	
 	public double getDepositFee()
 	{
-		return depositFee;
+		return this.getbankTrait().getDepositFee();
 	}
 	
 	public boolean tabTransaction(BankTabType type, String player)
@@ -199,9 +202,9 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean depositFee(String player)
 	{
-		if ( econ.getBalance(player) >= depositFee )
+		if ( econ.getBalance(player) >= this.getbankTrait().getDepositFee() )
 		{
-			econ.withdrawPlayer(player, depositFee);
+			econ.withdrawPlayer(player, this.getbankTrait().getDepositFee() );
 			return true;
 		}
 		
@@ -210,9 +213,9 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean withdrawFee(String player)
 	{
-		if ( econ.getBalance(player) >= withdrawFee )
+		if ( econ.getBalance(player) >= this.getbankTrait().getWithdrawFee() )
 		{
-			econ.withdrawPlayer(player, withdrawFee);
+			econ.withdrawPlayer(player, this.getbankTrait().getWithdrawFee() );
 			return true;
 		}
 		

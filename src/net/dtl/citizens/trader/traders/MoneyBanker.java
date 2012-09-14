@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.traits.BankTrait;
@@ -198,6 +199,15 @@ public class MoneyBanker extends Banker {
 		 * 
 		 */
 		return false;
+	}
+
+
+	@Override
+	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		
+
+		player.openInventory(getInventory());
+		
 	}
 	
 	

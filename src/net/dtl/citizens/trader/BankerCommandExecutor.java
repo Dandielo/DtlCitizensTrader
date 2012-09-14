@@ -45,8 +45,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 			
 			if ( args.length < 1 )
 			{
-				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Banker commands list" );
-				return false;
+				return true;
 			}
 			
 			
@@ -62,6 +61,11 @@ public class BankerCommandExecutor implements CommandExecutor {
 				CitizensTrader.getLocaleManager().reload();
 				
 				return true;
+			}
+			if ( args[0].equals("help") )
+			{
+				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Banker commands list" );
+				return false;
 			}
 			
 			//no npc selected
@@ -101,8 +105,21 @@ public class BankerCommandExecutor implements CommandExecutor {
 					
 					return setType(player, banker, ( args.length > 1 ? args[1] : "" ) );
 				}
-				
-				return true;
+				if ( args[0].equals("fee") )
+				{
+					if ( !this.generalChecks(player, "fee", null, args, 1) )
+						return true;
+					
+					return setFee(player, banker, args );
+				}
+				if ( args[0].equals("settings") )
+				{
+					if ( !this.generalChecks(player, "settings", null, args, 1) )
+						return true;
+					
+					return toggleSettings(player, banker, ( args.length > 1 ? args[1] : "" ) );
+				}
+				return false;
 			}
 				
 		}		
@@ -124,6 +141,71 @@ public class BankerCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private boolean toggleSettings(Player player, Banker banker, String toggle) {
+		if ( toggle.isEmpty() )
+		{
+			player.sendMessage( locale.getLocaleString("xxx-value", "manage:settings").replace("{value}", ""+banker.getbankTrait().hasSettingsPage()) );
+			return true;
+		}
+		if ( toggle.equals("toggle") )
+		{
+			banker.getbankTrait().toggleSettingsPage();
+			player.sendMessage( locale.getLocaleString("xxx-value-changed", "manage:settings").replace("{value}", ""+banker.getbankTrait().hasSettingsPage()) );
+			return true;
+		}
+		player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:action") );
+		return true;
+	}
+
+	private boolean setFee(Player player, Banker banker, String[] args) {
+		if ( args.length > 2 )
+		{
+			double fee = 0.0;
+			try
+			{
+				fee = Double.valueOf(args[2]);
+			}
+			catch( NumberFormatException exception )
+			{
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
+				//exception.printStackTrace();
+				return true;
+			}
+			
+			if ( args[1].toLowerCase().equals("withdraw") )
+			{
+				banker.getbankTrait().setWithdrawFee(fee);
+				player.sendMessage( locale.getLocaleString("xxx-value-changed", "manage:withdraw-fee").replace("{value}", ""+banker.getbankTrait().getWithdrawFee()) );
+			}
+			else
+			if ( args[1].toLowerCase().equals("deposit") )
+			{
+				banker.getbankTrait().setDepositFee(fee);
+				player.sendMessage( locale.getLocaleString("xxx-value-changed", "manage:deposit-fee").replace("{value}", ""+banker.getbankTrait().getDepositFee()) );
+			}
+			else
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:fee") );
+				
+			return true;
+		}
+		if ( args.length > 1 )
+		{
+			if ( args[1].toLowerCase().equals("withdraw") )
+				player.sendMessage( locale.getLocaleString("xxx-value", "manage:withdraw-fee").replace("{value}", ""+banker.getbankTrait().getWithdrawFee()) );
+			else
+			if ( args[1].toLowerCase().equals("deposit") )
+				player.sendMessage( locale.getLocaleString("xxx-value", "manage:deposit-fee").replace("{value}", ""+banker.getbankTrait().getDepositFee()) );
+			else
+				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:fee") );
+				
+			return true;
+			
+		}
+		player.sendMessage( locale.getLocaleString("xxx-value", "manage:withdraw-fee").replace("{value}", ""+banker.getbankTrait().getWithdrawFee()) );
+		player.sendMessage( locale.getLocaleString("xxx-value", "manage:deposit-fee").replace("{value}", ""+banker.getbankTrait().getDepositFee()) );
+		return true;
+	}
+
 	public boolean generalChecks(Player player, String commandPermission, String optionsPermission, String[] args, int size)
 	{
 		
@@ -215,7 +297,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("t:") )
 			{
 				//do we have permissions to set this trader type?
-				if ( !permsManager.has(player, "dtl.trader.types." + arg.substring(2) + "-bank" ) )
+				if ( !permsManager.has(player, "dtl.banker.types." + arg.substring(2) + "-bank" ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;

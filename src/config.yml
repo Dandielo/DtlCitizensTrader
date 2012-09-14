@@ -2,7 +2,7 @@ locale:
   file: english.loc
 wands:
   manage: 280
-  settings: 386
+  settings: 340
 trader: 
   patterns:
     file: 'patterns.yml'

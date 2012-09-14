@@ -20,8 +20,8 @@ commands:
              /<command> log [trader name] 
              /<command> clearlog [trader name] 
              /<command> clear [stock]
-             /<command> pattern [pattern]
-             /<command> removepattern 
+             /<command> pattern [action] 
+             /<command> pattern set (pattern)
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
@@ -93,7 +93,7 @@ permissions:
       dtl.trader.commands.withdraw: true
       dtl.trader.commands.deposit: true
       dtl.trader.commands.pattern: true
-      dtl.trader.commands.removepattern: true
+      dtl.trader.commands.patternreload: true
       dtl.trader.commands.clear: true
   dtl.trader.bypass.*:
     default: op
@@ -114,12 +114,14 @@ permissions:
     default: op
     children: 
       dtl.banker.bypass.creative: true
+      dtl.banker.bypass.managing: true
   dtl.banker.options.*:
     default: op
     children: 
       dtl.banker.options.settings: true
       dtl.banker.options.account: true
-      dtl.banker.options.remote-banking: true
+      dtl.banker.options.manage: false
+      dtl.banker.options.remote-banking: false
   dtl.banker.types.*:
     default: op
     children:

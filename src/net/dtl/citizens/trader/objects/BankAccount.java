@@ -207,7 +207,7 @@ abstract public class BankAccount implements InventoryHolder  {
 			inventory.setItem((lastRow*9) + Integer.parseInt(tab.toString().substring(3))-1, bankTabs.get(tab).getTabItem() );
 			++i;
 		}
-		if ( i < 53 && availableTabs > i % 45 )
+		if ( i < 54 && availableTabs > i % 45 )
 			inventory.setItem(i, new ItemStack(35,1) );
 	}
 	

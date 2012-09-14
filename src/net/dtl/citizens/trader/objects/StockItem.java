@@ -38,6 +38,7 @@ public class StockItem {
 					
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
 						price = Double.parseDouble(value.substring(2));
+						listenPattern = false;
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
@@ -100,7 +101,8 @@ public class StockItem {
 		String itemString = "" + item.getTypeId() + ( item.getData().getData() != 0 ? ":" + item.getData().getData() : "" );
 		
 		//saving the item price
-		itemString += " p:" + new DecimalFormat("#.##").format(price);
+		if ( !listenPattern )
+			itemString += " p:" + new DecimalFormat("#.##").format(price);
 		
 		//saving the item slot
 		itemString += " s:" + slot;
@@ -143,12 +145,10 @@ public class StockItem {
 		return stackPrice;
 	}
 	public void setStackPrice(boolean b) {
-		patternItem = false;
 		stackPrice = b;
 	}
 	
 	public void increasePrice(double d) {
-		patternItem = false;
 		price += d;
 	}
 	public void lowerPrice(double p) {
@@ -156,7 +156,6 @@ public class StockItem {
 			price = 0;
 			return;
 		}
-		patternItem = false;
 		price -= p;
 	}
 	
@@ -193,7 +192,6 @@ public class StockItem {
 		return slot;
 	}
 	public void setSlot(int s) {
-		patternItem = false;
 		slot = s;
 	}
 	public void resetAmounts(int a) {

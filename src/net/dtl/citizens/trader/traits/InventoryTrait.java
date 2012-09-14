@@ -31,7 +31,7 @@ public class InventoryTrait implements InventoryHolder {
 	public InventoryTrait(String pattern)
 	{
 		this(54); 
-		pattern = "pattern";
+		this.pattern = pattern;
 	}
 	
 	public InventoryTrait() {
@@ -72,16 +72,20 @@ public class InventoryTrait implements InventoryHolder {
 		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
 				StockItem stockItem = new StockItem(item);
-				sellStock.remove(stockItem);
-				sellStock.add(stockItem);
+				if ( stockItem.getSlot() < 0 )
+					sellStock.add(stockItem);
+				else
+					sellStock.add(0, stockItem);
 			}
 		}
 
 		if ( data.keyExists("buy") ) {
 			for ( String item :  (List<String>) data.getRaw("buy") ) {
 				StockItem stockItem = new StockItem(item);
-				buyStock.remove(stockItem);
-				buyStock.add(stockItem);
+				if ( stockItem.getSlot() < 0 )
+					buyStock.add(stockItem);
+				else
+					buyStock.add(0, stockItem);
 			}
 		}
 	}
@@ -101,13 +105,17 @@ public class InventoryTrait implements InventoryHolder {
 			if ( !item.isPatternItem() )
 				tempBuyStock.add(item);
 		}
+
 		
-		
+		sellStock.clear();
+		buyStock.clear();
+
 		if ( !pattern.isEmpty() )
 		{
 			sellStock.addAll( patterns.getPattern(pattern).getStockItems("sell") );
 			buyStock.addAll( patterns.getPattern(pattern).getStockItems("buy") );
 		}
+
 		
 		for ( StockItem item : tempSellStock ) {
 			sellStock.remove(item);

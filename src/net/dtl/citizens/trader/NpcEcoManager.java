@@ -57,6 +57,17 @@ public class NpcEcoManager implements Listener {
 		return this.isEconomyNpc.contains(npc);
 	}
 	
+	public List<NPC> getAllServerTraders()
+	{
+		List<NPC> traders=  new ArrayList<NPC>();
+		for ( NPC npc : isEconomyNpc )
+		{
+			if ( npc.getTrait(TraderCharacterTrait.class).getTraderType().equals(TraderType.SERVER_TRADER) )
+				traders.add(npc);
+		}
+		return traders;
+	}
+	
 	//Interaction
 	public EconomyNpc getInteractionNpc(String player) {
 		if ( playerInteraction.containsKey(player) )
@@ -223,6 +234,197 @@ public class NpcEcoManager implements Listener {
 		
 		//trader character
 		TraderCharacterTrait characterTrait = npc.getTrait(TraderCharacterTrait.class);
+		
+		switch( characterTrait.getTraderType() )
+		{
+			case SERVER_TRADER:
+			{
+				if ( economyNpc != null )
+				{
+
+					if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+					{
+						player.sendMessage( locale.getLocaleString("lacks-permissions") );
+						return;
+					}
+					
+					if ( economyNpc.getNpcId() == npc.getId() )
+					{
+						economyNpc.onRightClick(player, characterTrait, npc);
+						
+						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+							playerInteraction.remove(playerName);
+					}
+					else
+					{
+						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						
+						EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
+						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+						playerInteraction.put(playerName, newNpc);
+						
+						newNpc.onRightClick(player, characterTrait, npc);
+						
+					}
+				}
+				else
+				{
+					EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
+					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					playerInteraction.put(playerName, newNpc);
+					
+					newNpc.onRightClick(player, characterTrait, npc);
+					
+				}
+				return;
+			}
+			case PLAYER_TRADER:
+			{
+
+				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					return;
+				}
+				
+				if ( economyNpc != null )
+				{
+					if ( economyNpc.getNpcId() == npc.getId() )
+					{
+						economyNpc.onRightClick(player, characterTrait, npc);
+						
+						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+							playerInteraction.remove(playerName);
+					}
+					else
+					{
+						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						
+						EconomyNpc newNpc = new PlayerTrader(npc, characterTrait.getTraderTrait());
+						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+						playerInteraction.put(playerName, newNpc);
+						
+						newNpc.onRightClick(player, characterTrait, npc);
+					}
+				}
+				else
+				{
+					EconomyNpc newNpc = new PlayerTrader(npc, characterTrait.getTraderTrait());
+					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					playerInteraction.put(playerName, newNpc);
+					
+					newNpc.onRightClick(player, characterTrait, npc);
+				}
+				return;
+			}
+			case PLAYER_BANK:
+			{
+
+				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					return;
+				}
+				
+				if ( economyNpc != null )
+				{
+					if ( economyNpc.getNpcId() == npc.getId() )
+					{
+						economyNpc.onRightClick(player, characterTrait, npc);
+						
+						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+							playerInteraction.remove(playerName);
+					}
+					else
+					{
+						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						
+						EconomyNpc newNpc = new PlayerBanker(npc, characterTrait.getBankTrait(), playerName);
+						Banker banker = (Banker) playerInteraction.get(playerName);
+						if ( !Banker.hasAccount(player) ) {
+							playerInteraction.remove(playerName);
+							return;
+						}
+						
+						playerInteraction.put(playerName, newNpc);
+						player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
+						player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
+						
+						newNpc.onRightClick(player, characterTrait, npc);
+						
+					}
+				}
+				else
+				{
+
+					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+					{
+						player.sendMessage( locale.getLocaleString("lacks-permissions") );
+						return;
+					}
+					
+					EconomyNpc newNpc = new PlayerBanker(npc, characterTrait.getBankTrait(), playerName);
+					
+				//	Banker banker = (Banker) newNpc;
+					if ( !Banker.hasAccount(player) ) {
+						playerInteraction.remove(playerName);
+						return;
+					}
+					
+					playerInteraction.put(playerName, newNpc);
+					newNpc.onRightClick(player, characterTrait, npc);
+					
+				}
+				return;
+			}
+			case MONEY_BANK:
+			{
+				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					return;
+				}
+				
+				if ( economyNpc != null )
+				{
+					{
+						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						
+						EconomyNpc newNpc = new MoneyBanker(npc, characterTrait.getBankTrait(), playerName);
+						playerInteraction.put(playerName, newNpc);
+						
+						newNpc.onRightClick(player, characterTrait, npc);
+						
+					}
+				}
+				else
+				{
+					EconomyNpc newNpc = new MoneyBanker(npc, characterTrait.getBankTrait(), playerName);
+					playerInteraction.put(playerName, newNpc);
+					
+					newNpc.onRightClick(player, characterTrait, npc);
+					
+				}
+				return;
+			}
+			default:
+			{
+				
+			}
+					
+		}
+		
+		
+		
+		
+		
+		
+		/*
+		
+		
+		
+		
+		
 		
 		
 		//Manage manager mode r.click
@@ -538,7 +740,7 @@ public class NpcEcoManager implements Listener {
 		
 		player.openInventory(playerInteraction.get(playerName).getInventory());
 		
-		
+		*/
 	}
 	
 /*	@EventHandler
@@ -549,21 +751,7 @@ public class NpcEcoManager implements Listener {
 	}*/
 	
 	
-	public TraderStatus getStartStatus(Player player) {
-		if ( permManager.has(player, "dtl.trader.options.sell") )
-			return TraderStatus.SELL;
-		else if ( permManager.has(player, "dtl.trader.options.buy") )
-			return TraderStatus.BUY;
-		return null;
-	}
 	
-	public TraderStatus getManageStartStatus(Player player) {
-		if ( permManager.has(player, "dtl.trader.options.sell") )
-			return TraderStatus.MANAGE_SELL;
-		else if ( permManager.has(player, "dtl.trader.options.buy") )
-			return TraderStatus.MANAGE_BUY;
-		return null;
-	}
 	
 	
 }
