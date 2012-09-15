@@ -2,6 +2,7 @@ package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -13,6 +14,8 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
+import net.dtl.citizens.trader.events.TraderTransactionEvent;
+import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traders.Banker.BankStatus;
@@ -111,17 +114,20 @@ public class ServerTrader extends Trader {
 							//checks
 							if ( !checkLimits(p) )
 							{
+								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 							}
 							else
 							if ( !inventoryHasPlace(p,0) )
 							{
+								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 							}
 							else
 							if ( !buyTransaction(p,getSelectedItem().getPrice()) )
 							{
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 							}
 							else
 							{
@@ -133,6 +139,9 @@ public class ServerTrader extends Trader {
 
 
 								updateLimits(p.getName());
+								
+								//call event Denizen Transaction Trigger
+								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
 								
 								//logging
 								log("buy", 
@@ -166,16 +175,19 @@ public class ServerTrader extends Trader {
 							
 						if ( !checkLimits(p,slot) )
 						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 						}
 						else
 						if ( !inventoryHasPlace(p,slot) )
 						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 						}
 						else
 						if ( !buyTransaction(p,getSelectedItem().getPrice(slot)) ) 
 						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 						}
 						else
@@ -189,10 +201,8 @@ public class ServerTrader extends Trader {
 							 */
 							addSelectedToInventory(p,slot);
 							
-							/* *
-							 * needs to be recoded
-							 * 
-							 */
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
+							
 							updateLimits(p.getName(),slot);
 							switchInventory(getSelectedItem());
 							
@@ -241,11 +251,13 @@ public class ServerTrader extends Trader {
 						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 						if ( !checkBuyLimits(p, scale) )
 						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 						}
 						else
 						if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
 						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 						}
 						else
@@ -256,6 +268,8 @@ public class ServerTrader extends Trader {
 							updateBuyLimits(p.getName(),scale);
 
 							removeFromInventory(event.getCurrentItem(),event);
+							
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
 							
 							//logging
 							log("sell", 
@@ -297,11 +311,13 @@ public class ServerTrader extends Trader {
 					else
 					if ( !checkBuyLimits(p, scale) )
 					{
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 					}
 					else
 					if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
 					{
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 					}
 					else
@@ -311,6 +327,8 @@ public class ServerTrader extends Trader {
 						
 						//limits update
 						updateBuyLimits(p.getName(),scale);
+						
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
 						
 						//inventory cleanup
 						removeFromInventory(event.getCurrentItem(),event);

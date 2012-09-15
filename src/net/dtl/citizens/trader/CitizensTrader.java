@@ -1,9 +1,16 @@
 package net.dtl.citizens.trader;
 
+import java.rmi.activation.ActivationException;
 import java.util.logging.Logger;
 
+import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderPattern;
+import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderTransaction;
+import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
+import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerSoldTrigger;
+import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerTransactionTrigger;
 import net.dtl.citizens.trader.traders.Banker;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -14,7 +21,6 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.P;
 import com.palmergames.bukkit.towny.Towny;
 
@@ -27,6 +33,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static SimpleClans clans;
 	private static Towny towny;
 	private static P factions;
+	private static Denizen denizen;
 	
 	//CitizensTrader Managers
 	private static PermissionsManager permsManager;
@@ -131,6 +138,10 @@ public class CitizensTrader extends JavaPlugin {
 		Banker.reloadAccounts();
 		info("Loaded bank accounts");
 		
+		//Denizen commands
+		initializeDenizenCommands();
+		initializeDenizenTriggers();
+		
 		//plugin enabled
 		logger.info("["+ pdfFile.getName() + "] v" + pdfFile.getVersion() + " enabled.");
 
@@ -162,6 +173,52 @@ public class CitizensTrader extends JavaPlugin {
 		{
 			info("Hooked into " + factions.getDescription().getFullName());
 		}
+	}
+	
+	public void initializeDenizenCommands()
+	{
+		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		if ( denizen != null )
+		{
+			info("Hooked into " + denizen.getDescription().getFullName());
+			info("Registering commands... ");
+			denizen.getCommandRegistry().registerCommand("TRADER_TRANSACTION", new DenizenCommandTraderTransaction());
+			denizen.getCommandRegistry().registerCommand("TRADER_PATTERN", new DenizenCommandTraderPattern());
+		}
+	}
+	
+	public void initializeDenizenTriggers()
+	{
+		if ( denizen != null )
+		{
+			info("Registering triggers... ");
+			DenizenTriggerTransactionTrigger transaction = new DenizenTriggerTransactionTrigger();
+			DenizenTriggerBoughtTrigger bought = new DenizenTriggerBoughtTrigger();
+			DenizenTriggerSoldTrigger sold = new DenizenTriggerSoldTrigger();
+			
+			try 
+			{
+				transaction.activateAs("transaction");
+				transaction.setEnabledByDefault(false);
+				bought.activateAs("bought");
+				bought.setEnabledByDefault(false);
+				sold.activateAs("sold");
+				sold.setEnabledByDefault(false);
+				
+				getServer().getPluginManager().registerEvents(transaction, this);
+				getServer().getPluginManager().registerEvents(bought, this);
+				getServer().getPluginManager().registerEvents(sold, this);
+			} 
+			catch (ActivationException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static Denizen getDenizen()
+	{
+		return denizen;
 	}
 	
 	public static Towny getTowny() {
