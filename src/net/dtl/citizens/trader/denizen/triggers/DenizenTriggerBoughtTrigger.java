@@ -19,6 +19,7 @@ import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTraderTrigger;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
+import net.dtl.citizens.trader.objects.StockItem;
 
 public class DenizenTriggerBoughtTrigger extends AbstractDenizenTraderTrigger implements Listener {
 	
@@ -63,7 +64,7 @@ public class DenizenTriggerBoughtTrigger extends AbstractDenizenTraderTrigger im
 		// Apply default cool-down to avoid click-spam, then send to parser. */
 	//	sE.setCooldown(theDenizen, DenizenTriggerTransactionTrigger.class, plugin.settings.DefaultClickCooldown());
 
-		if (!parseClickTrigger(theDenizen, player)) {
+		if (!parseClickTrigger(theDenizen, player, event.getItem())) {
 			theDenizen.talk(TalkType.CHAT_PLAYERONLY, player, Reason.NoMatchingClickTrigger);
 			return;
 		}
@@ -71,7 +72,7 @@ public class DenizenTriggerBoughtTrigger extends AbstractDenizenTraderTrigger im
 		// Success!
 	}
 
-	private boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer) {
+	private boolean parseClickTrigger(DenizenNPC theDenizen, Player thePlayer, StockItem item) {
 		
 		
 		CommandSender cs = Bukkit.getConsoleSender();
@@ -110,6 +111,7 @@ public class DenizenTriggerBoughtTrigger extends AbstractDenizenTraderTrigger im
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
 
 		if (theScript.isEmpty()) return false;
+		theScript.add(0, "^FLAG TransactionItem:"+item.getItemStack().getType().name());
 
 		/* Build scriptEntries from theScript and add it into the queue */
 		sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);

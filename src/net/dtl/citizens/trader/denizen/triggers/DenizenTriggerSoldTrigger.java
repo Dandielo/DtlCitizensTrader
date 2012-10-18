@@ -111,7 +111,7 @@ public class DenizenTriggerSoldTrigger extends AbstractDenizenTraderTrigger impl
 		List<String> theScript = sE.getScript(sE.getTriggerPath(theScriptName, theStep, triggerName) + sE.scriptString);
 
 		if (theScript.isEmpty()) return false;
-		//theScript.add(0, "");
+		theScript.add(0, "^FLAG TransactionItem:"+item.getItemStack().getType().name());
 		
 		/* Build scriptEntries from theScript and add it into the queue */
 		sE.queueScriptEntries(thePlayer, sE.buildScriptEntries(thePlayer, theDenizen, theScript, theScriptName, theStep), QueueType.TRIGGER);

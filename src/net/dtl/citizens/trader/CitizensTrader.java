@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+import net.dtl.citizens.trader.denizen.AbstractDenizenTraderCommand;
 import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderPattern;
 import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderTransaction;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
@@ -180,10 +181,7 @@ public class CitizensTrader extends JavaPlugin {
 		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		if ( denizen != null )
 		{
-			info("Hooked into " + denizen.getDescription().getFullName());
-			info("Registering commands... ");
-			denizen.getCommandRegistry().registerCommand("TRADER_TRANSACTION", new DenizenCommandTraderTransaction());
-			denizen.getCommandRegistry().registerCommand("TRADER_PATTERN", new DenizenCommandTraderPattern());
+			AbstractDenizenTraderCommand.initializeDenizenCommands(denizen);
 		}
 	}
 	
