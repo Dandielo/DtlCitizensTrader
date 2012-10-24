@@ -7,16 +7,16 @@ import java.util.List;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-public class StockItem {
-	private ItemStack item = null;
-	private List<Integer> amouts = new ArrayList<Integer>();
-	private boolean stackPrice = false;
-	private double price = 0;
-	private int slot = -1;
-	private LimitSystem limit;
+public class StockItem {	
+	protected ItemStack item = null;
+	protected List<Integer> amouts = new ArrayList<Integer>();
+	protected boolean stackPrice = false;
+	protected double price = 0;
+	protected int slot = -1;
+	protected LimitSystem limit;
 	
-	private boolean listenPattern = true;
-	private boolean patternItem = false;
+	protected boolean listenPattern = true;
+	protected boolean patternItem = false;
 	
 	public StockItem(String data) {
 		limit = new LimitSystem(this);

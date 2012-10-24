@@ -200,10 +200,9 @@ public class InventoryTrait implements InventoryHolder {
 
             	if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
+            	
 	            view.setItem( item.getSlot() ,chk);
 	            
-	            
-
 	        }
             if ( !buyStock.isEmpty() )
             	view.setItem(view.getSize()-1, config.getItemManagement(1));
