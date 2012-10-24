@@ -68,6 +68,15 @@ public class NpcEcoManager implements Listener {
 		return traders;
 	}
 	
+	public EconomyNpc getServerTraderByName(String name)
+	{
+		for ( NPC npc : isEconomyNpc )
+		{
+			if ( npc.getName().equals(name) )
+				return new ServerTrader(npc, npc.getTrait(TraderCharacterTrait.class).getTraderTrait());
+		}
+		return null;
+	}
 	//Interaction
 	public EconomyNpc getInteractionNpc(String player) {
 		if ( playerInteraction.containsKey(player) )
@@ -77,6 +86,10 @@ public class NpcEcoManager implements Listener {
 	//Interaction
 	public void addInteractionNpc(String player, EconomyNpc npc) {
 		playerInteraction.put(player, npc);
+	}
+	//Interaction
+	public void removeInteractionNpc(String player) {
+		playerInteraction.remove(player);
 	}
 	
 	protected void addEconomyNpc(NPC npc) {

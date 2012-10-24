@@ -102,20 +102,20 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//reload plugin
 				if ( args[0].equalsIgnoreCase("create") )
 				{
-					if ( !this.generalChecks(player, "create", null, args, 3) )
+					if ( !this.generalChecks(player, "create", null) )
 						return true;
 					
 					return createTrader(player, args);
 				}
 				if ( args[0].equals("log") )
 				{
-					if ( !this.generalChecks(player, "log", null, args, 1) )
+					if ( !this.generalChecks(player, "log", null) )
 						return true;
 					return log(player, "", args);
 				}
 				if ( args[0].equals("clearlog") )
 				{
-					if ( !this.generalChecks(player, "clearlog", null, args, 1) )
+					if ( !this.generalChecks(player, "clearlog", null) )
 						return true;
 					
 					return clearLog(player, "", args);
@@ -129,6 +129,27 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					CitizensTrader.getLocaleManager().reload();
 					
 					return true;
+				}
+				if ( args[0].equalsIgnoreCase("manage") )
+				{
+					if ( !this.generalChecks(player, "manage", null) )
+						return true;
+					
+					if ( args.length < 2 )
+					{
+						player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:name") );
+						return true;
+					}
+					
+					EconomyNpc trader = traderManager.getServerTraderByName(args[1]);
+					
+					if ( trader == null )
+					{
+						player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:name") );
+						return false;
+					}
+					traderManager.addInteractionNpc(player.getName(), trader);
+					return traderManage(player, trader);
 				}
 				
 				
@@ -151,6 +172,18 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					return false;
 				}
+				if ( args[0].equalsIgnoreCase("manage") )
+				{
+
+					if ( !this.generalChecks(player, "manage", null) )
+						return true;
+					
+				//	EconomyNpc trader = traderManager.getServerTraderByName(args[1]);
+					
+					traderManager.addInteractionNpc(player.getName(), trader);
+					return traderManage(player, trader);
+					//return traderManage(player, trader);
+				}
 				//list command
 				if ( args[0].equals("list") )
 				{
@@ -159,28 +192,28 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						player.sendMessage( locale.getLocaleString("xxx-argument-missing").replace("{argument}", "Transaction type") );
 						return true;
 					}
-					if ( !this.generalChecks(player, "list", ( args.length >= 2 ? args[1] : null ), args, 2) )
+					if ( !this.generalChecks(player, "list", ( args.length >= 2 ? args[1] : null )) )
 						return true;
 					
 					return getItemList(player, trader, args, TraderStatus.getByName(args[1]) );	
 				}
 				if ( args[0].equals("type") )
 				{
-					if ( !this.generalChecks(player, "type", null, args, 1) )
+					if ( !this.generalChecks(player, "type", null) )
 						return true;
 					
 					return setType(player, trader, ( args.length > 1 ? args[1] : "" ) );
 				}
 				if ( args[0].equals("wallet") )
 				{
-					if ( !this.generalChecks(player, "wallet", null, args, 1) )
+					if ( !this.generalChecks(player, "wallet", null) )
 						return true;
 					
 					return setWallet(player, trader, ( args.length > 1 ? args[1] : "" ), ( args.length > 2 ? args[2] : "" ) );
 				}
 				if ( args[0].equals("owner") )
 				{
-					if ( !this.generalChecks(player, "owner", null, args, 1) )
+					if ( !this.generalChecks(player, "owner", null) )
 						return true;
 					
 					if ( args.length > 1 )
@@ -190,49 +223,49 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				if ( args[0].equals("clear") )
 				{
-					if ( !this.generalChecks(player, "clear", null, args, 1) )
+					if ( !this.generalChecks(player, "clear", null) )
 						return true;
 					
 					return clear(player, trader, args);
 				}
 				if ( args[0].equals("pattern") )
 				{
-					if ( !this.generalChecks(player, "pattern", null, args, 1) )
+					if ( !this.generalChecks(player, "pattern", null) )
 						return true;
 					
 					return pattern(player, trader, args);
 				}
 				if ( args[0].equals("log") )
 				{
-					if ( !this.generalChecks(player, "log", null, args, 1) )
+					if ( !this.generalChecks(player, "log", null) )
 						return true;
 					
 					return log(player, trader.getNpc().getName(), args);
 				}
 				if ( args[0].equals("clearlog") )
 				{
-					if ( !this.generalChecks(player, "clearlog", null, args, 1) )
+					if ( !this.generalChecks(player, "clearlog", null) )
 						return true;
 					
 					return clearLog(player, trader.getNpc().getName(), args);
 				}
 				if ( args[0].equals("balance") )
 				{
-					if ( !this.generalChecks(player, "balance", null, args, 1) )
+					if ( !this.generalChecks(player, "balance", null) )
 						return true;
 					
 					return balance(player, trader);
 				}
 				if ( args[0].equals("withdraw") )
 				{
-					if ( !this.generalChecks(player, "withdraw", null, args, 2) )
+					if ( !this.generalChecks(player, "withdraw", null) )
 						return true;
 					
 					return withdraw(player, trader, args[1]);
 				}
 				if ( args[0].equals("deposit") )
 				{
-					if ( !this.generalChecks(player, "deposit", null, args, 2) )
+					if ( !this.generalChecks(player, "deposit", null) )
 						return true;
 					
 					return withdraw(player, trader, args[1]);
@@ -262,6 +295,46 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private boolean traderManage(Player player, EconomyNpc economyNpc) 
+	{
+		Trader trader = (Trader) economyNpc;
+		
+		if ( !permsManager.has(player, "dtl.trader.options.manage") )
+		{
+			player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+			return true;
+		}
+		if ( !trader.getTraderConfig().getOwner().equals(player.getName()) )
+		{
+			if ( !permsManager.has(player, "dtl.trader.bypass.managing") )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+				return true;
+			}
+			else
+			if ( !player.isOp() )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+				return true;
+			}
+		}
+		
+		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		{
+			traderManager.removeInteractionNpc(player.getName());
+			//economyNpc.setTraderStatus(TraderStatus.SELL);
+			trader.switchInventory( Trader.getStartStatus(player) );
+			player.sendMessage(ChatColor.AQUA + trader.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+		}
+		else
+		{
+			//economyNpc.setTraderStatus(TraderStatus.MANAGE);
+			player.sendMessage(ChatColor.AQUA + trader.getNpc().getFullName() + ChatColor.RED + " entered the manager mode!");
+			trader.switchInventory( Trader.getManageStartStatus(player) );
+		}
+		return true;
+	}
+
 	private boolean reloadPatterns(Player player, Trader trader) 
 	{
 		CitizensTrader.getPatternsManager().reload();
@@ -397,7 +470,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 
-	public boolean generalChecks(Player player, String commandPermission, String optionsPermission, String[] args, int size)
+	public boolean generalChecks(Player player, String commandPermission, String optionsPermission)
 	{
 		
 		//check permissions
@@ -433,9 +506,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return null;
 	}
 	
-	public WalletType getDefaultWalletType(Player player) {
+	public WalletType getDefaultWalletType(Player player, TraderType traderType) {
 		//server default is infinite
-		if ( permsManager.has(player, "dtl.trader.wallets.infinite") )
+		if ( permsManager.has(player, "dtl.trader.wallets.infinite") && !traderType.equals(TraderType.PLAYER_TRADER) )
 			return WalletType.INFINITE;
 		else
 		//next default is npc wallet
@@ -762,9 +835,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		EntityType entityType = EntityType.PLAYER;
 		TraderType traderType = getDefaultTraderType(player);
-		WalletType walletType = getDefaultWalletType(player);
+		WalletType walletType = getDefaultWalletType(player, traderType);
 		
-		
+				
 		//lets fetch the argument list
 		for ( String arg : args )
 		{
@@ -828,9 +901,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			}
 		}
 
-		if ( traderName.isEmpty() )
+		if ( traderName.isEmpty() || args.length == 1 || traderName.equals("create ") )
 			traderName = "NPC";
-		else
+		else 
 			traderName = traderName.substring(7, traderName.length()-1);
 		
 		if ( walletType == null || traderType == null || entityType == null )

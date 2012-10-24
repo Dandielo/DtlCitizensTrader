@@ -933,7 +933,7 @@ public class ServerTrader extends Trader {
 			
 			if ( !permissions.has(player, "dtl.trader.options.manage") )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return;
 			}
 			if ( !trait.getTraderTrait().getOwner().equals(player.getName()) )
@@ -941,13 +941,13 @@ public class ServerTrader extends Trader {
 				
 				if ( !permissions.has(player, "dtl.trader.bypass.managing") )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return;
 				}
 				else
 				if ( !player.isOp() )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return;
 				}
 				
@@ -966,7 +966,7 @@ public class ServerTrader extends Trader {
 		}
 
 		player.openInventory(getInventory());
-	}
+	}/**/
 
 }
 

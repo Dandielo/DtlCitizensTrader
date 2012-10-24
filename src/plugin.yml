@@ -23,6 +23,7 @@ commands:
              /<command> pattern [action] 
              /<command> pattern set (pattern)
              /<command> balance
+             /<command> manage <name>
              /<command> withdraw <amount>
              /<command> deposit <amount>
              /<command> reload
@@ -95,6 +96,7 @@ permissions:
       dtl.trader.commands.pattern: true
       dtl.trader.commands.patternreload: true
       dtl.trader.commands.clear: true
+      dtl.trader.commands.manage: true
   dtl.trader.bypass.*:
     default: op
     children: 

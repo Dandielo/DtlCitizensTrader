@@ -37,6 +37,7 @@ keywords:
     deposit-fee: 'Deposit fee'
     
   argument:
+    name: 'Name'
     page: 'Page'
     wallet: 'Wallet'
     account: 'Wallet account'
