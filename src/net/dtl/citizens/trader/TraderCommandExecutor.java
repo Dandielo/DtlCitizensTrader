@@ -184,6 +184,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					return traderManage(player, trader);
 					//return traderManage(player, trader);
 				}
+				if ( args[0].equals("open") )
+				{
+					if ( !this.generalChecks(player, "type", null) )
+						return true;
+					
+					return openTraderInventory(player, trader);
+				}
 				//list command
 				if ( args[0].equals("list") )
 				{
@@ -295,6 +302,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return false;
 	}
 	
+	private boolean openTraderInventory(Player player, Trader trader) {
+		player.openInventory(trader.getInventory());
+		trader.switchInventory(Trader.getManageStartStatus(player));
+		return true;
+	}
+
 	private boolean traderManage(Player player, EconomyNpc economyNpc) 
 	{
 		Trader trader = (Trader) economyNpc;

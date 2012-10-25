@@ -16,6 +16,8 @@ commands:
              /<command> list <stock> [page]
              /<command> wallet [wallet] [account]
              /<command> type [type]
+             /<command> manage <name>
+             /<command> open
              /<command> owner [owner]
              /<command> log [trader name] 
              /<command> clearlog [trader name] 
@@ -23,7 +25,6 @@ commands:
              /<command> pattern [action] 
              /<command> pattern set (pattern)
              /<command> balance
-             /<command> manage <name>
              /<command> withdraw <amount>
              /<command> deposit <amount>
              /<command> reload
