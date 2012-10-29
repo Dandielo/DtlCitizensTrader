@@ -25,6 +25,7 @@ public class PermissionsManager {
 	public PermissionsManager() {
 		this.initializeDtlPermissions();
 		this.initializePexPermissions();
+		this.initializeBPermissions();
 		this.initializeGroupManager();
 	}
 	

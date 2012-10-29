@@ -1079,26 +1079,19 @@ public class PlayerTrader extends Trader {
 		if ( player.getItemInHand().getTypeId() == config.getManageWand().getTypeId() )
 		{
 			
-			if ( !permissions.has(player, "dtl.trader.options.manage") )
+			if ( !permissions.has(player, "dtl.trader.bypass.managing") 
+				&& !player.isOp() )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
-				return;
-			}
-			if ( !trait.getTraderTrait().getOwner().equals(player.getName()) )
-			{
-				
-				if ( !permissions.has(player, "dtl.trader.bypass.managing") )
+				if ( !permissions.has(player, "dtl.trader.options.manage") )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return;
 				}
-				else
-				if ( !player.isOp() )
+				if ( !trait.getTraderTrait().getOwner().equals(player.getName()) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:trader") );
+					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return;
 				}
-				
 			}
 			
 			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
