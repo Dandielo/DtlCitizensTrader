@@ -290,7 +290,7 @@ public class NpcEcoManager implements Listener {
 				else
 				{
 					EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
-					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					//((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
 					newNpc.onRightClick(player, characterTrait, npc);

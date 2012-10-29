@@ -7,6 +7,8 @@ import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import de.bananaco.bpermissions.imp.Permissions;
+
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import net.dtl.permissions.bukkit.DtlPermissions;
@@ -15,6 +17,7 @@ public class PermissionsManager {
 	private final String pluginPrefix = "[DtlCitizensTrader] ";
 	
 	private DtlPermissions dtlPerms;
+	private Permissions bPermissions;
 //	private Permission vaultPerms;
 	private PermissionsEx permissionsEx;
 	private GroupManager gmPerms;
@@ -32,16 +35,11 @@ public class PermissionsManager {
 		logger.info(pluginPrefix + dtlPerms.getDescription().getName() + " ver" + dtlPerms.getDescription().getVersion() + " hooked!");
 	}
 	
-	public void initializeVaultPermissions() {
-        
-	/*	RegisteredServiceProvider<Permission> rspPerm = CitizensTrader.getInstance().getServer().getServicesManager().getRegistration(Permission.class);
-    
-        if ( rspPerm != null ) {
-        	vaultPerms = rspPerm.getProvider();
-			this.logger.info("["+ pdfFile.getName() + "] Permissions enabled.");
-        } else {
-			this.logger.info("["+ pdfFile.getName() + "] Permissions not found!"); 
-        }*/
+	public void initializeBPermissions() {
+		bPermissions = (Permissions) Bukkit.getPluginManager().getPlugin("bPermissions");
+		if ( bPermissions == null )
+			return;
+		logger.info(pluginPrefix + bPermissions.getDescription().getName() + " ver" + bPermissions.getDescription().getVersion() + " hooked!");
 	}
 	
 	public void initializePexPermissions() {
@@ -74,6 +72,12 @@ public class PermissionsManager {
 			return dtlPerms.has(player, permission, player.getWorld().getName());
 		}
 		else
+		//permissions ex
+		if ( permissionsEx != null )
+		{
+			return permissionsEx.has(player, permission, player.getWorld().getName());
+		}
+		else
 		//using essentials group manager 
 		if ( gmPerms != null )
 		{
@@ -85,10 +89,9 @@ public class PermissionsManager {
 			return handler.has(player, permission);
 		}
 		else
-		//permissions ex
-		if ( permissionsEx != null )
+		if ( bPermissions != null )
 		{
-			return permissionsEx.has(player, permission, player.getWorld().getName());
+			return bPermissions.has(player, permission);
 		}
 		return false;
 	}
