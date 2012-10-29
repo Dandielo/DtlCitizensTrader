@@ -922,7 +922,7 @@ public class ServerTrader extends Trader {
 	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
 		
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
-				&& permissions.has(player, "dtl.trader.bypass.creative") )
+				&& !permissions.has(player, "dtl.trader.bypass.creative") )
 		{
 			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
 			return;
