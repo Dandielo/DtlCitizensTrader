@@ -140,8 +140,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:name") );
 						return true;
 					}
+					//TODO name adding
+					String name = "";
+					for ( int i = 1 ; i < args.length ; ++i )
+						name += args[i];
 					
-					EconomyNpc trader = traderManager.getServerTraderByName(args[1]);
+					EconomyNpc trader = traderManager.getServerTraderByName(name);
 					
 					if ( trader == null )
 					{
@@ -277,6 +281,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					return withdraw(player, trader, args[1]);
 				}
+				//reload plugin
+				if ( args[0].equalsIgnoreCase("create") )
+				{
+					if ( !this.generalChecks(player, "create", null) )
+						return true;
+					
+					return createTrader(player, args);
+				}
 				
 				return false;
 			}
@@ -317,15 +329,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 			return true;
 		}
-		if ( !trader.getTraderConfig().getOwner().equals(player.getName()) )
+		if ( !trader.getTraderConfig().getOwner().equals(player.getName())
+				&& !player.isOp() )
 		{
 			if ( !permsManager.has(player, "dtl.trader.bypass.managing") )
-			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
-				return true;
-			}
-			else
-			if ( !player.isOp() )
 			{
 				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
@@ -932,6 +939,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.getTrait(MobType.class).setType(entityType);
 		npc.spawn(player.getLocation());
 		
+		//TODO towny wallets
 		//change the trader settings
 		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
 		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
