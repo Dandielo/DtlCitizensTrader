@@ -16,7 +16,7 @@ public interface EconomyNpc {
 	public abstract void simpleMode(InventoryClickEvent event);
 	public abstract void managerMode(InventoryClickEvent event);
 	
-	public abstract void onRightClick(Player player, TraderCharacterTrait trait, NPC npc);
+	public abstract boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc);
 	
 	public abstract TraderStatus getTraderStatus();
 	public abstract void setTraderStatus(TraderStatus status);

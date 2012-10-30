@@ -203,10 +203,11 @@ public class MoneyBanker extends Banker {
 
 
 	@Override
-	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
 		
 
 		player.openInventory(getInventory());
+		return true;
 		
 	}
 	

@@ -283,8 +283,9 @@ public class NpcEcoManager implements Listener {
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
-						newNpc.onRightClick(player, characterTrait, npc);
-						
+						if ( !newNpc.onRightClick(player, characterTrait, npc) )
+							playerInteraction.remove(playerName);
+					
 					}
 				}
 				else
@@ -293,7 +294,8 @@ public class NpcEcoManager implements Listener {
 					//((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
-					newNpc.onRightClick(player, characterTrait, npc);
+					if ( !newNpc.onRightClick(player, characterTrait, npc) )
+						playerInteraction.remove(playerName);
 					
 				}
 				return;
@@ -324,7 +326,8 @@ public class NpcEcoManager implements Listener {
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
-						newNpc.onRightClick(player, characterTrait, npc);
+						if ( !newNpc.onRightClick(player, characterTrait, npc) )
+							playerInteraction.remove(playerName);
 					}
 				}
 				else
@@ -333,7 +336,8 @@ public class NpcEcoManager implements Listener {
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
-					newNpc.onRightClick(player, characterTrait, npc);
+					if ( !newNpc.onRightClick(player, characterTrait, npc) )
+						playerInteraction.remove(playerName);
 				}
 				return;
 			}

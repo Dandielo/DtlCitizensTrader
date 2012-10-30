@@ -396,13 +396,13 @@ public class PlayerBanker extends Banker {
 
 
 	@Override
-	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
 		
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& permissions.has(player, "dtl.banker.bypass.creative") )
 		{
 			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
-			return;
+			return false;
 		}
 		
 		if ( player.getItemInHand().getTypeId() == itemConfig.getManageWand().getTypeId() )
@@ -413,7 +413,7 @@ public class PlayerBanker extends Banker {
 					&& !player.isOp() )
 			{
 				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "setting:banker") );
-				return;
+				return false;
 			}
 				
 			
@@ -422,13 +422,13 @@ public class PlayerBanker extends Banker {
 				setTraderStatus(TraderStatus.BANK);
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				
-				return;
+				return false;
 			}	
 			
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 			setTraderStatus(TraderStatus.MANAGE);
 			
-			return;
+			return false;
 		}
 		else
 		if ( player.getItemInHand().getTypeId() == itemConfig.getSettingsWand().getTypeId() )
@@ -438,7 +438,7 @@ public class PlayerBanker extends Banker {
 				setTraderStatus(TraderStatus.BANK);
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				
-				return;
+				return true;
 			}	
 			
 			setTraderStatus(TraderStatus.BANK_SETTINGS);
@@ -457,6 +457,8 @@ public class PlayerBanker extends Banker {
 
 		if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
 			player.openInventory(getInventory());
+		return true;
+		
 	}
 
 }

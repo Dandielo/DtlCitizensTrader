@@ -324,20 +324,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	{
 		Trader trader = (Trader) economyNpc;
 		
-		if ( !permsManager.has(player, "dtl.trader.options.manage") )
+		if ( !permsManager.has(player, "dtl.trader.bypass.managing") &&
+			!player.isOp() )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
-			return true;
-		}
-		if ( !trader.getTraderConfig().getOwner().equals(player.getName())
-				&& !player.isOp() )
-		{
-			if ( !permsManager.has(player, "dtl.trader.bypass.managing") )
+			if ( !permsManager.has(player, "dtl.trader.options.manage") )
+			{
+				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+				return true;
+			}
+			if ( !trader.getTraderConfig().getOwner().equals(player.getName()) )
 			{
 				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
 			}
 		}
+		
 		
 		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
 		{
@@ -671,7 +672,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:wallet") );
 					return true;
 				}
-				
+				//TODO
 				if ( bankAccount.isEmpty() )
 				{
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
@@ -702,7 +703,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				Faction faction = Factions.i.getByTag(bankAccount);
+				Faction faction = Factions.i.getByTag(bankAccount.toLowerCase());
 				if ( faction == null )
 				{
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );

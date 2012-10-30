@@ -52,7 +52,8 @@ public class GuildBanker extends Banker {
 	}
 
 	@Override
-	public void onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		return false;
 		// TODO Auto-generated method stub
 		
 	}
