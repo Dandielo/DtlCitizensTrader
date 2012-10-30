@@ -678,7 +678,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(bankAccount);
+				Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(bankAccount.toLowerCase());
 				if ( town == null )
 				{
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
@@ -703,7 +703,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
-				Faction faction = Factions.i.getByTag(bankAccount.toLowerCase());
+				Faction faction = Factions.i.getByTag(bankAccount);
 				if ( faction == null )
 				{
 					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
