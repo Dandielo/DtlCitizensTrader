@@ -737,7 +737,6 @@ public class MarketTrader extends Trader {
 							//show the new price
 							p.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
-							
 						}
 						
 						
@@ -951,6 +950,9 @@ public class MarketTrader extends Trader {
 					
 					//change the item into the stock type
 					MarketItem marketItem = toMarketItem(itemToAdd.clone());
+					
+					marketItem.setAsPatternItem(false);
+					marketItem.setPetternListening(false);
 					
 					//set the items owner
 					marketItem.setItemOwner(p.getName());

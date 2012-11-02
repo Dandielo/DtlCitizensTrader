@@ -19,6 +19,12 @@ public class StockItem {
 	protected boolean listenPattern = true;
 	protected boolean patternItem = false;
 	
+	//just for override compatibility
+	protected StockItem()
+	{
+		limit = new LimitSystem(this);
+	}
+	
 	public StockItem(String data) {
 		limit = new LimitSystem(this);
 		String[] values = data.split(" ");

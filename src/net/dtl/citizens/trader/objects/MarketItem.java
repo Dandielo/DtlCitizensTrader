@@ -11,9 +11,8 @@ public class MarketItem extends StockItem {
 	protected Date time;
 	
 	public MarketItem(String data) {
-		super("");
+		super();
 		
-		limit = new LimitSystem(this);
 		String[] values = data.split(" ");
 		for ( String value : values ) {
 			if ( item == null ) {

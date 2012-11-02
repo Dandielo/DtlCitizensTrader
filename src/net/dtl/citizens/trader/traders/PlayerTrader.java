@@ -936,11 +936,15 @@ public class PlayerTrader extends Trader {
 					
 					//set the item to the inventory
 					getInventory().setItem(firstEmpty, itemToAdd.clone());
-					
-					
+
 					
 					//change the item into the stock type
 					StockItem stockItem = toStockItem(itemToAdd.clone());
+
+					
+					//pattern disabled always
+					stockItem.setAsPatternItem(false);
+					stockItem.setPetternListening(false);
 					
 					
 					//set the stock items slot
