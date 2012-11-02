@@ -182,16 +182,23 @@ public class TraderTrait {
 		return pattern;
 	}
 	
-	public boolean buyTransaction(Player pBuying, final double price) {
-		if ( w.withdraw(pBuying.getName(), price, false) ) {
-			w.deposit(owner, price, true);
+	public boolean buyTransaction(Player pBuying, double price) {
+		return buyTransaction(owner, pBuying.getName(), price);
+	}
+	public boolean buyTransaction(String pSelling, String pBuying, final double price) {
+		if ( w.withdraw(pBuying, price, false) ) {
+			w.deposit(pSelling, price, true);
 			return true;
 		}
 		return false;
 	}
+	
 	public boolean sellTransaction(Player pSelling, double price) {
-		if ( w.withdraw(owner, price, true) ) {
-			w.deposit(pSelling.getName(), price, false);
+		return sellTransaction(owner, pSelling.getName(), price);
+	}
+	public boolean sellTransaction(String pBuying, String pSelling, double price) {
+		if ( w.withdraw(pBuying, price, true) ) {
+			w.deposit(pSelling, price, false);
 			return true;
 		}
 		return false;

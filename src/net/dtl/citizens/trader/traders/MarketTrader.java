@@ -118,7 +118,7 @@ public class MarketTrader extends Trader {
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 							}
 							else
-							if ( !buyTransaction(p,getSelectedItem().getPrice()) )
+							if ( !buyTransaction(p, getSelectedItem().getPrice()) )
 							{
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 							}
@@ -951,8 +951,11 @@ public class MarketTrader extends Trader {
 					//change the item into the stock type
 					MarketItem marketItem = toMarketItem(itemToAdd.clone());
 					
+					
+					//disable pattern listening
 					marketItem.setAsPatternItem(false);
 					marketItem.setPetternListening(false);
+					
 					
 					//set the items owner
 					marketItem.setItemOwner(p.getName());
@@ -1081,13 +1084,34 @@ public class MarketTrader extends Trader {
 
 	public void messageOwner(String action, String buyer, StockItem item, int slot)
 	{
-		Player player = Bukkit.getPlayer(getTraderConfig().getOwner());
-		playerLog(getTraderConfig().getOwner(), buyer, action, item, slot);
+		String owner = ((MarketItem)item).getItemOwner();
+		Player player = Bukkit.getPlayer(owner);
+		playerLog(owner, buyer, action, item, slot);
 		
 		if ( player == null )
 			return;
 		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
+	}
+	
+	public MarketItem getSelectedMarketItem()
+	{
+		return (MarketItem) getSelectedItem();
+	}
+	
+	@Override
+	public boolean buyTransaction(Player p, double price) {
+		return getTraderConfig().buyTransaction(getSelectedMarketItem().getItemOwner(), p.getName(), price);
+	}
+
+	@Override
+	public boolean sellTransaction(Player p, double price) {
+		return getTraderConfig().sellTransaction(getSelectedMarketItem().getIdAndData(), p.getName(), price);
+	}
+
+	@Override
+	public boolean sellTransaction(Player p, double price, ItemStack item) {
+		return getTraderConfig().sellTransaction(getSelectedMarketItem().getItemOwner(), p.getName(), price*((int)item.getAmount() / getSelectedItem().getAmount()));
 	}
 	
 	public static MarketItem toMarketItem(ItemStack is) {
