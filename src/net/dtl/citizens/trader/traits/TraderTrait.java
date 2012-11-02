@@ -134,24 +134,36 @@ public class TraderTrait {
 			wType = type;
 			w.setWalletType(wType);
 		}
+		else
+		// if the trader is a player trader
+		if ( tType.equals(TraderType.MARKET_TRADER) ) 
+		{
+			
+			//disallow infinite money
+			if ( type.equals(WalletType.INFINITE) )
+				return;
+			
+			
+			wType = type;
+			w.setWalletType(wType);
+		}
 	}
 	
 	public void setTraderType(TraderType type) {
 		if ( type.equals(TraderType.PLAYER_TRADER) ) {
 			tType = type;
 			wType = WalletType.NPC_WALLET;
-			return;
 		}
 		if ( type.equals(TraderType.SERVER_TRADER) ) {
 			tType = type;
 			wType = WalletType.INFINITE;
-			return;
 		}
 		if ( type.equals(TraderType.MARKET_TRADER) ) {
 			tType = type;
 			wType = WalletType.OWNER_WALLET;
-			return;
 		}
+		w.setWalletType(wType);
+		return;
 	}
 	
 	public TraderType getTraderType() {
