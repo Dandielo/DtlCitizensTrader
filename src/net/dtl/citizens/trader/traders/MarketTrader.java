@@ -1101,17 +1101,17 @@ public class MarketTrader extends Trader {
 	
 	@Override
 	public boolean buyTransaction(Player p, double price) {
-		return getTraderConfig().buyTransaction(getSelectedMarketItem().getItemOwner(), p.getName(), price);
+		return getTraderConfig().transaction(getSelectedMarketItem().getItemOwner(), p.getName(), price);
 	}
 
 	@Override
 	public boolean sellTransaction(Player p, double price) {
-		return getTraderConfig().sellTransaction(getSelectedMarketItem().getIdAndData(), p.getName(), price);
+		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getIdAndData(), price);
 	}
 
 	@Override
 	public boolean sellTransaction(Player p, double price, ItemStack item) {
-		return getTraderConfig().sellTransaction(getSelectedMarketItem().getItemOwner(), p.getName(), price*((int)item.getAmount() / getSelectedItem().getAmount()));
+		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getItemOwner(), price*((int)item.getAmount() / getSelectedItem().getAmount()));
 	}
 	
 	public static MarketItem toMarketItem(ItemStack is) {

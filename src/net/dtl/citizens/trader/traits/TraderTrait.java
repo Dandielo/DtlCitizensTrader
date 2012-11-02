@@ -183,9 +183,9 @@ public class TraderTrait {
 	}
 	
 	public boolean buyTransaction(Player pBuying, double price) {
-		return buyTransaction(owner, pBuying.getName(), price);
+		return transaction(owner, pBuying.getName(), price);
 	}
-	public boolean buyTransaction(String pSelling, String pBuying, final double price) {
+	public boolean transaction(String pSelling, String pBuying, final double price) {
 		if ( w.withdraw(pBuying, price, false) ) {
 			w.deposit(pSelling, price, true);
 			return true;
@@ -194,15 +194,15 @@ public class TraderTrait {
 	}
 	
 	public boolean sellTransaction(Player pSelling, double price) {
-		return sellTransaction(owner, pSelling.getName(), price);
+		return transaction(pSelling.getName(), owner, price);
 	}
-	public boolean sellTransaction(String pBuying, String pSelling, double price) {
+/*	public boolean sellTransaction(String pBuying, String pSelling, double price) {
 		if ( w.withdraw(pBuying, price, true) ) {
 			w.deposit(pSelling, price, false);
 			return true;
 		}
 		return false;
-	}
+	}*/
 	
 	public void load(DataKey data) throws NPCLoadException {
 		/*if ( data.keyExists("trader-type") ) {
