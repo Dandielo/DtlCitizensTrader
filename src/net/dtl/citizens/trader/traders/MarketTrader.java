@@ -675,6 +675,7 @@ public class MarketTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							event.setCancelled(true);
+							selectItem(stockItem);
 							p.sendMessage( locale.getLocaleString("lacks-permissions") );
 							return;
 						}
@@ -699,6 +700,7 @@ public class MarketTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							event.setCancelled(true);
+							selectItem(null);
 							p.sendMessage( locale.getLocaleString("lacks-permissions") );
 							return;
 						}
