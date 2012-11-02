@@ -138,13 +138,18 @@ public class TraderTrait {
 	
 	public void setTraderType(TraderType type) {
 		if ( type.equals(TraderType.PLAYER_TRADER) ) {
-			tType = TraderType.PLAYER_TRADER;
+			tType = type;
 			wType = WalletType.NPC_WALLET;
 			return;
 		}
 		if ( type.equals(TraderType.SERVER_TRADER) ) {
-			tType = TraderType.SERVER_TRADER;
+			tType = type;
 			wType = WalletType.INFINITE;
+			return;
+		}
+		if ( type.equals(TraderType.MARKET_TRADER) ) {
+			tType = type;
+			wType = WalletType.OWNER_WALLET;
 			return;
 		}
 	}

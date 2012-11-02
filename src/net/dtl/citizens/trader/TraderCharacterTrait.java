@@ -71,7 +71,7 @@ public class TraderCharacterTrait extends Trait {
 		else if ( type.isTrader() )
 		{
 			this.traderTrait.load(data);
-			this.inventoryTrait.load(data, ( type.equals(type.MARKET_TRADER) ? MarketItem.class : StockItem.class ) );
+			this.inventoryTrait.load(data, ( type.equals(TraderType.MARKET_TRADER) ? MarketItem.class : StockItem.class ) );
 			traderTrait.setTraderType(type);
 			
 			if ( type.equals(TraderType.SERVER_TRADER) )
