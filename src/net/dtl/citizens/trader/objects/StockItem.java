@@ -1,5 +1,6 @@
 package net.dtl.citizens.trader.objects;
 
+import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -238,6 +239,32 @@ public class StockItem {
 	public String getIdAndData()
 	{
 		return item.getTypeId() + ( item.getData().getData() == 0 ? "" : ":" + item.getData().getData() );
+	}
+	
+	public static StockItem createItem(Class<? extends StockItem> itemClass, String data)
+	{
+		try {
+			return itemClass.getConstructor(String.class).newInstance(data);
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	@Override

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.LimitSystem;
+import net.dtl.citizens.trader.objects.MarketItem;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
@@ -1064,6 +1065,18 @@ public class PlayerTrader extends Trader {
 			return;
 		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
+	}
+
+	private Trader selectItem(int slot, TraderStatus basicManageModeByWool,
+			Player p) {
+		
+		super.selectItem(slot, basicManageModeByWool);
+		MarketItem item = (MarketItem) getSelectedItem();
+		
+		if ( item != null && !item.getItemOwner().equals(p.getName()) )
+			item = null;
+			
+		return this;
 	}
 
 	@Override

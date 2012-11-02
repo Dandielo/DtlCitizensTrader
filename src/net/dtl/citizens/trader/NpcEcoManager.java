@@ -13,6 +13,7 @@ import net.citizensnpcs.api.trait.Trait;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
+import net.dtl.citizens.trader.traders.MarketTrader;
 import net.dtl.citizens.trader.traders.MoneyBanker;
 import net.dtl.citizens.trader.traders.PlayerBanker;
 import net.dtl.citizens.trader.traders.PlayerTrader;
@@ -333,6 +334,47 @@ public class NpcEcoManager implements Listener {
 				else
 				{
 					EconomyNpc newNpc = new PlayerTrader(npc, characterTrait.getTraderTrait());
+					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					playerInteraction.put(playerName, newNpc);
+					
+					if ( !newNpc.onRightClick(player, characterTrait, npc) )
+						playerInteraction.remove(playerName);
+				}
+				return;
+			}
+			case MARKET_TRADER:
+			{
+
+				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+				{
+					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					return;
+				}
+				
+				if ( economyNpc != null )
+				{
+					if ( economyNpc.getNpcId() == npc.getId() )
+					{
+						economyNpc.onRightClick(player, characterTrait, npc);
+						
+						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+							playerInteraction.remove(playerName);
+					}
+					else
+					{
+						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						
+						EconomyNpc newNpc = new MarketTrader(npc, characterTrait.getTraderTrait());
+						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+						playerInteraction.put(playerName, newNpc);
+						
+						if ( !newNpc.onRightClick(player, characterTrait, npc) )
+							playerInteraction.remove(playerName);
+					}
+				}
+				else
+				{
+					EconomyNpc newNpc = new MarketTrader(npc, characterTrait.getTraderTrait());
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					

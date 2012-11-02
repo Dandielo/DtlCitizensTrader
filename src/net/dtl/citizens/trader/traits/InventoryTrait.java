@@ -68,10 +68,10 @@ public class InventoryTrait implements InventoryHolder {
 		return true;
 	}
 	
-	public void load(DataKey data) throws NPCLoadException {
+	public void load(DataKey data, Class<? extends StockItem> itemClass) throws NPCLoadException {
 		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
-				StockItem stockItem = new StockItem(item);
+				StockItem stockItem = StockItem.createItem(itemClass, item);//new StockItem(item);
 				if ( stockItem.getSlot() < 0 )
 					sellStock.add(stockItem);
 				else
@@ -81,7 +81,7 @@ public class InventoryTrait implements InventoryHolder {
 
 		if ( data.keyExists("buy") ) {
 			for ( String item :  (List<String>) data.getRaw("buy") ) {
-				StockItem stockItem = new StockItem(item);
+				StockItem stockItem = StockItem.createItem(itemClass, item);//new StockItem(item);
 				if ( stockItem.getSlot() < 0 )
 					buyStock.add(stockItem);
 				else
