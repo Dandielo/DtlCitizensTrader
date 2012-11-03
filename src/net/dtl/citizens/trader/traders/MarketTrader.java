@@ -669,7 +669,7 @@ public class MarketTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus(), p).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);
-							p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+							p.sendMessage( locale.getLocaleString("xxx-players-item", "action:selected", "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
 						}
 						else 
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
@@ -683,7 +683,7 @@ public class MarketTrader extends Trader {
 						
 						
 						stockItem.setSlot(clickedSlot);
-						p.sendMessage( locale.getLocaleString("xxx-item", "action:updated") );
+						p.sendMessage( locale.getLocaleString("xxx-players-item", "action:updated").replace("{player}", ((MarketItem)stockItem).getItemOwner()) );
 						
 						
 					}
@@ -694,7 +694,7 @@ public class MarketTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus(), p).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);	
-							p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+							p.sendMessage( locale.getLocaleString("xxx-players-item", "action:selected", "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
 						}
 						else 
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )

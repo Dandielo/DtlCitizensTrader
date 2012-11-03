@@ -136,6 +136,7 @@ messages:
   xxx-value: '^6{manage}: ^e{value}' 
   xxx-value-changed: '^6Changed {manage}: ^e{value}' 
   xxx-item: ^6{action} item
+  xxx-players-item: ^6{action} ^e{player}s ^6item
   
   log-xxx: ^6{log} has been {action}
   
