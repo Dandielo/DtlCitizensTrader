@@ -105,6 +105,7 @@ permissions:
     children: 
       dtl.trader.bypass.creative: true
       dtl.trader.bypass.managing: true
+      dtl.trader.bypass.market: true
       dtl.trader.bypass.drop-managing: true
   dtl.banker.*:
     default: op

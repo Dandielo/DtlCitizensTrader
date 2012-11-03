@@ -1132,8 +1132,9 @@ public class MarketTrader extends Trader {
 		super.selectItem(slot, basicManageModeByWool);
 		MarketItem item = (MarketItem) getSelectedItem();
 		
-		if ( item != null && !item.getItemOwner().equals(p.getName()) )
-			selectItem(null);
+		if ( !permissions.has(p, "dtl.trader.bypass.market") && !p.isOp() )
+			if ( item != null && !item.getItemOwner().equals(p.getName()) )
+				selectItem(null);
 			
 		return this;
 	}
