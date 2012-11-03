@@ -150,6 +150,7 @@ permissions:
   dtl.banker.commands.*:
     default: op
     children: 
+      dtl.banker.commands.create: true
       dtl.banker.commands.fee: true
       dtl.banker.commands.settings: true
       dtl.banker.commands.tab-buying: true
