@@ -8,6 +8,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.PatternsManager;
+import net.dtl.citizens.trader.objects.MarketItem;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
@@ -383,6 +384,48 @@ public class InventoryTrait implements InventoryHolder {
 						equal = itemStack.getDurability() >= item.getItemStack().getDurability();
 					if ( amount && equal )
 						equal =  itemStack.getAmount() >= item.getItemStack().getAmount();
+					if ( equal )
+						return item;
+				}
+			}
+		}
+		return null;
+	}
+	public StockItem getMarketItem(ItemStack itemStack, TraderStatus status, boolean dura,
+			boolean amount, String owner) {
+
+		boolean equal = false;
+		if ( status.equals(TraderStatus.MANAGE_BUY) ||
+			 status.equals(TraderStatus.BUY) ) {
+			for ( StockItem item : buyStock ) {
+				equal = false;
+				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
+					 itemStack.getData().equals(item.getItemStack().getData()) ) {
+						equal = true;
+					if ( dura ) 
+						equal = itemStack.getDurability() >= item.getItemStack().getDurability();
+					if ( amount && equal )
+						equal = itemStack.getAmount() >= item.getItemStack().getAmount();
+					if ( !owner.isEmpty() && equal )
+						equal = ((MarketItem)item).getItemOwner().equals(owner); 
+					if ( equal )
+						return item;
+				}
+			}
+		} 
+		if ( status.equals(TraderStatus.MANAGE_SELL) ||
+		     status.equals(TraderStatus.SELL ) ) {
+			for ( StockItem item : sellStock ) {
+				equal = false;
+				if ( itemStack.getType().equals(item.getItemStack().getType()) &&
+					 itemStack.getData().equals(item.getItemStack().getData()) ) {
+						equal = true;
+					if ( dura ) 
+						equal = itemStack.getDurability() >= item.getItemStack().getDurability();
+					if ( amount && equal )
+						equal =  itemStack.getAmount() >= item.getItemStack().getAmount();
+					if ( !owner.isEmpty() && equal )
+						equal = ((MarketItem)item).getItemOwner().equals(owner); 
 					if ( equal )
 						return item;
 				}

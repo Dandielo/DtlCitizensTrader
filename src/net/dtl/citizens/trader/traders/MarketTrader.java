@@ -941,8 +941,8 @@ public class MarketTrader extends Trader {
 				//get the item information
 				ItemStack itemToAdd = event.getCurrentItem();
 				itemToAdd.setAmount(1);
-				
-				this.selectItem(itemToAdd, p, getBasicManageModeByWool(), false, false);
+
+				this.selectMarketItem(itemToAdd, getBasicManageModeByWool(), p.getName(), false, false);
 				
 				
 				if ( hasSelectedItem() )
@@ -1040,8 +1040,7 @@ public class MarketTrader extends Trader {
 				
 				
 				//get the item if it exists in the inventory
-				this.selectItem(itemToAdd, p, getBasicManageModeByWool(), false, false);
-				
+				this.selectMarketItem(itemToAdd, getBasicManageModeByWool(), p.getName(), false, false);
 				
 				//if it exist allow the event to occur (let the item disappear)
 				if ( hasSelectedItem() ) 
@@ -1100,14 +1099,14 @@ public class MarketTrader extends Trader {
 		
 //	}
 	
-	private void selectItem(ItemStack itemToAdd, Player p,
+	/*private void selectItem(ItemStack itemToAdd, Player p,
 			TraderStatus basicManageModeByWool, boolean b, boolean c) {
 		super.selectItem(itemToAdd, basicManageModeByWool, b, c);
 		
 		MarketItem marketItem = (MarketItem) getSelectedItem();
 		if ( marketItem != null && !marketItem.getItemOwner().equals(p.getName()) )
 			selectItem(null);
-	}
+	}*/
 
 	public void messageOwner(String action, String buyer, StockItem item, int slot)
 	{
