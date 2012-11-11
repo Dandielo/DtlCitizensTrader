@@ -128,8 +128,6 @@ public class MarketTrader extends Trader {
 
 
 								addSelectedToInventory(p,0);
-
-
 								updateLimits(p.getName());
 								
 								//logging
@@ -143,6 +141,11 @@ public class MarketTrader extends Trader {
 								//sending a message to the traders owner
 								this.messageOwner("bought", p.getName(), getSelectedItem(), 0);
 								
+								if ( !checkLimits(p,slot) )
+								{
+									getTraderStock().removeItem(true, slot);
+									this.switchInventory(this.getTraderStatus());
+								}
 							}
 						} 
 						else 
@@ -204,6 +207,18 @@ public class MarketTrader extends Trader {
 							//sending a message to the traders owner
 							this.messageOwner("bought", p.getName(), getSelectedItem(), slot);
 							
+							if ( !checkLimits(p,slot) )
+							{
+								getTraderStock().removeItem(true, slot);
+								this.switchInventory(this.getTraderStatus());
+							}
+					/*		if ( !checkLimits(p,slot) )
+							{
+								if ( isBuyModeByWool() )
+									getTraderStock().removeItem(false, slot);
+								if ( isSellModeByWool() )
+									getTraderStock().removeItem(true, slot);
+							}*/
 						} 
 					}
 					else 
@@ -267,7 +282,12 @@ public class MarketTrader extends Trader {
 
 							//sending a message to the traders owner
 							this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
-							
+
+							if ( !checkBuyLimits(p, getSelectedItem().getSlot()) )
+							{
+								getTraderStock().removeItem(false, getSelectedItem().getSlot());
+								this.switchInventory(this.getTraderStatus());
+							}
 						} 
 					}
 					else
@@ -327,6 +347,11 @@ public class MarketTrader extends Trader {
 						//sending a message to the traders owner
 						this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
 					
+						if ( !checkBuyLimits(p, getSelectedItem().getSlot()) )
+						{
+							getTraderStock().removeItem(false, getSelectedItem().getSlot());
+							this.switchInventory(this.getTraderStatus());
+						}
 					}
 				} 
 				else 

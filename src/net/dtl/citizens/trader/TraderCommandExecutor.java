@@ -150,7 +150,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					if ( trader == null )
 					{
 						player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:name") );
-						return false;
+						return true;
 					}
 					traderManager.addInteractionNpc(player.getName(), trader);
 					return traderManage(player, trader);
