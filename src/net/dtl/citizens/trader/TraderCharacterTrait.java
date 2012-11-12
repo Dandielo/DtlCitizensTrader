@@ -108,8 +108,8 @@ public class TraderCharacterTrait extends Trait {
 		public boolean isTrader()
 		{
 			if ( this.equals(PLAYER_TRADER) 
-					|| this.equals(SERVER_TRADER)
-					|| this.equals(MARKET_TRADER) )
+					|| this.equals(SERVER_TRADER) )
+			//		|| this.equals(MARKET_TRADER) )
 				return true;
 			return false;
 		}
@@ -126,8 +126,8 @@ public class TraderCharacterTrait extends Trait {
 				return TraderType.SERVER_TRADER;
 			else if ( n.equalsIgnoreCase("player") )
 				return TraderType.PLAYER_TRADER;
-			else if ( n.equalsIgnoreCase("market") )
-				return TraderType.MARKET_TRADER;
+	//		else if ( n.equalsIgnoreCase("market") )
+	//			return TraderType.MARKET_TRADER;
 			else if ( n.equalsIgnoreCase("auctionhouse") )
 				return TraderType.AUCTIONHOUSE;
 			else if ( n.equalsIgnoreCase("player-bank") )
@@ -144,8 +144,8 @@ public class TraderCharacterTrait extends Trait {
 				return "player";
 			case SERVER_TRADER:
 				return "server";
-			case MARKET_TRADER:
-				return "market";
+	//		case MARKET_TRADER:
+	//			return "market";
 			case AUCTIONHOUSE:
 				return "auctionhouse";
 			case PLAYER_BANK:
@@ -163,8 +163,8 @@ public class TraderCharacterTrait extends Trait {
 				return "player";
 			case SERVER_TRADER:
 				return "server";
-			case MARKET_TRADER:
-				return "market";
+	//		case MARKET_TRADER:
+	//			return "market";
 			case AUCTIONHOUSE:
 				return "auctionhouse";
 			case PLAYER_BANK:

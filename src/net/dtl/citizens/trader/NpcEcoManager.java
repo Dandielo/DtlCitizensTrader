@@ -342,7 +342,7 @@ public class NpcEcoManager implements Listener {
 				}
 				return;
 			}
-			case MARKET_TRADER:
+		/*	case MARKET_TRADER:
 			{
 
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
@@ -382,7 +382,7 @@ public class NpcEcoManager implements Listener {
 						playerInteraction.remove(playerName);
 				}
 				return;
-			}
+			}*/
 			case PLAYER_BANK:
 			{
 
