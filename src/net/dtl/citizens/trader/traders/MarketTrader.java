@@ -942,7 +942,7 @@ public class MarketTrader extends Trader {
 				ItemStack itemToAdd = event.getCurrentItem();
 				itemToAdd.setAmount(1);
 
-				this.selectMarketItem(itemToAdd, getBasicManageModeByWool(), p.getName(), false, false);
+				this.selectItem(itemToAdd, getBasicManageModeByWool(), false, false);
 				
 				
 				if ( hasSelectedItem() )
@@ -1040,7 +1040,7 @@ public class MarketTrader extends Trader {
 				
 				
 				//get the item if it exists in the inventory
-				this.selectMarketItem(itemToAdd, getBasicManageModeByWool(), p.getName(), false, false);
+				this.selectItem(itemToAdd, getBasicManageModeByWool(), false, false);
 				
 				//if it exist allow the event to occur (let the item disappear)
 				if ( hasSelectedItem() ) 
@@ -1127,17 +1127,17 @@ public class MarketTrader extends Trader {
 	
 	@Override
 	public boolean buyTransaction(Player p, double price) {
-		return getTraderConfig().transaction(getSelectedMarketItem().getItemOwner(), p.getName(), price);
+		return getTraderConfig().transaction(getSelectedMarketItem().getItemOwner(), p.getName(), false, price);
 	}
 
 	@Override
 	public boolean sellTransaction(Player p, double price) {
-		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getIdAndData(), price);
+		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getIdAndData(), true, price);
 	}
 
 	@Override
 	public boolean sellTransaction(Player p, double price, ItemStack item) {
-		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getItemOwner(), price*((int)item.getAmount() / getSelectedItem().getAmount()));
+		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getItemOwner(), true, price*((int)item.getAmount() / getSelectedItem().getAmount()));
 	}
 	
 	public static MarketItem toMarketItem(ItemStack is) {

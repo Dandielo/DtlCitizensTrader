@@ -228,10 +228,6 @@ public abstract class Trader implements EconomyNpc {
 		selectedItem = traderStock.getItem(item, status, dura, amount);
 		return this;
 	}
-	public final Trader selectMarketItem(ItemStack item,TraderStatus status,String owner,boolean dura,boolean amount) {
-		selectedItem = traderStock.getMarketItem(item, status, dura, amount, owner);
-		return this;
-	}
 	
 	/* *
 	 * if there is currently any item selected
