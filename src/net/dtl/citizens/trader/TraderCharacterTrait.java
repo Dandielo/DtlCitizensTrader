@@ -4,7 +4,6 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizens.trader.objects.MarketItem;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traits.BankTrait;
 import net.dtl.citizens.trader.traits.InventoryTrait;
@@ -71,10 +70,10 @@ public class TraderCharacterTrait extends Trait {
 		else if ( type.isTrader() )
 		{
 			this.traderTrait.load(data);
-			this.inventoryTrait.load(data, ( type.equals(TraderType.MARKET_TRADER) ? MarketItem.class : StockItem.class ) );
+			this.inventoryTrait.load(data, StockItem.class);
 			traderTrait.setTraderType(type);
-			
-			if ( type.equals(TraderType.SERVER_TRADER) )
+			if ( type.equals(TraderType.SERVER_TRADER) 
+					|| type.equals(TraderType.MARKET_TRADER) )
 				if ( !traderTrait.getPattern().isEmpty() )
 					this.inventoryTrait.setPattern(traderTrait.getPattern());
 		}
@@ -108,8 +107,8 @@ public class TraderCharacterTrait extends Trait {
 		public boolean isTrader()
 		{
 			if ( this.equals(PLAYER_TRADER) 
-					|| this.equals(SERVER_TRADER) )
-			//		|| this.equals(MARKET_TRADER) )
+					|| this.equals(SERVER_TRADER) 
+					|| this.equals(MARKET_TRADER) )
 				return true;
 			return false;
 		}
@@ -126,8 +125,8 @@ public class TraderCharacterTrait extends Trait {
 				return TraderType.SERVER_TRADER;
 			else if ( n.equalsIgnoreCase("player") )
 				return TraderType.PLAYER_TRADER;
-	//		else if ( n.equalsIgnoreCase("market") )
-	//			return TraderType.MARKET_TRADER;
+			else if ( n.equalsIgnoreCase("market") )
+				return TraderType.MARKET_TRADER;
 			else if ( n.equalsIgnoreCase("auctionhouse") )
 				return TraderType.AUCTIONHOUSE;
 			else if ( n.equalsIgnoreCase("player-bank") )
@@ -144,8 +143,8 @@ public class TraderCharacterTrait extends Trait {
 				return "player";
 			case SERVER_TRADER:
 				return "server";
-	//		case MARKET_TRADER:
-	//			return "market";
+			case MARKET_TRADER:
+				return "market";
 			case AUCTIONHOUSE:
 				return "auctionhouse";
 			case PLAYER_BANK:
@@ -163,8 +162,8 @@ public class TraderCharacterTrait extends Trait {
 				return "player";
 			case SERVER_TRADER:
 				return "server";
-	//		case MARKET_TRADER:
-	//			return "market";
+			case MARKET_TRADER:
+				return "market";
 			case AUCTIONHOUSE:
 				return "auctionhouse";
 			case PLAYER_BANK:

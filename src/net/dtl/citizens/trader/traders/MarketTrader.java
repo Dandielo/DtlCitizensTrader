@@ -2,26 +2,28 @@ package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.LimitSystem;
-import net.dtl.citizens.trader.objects.MarketItem;
 import net.dtl.citizens.trader.objects.StockItem;
+import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class MarketTrader extends Trader {
 
+	private TransactionPattern pattern;
+	
 	public MarketTrader(NPC n, TraderTrait c) {
 		super(n, c);
+		pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
 
 	@Override
@@ -137,11 +139,10 @@ public class MarketTrader extends Trader {
 									getSelectedItem().getItemStack().getData().getData(), 
 									getSelectedItem().getAmount(), 
 									getSelectedItem().getPrice() );
-								
-								//sending a message to the traders owner
-								this.messageOwner("bought", p.getName(), getSelectedItem(), 0);
-								
-								if ( !checkLimits(p,slot) )
+
+
+								//remove items if bought them all
+								if ( !checkLimits(p) )
 								{
 									getTraderStock().removeItem(true, slot);
 									this.switchInventory(this.getTraderStatus());
@@ -189,10 +190,8 @@ public class MarketTrader extends Trader {
 							
 							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
 							
-							//
 							addSelectedToInventory(p,slot);
 
-							//
 							updateLimits(p.getName(),slot);
 							switchInventory(getSelectedItem());
 							
@@ -204,21 +203,12 @@ public class MarketTrader extends Trader {
 								getSelectedItem().getAmount(slot), 
 								getSelectedItem().getPrice(slot) );
 							
-							//sending a message to the traders owner
-							this.messageOwner("bought", p.getName(), getSelectedItem(), slot);
-							
+							//removing item if all are bought
 							if ( !checkLimits(p,slot) )
 							{
 								getTraderStock().removeItem(true, slot);
 								this.switchInventory(this.getTraderStatus());
 							}
-					/*		if ( !checkLimits(p,slot) )
-							{
-								if ( isBuyModeByWool() )
-									getTraderStock().removeItem(false, slot);
-								if ( isSellModeByWool() )
-									getTraderStock().removeItem(true, slot);
-							}*/
 						} 
 					}
 					else 
@@ -268,8 +258,8 @@ public class MarketTrader extends Trader {
 							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 
 
+							//TODO FUNCTION: ADD ITEM TO STOCK!
 							updateBuyLimits(p.getName(), scale);
-
 							removeFromInventory(event.getCurrentItem(),event);
 							
 							//logging
@@ -280,14 +270,14 @@ public class MarketTrader extends Trader {
 								getSelectedItem().getAmount()*scale, 
 								getSelectedItem().getPrice()*scale );
 
-							//sending a message to the traders owner
-							this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
 
-							if ( !checkBuyLimits(p, getSelectedItem().getSlot()) )
+							if ( addItem(getSelectedItem().getItemStack(), scale, getSelectedItem()) );
+							//remove item if all are bought
+						/*	if ( !checkBuyLimits(p, getSelectedItem().getSlot()) )
 							{
 								getTraderStock().removeItem(false, getSelectedItem().getSlot());
 								this.switchInventory(this.getTraderStatus());
-							}
+							}*/
 						} 
 					}
 					else
@@ -330,28 +320,27 @@ public class MarketTrader extends Trader {
 					{
 						
 						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
-						
+
+						//TODO FUNCTION: ADD ITEM TO STOCK!
 						updateBuyLimits(p.getName(), scale);
-						
-						
 						removeFromInventory(event.getCurrentItem(),event);
 						
 						//logging
-						log("buy", 
+						log("sell", 
 							p.getName(), 
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount()*scale, 
 							getSelectedItem().getPrice()*scale );
 
-						//sending a message to the traders owner
-						this.messageOwner("sold", p.getName(), getSelectedItem(), 0);
-					
+						if ( addItem(getSelectedItem().getItemStack(), scale, getSelectedItem()) );
+					//		updateItem(getSelectedItem().getItemStack());
+					/*
 						if ( !checkBuyLimits(p, getSelectedItem().getSlot()) )
 						{
 							getTraderStock().removeItem(false, getSelectedItem().getSlot());
 							this.switchInventory(this.getTraderStatus());
-						}
+						}*/
 					}
 				} 
 				else 
@@ -378,7 +367,11 @@ public class MarketTrader extends Trader {
 	@Override
 	public void managerMode(InventoryClickEvent event) {
 
-		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+		((Player)event.getWhoClicked()).sendMessage(ChatColor.RED + "This trader type may be only mamaged using patterns!" );
+		event.setCancelled(true);
+		return;
+		
+	/*	boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		Player p = (Player) event.getWhoClicked();
 		DecimalFormat f = new DecimalFormat("#.##");
 		
@@ -410,7 +403,7 @@ public class MarketTrader extends Trader {
 					
 					
 					getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(5) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
+					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(4) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
 					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
@@ -540,7 +533,7 @@ public class MarketTrader extends Trader {
 						
 						//but any shift click will remove an item from the traders stock ;> 
 						//and return all the remaining amount to the player, (if he has enough space)
-						if ( selectItem(clickedSlot, TraderStatus.MANAGE_SELL, p).hasSelectedItem() ) 
+						if ( selectItem(clickedSlot, TraderStatus.MANAGE_SELL).hasSelectedItem() ) 
 						{
 							
 							if ( event.isLeftClick() )
@@ -591,11 +584,13 @@ public class MarketTrader extends Trader {
 						}
 						
 					}
+					//nothink you can do in buy mode (Full pattern settings) 
+					
 					//buy mode acts in another way
 					else if ( isBuyModeByWool() )
 					{
 						
-						if ( selectItem(clickedSlot, TraderStatus.MANAGE_BUY, p).hasSelectedItem() ) 
+						if ( selectItem(clickedSlot, TraderStatus.MANAGE_BUY).hasSelectedItem() ) 
 						{
 							//get the amount left in the stock
 							int stockedAmount = getSelectedItem().getLimitSystem().getGlobalAmount();
@@ -645,13 +640,14 @@ public class MarketTrader extends Trader {
 					
 				}
 				//sell and buy management
-				if ( equalsTraderStatus(getBasicManageModeByWool()) )
+				if ( equalsTraderStatus(TraderStatus.MANAGE_SELL) )//getBasicManageModeByWool()
 				{
 					
 					//if an item is right-clicked
+					
 					if ( event.isRightClick() ) 
 					{
-						if ( selectItem(event.getSlot(), getTraderStatus(), p).hasSelectedItem() )
+						if ( selectItem(event.getSlot(), getTraderStatus()).hasSelectedItem() )
 						{
 							if ( !permissions.has(p, "dtl.trader.managing.stack-price") )
 							{
@@ -691,10 +687,11 @@ public class MarketTrader extends Trader {
 						
 						
 						
-						if ( selectItem(clickedSlot, getTraderStatus(), p).hasSelectedItem() )
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);
-							p.sendMessage( locale.getLocaleString("xxx-players-item", "action:selected", "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
+							p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+							//p.sendMessage( locale.getLocaleString("xxx-players-item", "action:selected", "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
 						}
 						else 
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
@@ -708,7 +705,7 @@ public class MarketTrader extends Trader {
 						
 						
 						stockItem.setSlot(clickedSlot);
-						p.sendMessage( locale.getLocaleString("xxx-players-item", "action:updated").replace("{player}", ((MarketItem)stockItem).getItemOwner()) );
+						p.sendMessage( locale.getLocaleString("xxx-item", "action:updated") );//.replace("{player}", ((MarketItem)stockItem).getItemOwner()) );
 						
 						
 					}
@@ -716,10 +713,10 @@ public class MarketTrader extends Trader {
 					else
 					{
 						
-						if ( selectItem(clickedSlot, getTraderStatus(), p).hasSelectedItem() )
+						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);	
-							p.sendMessage( locale.getLocaleString("xxx-players-item", "action:selected", "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
+							p.sendMessage( locale.getLocaleString("xxx-item", "action:selected" ) );//, "action:updated").replace("{player}", getSelectedMarketItem().getItemOwner()) );
 						}
 						else 
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
@@ -742,7 +739,7 @@ public class MarketTrader extends Trader {
 					if ( event.getCursor().getType().equals(Material.AIR) ) {
 						
 						//select the item to get the information from, and show the price
-						if ( selectItem(event.getSlot(), getBasicManageModeByWool(), p).hasSelectedItem() ) 
+						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
 							p.sendMessage( locale.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 						
 						
@@ -752,7 +749,7 @@ public class MarketTrader extends Trader {
 					{
 							
 						//select the item if it exists
-						if ( selectItem(event.getSlot(), getBasicManageModeByWool(), p).hasSelectedItem() ) 
+						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
 							
 							//if it's right clicked the lower the price, else rise it
@@ -785,7 +782,7 @@ public class MarketTrader extends Trader {
 					{
 						
 						//select item which limit will be shown up
-						if ( selectItem(clickedSlot, getBasicManageModeByWool(), p).hasSelectedItem() ) 
+						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
 							p.sendMessage( locale.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 						}
@@ -797,7 +794,7 @@ public class MarketTrader extends Trader {
 					{
 						
 						//select the item
-						if ( selectItem(clickedSlot, getBasicManageModeByWool(), p).hasSelectedItem() ) 
+						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
 							
 							if ( event.isRightClick() ) 
@@ -976,32 +973,29 @@ public class MarketTrader extends Trader {
 					
 					
 					//change the item into the stock type
-					MarketItem marketItem = toMarketItem(itemToAdd.clone());
+					StockItem stockItem = toStockItem(itemToAdd.clone());
 					
 					
 					//disable pattern listening
-					marketItem.setAsPatternItem(false);
-					marketItem.setPetternListening(false);
+					stockItem.setAsPatternItem(false);
+					stockItem.setPetternListening(false);
 					
-					
-					//set the items owner
-					marketItem.setItemOwner(p.getName());
 					
 					//set the stock items slot
-					marketItem.setSlot(firstEmpty);
+					stockItem.setSlot(firstEmpty);
 
 					
 					//set the limit system to 0/0/-2 (player empty configuration)
-					LimitSystem limitSystem = marketItem.getLimitSystem();
+					LimitSystem limitSystem = stockItem.getLimitSystem();
 					limitSystem.setGlobalLimit(0);
 					limitSystem.setGlobalTimeout(-2000);
 					
 					
 					//put it into the stock list
 					if ( isSellModeByWool() )
-						getTraderStock().addItem(true, marketItem);
+						getTraderStock().addItem(true, stockItem);
 					if ( isBuyModeByWool() )
-						getTraderStock().addItem(false, marketItem);
+						getTraderStock().addItem(false, stockItem);
 					
 					
 					itemToAdd.setAmount(backUpAmount);
@@ -1094,9 +1088,126 @@ public class MarketTrader extends Trader {
 			
 		}
 		
-		setInventoryClicked(false);
+		setInventoryClicked(false);*/
 	}
 		
+	
+	public void updateItem(ItemStack itemToAdd)
+	{
+		
+		//get the item if it exists in the inventory
+		this.selectItem(itemToAdd, getBasicManageModeByWool(), false, false);
+		
+		//if it exist allow the event to occur (let the item disappear)
+		if ( hasSelectedItem() ) 
+		{			
+			
+			//get the items limit system
+			LimitSystem limitSystem = getSelectedItem().getLimitSystem();
+			
+			
+			//timeout set to no timeout checks (-2000 = it will never reset)
+			limitSystem.setGlobalTimeout(-2000);
+			
+			
+			int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
+			if ( getItemsLeft < 0 )
+				getItemsLeft = 0;
+			
+			//set the new limit (how many items can players buy)
+			limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
+
+			//send message
+			//p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
+			
+			
+			//set the amount to 0 to push it but don't change the top items amount 
+			itemToAdd.setAmount(0);
+			//event.setCurrentItem(itemToAdd);
+			
+			
+			//reset the amount
+			limitSystem.setGlobalAmount(0);
+		
+			
+			//reset
+			selectItem(null);
+		}
+		else
+		{
+			//that item isn't in the stock
+		//	p.sendMessage( locale.getLocaleString("item-not-in-stock") );
+			
+		}
+	}
+	
+	public boolean addItem(ItemStack itemToAdd, int scale, StockItem oldStockItem)
+	{
+		this.selectItem(itemToAdd, TraderStatus.SELL, false, false);
+		if ( hasSelectedItem() )
+			return false;
+		
+		Inventory inventory = this.getTraderStock().inventoryView(54, "temp");
+		this.getTraderStock().inventoryView(inventory, TraderStatus.SELL);
+		//get the first empty item slot
+		int firstEmpty = inventory.firstEmpty();
+
+		int backUpAmount = itemToAdd.getAmount();
+		
+		
+		//just to be sure nothing will be out of the inventory range (-3 for managing)
+		if ( firstEmpty >= 0 && firstEmpty < getInventory().getSize() - 3 )
+		{
+			//set the item to the inventory
+			if ( getTraderStatus().equals(TraderStatus.SELL) )
+				getInventory().setItem(firstEmpty, itemToAdd.clone());
+			
+	
+			//change the item into the stock type
+			StockItem stockItem = toStockItem(itemToAdd.clone());
+			
+			
+			//link the items! :D
+			stockItem.getLimitSystem().linkWith(oldStockItem);
+			oldStockItem.getLimitSystem().linkWith(stockItem);
+			
+			//disable pattern listening
+			stockItem.setAsPatternItem(false);
+			stockItem.setPetternListening(false);
+			
+			
+			//set the stock items slot
+			stockItem.setSlot(firstEmpty);
+			
+			
+			//set the limit system to 0/0/-2 (player empty configuration)
+			LimitSystem limitSystem = stockItem.getLimitSystem();
+			limitSystem.setGlobalLimit(0);
+			limitSystem.setGlobalTimeout(-2000);
+			
+			
+			//set the new limit (how many items can players buy)
+			limitSystem.setGlobalLimit(itemToAdd.getAmount()*scale);
+			
+			stockItem.setPetternListening(true);
+			//put it into the stock list
+			getTraderStock().addItem(true, stockItem);
+			
+			
+			itemToAdd.setAmount(backUpAmount);
+			
+			//send message
+		//	p.sendMessage( locale.getLocaleString("xxx-item", "action:added") );
+		}
+		else
+		{
+			//TODO not enough place message
+		}
+		selectItem(oldStockItem);
+		return true;
+	}
+	
+	
 //	}
 	
 	/*private void selectItem(ItemStack itemToAdd, Player p,
@@ -1108,9 +1219,9 @@ public class MarketTrader extends Trader {
 			selectItem(null);
 	}*/
 
-	public void messageOwner(String action, String buyer, StockItem item, int slot)
+	/*public void messageOwner(String action, String buyer, StockItem item, int slot)
 	{
-		String owner = ((MarketItem)item).getItemOwner();
+	//	String owner = ((MarketItem)item).getItemOwner();
 		Player player = Bukkit.getPlayer(owner);
 		playerLog(owner, buyer, action, item, slot);
 		
@@ -1118,14 +1229,14 @@ public class MarketTrader extends Trader {
 			return;
 		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
-	}
+	}*/
 	
-	public MarketItem getSelectedMarketItem()
+	/*public MarketItem getSelectedMarketItem()
 	{
 		return (MarketItem) getSelectedItem();
-	}
+	}*/
 	
-	@Override
+	/*@Override
 	public boolean buyTransaction(Player p, double price) {
 		return getTraderConfig().transaction(getSelectedMarketItem().getItemOwner(), p.getName(), false, price);
 	}
@@ -1138,9 +1249,9 @@ public class MarketTrader extends Trader {
 	@Override
 	public boolean sellTransaction(Player p, double price, ItemStack item) {
 		return getTraderConfig().transaction(p.getName(), getSelectedMarketItem().getItemOwner(), true, price*((int)item.getAmount() / getSelectedItem().getAmount()));
-	}
+	}*/
 	
-	public static MarketItem toMarketItem(ItemStack is) {
+/*	public static MarketItem toMarketItem(ItemStack is) {
 		String itemInfo = is.getTypeId()+":"+ is.getData().getData() +" a:"+is.getAmount() + " d:" + is.getDurability();
 		if ( !is.getEnchantments().isEmpty() ) {
 			itemInfo += " e:";
@@ -1161,7 +1272,7 @@ public class MarketTrader extends Trader {
 				selectItem(null);
 			
 		return this;
-	}
+	}*/
 
 	@Override
 	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {

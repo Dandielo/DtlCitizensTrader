@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.LimitSystem;
-import net.dtl.citizens.trader.objects.MarketItem;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
@@ -26,7 +25,7 @@ public class PlayerTrader extends Trader {
 
 	@Override
 	public void settingsMode(InventoryClickEvent event) {
-
+//this.getServerForPlayer().getEntityTracker().sendPacketToAllAssociatedPlayers(this, new Packet18Animation(this, 5));
 		//((Player)event.getWhoClicked()).sendMessage(ChatColor.RED+"SecureMode Inactive! Switch to simple mode!");
 		event.setCancelled(true);
 	}
@@ -308,16 +307,14 @@ public class PlayerTrader extends Trader {
 					}
 					else
 					{
-						
 						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
 						
 						updateBuyLimits(p.getName(), scale);
 						
-						
 						removeFromInventory(event.getCurrentItem(),event);
 						
 						//logging
-						log("buy", 
+						log("sell", 
 							p.getName(), 
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
@@ -385,7 +382,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(5) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
+					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? config.getItemManagement(4) : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
 					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
@@ -410,7 +407,6 @@ public class PlayerTrader extends Trader {
 						//send message
 						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
 					}
-					
 				}
 				else
 				// Only for buy system!
@@ -475,7 +471,7 @@ public class PlayerTrader extends Trader {
 						
 						getInventory().setItem(getInventory().getSize() - 1, config.getItemManagement(1));
 						getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(4));
-					
+					//	getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 	
 						//send message
 						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
@@ -1069,18 +1065,6 @@ public class PlayerTrader extends Trader {
 			return;
 		player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
-	}
-
-	private Trader selectItem(int slot, TraderStatus basicManageModeByWool,
-			Player p) {
-		
-		super.selectItem(slot, basicManageModeByWool);
-		MarketItem item = (MarketItem) getSelectedItem();
-		
-		if ( item != null && !item.getItemOwner().equals(p.getName()) )
-			item = null;
-			
-		return this;
 	}
 
 	@Override

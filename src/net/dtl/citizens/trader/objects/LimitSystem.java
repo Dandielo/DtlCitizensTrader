@@ -8,10 +8,8 @@ import java.util.HashMap;
  * 
  */
 public class LimitSystem {
-	//the stocks item limit system
 	private final StockItem thisItem;
-	//the linked stock item (feature)
-//	private StockItem linked;
+	private StockItem linked;
 
 	//global limit for server traders, or amount saving for player traders
 	private Limit limit;
@@ -23,7 +21,7 @@ public class LimitSystem {
 	
 	public LimitSystem(StockItem item) {
 		thisItem = item;
-	//	linked = null;
+		linked = null;
 		
 		limit = new Limit();
 		playerLimit = new Limit();
@@ -39,41 +37,48 @@ public class LimitSystem {
 		return playerLimit.hasLimit();
 	}
 	
-	// TODO linking system 
 	public void linkWith(StockItem item) {
-//		linked = item;
+		linked = item;
 	}
 	
 	// TODO redo this function
-		public boolean checkLimit(String p, int slot, int scale) {
-			if ( limit.timeoutReached(new Date()) )
-				limit.reset();
-			
-			if ( !limit.reachedLimit() ) {
-				if ( playerLimit.hasLimit() ) {
-					if ( players.containsKey(p) ) {
-						if ( playerLimit.reachedLimitWith(players.get(p)+thisItem.getAmount(slot)) )
-							return false;
-					} else {
-						players.put(p, 0);
-					}
+	public boolean checkLimit(String p, int slot, int scale) {
+		if ( limit.timeoutReached(new Date()) )
+			limit.reset();
+		
+		if ( !limit.reachedLimit() ) 
+		{
+			if ( playerLimit.hasLimit() ) 
+			{
+				if ( players.containsKey(p) )
+				{
+					return !playerLimit.reachedLimitWith((thisItem.getAmount(slot)*scale)-1);
 				}
-				return !limit.reachedLimitWith((thisItem.getAmount(slot)*scale)-1);
+				else
+				{
+					players.put(p, 0);
+				}
 			}
-			return false;
+			return !limit.reachedLimitWith((thisItem.getAmount(slot)*scale)-1);
 		}
+		return false;
+	}
 	
 	// TODO redo this function
 	public boolean checkLimit(String p, int slot) {
 		if ( limit.timeoutReached(new Date()) )
 			limit.reset();
 		
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( playerLimit.reachedLimitWith(players.get(p)+thisItem.getAmount(slot)) )
-						return false;
-				} else {
+		if ( !limit.reachedLimit() ) 
+		{
+			if ( playerLimit.hasLimit() )
+			{
+				if ( players.containsKey(p) )
+				{
+					return !playerLimit.reachedLimitWith(thisItem.getAmount(slot)-1);
+				}
+				else
+				{
 					players.put(p, 0);
 				}
 			}
@@ -82,66 +87,28 @@ public class LimitSystem {
 		return false;
 	}
 	
-	
-	// TODO redo this function
-	public boolean checkLimitAutoReset(String p, int slot) {
-		if ( limit.timeoutReached(new Date()) )
-			limit.reset();
-		
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( playerLimit.reachedLimitWith(players.get(p)+thisItem.getAmount(slot)) )
-						return false;
-				} else {
-					players.put(p, 0);
-				}
-			}
-			return !limit.reachedLimitWith(thisItem.getAmount(slot)-1);
-		}
-		return false;
-	}
-	
-	/* *
-	 * Lol, why I've coded that?
-	 * 
-	
-	public boolean checkLimitWith(int l, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( playerLimit.reachedLimitAs(players.get(p)-1) )
-						return false;
-					if (  playerLimit.reachedLimitAs((players.get(p)+l)-1) )
-						return false;
-				} else {
-					if ( playerLimit.reachedLimitAs(l-1) )
-						return false;
-				}
-			}
-			if ( limit.reachedLimitWith(l-1) )
-				return false;
-			
-			return true;
-		}
-		return false;
-	}*/
-	
-	//fur buy update
+	//for buy update
 	public boolean updateLimit(int slot, int scale, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
+		if ( !limit.reachedLimit() ) 
+		{
+			if ( playerLimit.hasLimit() ) 
+			{
+				if ( players.containsKey(p) )
+				{
 					if ( !playerLimit.reachedLimitAs(players.get(p) + thisItem.getAmount(slot)) )
 						return false;
 					players.put(p, players.get(p) + thisItem.getAmount(slot));
-				} else {
+				} 
+				else
+				{
 					if ( playerLimit.reachedLimitAs(thisItem.getAmount(slot)) )
 						return false;
-					players.put(p, players.get(p) + thisItem.getAmount(slot));
+					players.put(p, thisItem.getAmount(slot));
 				}
 			}
 
+			if ( linked != null )
+				linked.getLimitSystem().limit.amount -= thisItem.getAmount(slot)*scale;
 			limit.changeAmount(thisItem.getAmount(slot)*scale);
 			
 			return true;
@@ -151,67 +118,26 @@ public class LimitSystem {
 	
 	//for sell limit update
 	public boolean updateLimit(int slot, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
+		if ( !limit.reachedLimit() ) 
+		{
+			if ( playerLimit.hasLimit() ) 
+			{
+				if ( players.containsKey(p) )
+				{
 					if ( !playerLimit.reachedLimitAs(players.get(p) + thisItem.getAmount(slot)) )
 						return false;
 					players.put(p, players.get(p) + thisItem.getAmount(slot));
-				} else {
+				}
+				else
+				{
 					if ( playerLimit.reachedLimitAs(thisItem.getAmount(slot)) )
 						return false;
-					players.put(p, players.get(p) + thisItem.getAmount(slot));
+					players.put(p, thisItem.getAmount(slot));
 				}
 			}
-			limit.changeAmount(thisItem.getAmount(slot));
 			
-			return true;
-		}
-		return false;
-	}
-	
-	/* *
-	 * temporary function!!!!!!
-	 * 
-	 */
-	public boolean updateLimitWith(int amount, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( !playerLimit.reachedLimitAs(players.get(p) + amount) )
-						return false;
-					players.put(p, players.get(p) + amount);
-				} else {
-					if ( playerLimit.reachedLimitAs(amount) )
-						return false;
-					players.put(p, players.get(p) + amount);
-				}
-			}
-			limit.changeAmount(amount);
-			
-			return true;
-		}
-		return false;
-	}
-	
-	
-	/* *
-	 * Future implementation
-	 * 
-	 */
-	public boolean updateLinkedLimit(int slot, String p) {
-		if ( !limit.reachedLimit() ) {
-			if ( playerLimit.hasLimit() ) {
-				if ( players.containsKey(p) ) {
-					if ( !playerLimit.reachedLimitAs(players.get(p) + thisItem.getAmount(slot)) )
-						return false;
-					players.put(p, players.get(p) + thisItem.getAmount(slot));
-				} else {
-					if ( playerLimit.reachedLimitAs(thisItem.getAmount(slot)) )
-						return false;
-					players.put(p, players.get(p) + thisItem.getAmount(slot));
-				}
-			}
+			if ( linked != null )
+				linked.getLimitSystem().limit.amount -= thisItem.getAmount(slot);
 			limit.changeAmount(thisItem.getAmount(slot));
 			
 			return true;
@@ -410,86 +336,6 @@ public class LimitSystem {
 			resetAmount();
 			resetTimer();
 		}
-		
-		/* *
-		 * Limit and amount management
-		 *//*
-		public void setLimit(int l) {
-			limit = l;
-		}
-		public int getLimit() {
-			return limit;
-		}
-		public void changeTimeout(int t) {
-			timeout += t*1000;
-			if ( timeout < 0 )
-				timeout = 0;
-		}
-		public void changeLimit(int l) {
-			limit += l;
-			if ( limit < 0 )
-				limit = -1;
-		}
-		public void setAmount(int a) {
-			amount = a;
-		}
-		public void changeAmount(int a) {
-			amount += a;
-		}
-		public void resetAmount() {
-			amount = 0;
-		}
-		public boolean hasAmount(int a) {
-			return ( limit - amount ) >= a ;
-		}
-		
-		public boolean reachedLimit() {
-			if ( limit < 1 )
-				return false;
-			return limit <= amount;
-		}
-		public boolean hasLimit() {
-			if ( limit < 0 )
-				return false;
-			return true;
-		}
-		
-		public Limit setTimeout(long t) {
-			timeout = t;
-			return this;
-		}
-		public Limit resetTimer() {
-			timer = new Date();
-			return this;
-		}
-		public Limit checkTimer(Date d) {
-			if ( limit < 0 )
-				return this;
-			if ( d.getTime() - timer.getTime() > timeout ) {
-				reset();
-			}
-			return this;
-		}
-		public String getNextReset() {
-			Date d = new Date();
-			d.setTime(new Date().getTime() - timer.getTime());
-			return new SimpleDateFormat("HH mm ss").format(d);
-		}
-		public String getTimeout() {
-			Date d = new Date();
-			d.setTime(timeout);
-			return new SimpleDateFormat("dd HH mm ss").format(d);
-		}
-		
-		public void reset() {
-			resetTimer();
-			resetAmount();
-		}
-		
-		@Override
-		public String toString() {
-			return limit + "/" + amount + "/" + ( timeout / 1000 );
-		}*/
 	}
 	
 	

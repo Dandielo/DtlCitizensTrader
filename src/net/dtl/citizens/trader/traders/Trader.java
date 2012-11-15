@@ -488,51 +488,6 @@ public abstract class Trader implements EconomyNpc {
 		return selectedItem.getLimitSystem().updateLimit(0, p);
 	}
 	
-	/* *
-	 * temporary Function!!!!!!!!!!!!!!!!!!!!
-	 * 
-	 */
-	public boolean updateLimitsTem(String p, ItemStack item) {
-		if ( item.getAmount() == 1 )
-			return selectedItem.getLimitSystem().updateLimitWith(getMaxAmount(item), p);
-		return false;
-	}
-	
-	/* *
-	 * get the max amount the limit can carry comparing to an Item
-	 * 
-	 */
-	public int getMaxAmount(ItemStack item) {
-		if ( selectedItem.getLimitSystem().getUnusedLimit() >= item.getAmount() ) {
-			return item.getAmount(); 
-		}
-		return selectedItem.getLimitSystem().getUnusedLimit();
-	}
-	/* *
-	 * Checking if an item has reached his limit
-	 */
-/*	public boolean checkLimit() {
-		if ( selectedItem.checkLimit() && selectedItem.hasLimitAmount(selectedItem.getAmount()) )
-			return true;
-		return false;
-	}
-	public void updateSelectedItemLimit() {
-		updateSelectedItemLimit(selectedItem.getAmount());
-	}
-	public void updateSelectedItemLimit(int amount) {
-		selectedItem.changeLimitAmount(amount);
-		if ( !selectedItem.checkLimit() || !selectedItem.hasLimitAmount(amount) ) {
-			if ( !traderStatus.equals(TraderStatus.PLAYER_SELL_AMOUNT) ) {
-				inventory.setItem(selectedItem.getSlot(), new ItemStack(Material.AIR));
-			} else 
-				switchInventory(selectedItem);
-		}
-	}*/
-	
-	/* * ===============================================================================================
-	 * ManagerMode functions 
-	 * 
-	 */
 	
 	/* *
 	 * saving the new amounts found in the select multiple items mode

@@ -241,7 +241,8 @@ public class NpcEcoManager implements Listener {
 			return;
 
 		CitizensTrader.getInstance();
-		if ( CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
+		if ( CitizensTrader.getDenizen() != null && 
+				CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
 			return;
 		
 		//used variables
@@ -342,7 +343,7 @@ public class NpcEcoManager implements Listener {
 				}
 				return;
 			}
-		/*	case MARKET_TRADER:
+			case MARKET_TRADER:
 			{
 
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
@@ -382,7 +383,7 @@ public class NpcEcoManager implements Listener {
 						playerInteraction.remove(playerName);
 				}
 				return;
-			}*/
+			}
 			case PLAYER_BANK:
 			{
 

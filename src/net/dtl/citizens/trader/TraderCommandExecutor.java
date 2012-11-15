@@ -793,6 +793,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:withdrawed").replace("{value}", withdrawString) );
 		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
 		
+		
 		return true;
 	}
 	
@@ -865,21 +866,25 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("o:") )
 			{
 				owner = arg.substring(2);
+				walletType = WalletType.OWNER_WALLET;
 			}
 			else
 			if ( arg.startsWith("sc:") )
 			{
 				clanTag = arg.substring(3);
+				walletType = WalletType.SIMPLE_CLANS;
 			}
 			else
 			if ( arg.startsWith("town:") )
 			{
 				townName = arg.substring(5);
+				walletType = WalletType.TOWNY;
 			}
 			else
 			if ( arg.startsWith("f:") )
 			{
 				factionName = arg.substring(2);
+				walletType = WalletType.FACTIONS;
 			}
 			else
 			//trader type set?
@@ -940,7 +945,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.getTrait(MobType.class).setType(entityType);
 		npc.spawn(player.getLocation());
 		
-		//TODO towny wallets
 		//change the trader settings
 		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
 		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);

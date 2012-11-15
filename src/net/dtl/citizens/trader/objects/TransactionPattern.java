@@ -123,6 +123,7 @@ public class TransactionPattern {
 			return false;
 		if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
 		{
+			System.out.print(item.getAmount());
 			item.setRawPrice(patternPrices.get(transation).get(item.getIdAndData()));
 			return true;
 		}
