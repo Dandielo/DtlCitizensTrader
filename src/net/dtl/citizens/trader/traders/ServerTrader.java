@@ -110,7 +110,7 @@ public class ServerTrader extends Trader {
 					{
 						if ( getClickedSlot() == slot ) 
 						{
-
+							double price = getPrice(p, "sell");
 							//checks
 							if ( !checkLimits(p) )
 							{
@@ -124,7 +124,7 @@ public class ServerTrader extends Trader {
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 							}
 							else
-							if ( !buyTransaction(p,getSelectedItem().getPrice()) )
+							if ( !buyTransaction(p, price) )
 							{
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
@@ -132,7 +132,7 @@ public class ServerTrader extends Trader {
 							else
 							{
 								//send message
-								p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+								p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 
 								addSelectedToInventory(p,0);
@@ -149,14 +149,14 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getItemStack().getTypeId(),
 									getSelectedItem().getItemStack().getData().getData(), 
 									getSelectedItem().getAmount(), 
-									getSelectedItem().getPrice() );
+									price );
 								
 							}
 							
 						}
 						else
 						{
-							p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
 							p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 							setClickedSlot(slot);
 						}
@@ -172,7 +172,8 @@ public class ServerTrader extends Trader {
 					
 					if ( getClickedSlot() == slot ) 
 					{
-							
+
+						double price = getPrice(p, "sell", slot);
 						if ( !checkLimits(p,slot) )
 						{
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
@@ -185,7 +186,7 @@ public class ServerTrader extends Trader {
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 						}
 						else
-						if ( !buyTransaction(p,getSelectedItem().getPrice(slot)) ) 
+						if ( !buyTransaction(p, price) ) 
 						{
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
@@ -193,17 +194,17 @@ public class ServerTrader extends Trader {
 						else
 						{
 							//send message
-							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 							
 							/* *
 							 * better version of Inventory.addItem();
 							 * 
 							 */
-							addSelectedToInventory(p,slot);
+							addSelectedToInventory(p, slot);
 							
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
 							
-							updateLimits(p.getName(),slot);
+							updateLimits(p.getName(), slot);
 							switchInventory(getSelectedItem());
 							
 							//logging
@@ -212,14 +213,14 @@ public class ServerTrader extends Trader {
 								getSelectedItem().getItemStack().getTypeId(),
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount(slot), 
-								getSelectedItem().getPrice(slot) );
+								price );
 							
 						} 
 					}
 					else 
 					{
 						
-						p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell", slot)) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 						setClickedSlot(slot);
 					}
@@ -232,7 +233,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
 
-					p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+					p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")) ) );
 				}
 			}
 			setInventoryClicked(true);
@@ -247,7 +248,7 @@ public class ServerTrader extends Trader {
 					
 					if ( getClickedSlot() == slot && !getInventoryClicked() ) 
 					{
-						
+						double price = getPrice(p, "buy");
 						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 						if ( !checkBuyLimits(p, scale) )
 						{
@@ -255,19 +256,19 @@ public class ServerTrader extends Trader {
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 						}
 						else
-						if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
+						if ( !sellTransaction(p, price, event.getCurrentItem()) )
 						{
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 						}
 						else
 						{
-							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 							
-							updateBuyLimits(p.getName(),scale);
+							updateBuyLimits(p.getName(), scale);
 
-							removeFromInventory(event.getCurrentItem(),event);
+							removeFromInventory(event.getCurrentItem(), event);
 							
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
 							
@@ -277,13 +278,13 @@ public class ServerTrader extends Trader {
 								getSelectedItem().getItemStack().getTypeId(),
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount()*scale, 
-								getSelectedItem().getPrice()*scale );
+								price*scale );
 							
 						} 
 					} 
 					else
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						setClickedSlot(slot);
 					}
@@ -302,8 +303,9 @@ public class ServerTrader extends Trader {
 				
 				if ( getClickedSlot() == slot && !getInventoryClicked() && permissions.has(p, "dtl.trader.options.buy") ) 
 				{
+
+					double price = getPrice(p, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-					
 					if ( !permissions.has(p, "dtl.trader.options.buy") )
 					{
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
@@ -315,14 +317,14 @@ public class ServerTrader extends Trader {
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 					}
 					else
-					if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
+					if ( !sellTransaction(p, price, event.getCurrentItem()) )
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 					}
 					else
 					{
-						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 						
 						//limits update
@@ -339,7 +341,7 @@ public class ServerTrader extends Trader {
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount()*scale, 
-							getSelectedItem().getPrice()*scale );
+							price*scale );
 
 					}
 				}
@@ -348,7 +350,7 @@ public class ServerTrader extends Trader {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) 
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						
 						setClickedSlot(slot);
@@ -687,13 +689,13 @@ public class ServerTrader extends Trader {
 								 if ( this.isSellModeByWool() )
 									 getTraderStock().addItem(true, item);
 								 
-								 if ( pattern != null )
+								/* if ( pattern != null )
 								 {
 									 if ( isBuyModeByWool() )
 										 pattern.getItemPrice(item, "buy");
 									 if ( isSellModeByWool() )
 										 pattern.getItemPrice(item, "sell");
-								 }
+								 }*/
 									 
 								 p.sendMessage( locale.getLocaleString("xxx-item", "action:added") );
 							 }
@@ -962,5 +964,14 @@ public class ServerTrader extends Trader {
 		return true;
 	}/**/
 
+	
+	public double getPrice(Player player, String transaction)
+	{
+		return getPrice(player, transaction, 0);
+	}
+	public double getPrice(Player player, String transaction, int slot)
+	{
+		return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+	}
 }
 

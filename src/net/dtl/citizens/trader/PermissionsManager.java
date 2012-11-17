@@ -59,11 +59,13 @@ public class PermissionsManager {
 	
 	public boolean has(final Player player, final String permission)
 	{
+		/*System.out.print(!hasPermission(player, permission));
 		if ( !hasPermission(player, permission) )
 		{
 			return player.hasPermission(permission);
 		}
-		return true;
+		return true;*/
+		return hasPermission(player, permission);
 	}
 	
 	public boolean hasPermission(final Player player, final String permission) {
@@ -94,6 +96,7 @@ public class PermissionsManager {
 		{
 			return bPermissions.has(player, permission);
 		}
-		return false;
+			
+		return player.hasPermission(permission);
 	}
 }

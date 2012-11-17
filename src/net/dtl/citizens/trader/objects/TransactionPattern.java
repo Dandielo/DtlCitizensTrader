@@ -4,20 +4,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
+import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class TransactionPattern {
 
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
+	TreeMap<String, TransactionPattern> patternTiers;
+	double multiplier;
 	
 	public TransactionPattern()
 	{
 		patternItems = new HashMap<String, List<StockItem>>();
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
+		patternTiers = new TreeMap<String, TransactionPattern>();
+		multiplier = 1.0;
 	}
 	
 	public void loadPrices(ConfigurationSection prices)
@@ -50,6 +57,23 @@ public class TransactionPattern {
 				{
 					buy.put(item, prices.getDouble(transaction+"/"+item) );
 				}
+			}
+			else
+			if ( transaction.equals("multiplier") )
+			{
+				multiplier = prices.getDouble(transaction);
+			}
+			else
+			if ( transaction.startsWith("tier") )
+			{
+				TransactionPattern tier = patternTiers.get(transaction);
+				if ( tier == null )
+				{
+					tier = new TransactionPattern();
+					patternTiers.put(transaction, tier);
+				}
+				
+				tier.loadPrices( prices.getConfigurationSection(transaction) );
 			}
 		}
 		patternPrices.put("sell", sell);
@@ -108,6 +132,18 @@ public class TransactionPattern {
 						buy.add(0, stockItem);
 				}
 			}
+			/*else
+			if ( transaction.startsWith("tier") )
+			{
+				TransactionPattern tier = patternTiers.get(transaction);
+				if ( tier == null )
+				{
+					tier = new TransactionPattern();
+					patternTiers.put(transaction, tier);
+				}
+				
+				tier.loadItems( items.getConfigurationSection(transaction) );
+			}*/
 		}
 		patternItems.put("sell", sell);
 		patternItems.put("buy", buy);
@@ -118,25 +154,36 @@ public class TransactionPattern {
 		return patternItems.get(transation);
 	}
 
-	public boolean getItemPrice(StockItem item, String transation) {
-		if ( patternPrices.get(transation) == null )
-			return false;
-		if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
+	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice) 
+	{
+		double price = nprice;
+
+		if ( item.isPatternListening() )
 		{
-			System.out.print(item.getAmount());
-			item.setRawPrice(patternPrices.get(transation).get(item.getIdAndData()));
-			return true;
-		}
+			if ( patternPrices.containsKey(transation) )
+				if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
+					price = patternPrices.get(transation).get(item.getIdAndData());
+				else
+					for ( Map.Entry<String, Double> entry : patternPrices.get(transation).entrySet() )
+						if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
+							price = entry.getValue();
 			
-		for ( Map.Entry<String, Double> entry : patternPrices.get(transation).entrySet() )
-		{
-			if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
-			{
-				item.setRawPrice(entry.getValue());
-				return true;
-			}
+			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
+				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
+				{
+					CitizensTrader.info("price changed");
+					price = tier.getValue().getItemPrice(player, item, transation, slot, price);
+				}
 		}
-		return false;
+		else
+			price = item.getPrice(slot);
+
+		if ( !item.hasStackPrice() && nprice == 0.0 )
+			price *= item.getAmount(slot);
+		
+		price *= multiplier;
+		
+		return price;
 	}
 	
 	

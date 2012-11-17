@@ -74,6 +74,12 @@ public class StockItem {
 							item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
 						}
 					}
+					if ( value.startsWith("l:") && !value.contains("/") && !value.contains(";") ) {
+					//	item.setDurability(Short.parseShort(value.substring(2)));
+					}
+					if ( value.startsWith("id:") && !value.contains("/") && !value.contains(";") ) {
+					//	item.setDurability(Short.parseShort(value.substring(3)));
+					}
 				} 
 				else
 				{
@@ -166,11 +172,11 @@ public class StockItem {
 		price -= p;
 	}
 	
-	public double getBuyPrice() {
+	/*public double getBuyPrice() {
 		if ( stackPrice )
 			return price/amouts.get(0);
 		return price;
-	}
+	}*/
 	
 	public double getPrice() {
 		if ( stackPrice )

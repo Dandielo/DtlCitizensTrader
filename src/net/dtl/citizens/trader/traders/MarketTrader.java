@@ -109,6 +109,7 @@ public class MarketTrader extends Trader {
 					{
 						if ( getClickedSlot() == slot )
 						{
+							double price = getPrice(p, "sell");
 							//checks
 							if ( !checkLimits(p) )
 							{
@@ -120,13 +121,13 @@ public class MarketTrader extends Trader {
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 							}
 							else
-							if ( !buyTransaction(p, getSelectedItem().getPrice()) )
+							if ( !buyTransaction(p, price) )
 							{
 								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 							}
 							else
 							{
-								p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+								p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 
 								addSelectedToInventory(p,0);
@@ -138,7 +139,7 @@ public class MarketTrader extends Trader {
 									getSelectedItem().getItemStack().getTypeId(),
 									getSelectedItem().getItemStack().getData().getData(), 
 									getSelectedItem().getAmount(), 
-									getSelectedItem().getPrice() );
+									price );
 
 
 								//remove items if bought them all
@@ -151,7 +152,7 @@ public class MarketTrader extends Trader {
 						} 
 						else 
 						{
-							p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
 							p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 							setClickedSlot(slot);
 						}
@@ -170,7 +171,8 @@ public class MarketTrader extends Trader {
 					
 					if ( getClickedSlot() == slot ) 
 					{ 
-						
+
+						double price = getPrice(p, "sell", slot);
 						if ( !checkLimits(p,slot) )
 						{
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
@@ -181,14 +183,14 @@ public class MarketTrader extends Trader {
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 						}
 						else
-						if ( !buyTransaction(p,getSelectedItem().getPrice(slot)) ) 
+						if ( !buyTransaction(p, price) ) 
 						{
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 						}
 						else
 						{
 							
-							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 							
 							addSelectedToInventory(p,slot);
 
@@ -201,7 +203,7 @@ public class MarketTrader extends Trader {
 								getSelectedItem().getItemStack().getTypeId(),
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount(slot), 
-								getSelectedItem().getPrice(slot) );
+								price );
 							
 							//removing item if all are bought
 							if ( !checkLimits(p,slot) )
@@ -214,7 +216,7 @@ public class MarketTrader extends Trader {
 					else 
 					{
 						
-						p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell", slot)) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 						setClickedSlot(slot);
 					}
@@ -225,7 +227,7 @@ public class MarketTrader extends Trader {
 			{
 				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
-					p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+					p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")) ) );
 					p.sendMessage( locale.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 				
 				}
@@ -242,20 +244,20 @@ public class MarketTrader extends Trader {
 					
 					if ( getClickedSlot() == slot && !getInventoryClicked() )
 					{
-						
+						double price = getPrice(p, "buy");
 						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 						if ( !checkBuyLimits(p, scale) )
 						{
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 						}
 						else
-						if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
+						if ( !sellTransaction(p, price, event.getCurrentItem()) )
 						{
 							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 						}
 						else
 						{
-							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 
 							//TODO FUNCTION: ADD ITEM TO STOCK!
@@ -268,7 +270,7 @@ public class MarketTrader extends Trader {
 								getSelectedItem().getItemStack().getTypeId(),
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount()*scale, 
-								getSelectedItem().getPrice()*scale );
+								price*scale );
 
 
 							if ( addItem(getSelectedItem().getItemStack(), scale, getSelectedItem()) );
@@ -282,7 +284,7 @@ public class MarketTrader extends Trader {
 					}
 					else
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						setClickedSlot(slot);
 					}
@@ -300,8 +302,9 @@ public class MarketTrader extends Trader {
 			{
 				if ( getClickedSlot() == slot && !getInventoryClicked() )
 				{
+					
+					double price = getPrice(p, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-				
 					if ( !permissions.has(p, "dtl.trader.options.buy") )
 					{
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
@@ -312,14 +315,14 @@ public class MarketTrader extends Trader {
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 					}
 					else
-					if ( !sellTransaction(p,getSelectedItem().getPrice(),event.getCurrentItem()) )
+					if ( !sellTransaction(p, price, event.getCurrentItem()) )
 					{
 						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 					}
 					else
 					{
 						
-						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 						//TODO FUNCTION: ADD ITEM TO STOCK!
 						updateBuyLimits(p.getName(), scale);
@@ -331,7 +334,7 @@ public class MarketTrader extends Trader {
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount()*scale, 
-							getSelectedItem().getPrice()*scale );
+							price*scale );
 
 						if ( addItem(getSelectedItem().getItemStack(), scale, getSelectedItem()) );
 					//		updateItem(getSelectedItem().getItemStack());
@@ -349,7 +352,7 @@ public class MarketTrader extends Trader {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) 
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						
 						setClickedSlot(slot);
@@ -1190,6 +1193,7 @@ public class MarketTrader extends Trader {
 			limitSystem.setGlobalLimit(itemToAdd.getAmount()*scale);
 			
 			stockItem.setPetternListening(true);
+			//pattern.getItemPrice(stockItem, "sell");
 			//put it into the stock list
 			getTraderStock().addItem(true, stockItem);
 			
@@ -1323,5 +1327,12 @@ public class MarketTrader extends Trader {
 		return true;
 	}
 
-
+	public double getPrice(Player player, String transaction)
+	{
+		return getPrice(player, transaction, 0);
+	}
+	public double getPrice(Player player, String transaction, int slot)
+	{
+		return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+	}
 }

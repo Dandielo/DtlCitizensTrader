@@ -90,6 +90,22 @@ public class InventoryTrait implements InventoryHolder {
 		}
 	}
 	
+	public void linkItems()
+	{
+		for ( StockItem item : sellStock )
+		{
+			for ( int i = 0 ; i < buyStock.size() ; ++i )
+			{
+				if ( item.equals(buyStock.get(i)) )
+				{
+					item.getLimitSystem().linkWith(buyStock.get(i));
+					buyStock.get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
+					buyStock.get(i).getLimitSystem().linkWith(item);
+				}
+			}
+		}
+	}
+	
 	public void reloadStock()
 	{
 		List<StockItem> tempSellStock = new ArrayList<StockItem>();
@@ -127,7 +143,7 @@ public class InventoryTrait implements InventoryHolder {
 			buyStock.add(item);
 		}
 		
-		for ( StockItem item : sellStock ) {
+		/*for ( StockItem item : sellStock ) {
 			if ( item.isPatternListening() && !pattern.isEmpty() )
 				patterns.getPattern(pattern).getItemPrice(item, "sell");
 		}
@@ -135,7 +151,7 @@ public class InventoryTrait implements InventoryHolder {
 		for ( StockItem item : buyStock ) {
 			if ( item.isPatternListening() && !pattern.isEmpty() )
 				patterns.getPattern(pattern).getItemPrice(item, "buy");
-		}
+		}*/
 	}
 	
 	public void clearStock(String stock)

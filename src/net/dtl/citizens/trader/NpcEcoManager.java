@@ -21,9 +21,15 @@ import net.dtl.citizens.trader.traders.ServerTrader;
 import net.dtl.citizens.trader.traders.Trader;
 import net.dtl.citizens.trader.traders.Banker.BankStatus;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagInt;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +38,7 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class NpcEcoManager implements Listener {
 	//trader configs
@@ -245,8 +252,52 @@ public class NpcEcoManager implements Listener {
 				CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
 			return;
 		
-		//used variables
+	/*	
+		CraftItemStack cis = new CraftItemStack(Material.DIAMOND_SWORD);
+		net.minecraft.server.ItemStack mis = cis.getHandle();
+		
+		System.out.print(mis);
+		
+		NBTTagCompound c = mis.getTag(); 
+		System.out.print(c);
+		if ( c == null )
+			c = new NBTTagCompound();
+		mis.setTag(c);
+		
+		if(!c.hasKey("display")) {
+			c.set("display", new NBTTagCompound());
+		}
+		 
+		NBTTagCompound d = c.getCompound("display");
+		 
+		if(!d.hasKey("Lore")) {
+		  d.set("Lore", new NBTTagList());
+		}
+		
+		if(!d.hasKey("color")) {
+		  d.set("color", new NBTTagInt("", 16));
+		}
+		else
+			d.set("color", new NBTTagInt("", 16));
+		
+		if(!d.hasKey("Name")) {
+			d.set("Name", new NBTTagString("", "Dandielos Item ;)"));
+		}
+		else
+			d.set("Name", new NBTTagString("", "Dandielos Item ;)"));
+			
+		
+		NBTTagList l = d.getList("Lore");
+		 
+		l.add(new NBTTagString("", "String here1"));
+		l.add(new NBTTagString("", "String here2"));
+		 
+		d.set("Lore", l);*
+		
+		player.getInventory().addItem(cis);*/
+
 		Player player = event.getClicker();
+		//used variables
 		final String playerName = player.getName();
 		NPC npc = event.getNPC();
 

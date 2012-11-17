@@ -72,10 +72,21 @@ public class TraderCharacterTrait extends Trait {
 			this.traderTrait.load(data);
 			this.inventoryTrait.load(data, StockItem.class);
 			traderTrait.setTraderType(type);
-			if ( type.equals(TraderType.SERVER_TRADER) 
-					|| type.equals(TraderType.MARKET_TRADER) )
+			if ( type.equals(TraderType.SERVER_TRADER) )
+			{
 				if ( !traderTrait.getPattern().isEmpty() )
 					this.inventoryTrait.setPattern(traderTrait.getPattern());
+			}
+			else
+			if ( type.equals(TraderType.MARKET_TRADER) )
+			{
+				if ( !traderTrait.getPattern().isEmpty() )
+				{
+					this.inventoryTrait.setPattern(traderTrait.getPattern());
+					this.inventoryTrait.linkItems();
+				}
+				
+			}
 		}
 		
 	}
