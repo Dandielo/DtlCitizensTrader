@@ -29,6 +29,7 @@ public class LocaleManager {
 	//localeCache
 	protected Map<String,String> stringsCache;
 	protected Map<String,String> keywordsCache;
+//	protected Map<String,String[]> buttonsCache;
 	
 	public LocaleManager() {
 		//Loca config
@@ -37,6 +38,7 @@ public class LocaleManager {
 		//initialize cache holder
 		this.stringsCache = new HashMap<String, String>();
 		this.keywordsCache = new HashMap<String, String>();
+	//	this.buttonsCache = new HashMap<String,String[]>();
 		
 		//initialize the locale
 		initialize();
@@ -139,6 +141,16 @@ public class LocaleManager {
 			stringsCache.clear();
 			keywordsCache.clear();
 
+	/*		for ( String key : locale.getConfigurationSection("buttons").getKeys(false) )
+			{
+				List<String> lore = new ArrayList<String>();
+				lore.add(locale.getString(buildPath("buttons",key,"name")).replace('^', '§'));
+				for ( String entry : locale.getStringList(buildPath("buttons",key,"lore")) )
+					lore.add(entry.replace('^', '§'));
+				buttonsCache.put(key, (String[]) lore.toArray());
+				
+			//W	stringsCache.put(key, locale.getString(buildPath("buttons",key)).replace('^', '§') );
+			}*/
 			
 			for ( String key : locale.getConfigurationSection("messages").getKeys(false) )
 			{
@@ -164,6 +176,8 @@ public class LocaleManager {
 		}
 	}
 
+//	public String getButtonName()
+//	public String getButtonLore()
 	public String getLocaleString(String messageType)
 	{
 		if ( stringsCache.containsKey(messageType) )

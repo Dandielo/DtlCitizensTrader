@@ -17,6 +17,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -57,6 +58,8 @@ public class CitizensTrader extends JavaPlugin {
 	public void onLoad()
 	{
 		//info("Loading v" + getDescription().getVersion());
+		
+		System.out.print(ChatColor.RESET.getChar());
 		
 		//loading the stdConfig
 		saveDefaultConfig();

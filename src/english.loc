@@ -2,7 +2,6 @@ lang: US_en
 keywords:     
   log:
     trader: 'Trader transaction log'
-     
 #{action} keywords
   action: 
     cleared: 'Cleared'

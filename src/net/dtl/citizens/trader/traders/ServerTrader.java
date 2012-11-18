@@ -971,7 +971,9 @@ public class ServerTrader extends Trader {
 	}
 	public double getPrice(Player player, String transaction, int slot)
 	{
-		return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+		if ( pattern != null )
+			return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+		return getSelectedItem().getRawPrice()*getSelectedItem().getAmount(slot);
 	}
 }
 

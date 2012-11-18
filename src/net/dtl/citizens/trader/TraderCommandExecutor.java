@@ -987,5 +987,43 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	}
 	
 	
-	
+	//for saveing
+	/*
+	 * 
+buttons:
+  buy-tab: 
+    name: Buy tab
+    lore: 
+    - Click to see what items you can sell to the trader
+  sell-tab: 
+    name: Sell tab
+    lore: 
+    - Click to buy items from the trader
+  price-managing: 
+    name: Price managing
+    lore: 
+    - Manage prices for items
+  global-limit-managing:
+    name: Global limit managing
+    lore: 
+    - Manage global limits for items
+  player-limit-managing:
+    name: Player limit managing
+    lore: 
+    - Manage player limits for items
+  buy-limit-managing:
+    name: Buy limit managing
+    lore: 
+    - Manage how many items you want to buy
+    - when other players will use you trader
+  return-to-managing: 
+    name: Return
+    lore: 
+    - Returns to stock managing
+  return-to-stock: 
+    name: Return
+    lore: 
+    - Return to buy other items
+    */
+	 
 }

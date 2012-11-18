@@ -1,5 +1,10 @@
 package net.dtl.citizens.trader;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;
@@ -16,6 +21,8 @@ public class ItemsConfig {
 	//locale settings
 	private String localeFile;
 	private String localeFilePath;
+	
+	private Map<String, ItemStack> buttons;
 	
 	//navigation settings
 	private ItemStack sellTab;
@@ -39,8 +46,21 @@ public class ItemsConfig {
 		localeFile = config.getString("locale.file","locale.eng");
 		localeFilePath = config.getString("locale.path","");
 		
-		manageWand = convertStringData(config.getString("manage","280"), localeFile, null);
-		settingsWand = convertStringData(config.getString("settings","340"), localeFile, null);
+		manageWand = convertStringData(config.getString("manage","280"), "", null);
+		settingsWand = convertStringData(config.getString("settings","340"), "", null);
+
+	//	System.out.print("sth else 2");
+		buttons = new HashMap<String, ItemStack>();
+		
+		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
+		{
+		//	System.out.print(key+" " +traderSection.getString(buildPath("inventory-navigation", key, "item")));
+			buttons.put(key, convertStringData( traderSection.getString(buildPath("inventory-navigation", key, "item")),
+					traderSection.getString(buildPath("inventory-navigation", key, "name"), "") ,
+					traderSection.getStringList(buildPath("inventory-navigation", key, "lore")) ));
+		}
+		
+		/*
 		
 		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"), 
 				ChatColor.RESET + "Buy stock", 
@@ -73,14 +93,14 @@ public class ItemsConfig {
 		
 		this.amountsReturn = convertStringData(traderSection.getString("inventory-navigation.amounts-return","35:14"), 
 				ChatColor.RESET + "Return", 
-				new String[] {ChatColor.GRAY + "Get back to look on other items"});
+				new String[] {ChatColor.GRAY + "Get back to look on other items"});*/
 	}
 	
 	public boolean disablePlugin() {
 		return this.disablePlugin;
 	}
 	
-	public ItemStack initializeItemWithName(CraftItemStack cis, String name, String[] lore)
+	public ItemStack initializeItemWithName(CraftItemStack cis, String name, List<String> lore)
 	{
 		//CraftItemStack cis = new CraftItemStack(item);
 		net.minecraft.server.ItemStack mis = cis.getHandle();
@@ -96,17 +116,22 @@ public class ItemsConfig {
 		 
 		NBTTagCompound d = c.getCompound("display");
 		 
+
+		if ( !name.isEmpty() )
+			d.set("Name", new NBTTagString("", name.replace('^', '§')));
+
 		if(!d.hasKey("Lore")) {
 		  d.set("Lore", new NBTTagList());
 		}
-
-		d.set("Name", new NBTTagString("", name));
 		
 		NBTTagList l = d.getList("Lore");
-		 
+		
+		
 		if ( lore != null )
 			for ( String str : lore )
-				l.add(new NBTTagString("", str));
+			//	System.out.print(str);
+				if ( !str.isEmpty() )
+					l.add(new NBTTagString("", str.replace('^', '§')));
 		 
 		d.set("Lore", l);
 		return cis;
@@ -119,25 +144,58 @@ public class ItemsConfig {
 		this.rclickInterval = traderSection.getLong("rclick-interval");
 		this.localeFile = traderSection.getString("locale.file","locale.eng");
 		this.localeFilePath = traderSection.getString("locale.path","");
-		this.manageWand = convertStringData(traderSection.getString("manager-mode-toggle","280"), localeFile, null);
-		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:5"), localeFile, null);
-		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:3"), localeFile, null);
-		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"), localeFile, null);
-		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"), localeFile, null);
-		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"), localeFile, null);
-		this.playerLimit = convertStringData(traderSection.getString("inventory-navigation.manage-player-limit","35:12"), localeFile, null);
-		this.returnItem = convertStringData(traderSection.getString("inventory-navigation.return","35"), localeFile, null);
-		this.amountsReturn = convertStringData(traderSection.getString("inventory-navigation.amounts-return","35:14"), localeFile, null);
+		
+		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
+		{
+			buttons.put(key, convertStringData( traderSection.getString(buildPath("inventory-navigation", key, "item")),
+					traderSection.getString(buildPath("inventory-navigation", key, "name"), ""), 
+					traderSection.getStringList(buildPath("inventory-navigation", key, "lore"))));
+		}
+		/*
+		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"), 
+				ChatColor.RESET + "Buy stock", 
+				new String[] {ChatColor.GRAY + "Here you can sell you'r things"});
+		
+		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:5"), 
+				ChatColor.RESET + "Sell stock", 
+				new String[] {ChatColor.GRAY + "Here you can buy things"});
+		
+		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"),
+				ChatColor.RESET + "Price managing", 
+				new String[] {ChatColor.GRAY + "Here you manage prices"});
+		
+		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"),
+				ChatColor.RESET + "Buy limit", 
+				new String[] {	ChatColor.GRAY + "Here you set how many items you want",
+								ChatColor.GRAY + "to buy from other players"});
+		
+		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"), 
+				ChatColor.RESET + "Global limit managing", 
+				new String[] {ChatColor.GRAY + "Here you manage global limits"});
+		
+		this.playerLimit = convertStringData(traderSection.getString("inventory-navigation.manage-player-limit","35:12"), 
+				ChatColor.RESET + "Player limit managing", 
+				new String[] {ChatColor.GRAY + "Here you manage player limits"});
+		
+		this.returnItem = convertStringData(traderSection.getString("inventory-navigation.return","35"), 
+				ChatColor.RESET + "Return", 
+				new String[] {ChatColor.GRAY + "Returns to stock managing mode"});
+		
+		this.amountsReturn = convertStringData(traderSection.getString("inventory-navigation.amounts-return","35:14"), 
+				ChatColor.RESET + "Return", 
+				new String[] {ChatColor.GRAY + "Get back to look on other items"});
+	}*/
 	}
 	
-	protected ItemStack convertStringData(String itemDataString, String name, String[] lore)
+	protected ItemStack convertStringData(String itemDataString, String name, List<String> lore)
 	{
 		//split the possible id/data value
 		String[] itemData = itemDataString.split(":");
 		//set the temporary id/data variables
 		int id = 0;
 		byte data = 0;
-		
+
+//		System.out.print(itemDataString + " " + name);
 		//try to get the id, data
 		try
 		{
@@ -155,7 +213,7 @@ public class ItemsConfig {
 			disablePlugin = true;
 			return null;
 		}
-				
+		//		System.out.print("sth else");
 		return initializeItemWithName(new CraftItemStack(id,1,(short) 0,data), name, lore);//new ItemStack(id,1,(short) 0,data);
 	}
 	
@@ -183,23 +241,45 @@ public class ItemsConfig {
 		switch( item )
 		{
 		case 0:
-			return sellTab;
+			return buttons.get("sell-tab");
 		case 1:
-			return buyTab;
+			return buttons.get("buy-tab");
 		case 2: 
-			return priceManaging;
+			return buttons.get("manage-price");
 		case 3: 
-			return buyLimit;
+			return buttons.get("manage-buy-limit");
 		case 4:
-			return globalLimit;
+			return buttons.get("manage-global-limit");
 		case 5:
-			return playerLimit;
+			return buttons.get("manage-player-limit");
 		case 6: 
-			return returnItem;
+			return buttons.get("return");
 		case 7:
-			return amountsReturn;
+			return buttons.get("amounts-return");
 		default: 
 			return new ItemStack(0);
 		}
+	}
+	
+	
+	public static String buildPath(String... path) {
+		StringBuilder builder = new StringBuilder();
+
+		boolean first = true;
+		char separator = '.'; //permissions.options().pathSeparator();
+
+		for ( String node : path ) 
+		{
+			if ( !first ) 
+			{
+				builder.append(separator);
+			}
+
+			builder.append(node);
+
+			first = false;
+		}
+
+		return builder.toString();
 	}
 }

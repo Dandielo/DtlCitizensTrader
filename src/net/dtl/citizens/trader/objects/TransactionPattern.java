@@ -176,7 +176,7 @@ public class TransactionPattern {
 				}
 		}
 		else
-			price = item.getPrice(slot);
+			price = item.getRawPrice();
 
 		if ( !item.hasStackPrice() && nprice == 0.0 )
 			price *= item.getAmount(slot);

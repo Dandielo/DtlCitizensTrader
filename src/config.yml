@@ -8,14 +8,47 @@ trader:
     file: 'patterns.yml'
     default: ''
   inventory-navigation: 
-    sell-tab: '35:5'
-    buy-tab: '35:3'
-    manage-price: '35:15'
-    manage-buy-limit: '35:12'
-    manage-global-limit: '35:11'
-    manage-player-limit: '35:12'
-    return: 35
-    amounts-return: '35:14'
+    sell-tab:
+      item: '35:5'
+      name: '^rSell tab'
+      lore: 
+      - ^6Click to buy items
+    buy-tab: 
+      item: '35:3'
+      name: '^rBuy tab'
+      lore: 
+      - ^6Click to see what items you can sell
+    manage-price: 
+      item: '35:15'
+      name: '^rPrice managing'
+      lore: 
+      - ^6Manage prices for items
+    manage-buy-limit: 
+      item: '35:12'
+      name: '^rBuy limit managing'
+      lore: 
+      - ^6Manage how many items you 
+      - ^6want to buy from players
+    manage-global-limit: 
+      item: '35:11'
+      name: '^rGlobal limit managing'
+      lore: 
+      - ^6Manage global limits
+    manage-player-limit:
+      item: '35:12'
+      name: '^rPlayer limit managing'
+      lore: 
+      - ^6Manage player limits
+    return: 
+      item: '35'
+      name: '^rReturn'
+      lore: 
+      - ^6Return to stock managing
+    amounts-return: 
+      item: '35:14'
+      name: '^rReturn'
+      lore: 
+      - ^6Return to buy other items
 bank: 
   tab-size: 3
   withdraw-fee: 0.0
