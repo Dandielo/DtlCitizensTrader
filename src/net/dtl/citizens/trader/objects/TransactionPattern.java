@@ -171,7 +171,6 @@ public class TransactionPattern {
 			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
-					CitizensTrader.info("price changed");
 					price = tier.getValue().getItemPrice(player, item, transation, slot, price);
 				}
 		}

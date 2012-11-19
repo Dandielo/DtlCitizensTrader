@@ -950,12 +950,14 @@ public class ServerTrader extends Trader {
 			
 			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
 			{
+				trait.getInventoryTrait().setPlayer(player);
 				switchInventory( getStartStatus(player) );
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				return true;
 			}	
 			
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
+			trait.getInventoryTrait().setPlayer(player);
 			switchInventory( getManageStartStatus(player) );
 			return true;
 		}

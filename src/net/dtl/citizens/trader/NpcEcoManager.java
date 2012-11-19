@@ -251,7 +251,7 @@ public class NpcEcoManager implements Listener {
 		if ( CitizensTrader.getDenizen() != null && 
 				CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
 			return;
-		
+
 	/*	
 		CraftItemStack cis = new CraftItemStack(Material.DIAMOND_SWORD);
 		net.minecraft.server.ItemStack mis = cis.getHandle();
@@ -296,15 +296,17 @@ public class NpcEcoManager implements Listener {
 		
 		player.getInventory().addItem(cis);*/
 
+		
+		
 		Player player = event.getClicker();
 		//used variables
 		final String playerName = player.getName();
 		NPC npc = event.getNPC();
-
-
+		
 		//EconomyNpc
 		EconomyNpc economyNpc = playerInteraction.get(playerName);
-		
+
+
 		//trader character
 		TraderCharacterTrait characterTrait = npc.getTrait(TraderCharacterTrait.class);
 		
@@ -333,6 +335,7 @@ public class NpcEcoManager implements Listener {
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
 						EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
+						characterTrait.getInventoryTrait().setPlayer(player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -343,6 +346,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
+					characterTrait.getInventoryTrait().setPlayer(player);
 					EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
 					//((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
@@ -355,6 +359,7 @@ public class NpcEcoManager implements Listener {
 			}
 			case PLAYER_TRADER:
 			{
+				characterTrait.getInventoryTrait().setPlayer(player);
 
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
 				{
@@ -396,7 +401,8 @@ public class NpcEcoManager implements Listener {
 			}
 			case MARKET_TRADER:
 			{
-
+				characterTrait.getInventoryTrait().setPlayer(player);
+				
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions") );

@@ -1,5 +1,6 @@
 package net.dtl.citizens.trader.traits;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,8 +11,13 @@ import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
 import org.bukkit.Bukkit;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -27,11 +33,17 @@ public class InventoryTrait implements InventoryHolder {
 	private List<StockItem> buyStock = new ArrayList<StockItem>();					//What the trader buys from the player 
 	private int size;
 	private String pattern;
+	private Player tempPlayer;
 	
 	public InventoryTrait(String pattern)
 	{
 		this(54); 
 		this.pattern = pattern;
+	}
+	
+	public void setPlayer(Player player)
+	{
+		tempPlayer = player;
 	}
 	
 	public InventoryTrait() {
@@ -210,10 +222,13 @@ public class InventoryTrait implements InventoryHolder {
 
 		if ( s.equals(TraderStatus.SELL) ) {
 			for( StockItem item : sellStock ) {
+				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+				price += '$';
 				
-	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
-
+	            
+	            
             	if ( item.getSlot() < 0 )
             		item.setSlot(view.firstEmpty());
             	
@@ -226,7 +241,12 @@ public class InventoryTrait implements InventoryHolder {
 		} else if ( s.equals(TraderStatus.BUY ) ) {
 			for( StockItem item : buyStock ) {
 
-	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
+				price += '$';
+				
+	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
+	            
+	           // ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            if ( item.getSlot() < 0 )
@@ -237,8 +257,12 @@ public class InventoryTrait implements InventoryHolder {
             view.setItem(view.getSize()-1, config.getItemManagement(0));//3
 		} else if ( s.equals(TraderStatus.MANAGE_SELL ) ) {
 			for( StockItem item : sellStock ) {
-
-	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+				price += '$';
+				
+	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
+	            
+	            //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            if ( item.getSlot() < 0 )
@@ -251,8 +275,12 @@ public class InventoryTrait implements InventoryHolder {
             view.setItem(view.getSize()-1, config.getItemManagement(1));//3
 		} else if ( s.equals(TraderStatus.MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
-
-	            ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
+				price += '$';
+				
+	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
+	            
+	           // ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            if ( item.getSlot() < 0 )
@@ -272,8 +300,12 @@ public class InventoryTrait implements InventoryHolder {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
 		for( StockItem item : sellStock ) {
-
-	        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+			String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+			price += '$';
+			
+            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
+            
+	     //   ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	        chk.addEnchantments(item.getItemStack().getEnchantments());
 	
 	        if ( item.getSlot() < 0 )
@@ -467,6 +499,38 @@ public class InventoryTrait implements InventoryHolder {
 			si.getAmounts().remove(si.getAmounts().size()-1);
 	}
 
-	
-	
+	//NBT tags
+	public ItemStack priceLore(CraftItemStack cis, String lore)
+	{
+		//CraftItemStack cis = new CraftItemStack(item);
+		net.minecraft.server.ItemStack mis = cis.getHandle();
+		
+		NBTTagCompound c = mis.getTag(); 
+		if ( c == null )
+			c = new NBTTagCompound();
+		mis.setTag(c);
+		
+		if(!c.hasKey("display")) {
+			c.set("display", new NBTTagCompound());
+		}
+		 
+		NBTTagCompound d = c.getCompound("display");
+		 
+		if(!d.hasKey("Lore")) {
+		  d.set("Lore", new NBTTagList());
+		}
+		
+		NBTTagList l = d.getList("Lore");
+		
+		
+		if ( lore != null )
+		//	for ( String str : lore )
+			//	System.out.print(str);
+				if ( !lore.isEmpty() )
+					l.add(new NBTTagString("", lore.replace('^', '§')));
+		 
+		d.set("Lore", l);
+		return cis;
+	}
+
 }

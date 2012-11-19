@@ -59,41 +59,6 @@ public class ItemsConfig {
 					traderSection.getString(buildPath("inventory-navigation", key, "name"), "") ,
 					traderSection.getStringList(buildPath("inventory-navigation", key, "lore")) ));
 		}
-		
-		/*
-		
-		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"), 
-				ChatColor.RESET + "Buy stock", 
-				new String[] {ChatColor.GRAY + "Here you can sell you'r things"});
-		
-		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:5"), 
-				ChatColor.RESET + "Sell stock", 
-				new String[] {ChatColor.GRAY + "Here you can buy things"});
-		
-		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"),
-				ChatColor.RESET + "Price managing", 
-				new String[] {ChatColor.GRAY + "Here you manage prices"});
-		
-		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"),
-				ChatColor.RESET + "Buy limit", 
-				new String[] {	ChatColor.GRAY + "Here you set how many items you want",
-								ChatColor.GRAY + "to buy from other players"});
-		
-		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"), 
-				ChatColor.RESET + "Global limit managing", 
-				new String[] {ChatColor.GRAY + "Here you manage global limits"});
-		
-		this.playerLimit = convertStringData(traderSection.getString("inventory-navigation.manage-player-limit","35:12"), 
-				ChatColor.RESET + "Player limit managing", 
-				new String[] {ChatColor.GRAY + "Here you manage player limits"});
-		
-		this.returnItem = convertStringData(traderSection.getString("inventory-navigation.return","35"), 
-				ChatColor.RESET + "Return", 
-				new String[] {ChatColor.GRAY + "Returns to stock managing mode"});
-		
-		this.amountsReturn = convertStringData(traderSection.getString("inventory-navigation.amounts-return","35:14"), 
-				ChatColor.RESET + "Return", 
-				new String[] {ChatColor.GRAY + "Get back to look on other items"});*/
 	}
 	
 	public boolean disablePlugin() {
@@ -151,40 +116,6 @@ public class ItemsConfig {
 					traderSection.getString(buildPath("inventory-navigation", key, "name"), ""), 
 					traderSection.getStringList(buildPath("inventory-navigation", key, "lore"))));
 		}
-		/*
-		this.buyTab = convertStringData(traderSection.getString("inventory-navigation.sell-tab","35:3"), 
-				ChatColor.RESET + "Buy stock", 
-				new String[] {ChatColor.GRAY + "Here you can sell you'r things"});
-		
-		this.sellTab = convertStringData(traderSection.getString("inventory-navigation.buy-tab","35:5"), 
-				ChatColor.RESET + "Sell stock", 
-				new String[] {ChatColor.GRAY + "Here you can buy things"});
-		
-		this.priceManaging = convertStringData(traderSection.getString("inventory-navigation.manage-price","35:15"),
-				ChatColor.RESET + "Price managing", 
-				new String[] {ChatColor.GRAY + "Here you manage prices"});
-		
-		this.buyLimit = convertStringData(traderSection.getString("inventory-navigation.manage-buy-limit","35:12"),
-				ChatColor.RESET + "Buy limit", 
-				new String[] {	ChatColor.GRAY + "Here you set how many items you want",
-								ChatColor.GRAY + "to buy from other players"});
-		
-		this.globalLimit = convertStringData(traderSection.getString("inventory-navigation.manage-global-limit","35:11"), 
-				ChatColor.RESET + "Global limit managing", 
-				new String[] {ChatColor.GRAY + "Here you manage global limits"});
-		
-		this.playerLimit = convertStringData(traderSection.getString("inventory-navigation.manage-player-limit","35:12"), 
-				ChatColor.RESET + "Player limit managing", 
-				new String[] {ChatColor.GRAY + "Here you manage player limits"});
-		
-		this.returnItem = convertStringData(traderSection.getString("inventory-navigation.return","35"), 
-				ChatColor.RESET + "Return", 
-				new String[] {ChatColor.GRAY + "Returns to stock managing mode"});
-		
-		this.amountsReturn = convertStringData(traderSection.getString("inventory-navigation.amounts-return","35:14"), 
-				ChatColor.RESET + "Return", 
-				new String[] {ChatColor.GRAY + "Get back to look on other items"});
-	}*/
 	}
 	
 	protected ItemStack convertStringData(String itemDataString, String name, List<String> lore)
