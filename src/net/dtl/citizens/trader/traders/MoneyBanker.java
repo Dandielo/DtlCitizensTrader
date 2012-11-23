@@ -1,22 +1,16 @@
 package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
-import java.util.Map;
-
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.traits.BankTrait;
-import net.milkbowl.vault.economy.Economy;
 
 public class MoneyBanker extends Banker {
 	

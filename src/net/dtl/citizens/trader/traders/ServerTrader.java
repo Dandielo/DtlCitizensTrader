@@ -10,16 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
-import net.dtl.citizens.trader.traders.Banker.BankStatus;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class ServerTrader extends Trader {
@@ -74,7 +70,7 @@ public class ServerTrader extends Trader {
 					else
 					{
 						switchInventory(TraderStatus.SELL);	
-						p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:sell") );
+					//	p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:sell") );
 					}
 				} 
 				else 
@@ -87,7 +83,7 @@ public class ServerTrader extends Trader {
 					else
 					{
 						switchInventory(TraderStatus.BUY);	
-						p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:buy") );
+					//	p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:buy") );
 					}	
 				}
 			} 
@@ -108,7 +104,7 @@ public class ServerTrader extends Trader {
 					}
 					else 
 					{
-						if ( getClickedSlot() == slot ) 
+					//	if ( getClickedSlot() == slot ) 
 						{
 							double price = getPrice(p, "sell");
 							//checks
@@ -132,7 +128,7 @@ public class ServerTrader extends Trader {
 							else
 							{
 								//send message
-								p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
+							//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 
 								addSelectedToInventory(p,0);
@@ -154,11 +150,11 @@ public class ServerTrader extends Trader {
 							}
 							
 						}
-						else
+					//	else
 						{
-							p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
-							p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
-							setClickedSlot(slot);
+					//		p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
+					//		p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
+					//		setClickedSlot(slot);
 						}
 					}
 				}
@@ -170,7 +166,7 @@ public class ServerTrader extends Trader {
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) 
 				{
 					
-					if ( getClickedSlot() == slot ) 
+				//	if ( getClickedSlot() == slot ) 
 					{
 
 						double price = getPrice(p, "sell", slot);
@@ -194,7 +190,7 @@ public class ServerTrader extends Trader {
 						else
 						{
 							//send message
-							p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
+					//		p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 							
 							/* *
 							 * better version of Inventory.addItem();
@@ -217,12 +213,12 @@ public class ServerTrader extends Trader {
 							
 						} 
 					}
-					else 
+				//	else 
 					{
 						
-						p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell", slot)) ) );
-						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
-						setClickedSlot(slot);
+				//		p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell", slot)) ) );
+				//		p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
+				//		setClickedSlot(slot);
 					}
 				}
 			} 
@@ -233,7 +229,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
 					
 
-					p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")) ) );
+				//	p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")) ) );
 				}
 			}
 			setInventoryClicked(true);
@@ -263,7 +259,7 @@ public class ServerTrader extends Trader {
 						}
 						else
 						{
-							p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+						//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 							
 							updateBuyLimits(p.getName(), scale);
@@ -284,7 +280,7 @@ public class ServerTrader extends Trader {
 					} 
 					else
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+					//	p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						setClickedSlot(slot);
 					}
@@ -324,7 +320,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+					//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 						
 						//limits update
@@ -350,7 +346,7 @@ public class ServerTrader extends Trader {
 					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
 						 !event.getCurrentItem().getType().equals(Material.AIR) ) 
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+				//		p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
 						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
 						
 						setClickedSlot(slot);
@@ -922,13 +918,14 @@ public class ServerTrader extends Trader {
 
 	@Override
 	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
-		
+//System.out.print("ac");
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissions.has(player, "dtl.trader.bypass.creative") )
 		{
 			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
 			return false;
 		}
+		//System.out.print("acc");
 		
 		if ( player.getItemInHand().getTypeId() == config.getManageWand().getTypeId() )
 		{
@@ -947,21 +944,31 @@ public class ServerTrader extends Trader {
 					return false;
 				}
 			}
+			//System.out.print("ac4");
 			
 			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
 			{
+				//System.out.print("a");
 				trait.getInventoryTrait().setPlayer(player);
+				//System.out.print("a");
 				switchInventory( getStartStatus(player) );
+				//System.out.print("a");
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				return true;
 			}	
-			
+
+			//System.out.print("bs");
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
+
+			//System.out.print("bs");
 			trait.getInventoryTrait().setPlayer(player);
+			//System.out.print("bs");
 			switchInventory( getManageStartStatus(player) );
+			//System.out.print("bs");
 			return true;
 		}
 
+		//System.out.print("bs2");
 		player.openInventory(getInventory());
 		return true;
 	}/**/

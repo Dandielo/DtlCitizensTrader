@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -17,14 +15,16 @@ public class TransactionPattern {
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
 	TreeMap<String, TransactionPattern> patternTiers;
-	double multiplier;
+	HashMap<String, Double> multiplier;
 	
 	public TransactionPattern()
 	{
 		patternItems = new HashMap<String, List<StockItem>>();
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
 		patternTiers = new TreeMap<String, TransactionPattern>();
-		multiplier = 1.0;
+		multiplier = new HashMap<String, Double>();
+		multiplier.put("sell", 1.00);
+		multiplier.put("buy", 1.00);
 	}
 	
 	public void loadPrices(ConfigurationSection prices)
@@ -38,8 +38,16 @@ public class TransactionPattern {
 			{
 				for ( String item : prices.getConfigurationSection("all").getKeys(false) )
 				{
-					sell.put(item, prices.getDouble(transaction+"/"+item) );
-					buy.put(item, prices.getDouble(transaction+"/"+item) );
+					if ( item.equals("multiplier") )
+					{
+						multiplier.put("sell", prices.getDouble(transaction+"/"+item));
+						multiplier.put("buy", prices.getDouble(transaction+"/"+item));
+					}
+					else
+					{
+						sell.put(item, prices.getDouble(transaction+"/"+item) );
+						buy.put(item, prices.getDouble(transaction+"/"+item) );
+					}
 				}
 			}
 			else
@@ -47,7 +55,12 @@ public class TransactionPattern {
 			{
 				for ( String item : prices.getConfigurationSection("sell").getKeys(false) )
 				{
-					sell.put(item, prices.getDouble(transaction+"/"+item) );
+					if ( item.equals("multiplier") )
+					{
+						multiplier.put("sell", prices.getDouble(transaction+"/"+item));
+					}
+					else
+						sell.put(item, prices.getDouble(transaction+"/"+item) );
 				}
 			}
 			else
@@ -55,13 +68,13 @@ public class TransactionPattern {
 			{
 				for ( String item : prices.getConfigurationSection("buy").getKeys(false) )
 				{
-					buy.put(item, prices.getDouble(transaction+"/"+item) );
+					if ( item.equals("multiplier") )
+					{
+						multiplier.put("buy", prices.getDouble(transaction+"/"+item));
+					}
+					else
+						buy.put(item, prices.getDouble(transaction+"/"+item) );
 				}
-			}
-			else
-			if ( transaction.equals("multiplier") )
-			{
-				multiplier = prices.getDouble(transaction);
 			}
 			else
 			if ( transaction.startsWith("tier") )
@@ -180,7 +193,7 @@ public class TransactionPattern {
 		if ( !item.hasStackPrice() && nprice == 0.0 )
 			price *= item.getAmount(slot);
 		
-		price *= multiplier;
+		price *= multiplier.get(transation);
 		
 		return price;
 	}

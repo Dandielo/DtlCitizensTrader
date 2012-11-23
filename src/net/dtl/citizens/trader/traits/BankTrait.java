@@ -1,14 +1,9 @@
 package net.dtl.citizens.trader.traits;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.objects.StockItem;
 
 public class BankTrait {
 	//config variable

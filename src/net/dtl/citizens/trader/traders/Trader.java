@@ -4,10 +4,7 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
-
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -29,9 +26,6 @@ import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.traits.InventoryTrait;
 import net.dtl.citizens.trader.traits.TraderTrait;
 import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
 
 public abstract class Trader implements EconomyNpc {
@@ -448,7 +442,7 @@ public abstract class Trader implements EconomyNpc {
 		if ( TraderStatus.hasManageMode(traderStatus) )
 			InventoryTrait.setManagerInventoryWith(inventory, item);
 		else
-			InventoryTrait.setInventoryWith(inventory, item);
+			traderStock.setInventoryWith(inventory, item);
 		selectedItem = item;
 	}
 	

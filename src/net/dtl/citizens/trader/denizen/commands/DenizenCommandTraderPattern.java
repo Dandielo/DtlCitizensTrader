@@ -1,21 +1,13 @@
 package net.dtl.citizens.trader.denizen.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.entity.CraftChicken;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
-
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTraderCommand;
-import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderTransaction.Action;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.ServerTrader;
 import net.dtl.citizens.trader.traders.Trader;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.minecraft.server.Packet103SetSlot;
 
 public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 

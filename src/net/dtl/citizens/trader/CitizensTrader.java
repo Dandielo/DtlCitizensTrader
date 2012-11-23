@@ -7,8 +7,6 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTraderCommand;
-import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderPattern;
-import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderTransaction;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerSoldTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerTransactionTrigger;

@@ -289,6 +289,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					return createTrader(player, args);
 				}
+				if ( args[0].equals("reload") )
+				{
+					
+					sender.sendMessage( locale.getLocaleString("reload-config") );
+					CitizensTrader.getInstance().getItemConfig().reloadConfig();
+					CitizensTrader.getInstance().reloadConfig();
+					CitizensTrader.getLocaleManager().reload();
+					
+					return true;
+				}
 				
 				return false;
 			}
@@ -360,7 +370,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	{
 		CitizensTrader.getPatternsManager().reload();
 		
-		for ( NPC npc : this.traderManager.getAllServerTraders() )
+		for ( NPC npc : TraderCommandExecutor.traderManager.getAllServerTraders() )
 		{
 			npc.getTrait(TraderCharacterTrait.class).getInventoryTrait().reloadStock();
 		}
@@ -373,7 +383,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		trader.getTraderStock().removePattern();
 		trader.getTraderConfig().setPattern("");
 		trader.getInventory().clear();
-	//	trader.switchInventory(trader.getTraderStatus());
 		player.sendMessage( locale.getLocaleString("removed-pattern") );
 		
 		return true;

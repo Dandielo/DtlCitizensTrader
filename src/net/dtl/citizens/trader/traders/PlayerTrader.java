@@ -14,7 +14,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.StockItem;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.dtl.citizens.trader.traits.TraderTrait;
 
 public class PlayerTrader extends Trader {

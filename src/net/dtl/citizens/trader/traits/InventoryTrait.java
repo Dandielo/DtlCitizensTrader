@@ -80,6 +80,7 @@ public class InventoryTrait implements InventoryHolder {
 		return true;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void load(DataKey data, Class<? extends StockItem> itemClass) throws NPCLoadException {
 		if ( data.keyExists("sell") ) {
 			for ( String item :  (List<String>) data.getRaw("sell") ) {
@@ -181,7 +182,7 @@ public class InventoryTrait implements InventoryHolder {
 	}
 	
 	public void save(DataKey data) {
-	//	System.out.print(data);
+	//	//System.out.print(data);
 		
         List<String> sellList = new ArrayList<String>();
 		if ( !sellStock.isEmpty() )
@@ -222,8 +223,18 @@ public class InventoryTrait implements InventoryHolder {
 
 		if ( s.equals(TraderStatus.SELL) ) {
 			for( StockItem item : sellStock ) {
-				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-				price += '$';
+				String price = "";
+				
+				if ( patterns.getPattern(pattern) != null )
+				{
+					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+					price += '$';
+				} 
+				else
+				{
+					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
+					price += '$';
+				}
 				
 	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -241,8 +252,18 @@ public class InventoryTrait implements InventoryHolder {
 		} else if ( s.equals(TraderStatus.BUY ) ) {
 			for( StockItem item : buyStock ) {
 
-				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
-				price += '$';
+				String price = "";
+				
+				if ( patterns.getPattern(pattern) != null )
+				{
+					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
+					price += '$';
+				} 
+				else
+				{
+					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
+					price += '$';
+				}
 				
 	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
 	            
@@ -257,8 +278,18 @@ public class InventoryTrait implements InventoryHolder {
             view.setItem(view.getSize()-1, config.getItemManagement(0));//3
 		} else if ( s.equals(TraderStatus.MANAGE_SELL ) ) {
 			for( StockItem item : sellStock ) {
-				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-				price += '$';
+				String price = "";
+				
+				if ( patterns.getPattern(pattern) != null )
+				{
+					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+					price += '$';
+				} 
+				else
+				{
+					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
+					price += '$';
+				}
 				
 	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
 	            
@@ -275,8 +306,18 @@ public class InventoryTrait implements InventoryHolder {
             view.setItem(view.getSize()-1, config.getItemManagement(1));//3
 		} else if ( s.equals(TraderStatus.MANAGE_BUY ) ) {
 			for( StockItem item : buyStock ) {
-				String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
-				price += '$';
+				String price = "";
+				
+				if ( patterns.getPattern(pattern) != null )
+				{
+					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
+					price += '$';
+				} 
+				else
+				{
+					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
+					price += '$';
+				}
 				
 	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
 	            
@@ -298,18 +339,32 @@ public class InventoryTrait implements InventoryHolder {
 	
 	public Inventory inventoryView(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
-		
+
+		//System.out.print(18);
 		for( StockItem item : sellStock ) {
-			String price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-			price += '$';
-			
+			String price = "";
+	
+			if ( patterns.getPattern(pattern) != null )
+			{
+				price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
+				price += '$';
+			} 
+			else
+			{
+				price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
+				price += '$';
+			}
+			//System.out.print(1);
             ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
-            
+
+			//System.out.print(12);
 	     //   ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	        chk.addEnchantments(item.getItemStack().getEnchantments());
-	
+
+			//System.out.print(13);
 	        if ( item.getSlot() < 0 )
         		item.setSlot(view.firstEmpty());
+			//System.out.print(14);
 	        view.setItem(item.getSlot(),chk);
         }
 
@@ -451,13 +506,30 @@ public class InventoryTrait implements InventoryHolder {
 		inv.setItem(inv.getSize()-1, config.getItemManagement(7));
 	}
 	
-	public static void setInventoryWith(Inventory inv,StockItem si) {
+	public void setInventoryWith(Inventory inv,StockItem si) {
 		int i = 0;
 		for ( Integer amount : si.getAmounts() ) {
-			ItemStack is = si.getItemStack().clone();
-			is.setAmount(amount);
+			
+			String price = "";
+			
+			if ( patterns.getPattern(pattern) != null )
+			{
+				price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, si, "sell", 0, 0.0)*amount);
+				price += '$';
+			} 
+			else
+			{
+				price = "^7" + new DecimalFormat("#.##").format(si.getPrice()*amount);
+				price += '$';
+			}
+			
+			ItemStack chk = priceLore(new CraftItemStack(si.getItemStack().getType(),si.getItemStack().getAmount(),si.getItemStack().getDurability()), price);
+
+			
+		//	ItemStack is = si.getItemStack().clone();
+			chk.setAmount(amount);
 			if ( si.getLimitSystem().checkLimit("", i) )
-				inv.setItem(i++,is);
+				inv.setItem(i++,chk);
 		}
 		inv.setItem(inv.getSize()-1, config.getItemManagement(7));
 	}
@@ -525,7 +597,7 @@ public class InventoryTrait implements InventoryHolder {
 		
 		if ( lore != null )
 		//	for ( String str : lore )
-			//	System.out.print(str);
+			//	//System.out.print(str);
 				if ( !lore.isEmpty() )
 					l.add(new NBTTagString("", lore.replace('^', '§')));
 		 

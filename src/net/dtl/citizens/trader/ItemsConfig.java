@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,7 +8,6 @@ import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;
 
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -23,16 +21,6 @@ public class ItemsConfig {
 	private String localeFilePath;
 	
 	private Map<String, ItemStack> buttons;
-	
-	//navigation settings
-	private ItemStack sellTab;
-	private ItemStack buyTab;
-	private ItemStack priceManaging;
-	private ItemStack buyLimit;
-	private ItemStack globalLimit;
-	private ItemStack playerLimit;
-	private ItemStack returnItem;
-	private ItemStack amountsReturn;
 	
 	//general settings
 	private long rclickInterval;

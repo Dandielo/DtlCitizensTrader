@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader.backends;
 
-import java.io.File;
 import java.util.Map;
 
 import net.dtl.citizens.trader.objects.BankAccount;

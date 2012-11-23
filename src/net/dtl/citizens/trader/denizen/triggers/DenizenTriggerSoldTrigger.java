@@ -30,7 +30,7 @@ public class DenizenTriggerSoldTrigger extends AbstractDenizenTraderTrigger impl
 			return;
 
 		/* Shortcut to the ScriptHelper */
-		ScriptHelper sE = plugin.getScriptEngine().helper;
+	//	ScriptHelper sE = plugin.getScriptEngine().helper;
 
 		DenizenNPC theDenizen = plugin.getDenizenNPCRegistry().getDenizen(event.getNpc());
 		Player player = (Player) event.getParticipant();

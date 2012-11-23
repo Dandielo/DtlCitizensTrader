@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.Trait;
 import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
@@ -19,17 +17,9 @@ import net.dtl.citizens.trader.traders.PlayerBanker;
 import net.dtl.citizens.trader.traders.PlayerTrader;
 import net.dtl.citizens.trader.traders.ServerTrader;
 import net.dtl.citizens.trader.traders.Trader;
-import net.dtl.citizens.trader.traders.Banker.BankStatus;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagInt;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
-
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +28,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class NpcEcoManager implements Listener {
 	//trader configs
@@ -256,10 +245,10 @@ public class NpcEcoManager implements Listener {
 		CraftItemStack cis = new CraftItemStack(Material.DIAMOND_SWORD);
 		net.minecraft.server.ItemStack mis = cis.getHandle();
 		
-		System.out.print(mis);
+		//System.out.print(mis);
 		
 		NBTTagCompound c = mis.getTag(); 
-		System.out.print(c);
+		//System.out.print(c);
 		if ( c == null )
 			c = new NBTTagCompound();
 		mis.setTag(c);
@@ -316,7 +305,6 @@ public class NpcEcoManager implements Listener {
 			{
 				if ( economyNpc != null )
 				{
-
 					if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
 					{
 						player.sendMessage( locale.getLocaleString("lacks-permissions") );
@@ -325,6 +313,8 @@ public class NpcEcoManager implements Listener {
 					
 					if ( economyNpc.getNpcId() == npc.getId() )
 					{
+						//System.out.print("asd");
+						characterTrait.getInventoryTrait().setPlayer(player);
 						economyNpc.onRightClick(player, characterTrait, npc);
 						
 						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
@@ -333,7 +323,8 @@ public class NpcEcoManager implements Listener {
 					else
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
-						
+
+						//System.out.print("asd");
 						EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
 						characterTrait.getInventoryTrait().setPlayer(player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
@@ -346,6 +337,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
+					//System.out.print("asd2");
 					characterTrait.getInventoryTrait().setPlayer(player);
 					EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
 					//((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
@@ -539,16 +531,6 @@ public class NpcEcoManager implements Listener {
 		}
 		
 	}
-	
-/*	@EventHandler
-	public void onNpcSpawn(net.citizensnpcs.api.event.NPCSpawnEvent event)
-	{
-		for ( Trait trait : event.getNPC().getTraits() )
-			System.out.print(trait.getName());
-	}*/
-	
-	
-	
 	
 	
 }

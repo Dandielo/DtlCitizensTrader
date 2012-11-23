@@ -4,6 +4,7 @@ wands:
   manage: 280
   settings: 340
 trader: 
+  
   patterns:
     file: 'patterns.yml'
     default: ''

@@ -1,11 +1,7 @@
 package net.dtl.citizens.trader.backends.file;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.BankTab;

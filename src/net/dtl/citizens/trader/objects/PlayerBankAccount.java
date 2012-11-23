@@ -3,12 +3,12 @@ package net.dtl.citizens.trader.objects;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.traders.Banker.BankTabType;
 
-import org.bukkit.configuration.file.FileConfiguration;
+//import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 public class PlayerBankAccount extends BankAccount {
 	//super
-	private FileConfiguration config = CitizensTrader.getInstance().getConfig();
+	//private FileConfiguration config = CitizensTrader.getInstance().getConfig();
 	
 	public PlayerBankAccount(String accountName, boolean save) {
 		//super
