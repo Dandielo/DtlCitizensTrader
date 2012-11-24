@@ -226,18 +226,17 @@ public class InventoryTrait implements InventoryHolder {
 				String price = "";
 				
 				if ( patterns.getPattern(pattern) != null )
-				{
-					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-					price += '$';
-				} 
+					price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
 				else
-				{
-					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
-					price += '$';
-				}
+					price = new DecimalFormat("#.##").format(item.getPrice());
 				
-	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
-	            chk.addEnchantments(item.getItemStack().getEnchantments());
+				List<String> lore = new ArrayList<String>();
+				for ( String line : config.getPriceLore("sell") )
+					lore.add(line.replace("{price}", price));
+				
+				
+				ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability()), lore);
+
 	            
 	            
             	if ( item.getSlot() < 0 )
@@ -255,18 +254,17 @@ public class InventoryTrait implements InventoryHolder {
 				String price = "";
 				
 				if ( patterns.getPattern(pattern) != null )
-				{
-					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
-					price += '$';
-				} 
+					price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
 				else
-				{
-					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
-					price += '$';
-				}
+					price = new DecimalFormat("#.##").format(item.getPrice());
 				
-	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
-	            
+				List<String> lore = new ArrayList<String>();
+				for ( String line : config.getPriceLore("sell") )
+					lore.add(line.replace("{price}", price));
+				
+				
+				ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability()), lore);
+
 	           // ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -281,18 +279,17 @@ public class InventoryTrait implements InventoryHolder {
 				String price = "";
 				
 				if ( patterns.getPattern(pattern) != null )
-				{
-					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-					price += '$';
-				} 
+					price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
 				else
-				{
-					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
-					price += '$';
-				}
+					price = new DecimalFormat("#.##").format(item.getPrice());
 				
-	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
-	            
+				List<String> lore = new ArrayList<String>();
+				for ( String line : config.getPriceLore("sell") )
+					lore.add(line.replace("{price}", price));
+				
+				
+				ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability()), lore);
+
 	            //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -309,18 +306,17 @@ public class InventoryTrait implements InventoryHolder {
 				String price = "";
 				
 				if ( patterns.getPattern(pattern) != null )
-				{
-					price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
-					price += '$';
-				} 
+					price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "buy", 0, 0.0));
 				else
-				{
-					price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
-					price += '$';
-				}
+					price = new DecimalFormat("#.##").format(item.getPrice());
 				
-	            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
-	            
+				List<String> lore = new ArrayList<String>();
+				for ( String line : config.getPriceLore("sell") )
+					lore.add(line.replace("{price}", price));
+				
+				
+				ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability()), lore);
+
 	           // ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -343,19 +339,18 @@ public class InventoryTrait implements InventoryHolder {
 		//System.out.print(18);
 		for( StockItem item : sellStock ) {
 			String price = "";
-	
+			
 			if ( patterns.getPattern(pattern) != null )
-			{
-				price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
-				price += '$';
-			} 
+				price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, item, "sell", 0, 0.0));
 			else
-			{
-				price = "^7" + new DecimalFormat("#.##").format(item.getPrice());
-				price += '$';
-			}
-			//System.out.print(1);
-            ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability()), price);
+				price = new DecimalFormat("#.##").format(item.getPrice());
+			
+			List<String> lore = new ArrayList<String>();
+			for ( String line : config.getPriceLore("sell") )
+				lore.add(line.replace("{price}", price));
+			
+			
+			ItemStack chk = priceLore(new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability()), lore);
 
 			//System.out.print(12);
 	     //   ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
@@ -513,17 +508,16 @@ public class InventoryTrait implements InventoryHolder {
 			String price = "";
 			
 			if ( patterns.getPattern(pattern) != null )
-			{
-				price = "^7" + new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, si, "sell", 0, 0.0)*amount);
-				price += '$';
-			} 
+				price = new DecimalFormat("#.##").format(patterns.getPattern(pattern).getItemPrice(tempPlayer, si, "sell", 0, 0.0)*amount);
 			else
-			{
-				price = "^7" + new DecimalFormat("#.##").format(si.getPrice()*amount);
-				price += '$';
-			}
+				price = new DecimalFormat("#.##").format(si.getPrice()*amount);
 			
-			ItemStack chk = priceLore(new CraftItemStack(si.getItemStack().getType(),si.getItemStack().getAmount(),si.getItemStack().getDurability()), price);
+			List<String> lore = new ArrayList<String>();
+			for ( String line : config.getPriceLore("sell") )
+				lore.add(line.replace("{price}", price));
+			
+			
+			ItemStack chk = priceLore(new CraftItemStack(si.getItemStack().getType(),si.getItemStack().getAmount(),si.getItemStack().getDurability()), lore);
 
 			
 		//	ItemStack is = si.getItemStack().clone();
@@ -572,7 +566,7 @@ public class InventoryTrait implements InventoryHolder {
 	}
 
 	//NBT tags
-	public ItemStack priceLore(CraftItemStack cis, String lore)
+	public ItemStack priceLore(CraftItemStack cis, List<String> lore)
 	{
 		//CraftItemStack cis = new CraftItemStack(item);
 		net.minecraft.server.ItemStack mis = cis.getHandle();
@@ -596,10 +590,9 @@ public class InventoryTrait implements InventoryHolder {
 		
 		
 		if ( lore != null )
-		//	for ( String str : lore )
-			//	//System.out.print(str);
-				if ( !lore.isEmpty() )
-					l.add(new NBTTagString("", lore.replace('^', '§')));
+			for ( String str : lore )
+				if ( !str.isEmpty() )
+					l.add(new NBTTagString("", str.replace('^', '§')));
 		 
 		d.set("Lore", l);
 		return cis;

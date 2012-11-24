@@ -21,6 +21,8 @@ public class ItemsConfig {
 	private String localeFilePath;
 	
 	private Map<String, ItemStack> buttons;
+	private Map<String, List<String>> pricesLore;
+	
 	
 	//general settings
 	private long rclickInterval;
@@ -40,6 +42,11 @@ public class ItemsConfig {
 	//	System.out.print("sth else 2");
 		buttons = new HashMap<String, ItemStack>();
 		
+		pricesLore = new HashMap<String,List<String>>();
+		
+		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("buy"));
+		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("sell"));
+		
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
 		//	System.out.print(key+" " +traderSection.getString(buildPath("inventory-navigation", key, "item")));
@@ -51,6 +58,11 @@ public class ItemsConfig {
 	
 	public boolean disablePlugin() {
 		return this.disablePlugin;
+	}
+	
+	public List<String> getPriceLore(String t)
+	{
+		return pricesLore.get(t);
 	}
 	
 	public ItemStack initializeItemWithName(CraftItemStack cis, String name, List<String> lore)

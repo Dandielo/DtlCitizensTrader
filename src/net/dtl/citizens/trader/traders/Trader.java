@@ -4,7 +4,10 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -26,6 +29,9 @@ import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.traits.InventoryTrait;
 import net.dtl.citizens.trader.traits.TraderTrait;
 import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
 
 public abstract class Trader implements EconomyNpc {
@@ -446,11 +452,112 @@ public abstract class Trader implements EconomyNpc {
 		selectedItem = item;
 	}
 	
+	public static void removeDescriptions(Inventory inventory)
+	{		
+		/*CraftItemStack i = new CraftItemStack(Material.APPLE);
+		NBTTagCompound t = i.getHandle().getTag();
+		
+		if ( t == null )
+			t = new NBTTagCompound();
+		
+		NBTTagList list = new NBTTagList();
+		list.add(new NBTTagString("other", "A description1"));
+		list.add(new NBTTagString("other", "A description2"));
+		t.set("Lore", list);
+		
+		i.getHandle().setTag(t);
+		
+		addDescription(i, new String[] { "Item price", "Stack price" });*/
+		
+		for ( ItemStack item : inventory.getContents() )
+		{
+			if ( item != null )
+			{
+				net.minecraft.server.ItemStack c = ((CraftItemStack)item).getHandle();
+				NBTTagCompound tc = c.getTag();
+				
+				if ( tc != null )
+				{
+					if ( tc.hasKey("display") )
+					{
+						NBTTagCompound d = tc.getCompound("display");
+						
+						if ( d != null )
+						{
+							if ( d.hasKey("Lore") )
+							{
+								
+								NBTTagList oldList = d.getList("Lore");
+								NBTTagList newList = new NBTTagList();
+								
+								for ( int j = 0 ; j < oldList.size() ; ++j )
+									if ( !oldList.get(j).getName().equals("dtl_trader") && !oldList.get(j).getName().isEmpty() )
+										newList.add(oldList.get(j));
+								
+								d.set("Lore", newList);
+							}
+						}
+					}
+				}
+			}
+		}		
+	}
 	
-	/* * ===============================================================================================
-	 * Limits (recoding) 
-	 * 
-	 */
+	public static void addDescription(CraftItemStack item, List<String> lore)
+	{
+		net.minecraft.server.ItemStack c = item.getHandle();
+		NBTTagCompound tag = c.getTag();
+
+		if ( tag == null )
+			tag = new NBTTagCompound();
+		c.setTag(tag);
+		
+		if(!tag.hasKey("display")) 
+			tag.set("display", new NBTTagCompound());
+		
+		NBTTagCompound d = tag.getCompound("display");
+		
+		if ( !d.hasKey("Lore") )
+			d.set("Lore", new NBTTagList());
+		
+		NBTTagList list = d.getList("Lore");
+			
+		for ( String line : lore )
+			list.add(new NBTTagString("dtl_trader", line.replace('^', '§')));
+
+	}
+	
+	public static void resetDescription(CraftItemStack item)
+	{
+		net.minecraft.server.ItemStack c = item.getHandle();
+		NBTTagCompound tag = c.getTag();
+
+		if ( tag == null )
+			tag = new NBTTagCompound();
+		c.setTag(tag);
+		
+		if(!tag.hasKey("display")) 
+			tag.set("display", new NBTTagCompound());
+		
+		NBTTagCompound d = tag.getCompound("display");
+		
+		if ( !d.hasKey("Lore") )
+			d.set("Lore", new NBTTagList());
+		
+
+		NBTTagList list = d.getList("Lore");
+		NBTTagList newList = new NBTTagList();
+		
+		for ( int j = 0 ; j < list.size() ; ++j )
+			if ( !list.get(j).getName().equals("dtl_trader") && !list.get(j).getName().isEmpty() )
+				newList.add(list.get(j));
+		
+		d.set("Lore", newList);
+
+	}
+	
+	
+	//===============================================================================================
 	
 	public boolean checkBuyLimits(Player p, int scale) {
 		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0,scale) ) {

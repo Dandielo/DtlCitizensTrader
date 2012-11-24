@@ -4,7 +4,10 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import net.aufdemrand.denizen.activities.core.TaskGoal;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -18,16 +21,23 @@ import net.dtl.citizens.trader.traders.PlayerTrader;
 import net.dtl.citizens.trader.traders.ServerTrader;
 import net.dtl.citizens.trader.traders.Trader;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.inventory.ItemStack;
 
 public class NpcEcoManager implements Listener {
 	//trader configs
@@ -36,6 +46,7 @@ public class NpcEcoManager implements Listener {
 	//managers
 	protected static LocaleManager locale = CitizensTrader.getLocaleManager();
 	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
+	private Timer timer;
 	
 	//EconomyNpc
 	private HashMap<String,EconomyNpc> playerInteraction;
@@ -47,8 +58,22 @@ public class NpcEcoManager implements Listener {
 		playerInteraction = new HashMap<String, EconomyNpc>();
 		//initialize the economyNpcList
 		isEconomyNpc = new ArrayList<NPC>();
+		initTimer();
 	}
-
+	
+	public void end() {
+		timer.cancel();
+	}
+	
+	public void initTimer() {
+		if ( timer != null ) 
+		{
+			timer.cancel();
+		}
+		
+		timer = new Timer("DtlDescription-Cleaner");
+	}
+	
 	//check Npc
 	public boolean isEconomyNpc(NPC npc) {
 		return this.isEconomyNpc.contains(npc);
@@ -163,11 +188,12 @@ public class NpcEcoManager implements Listener {
 	
 	
 	@EventHandler
-	public void onInventoryClose(InventoryCloseEvent event) {
-		Player player = (Player) event.getPlayer();
+	public void onInventoryClose(final InventoryCloseEvent event) {
+		final Player player = (Player) event.getPlayer();
 		
 		
 		EconomyNpc economyNpc = playerInteraction.get(player.getName());
+		//System.out.print(event.getPlayer().getInventory().getSize());
 		
 		if ( economyNpc == null )
 			return;
@@ -188,9 +214,18 @@ public class NpcEcoManager implements Listener {
 			
 			return;
 		}
+		
 		//remove the interaction
 		playerInteraction.remove(player.getName());
 		
+		TimerTask task = new TimerTask() {
+			@Override
+			public void run() {
+				if (  playerInteraction.get(player.getName()) == null )
+					Trader.removeDescriptions(event.getPlayer().getInventory());
+			}
+		};
+		timer.schedule(task, 1000);
 			
 	}
 	
@@ -532,5 +567,9 @@ public class NpcEcoManager implements Listener {
 		
 	}
 	
-	
+	@EventHandler
+	public void onLogin(PlayerLoginEvent event)
+	{
+		Trader.removeDescriptions(event.getPlayer().getInventory());
+	}
 }

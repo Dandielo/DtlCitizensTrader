@@ -1,13 +1,17 @@
 package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
@@ -17,6 +21,9 @@ import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traits.TraderTrait;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
 public class ServerTrader extends Trader {
 
@@ -261,9 +268,10 @@ public class ServerTrader extends Trader {
 						{
 						//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
-							
+							//TODO
 							updateBuyLimits(p.getName(), scale);
 
+							Trader.resetDescription((CraftItemStack) event.getCurrentItem());
 							removeFromInventory(event.getCurrentItem(), event);
 							
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
@@ -327,6 +335,8 @@ public class ServerTrader extends Trader {
 						updateBuyLimits(p.getName(),scale);
 						
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
+						
+						Trader.resetDescription((CraftItemStack) event.getCurrentItem());
 						
 						//inventory cleanup
 						removeFromInventory(event.getCurrentItem(),event);
@@ -969,10 +979,39 @@ public class ServerTrader extends Trader {
 		}
 
 		//System.out.print("bs2");
+		Trader.removeDescriptions(player.getInventory());
+		if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
+			loadDescriptions(player.getInventory());	
+		
 		player.openInventory(getInventory());
 		return true;
 	}/**/
 
+	public void loadDescriptions(Inventory inventory)
+	{
+		for ( int i = 0 ; i < inventory.getSize() ; ++i )
+		{
+			ItemStack item = inventory.getItem(i);
+			
+			
+			if ( item != null )
+			{
+				StockItem stockItem = this.getTraderStock().getItem(item, TraderStatus.BUY, false, false);
+				
+				if ( stockItem != null )
+				{
+					int scale = item.getAmount() / stockItem.getAmount(); 
+
+					List<String> lore = new ArrayList<String>(); ;
+					for ( String l : config.getPriceLore("buy") )
+						lore.add(l.replace("{unit}", stockItem.getPrice()+"").replace("{stack}", stockItem.getPrice()*scale+""));
+					
+					if ( scale > 0 )
+						Trader.addDescription((CraftItemStack) item, lore);				
+				}
+			}
+		}
+	}
 	
 	public double getPrice(Player player, String transaction)
 	{

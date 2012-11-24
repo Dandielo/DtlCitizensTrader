@@ -4,10 +4,17 @@ wands:
   manage: 280
   settings: 340
 trader: 
-  
   patterns:
     file: 'patterns.yml'
     default: ''
+  prices-lore:
+    buy:
+    - '^7Unit price: ^6{unit}'
+    - '^7Stack price: ^6{stack}'
+    - ^7Double click to sell
+    sell:
+    - '^7Price: ^6{price}'
+    - ^7Click to buy
   inventory-navigation: 
     sell-tab:
       item: '35:5'
