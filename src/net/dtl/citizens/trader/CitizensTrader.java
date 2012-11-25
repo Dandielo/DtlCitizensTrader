@@ -12,6 +12,7 @@ import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerSoldTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerTransactionTrigger;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.Trader;
+import net.dtl.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
@@ -25,6 +26,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.massivecraft.factions.P;
 import com.palmergames.bukkit.towny.Towny;
 
+
 public class CitizensTrader extends JavaPlugin {
 	//citizens trader logger
 	protected final static Logger logger = Logger.getLogger("Minecraft");
@@ -35,6 +37,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static Towny towny;
 	private static P factions;
 	private static Denizen denizen;
+	private static Wallets wallets;
 	
 	//CitizensTrader Managers
 	private static PermissionsManager permsManager;
@@ -175,6 +178,12 @@ public class CitizensTrader extends JavaPlugin {
 		{
 			info("Hooked into " + factions.getDescription().getFullName());
 		}
+		
+		wallets = (Wallets) Bukkit.getPluginManager().getPlugin("dtlWallets");
+		if ( wallets != null )
+		{
+			info("Hooked into " + wallets.getDescription().getFullName());
+		}
 	}
 	
 	public void initializeDenizenCommands()
@@ -267,6 +276,11 @@ public class CitizensTrader extends JavaPlugin {
 	public Economy getEconomy()
 	{
 		return economy;
+	}
+	
+	public static boolean dtlWalletsEnabled()
+	{
+		return wallets != null;
 	}
 	
 	//get configs	
