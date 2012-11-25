@@ -11,7 +11,6 @@ import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerSoldTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerTransactionTrigger;
 import net.dtl.citizens.trader.traders.Banker;
-import net.dtl.citizens.trader.traders.Trader;
 import net.dtl.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;

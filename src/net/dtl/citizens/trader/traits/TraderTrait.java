@@ -15,78 +15,7 @@ import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 public class TraderTrait {
 
-	public enum WalletType {
-		OWNER_WALLET, NPC_WALLET, BANK, INFINITE //Future CLAN_WALLET
-, SIMPLE_CLANS, TOWNY, FACTIONS
-;
-
-		public static WalletType getTypeByName(String n) {
-			if ( n.equalsIgnoreCase("owner") ) 
-				return WalletType.OWNER_WALLET;
-			if ( n.equalsIgnoreCase("owner-wallet") ) 
-				return WalletType.OWNER_WALLET;
-			else if ( n.equalsIgnoreCase("npc") )
-				return WalletType.NPC_WALLET;
-			else if ( n.equalsIgnoreCase("npc-wallet") )
-				return WalletType.NPC_WALLET;
-			else if ( n.equalsIgnoreCase("bank") )
-				return WalletType.BANK;
-			else if ( n.equalsIgnoreCase("infinite") )
-				return WalletType.INFINITE;
-			else if ( n.equalsIgnoreCase("server-infinite") )
-				return WalletType.INFINITE;
-			else if ( n.startsWith("simple-clans") )
-				return WalletType.SIMPLE_CLANS;
-			else if ( n.startsWith("towny") )
-				return WalletType.TOWNY;
-			else if ( n.startsWith("factions") )
-				return WalletType.FACTIONS;
-			return null;
-		}
-		
-		public String toString() {
-			switch( this )
-			{
-			case OWNER_WALLET:
-				return "owner";
-			case NPC_WALLET:
-				return "npc";
-			case BANK:
-				return "bank";
-			case INFINITE:
-				return "infinite";
-			case SIMPLE_CLANS:
-				return "simle-clans";
-			case TOWNY:
-				return "towny";
-			case FACTIONS:
-				return "factions";
-			default: 
-				break;
-			}
-			return "";
-		}
-		
-		public static String toString(WalletType w) {
-			switch( w ) {
-			case OWNER_WALLET:
-				return "owner";
-			case NPC_WALLET:
-				return "npc";
-			case BANK:
-				return "bank";
-			case INFINITE:
-				return "infinite";
-			case SIMPLE_CLANS:
-				return "simple-clans";
-			case TOWNY:
-				return "towny";
-			case FACTIONS:
-				return "factions";
-			}
-			return "";
-		}
-	}
+	/*
 	
 	
 
@@ -196,18 +125,8 @@ public class TraderTrait {
 	public boolean sellTransaction(Player pSelling, double price) {
 		return transaction(pSelling.getName(), owner, true, price);
 	}
-/*	public boolean sellTransaction(String pBuying, String pSelling, double price) {
-		if ( w.withdraw(pBuying, price, true) ) {
-			w.deposit(pSelling, price, false);
-			return true;
-		}
-		return false;
-	}*/
 	
 	public void load(DataKey data) throws NPCLoadException {
-		/*if ( data.keyExists("trader-type") ) {
-			tType = TraderType.getTypeByName(data.getString("trader-type", "server"));
-		}*/
 		if ( data.keyExists("wallet-type") ) {
 			String walletType = data.getString("wallet-type", "infinite");
 			if ( walletType.startsWith("simple-clans") )
@@ -306,5 +225,5 @@ public class TraderTrait {
 	public void setPattern(String string) {
 		pattern = string;
 	}
-
+*/
 }
