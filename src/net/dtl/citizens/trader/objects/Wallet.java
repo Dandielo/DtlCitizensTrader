@@ -246,11 +246,9 @@ public class Wallet {
 				return true;
 			}
 		} else {
-			{
-				if ( economy.getBalance(p) >= m ) {
-					economy.withdrawPlayer(p, m);
-					return true;
-				}
+			if ( economy.getBalance(p) >= m ) {
+				economy.withdrawPlayer(p, m);
+				return true;
 			}
 		}
 		return false;
