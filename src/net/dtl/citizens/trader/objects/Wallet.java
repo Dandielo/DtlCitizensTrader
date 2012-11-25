@@ -27,7 +27,7 @@ public class Wallet {
 	//create a wallet with the givet Type
 	public Wallet(WalletType t) {
 		type = t;
-		economy = CitizensTrader.getInstance().getEconomy();
+		economy = CitizensTrader.getEconomy();
 	}
 	
 	// get/set wallet type
@@ -55,7 +55,7 @@ public class Wallet {
 	{
 		return town.getName();
 	}
-	public void townyDeposit(double m)
+	private void townyDeposit(double m)
 	{
 		try
 		{
@@ -68,6 +68,20 @@ public class Wallet {
 		{
 			e.printStackTrace();
 		}
+	}
+	private boolean townyWithdraw(double m)
+	{
+		try 
+		{
+			if ( town.getHoldingBalance() >= m )
+				town.setBalance(town.getHoldingBalance()-m);
+			return town.getHoldingBalance() >= m;
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		return false;
 	}
 	
 	//SimpleClans
@@ -114,144 +128,52 @@ public class Wallet {
 	{
 		switch( type )
 		{
-			case OWNER: economy.depositPlayer(p, m); break;
-			case BANK: economy.bankDeposit(bank, m); break;
-			case NPC: money += m; break;
-			case SIMPLE_CLANS: clan.setBalance(clan.getBalance()+m); break;
-			case FACTIONS: Econ.deposit(faction.getAccountId(), m); break;
-			case TOWNY: townyDeposit(m); break;
+			case OWNER: 
+				economy.depositPlayer(p, m); 
+				break;
+			case BANK: 
+				economy.bankDeposit(bank, m); 
+				break;
+			case NPC: 
+				money += m;
+				break;
+			case SIMPLE_CLANS: 
+				clan.setBalance(clan.getBalance()+m); 
+				break;
+			case FACTIONS: 
+				Econ.deposit(faction.getAccountId(), m); 
+				break;
+			case TOWNY: 
+				townyDeposit(m);
+				break;
 			default:
 				break;
 		}
-		
-		/*
-		if ( type.equals(WalletType.OWNER) )
-			economy.depositPlayer(p, m);
-		else 
-		if ( type.equals(WalletType.NPC) )
-			money += m;
-		else 
-		if ( type.equals(WalletType.INFINITE) ) 
-			return;
-		else
-		if ( type.equals(WalletType.BANK) )
-			economy.bankDeposit(bank, m);
-		else
-		if ( type.equals(WalletType.SIMPLE_CLANS) )
-		{
-			clan.setBalance(clan.getBalance()+m);
-			//clan.deposit(m, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
-		}
-		else
-		if ( type.equals(WalletType.FACTIONS) )
-		{
-			Econ.deposit(faction.getAccountId(), m);
-		}
-		else
-		if ( type.equals(WalletType.TOWNY) )
-		{
-			if ( CitizensTrader.getTowny() != null )
-			{
-				try {
-					double bankcap = TownySettings.getTownBankCap();
-					if (bankcap > 0) 
-						if (m + town.getHoldingBalance() > bankcap)
-							return;
-					
-					town.setBalance(town.getHoldingBalance()+m, "Trader income");
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}*/
 	}
-	public boolean withdraw(String p, double m, boolean isOwner) {
-		//is the given player the trader owner?
-		if ( isOwner ) 
+	
+	public boolean withdraw(String p, double m) 
+	{
+		switch( type )
 		{
-			if ( type.equals(WalletType.OWNER_WALLET) )
-			{
-				//have we enough money?
-				if ( economy.getBalance(p) >= m ) 
-				{
-					economy.withdrawPlayer(p, m);
-					return true;
-				}
-			} 
-			else 
-			if ( type.equals(WalletType.NPC_WALLET) ) 
-			{
-				//have we enough money?
-				if ( money >= m ) {
-					money -= m;
-					return true;
-				}
-			} 
-			else
-			if ( type.equals(WalletType.BANK) )
-			{
-				//have we enough money?
-				if ( economy.bankBalance(bank).balance >= m )
-				{
-					economy.bankWithdraw(bank, m);
-					return true;
-				}
-			}
-			else
-			if ( type.equals(WalletType.SIMPLE_CLANS) )
-			{
-				if ( clan.getBalance() >= m )
-				{
-
+			case OWNER:
+				return economy.withdrawPlayer(p, m).transactionSuccess();
+			case BANK: 
+				return economy.bankWithdraw(bank, m).transactionSuccess();
+			case NPC: 
+				if ( money >= m ) 
+					money -= m; 
+				return money >= m;
+			case FACTIONS:
+				return Econ.withdraw(faction.getAccountId(), m);
+			case SIMPLE_CLANS:
+				if ( clan.getBalance() >= m ) 
 					clan.setBalance(clan.getBalance()-m);
-				//	clan.withdraw(money, CitizensTrader.getSimpleClans().getClanManager().getClanPlayer(p));
-					return true;
-				}
-			}
-			else
-			if ( type.equals(WalletType.TOWNY) )
-			{
-				if ( CitizensTrader.getTowny() != null )
-				{
-					try {
-						if ( town.getHoldingBalance() >= m )
-						{
-							town.setBalance(town.getHoldingBalance()-m);
-							return true;
-						}
-					} catch (Exception e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-			}
-			else
-			if ( type.equals(WalletType.FACTIONS) )
-			{
-				if ( CitizensTrader.getFactions() != null )
-				{
-					if ( Econ.getBalance(faction.getAccountId()) >= m )
-					{
-						/*((EconomyParticipator)faction).;
-						faction.money -= m;*/
-						Econ.withdraw(faction.getAccountId(), m);
-						
-						return true;
-					}
-				}
-			}
-			else 
-			if ( type.equals(WalletType.INFINITE) ) 
-			{
+				return clan.getBalance() >= m;
+			case TOWNY:
+				return townyWithdraw(m);
+			default:
 				return true;
-			}
-		} else {
-			if ( economy.getBalance(p) >= m ) {
-				economy.withdrawPlayer(p, m);
-				return true;
-			}
 		}
-		return false;
 	}
 
 	//Deprecated functions
@@ -259,7 +181,6 @@ public class Wallet {
 	public void setEconomy(Economy e) {
 		economy = e;
 	}
-	
 	
 	public enum WalletType
 	{
