@@ -4,117 +4,87 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizens.trader.objects.StockItem;
-import net.dtl.citizens.trader.traits.BankTrait;
-import net.dtl.citizens.trader.traits.InventoryTrait;
-import net.dtl.citizens.trader.traits.TraderTrait;
+import net.dtl.citizens.trader.parts.TraderConfigPart;
+import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class TraderCharacterTrait extends Trait {
+	private EcoNpcType type = EcoNpcType.SERVER_TRADER;
 	
-//	private CitizensTrader plugin;
-	private TraderType type = TraderType.SERVER_TRADER;
+	private TraderConfigPart config;
+	private TraderStockPart stock;
 
 	public TraderCharacterTrait() {
 		super("trader");
-
-		this.traderTrait = new TraderTrait();
-		this.inventoryTrait = new InventoryTrait();
-		this.bankTrait = new BankTrait();
+	//	this.traderTrait = new TraderTrait();
+	//	this.inventoryTrait = new InventoryPart();
+	//	this.bankTrait = new BankTrait();
 	}
 	
 	@Override
 	public void onSpawn() {
 		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
-
-	}
-
-	private TraderTrait traderTrait;
-	private InventoryTrait inventoryTrait;
-	private BankTrait bankTrait;
-	
-	
-	public InventoryTrait getInventoryTrait() {
-		return inventoryTrait;
 	}
 	
-	public TraderTrait getTraderTrait() {
-		return traderTrait;
+	public TraderStockPart getStock() {
+		return stock;
 	}
 	
+	public TraderConfigPart getConfig() {
+		return config;
+	}
+	/*
 	public BankTrait getBankTrait() {
 		return bankTrait;
-	}
+	}*/
 	
-	public TraderType getTraderType()
+	//The EcoNpc's type
+	public EcoNpcType getType()
 	{
 		return type;
 	}
-	
-	public void setTraderType(TraderType type)
+	public void setType(EcoNpcType type)
 	{
 		this.type = type;
-		traderTrait.setTraderType(type);
 	}
 	
 	@Override
 	public void load(DataKey data) throws NPCLoadException {
-		if ( data.keyExists("type") ) {
-			type = TraderType.getTypeByName(data.getString("type"));
-			traderTrait.setTraderType(type);
-		}
+		String type = data.getString("type", "trader");
 		
-		if ( type.isBanker() )
+		if ( type.equals("trader") )
 		{
-			this.bankTrait.load(data);
+			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
+			config.load(data);
+			stock.load(data);
 		}
-		else if ( type.isTrader() )
+		else
+		if ( type.equals("banker") )
 		{
-			this.traderTrait.load(data);
-			this.inventoryTrait.load(data, StockItem.class);
-			traderTrait.setTraderType(type);
-			if ( type.equals(TraderType.SERVER_TRADER) )
-			{
-				if ( !traderTrait.getPattern().isEmpty() )
-					this.inventoryTrait.setPattern(traderTrait.getPattern());
-			}
-			else
-			if ( type.equals(TraderType.MARKET_TRADER) )
-			{
-				if ( !traderTrait.getPattern().isEmpty() )
-				{
-					this.inventoryTrait.setPattern(traderTrait.getPattern());
-					this.inventoryTrait.linkItems();
-				}
-				
-			}
+			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
 		}
-		
 	}
 
 	@Override
 	public void save(DataKey data) {
-		data.setString("type", TraderType.toString(type));
-		
 		if ( type.isBanker() )
 		{
-			this.bankTrait.save(data);
+			data.setString("type", "banker");
+			data.setString("banker", type.toString());
 		}
 		else if ( type.isTrader() )
 		{
-			this.inventoryTrait.save(data);
-			this.traderTrait.save(data);
+			data.setString("type", "trader");
+			data.setString("trader", type.toString());
+			
+			config.save(data);
+			stock.save(data);
 		}
 	}
 	
 	
-	
-	
-	
-	
-	
-	public enum TraderType {
-		PLAYER_TRADER, SERVER_TRADER, AUCTIONHOUSE, GUILD_BANK, CUSTOM, PLAYER_BANK, MONEY_BANK, MARKET_TRADER
-;
+	public enum EcoNpcType {
+		PLAYER_TRADER, SERVER_TRADER, MARKET_TRADER, PRIVATE_BANKER, MONEY_BANKER;
+		
 		public boolean isTrader()
 		{
 			if ( this.equals(PLAYER_TRADER) 
@@ -125,25 +95,23 @@ public class TraderCharacterTrait extends Trait {
 		}
 		public boolean isBanker()
 		{
-			if ( this.equals(PLAYER_BANK) 
-					|| this.equals(GUILD_BANK)
-					|| this.equals(MONEY_BANK) )
+			if ( this.equals(PRIVATE_BANKER) 
+					|| this.equals(MONEY_BANKER) )
 				return true;
 			return false;
 		}
-		public static TraderType getTypeByName(String n) {
+		
+		public static EcoNpcType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("server") ) 
-				return TraderType.SERVER_TRADER;
+				return EcoNpcType.SERVER_TRADER;
 			else if ( n.equalsIgnoreCase("player") )
-				return TraderType.PLAYER_TRADER;
+				return EcoNpcType.PLAYER_TRADER;
 			else if ( n.equalsIgnoreCase("market") )
-				return TraderType.MARKET_TRADER;
-			else if ( n.equalsIgnoreCase("auctionhouse") )
-				return TraderType.AUCTIONHOUSE;
-			else if ( n.equalsIgnoreCase("player-bank") )
-				return TraderType.PLAYER_BANK;
-			else if ( n.equalsIgnoreCase("money-bank") )
-				return TraderType.MONEY_BANK;
+				return EcoNpcType.MARKET_TRADER;
+			else if ( n.equalsIgnoreCase("private") )
+				return EcoNpcType.PRIVATE_BANKER;
+			else if ( n.equalsIgnoreCase("money") )
+				return EcoNpcType.MONEY_BANKER;
 			return null;
 		}
 		
@@ -156,31 +124,10 @@ public class TraderCharacterTrait extends Trait {
 				return "server";
 			case MARKET_TRADER:
 				return "market";
-			case AUCTIONHOUSE:
-				return "auctionhouse";
-			case PLAYER_BANK:
-				return "player-bank";
-			case MONEY_BANK:
-				return "money-bank";
-			default:
-				break;
-			}
-			return "";
-		}
-		public static String toString(TraderType w) {
-			switch( w ) {
-			case PLAYER_TRADER:
-				return "player";
-			case SERVER_TRADER:
-				return "server";
-			case MARKET_TRADER:
-				return "market";
-			case AUCTIONHOUSE:
-				return "auctionhouse";
-			case PLAYER_BANK:
-				return "player-bank";
-			case MONEY_BANK:
-				return "money-bank";
+			case PRIVATE_BANKER:
+				return "private";
+			case MONEY_BANKER:
+				return "money";
 			default:
 				break;
 			}

@@ -23,12 +23,11 @@ import net.dtl.citizens.trader.LoggingManager;
 import net.dtl.citizens.trader.PatternsManager;
 import net.dtl.citizens.trader.PermissionsManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.Wallet;
-import net.dtl.citizens.trader.traits.InventoryTrait;
-import net.dtl.citizens.trader.traits.TraderTrait;
-import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
+import net.dtl.citizens.trader.parts.TraderConfigPart;
+import net.dtl.citizens.trader.parts.TraderStockPart;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;
@@ -36,282 +35,133 @@ import net.minecraft.server.NBTTagString;
 
 public abstract class Trader implements EconomyNpc {
 	
-	protected static PermissionsManager permissions;
-	protected static LoggingManager logging;
-	protected static PatternsManager patterns;
+	//Managers
+	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
+	protected static LoggingManager loggingManager = CitizensTrader.getLoggingManager();
+	protected static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
+	protected LocaleManager localeManager = CitizensTrader.getLocaleManager();
 	
-	//Trader status
-	public enum TraderStatus {
-		SELL, BUY, BANK, BANK_SETTINGS, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE, BANK_REOPEN;
+	//Configuration
+	protected static ItemsConfig itemsConfig = CitizensTrader.getInstance().getItemConfig();
 	
-		/* *
-		 * ManagerMode condition
-		 * 
-		 */
-		public static TraderStatus getByName(String string)
-		{
-			if ( string.equals("sell") )
-				return SELL;
-			if ( string.equals("buy") )
-				return BUY;
-			return SELL;
-		}
-		public static boolean hasManageMode(TraderStatus status) {
-			if ( !status.equals(SELL) 
-				&& !status.equals(SELL_AMOUNT)  
-				&& !status.equals(BUY) 
-				&& !status.equals(BANK)
-				&& !status.equals(BANK_SETTINGS) 
-				&& !status.equals(BANK_REOPEN) )
-				return true;
-			return false;
-		}
-		public static boolean hasSettingsMode(TraderStatus status)
-		{	
-			if ( status.equals(BANK_SETTINGS) )
-				return true;
-			return false;
-		}
-	}
-
-	//trader config
-	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
+	//Trader parts
+	private TraderStockPart traderStock;
+	private TraderConfigPart traderConfig;
 	
-	/* *
-	 * Npc Traits
-	 * @traderConfig - currently not edit-able in-game
-	 * 
-	 */
-	protected LocaleManager locale;
-	
-	private InventoryTrait traderStock;
+	//Trader info
 	private TraderStatus traderStatus;
-	private TraderTrait traderConfig;
-	
-	
-	//the npc id we are using here
+	private Inventory inventory;
+	private Player player;
 	private NPC npc;
 	
-	/* *
-	 * NpcInventory 
-	 * 
-	 */
-	private Inventory inventory;
-	
-	/* *
-	 * ItemManagement
-	 * 
-	 */
+	//Trader runtime 
 	private StockItem selectedItem = null; 
-	
-	/* *
-	 * TempVariables 
-	 * 
-	 */
 	private Boolean inventoryClicked = true;
-	private Integer slotClicked = -1;
-	
-	/* *
-	 * Constructor 
-	 * @tradderNpc The NPC object from the trader
-	 * @traderConfiguragion the TraderConfiguration
-	 * 
-	 */
-	public Trader(NPC traderNpc,TraderTrait traderConfiguragion) {
-		patterns = CitizensTrader.getPatternsManager();
-		permissions = CitizensTrader.getPermissionsManager();
-		logging = CitizensTrader.getLoggingManager();
-		// Assign the configuration for later changes
-		traderConfig = traderConfiguragion;
-		
-		//locale
-		locale = CitizensTrader.getLocaleManager();
+	private Integer lastSlot = -1;
+
+
+	public Trader(TraderCharacterTrait trait, NPC npc, Player player) {
 		
 		// Initialize the trader
-		traderStock = traderNpc.getTrait(TraderCharacterTrait.class).getInventoryTrait();
-		inventory = traderStock.inventoryView(54, traderNpc.getName() + " trader");
+		traderStock = trait.getStock();
+		traderConfig = trait.getConfig();
+		
+		//init info
+		this.player = player;
+		this.npc = npc;
+
+		inventory = traderStock.getInventory("sell", player);
 		traderStatus = TraderStatus.SELL;
-		
-		npc = traderNpc;
-		
-		/* *
-		 * SetAn Economy plugin to the trader's wallet
-		 */
-		traderConfig.getWallet().setEconomy(CitizensTrader.getInstance().getEconomy());
 	}
 	
+	@Override
 	public int getNpcId() {
 		return npc.getId();
 	}
-	
+
+	@Override
 	public NPC getNpc() {
 		return npc;		
 	}
 	
-	/*
-	 * Trader configuration
-	 */
-	public TraderTrait getTraderConfig() {
-		return this.traderConfig;
+	//traders config
+	public TraderConfigPart getConfig() {
+		return traderConfig;
 	}
 	
-	/* * ===============================================================================================
-	 * SelectedItem Management
-	 * 
-	 */
-	public boolean equalsSelected(ItemStack itemToCompare,boolean durability,boolean amount) {
-		/* *
-		 * reset the equality state
-		 * 
-		 */
+	//Operations on selected item pool
+	public boolean equalsSelected(ItemStack itemToCompare, boolean durability, boolean amount) {
 		boolean equal = false;
 		
-		if ( itemToCompare.getType().equals( selectedItem.getItemStack().getType() ) 
-				&& itemToCompare.getData().equals( selectedItem.getItemStack().getData() ) ) {
-			/* *
-			 * id and data check passed
-			 * 
-			 */
+		if ( itemToCompare.getType().equals( selectedItem.getItemStack().getType() ) ) 
+		{
 			equal = true;
 			
-			/* *
-			 * check durability
-			 * 
-			 */
 			if ( durability ) 
 				equal = itemToCompare.getDurability() >= selectedItem.getItemStack().getDurability();
-				
-			/* *
-			 * check amount if durability passed
-			 * 
-			 */
+			else
+				equal = itemToCompare.getData().equals( selectedItem.getItemStack().getData() );
+		
 			if ( amount && equal )
-				equal =  itemToCompare.getAmount() == selectedItem.getItemStack().getAmount();
-			
-			/* *
-			 * return the value
-			 * 
-			 */
+				equal = itemToCompare.getAmount() == selectedItem.getItemStack().getAmount();
 			return equal;
 		}
-		
-		/* *
-		 * 100% this items are different ;)
-		 * 
-		 */
 		return false;
 	}
 
-	/* *
-	 * Select the given item
-	 * 
-	 */
 	public final Trader selectItem(StockItem i) {
 		selectedItem = i;
 		return this;
 	}
-	
-	/* * 
-	 * Select item by slot and status
-	 * 
-	 */
 	public final Trader selectItem(int slot,TraderStatus status) {
 		selectedItem = traderStock.getItem(slot, status);
-		
-	//	if ( !TraderStatus.hasManageMode(status) )
-	//		if ( selectedItem != null && !selectedItem.getLimitSystem().checkLimit("", 0) )
-	//			selectedItem = null;
 		return this;
 	} 
-
-	/* *
-	 * Select item by equality to the given item stack
-	 * checking the status, durability and amount
-	 * 
-	 */
-	public final Trader selectItem(ItemStack item,TraderStatus status,boolean dura,boolean amount) {
+	public final Trader selectItem(ItemStack item, TraderStatus status, boolean dura, boolean amount) {
 		selectedItem = traderStock.getItem(item, status, dura, amount);
 		return this;
 	}
 	
-	/* *
-	 * if there is currently any item selected
-	 * 
-	 */
 	public final boolean hasSelectedItem() {
 		return selectedItem != null;
 	}
-	
-	/* *
-	 * returns the selectedItem
-	 * 
-	 */
 	public final StockItem getSelectedItem() {
 		return selectedItem;
 	}
-	
-	/* * ===============================================================================================
-	 * Inventory Management
-	 * 
-	 */
-	
-	/* *
-	 * Checking if the given slot is a inventory management slot
-	 * 
-	 */
+
+	//Inventory operations
 	public boolean isManagementSlot(int slot, int range) {
 		return slot >= ( getInventory().getSize() - range );
 	}
-	
-	/* *
-	 * Checking if the inventory has enough space to save the selected amount
-	 * 
-	 */
+
 	public final boolean inventoryHasPlace(Player player, int slot) {
 		int amountToAdd = selectedItem.getAmount(slot);
 		return this.inventoryHasPlaceAmount(player, amountToAdd);
 	}
-	
 	public final boolean inventoryHasPlaceAmount(Player player,int amount) {
 		PlayerInventory inventory = player.getInventory();
 		int amountToAdd = amount;
-		/* *
-		 * get all stacks with the same type (hmm... does it compares the data values?)
-		 * 
-		 */
-		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
+		
+		//get all item stack with the same type
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() )
+		{
 			
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
+			{
 				
-				/* *
-				 * if the added amount isn't over the limit
-				 *
-				 */
 				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
 					return true;
 				
-				/* *
-				 * if the added amount is less than 64 (so we are not adding a whole stack)
-				 * 
-				 * lowering the amount to add
-				 *
-				 */ 
 				if ( item.getAmount() < 64 ) {
 					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
 				}
 				
-				/* *
-				 * if there is nothing left just return
-				 * 
-				 */
 				if ( amountToAdd <= 0 )
 					return true;
 			}
 		}
-		
-		/* *
-		 * if any amount left to add check if there is place in the inventory
-		 */
+
+		//if we still ahve some items to add, is there an empty slot for them?
 		if ( inventory.firstEmpty() < inventory.getSize() 
 				&& inventory.firstEmpty() >= 0 ) {
 			return true;
@@ -320,121 +170,70 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	public final boolean addSelectedToInventory(Player player, int slot) {
-
-		int amountToAdd = selectedItem.getAmount(slot);
-		return addAmountToInventory(player, amountToAdd);
-		
+		return addAmountToInventory(player, selectedItem.getAmount(slot));
 	}
-	
-	/**
-	 * SelfWritten Inventory.addItem() function for a work around with a bukkit inventory function bug
-	 * 
-	 */
 	public final boolean addAmountToInventory(Player player, int amount) {
 		PlayerInventory inventory = player.getInventory();
 		int amountToAdd = amount;
-		
-		/* *
-		 * get all stacks with the same type (hmm... does it compares the data values?)
-		 * 
-		 */
-		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
-			
-			/* *
-			 * Checking items by durability, so if you buy a diax sword it wont buy like it would be broken :P
-			 * 
-			 */
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
-				
-				/* *
-				 * if the added amount isn't over the limit
-				 * 
-				 * setting the new amount in the player's inventory 
-				 *
-				 */
+
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) 
+		{
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
+			{
+				//add amount to an item in the inventory, its done
 				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
 					item.setAmount( item.getAmount() + amountToAdd );
 					return true;
 				} 
 				
-				/* *
-				 * if the added amount is less than 64 (so we are not adding a whole stack)
-				 * 
-				 * maximizing the first item stack amount, and lowering the amount to add
-				 *
-				 */ 
+				//add amount to an item in the inventory, but we still got some left
 				if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
 					amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
 					item.setAmount(selectedItem.getItemStack().getMaxStackSize());
 				}
-				
-				/* *
-				 * if there is nothing left just return
-				 * 
-				 */
+					
+				//nothing left
 				if ( amountToAdd <= 0 )
 					return true;
 			}
 		}
 		
-		/* *
-		 * Stack's are maximized and there is some amount left
-		 *  
-		 *  Checking if there is any free space in the inventory (just for care)
-		 *  
-		 */
+		//create new stack
 		if ( inventory.firstEmpty() < inventory.getSize() 
 				&& inventory.firstEmpty() >= 0 ) {
 			
-			/* *
-			 * creating a ItemStack clone from the existing saving
-			 * and changing amount's
-			 * 
-			 */
+			//new stack
 			ItemStack is = selectedItem.getItemStack().clone();
 			is.setAmount(amountToAdd);
 			
-			/* *
-			 * setting the item into a free slot
-			 * don't using the addItem() bacause it's a workaround for this function
-			 * 
-			 */
+			//set the item info the inv
 			inventory.setItem(inventory.firstEmpty(), is);
 			return true;
 		}
 		
-		/* *
-		 * Item couldn't be added to the inventory
-		 * 
-		 */
+		//could not be added to inventory
 		return false;
 	}
 	
-	/* *
-	 * remove item from inventory, a function to avoid large code declarations
-	 * 
-	 */
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
-		if ( item.getAmount() != selectedItem.getAmount() ) {
+		if ( item.getAmount() != selectedItem.getAmount() ) 
+		{
 			if ( item.getAmount() % selectedItem.getAmount() == 0 ) 
 				event.setCurrentItem(new ItemStack(Material.AIR));
 			else 
 				item.setAmount( item.getAmount() % selectedItem.getAmount() );
-		} else {
+		}
+		else
+		{
 			event.setCurrentItem(new ItemStack(Material.AIR));
 		}
-		
 		return false;
 	}
 	
-	/* *
-	 * Switching the inventory to the parsed status
-	 * reseting the values with the given status
-	 * 
-	 */
+	//switching inventory = change items in it
 	public final void switchInventory(TraderStatus status) {
 		inventory.clear();
-		traderStock.inventoryView(inventory, status);
+		traderStock.inventoryView(inventory, status, player);
 		reset(status);
 	}
 	
@@ -446,7 +245,7 @@ public abstract class Trader implements EconomyNpc {
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
 		if ( TraderStatus.hasManageMode(traderStatus) )
-			InventoryTrait.setManagerInventoryWith(inventory, item);
+			TraderStockPart.setManagerInventoryWith(inventory, item);
 		else
 			traderStock.setInventoryWith(inventory, item);
 		selectedItem = item;
@@ -722,7 +521,7 @@ public abstract class Trader implements EconomyNpc {
 	public final boolean equalsTraderStatus(TraderStatus status) {
 		return traderStatus.equals(status);
 	}
-	public final boolean equalsTraderType(TraderType type) {
+	public final boolean equalsTraderType(EcoNpcType type) {
 		return traderConfig.getTraderType().equals(type);
 	}
 	public final boolean equalsWalletType(WalletType type) {
@@ -753,7 +552,7 @@ public abstract class Trader implements EconomyNpc {
 	/* *
 	 * get the traders inventory stock
 	 */
-	public final InventoryTrait getTraderStock() {
+	public final TraderStockPart getTraderStock() {
 		return traderStock;
 	}
 	
@@ -839,4 +638,52 @@ public abstract class Trader implements EconomyNpc {
 	{
 		logging.playerLog(owner, npc.getName(), locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
 	}
+	
+	
+	
+	//Trader status enumeration
+	public enum TraderStatus {
+		SELL, BUY, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE;
+	
+		public boolean isManaging()
+		{
+			switch( this )
+			{
+				case SELL:
+				case BUY:
+				case SELL_AMOUNT:
+					return false;
+				default:
+					return true;
+			}
+		}
+		
+		@Override
+		public String toString()
+		{
+			switch( this )
+			{
+				case SELL:
+				case MANAGE_SELL:
+					return "sell";
+				case BUY:
+				case MANAGE_BUY:
+					return "buy";
+				default:
+					return "";
+			}
+		}
+		
+		public static TraderStatus getByName(String string)
+		{
+			if ( string.equals("sell") )
+				return SELL;
+			if ( string.equals("buy") )
+				return BUY;
+			return SELL;
+		}
+	}
+
+
+	
 }

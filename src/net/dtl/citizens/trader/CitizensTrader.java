@@ -51,7 +51,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static FileConfiguration stdConfig;
 	
 	//Economy plugin
-	private Economy economy;
+	private static Economy economy;
 	
 	
 	//On plugin load
@@ -272,7 +272,7 @@ public class CitizensTrader extends JavaPlugin {
 		return patternsManager;
 	}
 	
-	public Economy getEconomy()
+	public static Economy getEconomy()
 	{
 		return economy;
 	}

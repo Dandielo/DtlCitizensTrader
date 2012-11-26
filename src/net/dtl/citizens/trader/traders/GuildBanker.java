@@ -5,8 +5,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.parts.BankTrait;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.dtl.citizens.trader.traits.BankTrait;
 
 public class GuildBanker extends Banker {
 

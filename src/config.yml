@@ -8,11 +8,11 @@ trader:
     file: 'patterns.yml'
     default: ''
   prices-lore:
-    buy:
+    player-inventory:
     - '^7Unit price: ^6{unit}'
     - '^7Stack price: ^6{stack}'
     - ^7Double click to sell
-    sell:
+    trader-inventory:
     - '^7Price: ^6{price}'
     - ^7Click to buy
   inventory-navigation: 

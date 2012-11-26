@@ -3,7 +3,7 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
-import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 
@@ -235,15 +235,15 @@ public class BankerCommandExecutor implements CommandExecutor {
 	}
 	
 
-	public TraderType getDefaultBankerType(Player player) {
+	public EcoNpcType getDefaultBankerType(Player player) {
 		
 		//server trader as default
 		if ( permsManager.has(player, "dtl.banker.types.player") )
-			return TraderType.PLAYER_BANK;
+			return EcoNpcType.PLAYER_BANK;
 		else
 		//next default is player trader 
 		if ( permsManager.has(player, "dtl.banker.types.money") )
-			return TraderType.MONEY_BANK;
+			return EcoNpcType.MONEY_BANK;
 		
 		//else return no default
 		return null;
@@ -260,7 +260,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		
-		TraderType type = TraderType.getTypeByName(typeString+"-bank");
+		EcoNpcType type = EcoNpcType.getTypeByName(typeString+"-bank");
 		
 		//show current trader type
 		if ( type == null )
@@ -287,7 +287,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		String traderName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
-		TraderType traderType = getDefaultBankerType(player);
+		EcoNpcType traderType = getDefaultBankerType(player);
 		
 		
 		//lets fetch the argument list
@@ -302,7 +302,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;
 				}
-				traderType = TraderType.getTypeByName(arg.substring(2)+ "-bank");
+				traderType = EcoNpcType.getTypeByName(arg.substring(2)+ "-bank");
 				if ( traderType == null || traderType.isTrader() )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );

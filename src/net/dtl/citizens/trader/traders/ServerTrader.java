@@ -20,7 +20,7 @@ import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
-import net.dtl.citizens.trader.traits.TraderTrait;
+import net.dtl.citizens.trader.parts.TraderTrait;
 import net.minecraft.server.NBTTagCompound;
 import net.minecraft.server.NBTTagList;
 import net.minecraft.server.NBTTagString;

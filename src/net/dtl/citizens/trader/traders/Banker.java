@@ -18,8 +18,8 @@ import net.dtl.citizens.trader.PermissionsManager;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.BankTab;
+import net.dtl.citizens.trader.parts.BankTrait;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.dtl.citizens.trader.traits.BankTrait;
 import net.milkbowl.vault.economy.Economy;
 
 abstract public class Banker implements EconomyNpc {

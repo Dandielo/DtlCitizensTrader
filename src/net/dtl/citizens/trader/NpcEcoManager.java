@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.activities.core.TaskGoal;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.MarketTrader;
@@ -84,7 +84,7 @@ public class NpcEcoManager implements Listener {
 		List<NPC> traders=  new ArrayList<NPC>();
 		for ( NPC npc : isEconomyNpc )
 		{
-			if ( npc.getTrait(TraderCharacterTrait.class).getTraderType().equals(TraderType.SERVER_TRADER) )
+			if ( npc.getTrait(TraderCharacterTrait.class).getTraderType().equals(EcoNpcType.SERVER_TRADER) )
 				traders.add(npc);
 		}
 		return traders;

@@ -16,9 +16,9 @@ public class Wallet {
 	
 	//The associated plugin accounts
 	private static Economy economy;
-	private Clan clan; 
-	private Town town;
-	private Faction faction;
+	private Clan clan = null; 
+	private Town town = null;
+	private Faction faction = null;
 	private String bank;
 	
 	//for private money
@@ -31,10 +31,10 @@ public class Wallet {
 	}
 	
 	// get/set wallet type
-	public WalletType getWalletType() {
+	public WalletType getType() {
 		return type;
 	}
-	public void setWalletType(WalletType w) {
+	public void setType(WalletType w) {
 		type = w;
 	}
 	
@@ -53,6 +53,8 @@ public class Wallet {
 	}
 	public String getTown()
 	{
+		if ( town == null )
+			return "";
 		return town.getName();
 	}
 	private void townyDeposit(double m)
@@ -90,6 +92,8 @@ public class Wallet {
 	}
 	public String getClan()
 	{
+		if ( clan == null )
+			return "";
 		return clan.getTag();
 	}
 	
@@ -100,6 +104,8 @@ public class Wallet {
 	}
 	public String getFaction()
 	{
+		if ( faction == null )
+			return "";
 		return faction.getTag();
 	}
 	

@@ -11,20 +11,27 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class TransactionPattern {
+	private final String name;
 
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
 	TreeMap<String, TransactionPattern> patternTiers;
 	HashMap<String, Double> multiplier;
 	
-	public TransactionPattern()
+	public TransactionPattern(String name)
 	{
+		this.name = name;
 		patternItems = new HashMap<String, List<StockItem>>();
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
 		patternTiers = new TreeMap<String, TransactionPattern>();
 		multiplier = new HashMap<String, Double>();
 		multiplier.put("sell", 1.00);
 		multiplier.put("buy", 1.00);
+	}
+	
+	public String getName()
+	{
+		return name;
 	}
 	
 	public void loadPrices(ConfigurationSection prices)
@@ -82,7 +89,7 @@ public class TransactionPattern {
 				TransactionPattern tier = patternTiers.get(transaction);
 				if ( tier == null )
 				{
-					tier = new TransactionPattern();
+					tier = new TransactionPattern(name+":"+transaction);
 					patternTiers.put(transaction, tier);
 				}
 				

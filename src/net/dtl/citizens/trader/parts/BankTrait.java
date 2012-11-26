@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.traits;
+package net.dtl.citizens.trader.parts;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import net.citizensnpcs.api.exception.NPCLoadException;

@@ -44,8 +44,8 @@ public class ItemsConfig {
 		
 		pricesLore = new HashMap<String,List<String>>();
 		
-		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("buy"));
-		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("sell"));
+		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("player-inventory"));
+		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory"));
 		
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
@@ -213,4 +213,10 @@ public class ItemsConfig {
 
 		return builder.toString();
 	}
+
+	public ItemStack getItemManagement(String opositeStock) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

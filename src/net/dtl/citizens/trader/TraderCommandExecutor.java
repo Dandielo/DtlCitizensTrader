@@ -6,12 +6,12 @@ import java.util.List;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
-import net.dtl.citizens.trader.TraderCharacterTrait.TraderType;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.parts.TraderTrait;
+import net.dtl.citizens.trader.parts.TraderTrait.WalletType;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.Trader;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.dtl.citizens.trader.traits.TraderTrait;
-import net.dtl.citizens.trader.traits.TraderTrait.WalletType;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
@@ -522,23 +522,23 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	}
 	
 
-	public TraderType getDefaultTraderType(Player player) {
+	public EcoNpcType getDefaultTraderType(Player player) {
 		
 		//server trader as default
 		if ( permsManager.has(player, "dtl.trader.types.server") )
-			return TraderType.SERVER_TRADER;
+			return EcoNpcType.SERVER_TRADER;
 		else
 		//next default is player trader 
 		if ( permsManager.has(player, "dtl.trader.types.player") )
-			return TraderType.SERVER_TRADER;
+			return EcoNpcType.SERVER_TRADER;
 		
 		//else return no default
 		return null;
 	}
 	
-	public WalletType getDefaultWalletType(Player player, TraderType traderType) {
+	public WalletType getDefaultWalletType(Player player, EcoNpcType traderType) {
 		//server default is infinite
-		if ( permsManager.has(player, "dtl.trader.wallets.infinite") && !traderType.equals(TraderType.PLAYER_TRADER) )
+		if ( permsManager.has(player, "dtl.trader.wallets.infinite") && !traderType.equals(EcoNpcType.PLAYER_TRADER) )
 			return WalletType.INFINITE;
 		else
 		//next default is npc wallet
@@ -737,7 +737,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean setType(Player player, Trader trader, String typeString)
 	{
 		
-		TraderType type = TraderType.getTypeByName(typeString);
+		EcoNpcType type = EcoNpcType.getTypeByName(typeString);
 		
 		//show current trader type
 		if ( type == null )
@@ -865,7 +865,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		String factionName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
-		TraderType traderType = getDefaultTraderType(player);
+		EcoNpcType traderType = getDefaultTraderType(player);
 		WalletType walletType = getDefaultWalletType(player, traderType);
 		
 				
@@ -905,7 +905,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
 					return true;
 				}
-				traderType = TraderType.getTypeByName(arg.substring(2));
+				traderType = EcoNpcType.getTypeByName(arg.substring(2));
 				if ( traderType == null || traderType.isBanker() )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
