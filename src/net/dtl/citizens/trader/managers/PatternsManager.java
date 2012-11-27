@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader;
+package net.dtl.citizens.trader.managers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 
 public class PatternsManager {
@@ -77,7 +78,7 @@ public class PatternsManager {
 
 			for ( String patternName : patternsConfig.getKeys(false) )
 			{
-				TransactionPattern pattern = new TransactionPattern();
+				TransactionPattern pattern = new TransactionPattern(patternName);
 				
 				for ( String section : patternsConfig.getConfigurationSection(patternName).getKeys(false) )
 				{	

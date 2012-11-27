@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader;
+package net.dtl.citizens.trader.managers;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.dtl.citizens.trader.CitizensTrader;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;

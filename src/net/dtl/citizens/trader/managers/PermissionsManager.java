@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader;
+package net.dtl.citizens.trader.managers;
 
 import java.util.logging.Logger;
 

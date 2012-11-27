@@ -12,6 +12,9 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.managers.PermissionsManager;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.MarketTrader;
@@ -84,18 +87,18 @@ public class NpcEcoManager implements Listener {
 		List<NPC> traders=  new ArrayList<NPC>();
 		for ( NPC npc : isEconomyNpc )
 		{
-			if ( npc.getTrait(TraderCharacterTrait.class).getTraderType().equals(EcoNpcType.SERVER_TRADER) )
+			if ( npc.getTrait(TraderCharacterTrait.class).getType().equals(EcoNpcType.SERVER_TRADER) )
 				traders.add(npc);
 		}
 		return traders;
 	}
 	
-	public EconomyNpc getServerTraderByName(String name)
+	public EconomyNpc getServerTraderByName(String name, Player player)
 	{
 		for ( NPC npc : isEconomyNpc )
 		{
 			if ( npc.getName().equals(name) )
-				return new ServerTrader(npc, npc.getTrait(TraderCharacterTrait.class).getTraderTrait());
+				return new ServerTrader(npc.getTrait(TraderCharacterTrait.class), npc, player);
 		}
 		return null;
 	}
@@ -129,7 +132,8 @@ public class NpcEcoManager implements Listener {
 		if ( economyNpc == null )
 			return;
 		
-		if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		//TODO IMPORTANT, change this
+		if ( !economyNpc.locked() )
 			return;
 
 		if ( economyNpc.getInventory().getTitle().equals(event.getInventory().getTitle()) )
@@ -173,16 +177,16 @@ public class NpcEcoManager implements Listener {
 		
 		
 		//Npc Manager-mode
-		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		if ( economyNpc.locked() )
 		{ 
 			economyNpc.managerMode(event);
 			return;
 		}
-		if ( TraderStatus.hasSettingsMode(economyNpc.getTraderStatus()) )
+	/*	if ( TraderStatus.hasSettingsMode(economyNpc.getTraderStatus()) )
 		{
 			economyNpc.settingsMode(event);
 			return;
-		}
+		}*/
 		economyNpc.simpleMode(event);
 	}
 	
@@ -199,18 +203,19 @@ public class NpcEcoManager implements Listener {
 			return;
 		
 		
-		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		if ( economyNpc.locked() )
 		{
 			
-			if ( economyNpc.getTraderStatus().equals(TraderStatus.MANAGE_SELL_AMOUNT) )
-			{
-				//cast to trader type, (it's save)
-				((Trader)economyNpc).saveManagedAmouts();
-				((Trader)economyNpc).switchInventory(TraderStatus.MANAGE_SELL);
-				
-				//reset the traders status
-				((Trader)economyNpc).reset(TraderStatus.MANAGE);
-			}
+			if ( economyNpc instanceof Trader )
+				if ( ((Trader)economyNpc).getTraderStatus().equals(TraderStatus.MANAGE_SELL_AMOUNT) )
+				{
+					//cast to trader type, (it's save)
+					((Trader)economyNpc).saveManagedAmouts();
+					((Trader)economyNpc).switchInventory(TraderStatus.MANAGE_SELL);
+					
+					//reset the traders status
+					((Trader)economyNpc).reset(TraderStatus.MANAGE);
+				}
 			
 			return;
 		}
@@ -222,7 +227,7 @@ public class NpcEcoManager implements Listener {
 			@Override
 			public void run() {
 				if (  playerInteraction.get(player.getName()) == null )
-					Trader.removeDescriptions(event.getPlayer().getInventory());
+					NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
 			}
 		};
 		timer.schedule(task, 1000);
@@ -243,7 +248,7 @@ public class NpcEcoManager implements Listener {
 			return;
 		
 		
-		if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		if ( !economyNpc.locked() )
 			return;
 		
 		
@@ -334,13 +339,13 @@ public class NpcEcoManager implements Listener {
 		//trader character
 		TraderCharacterTrait characterTrait = npc.getTrait(TraderCharacterTrait.class);
 		
-		switch( characterTrait.getTraderType() )
+		switch( characterTrait.getType() )
 		{
 			case SERVER_TRADER:
 			{
 				if ( economyNpc != null )
 				{
-					if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+					if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 					{
 						player.sendMessage( locale.getLocaleString("lacks-permissions") );
 						return;
@@ -348,20 +353,16 @@ public class NpcEcoManager implements Listener {
 					
 					if ( economyNpc.getNpcId() == npc.getId() )
 					{
-						//System.out.print("asd");
-						characterTrait.getInventoryTrait().setPlayer(player);
 						economyNpc.onRightClick(player, characterTrait, npc);
 						
-						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+						if ( !economyNpc.locked() )
 							playerInteraction.remove(playerName);
 					}
 					else
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 
-						//System.out.print("asd");
-						EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
-						characterTrait.getInventoryTrait().setPlayer(player);
+						EconomyNpc newNpc = new ServerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -372,10 +373,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					//System.out.print("asd2");
-					characterTrait.getInventoryTrait().setPlayer(player);
-					EconomyNpc newNpc = new ServerTrader(npc, characterTrait.getTraderTrait());
-					//((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					EconomyNpc newNpc = new ServerTrader(characterTrait, npc, player);
 					playerInteraction.put(playerName, newNpc);
 					
 					if ( !newNpc.onRightClick(player, characterTrait, npc) )
@@ -386,9 +384,7 @@ public class NpcEcoManager implements Listener {
 			}
 			case PLAYER_TRADER:
 			{
-				characterTrait.getInventoryTrait().setPlayer(player);
-
-				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
@@ -400,14 +396,14 @@ public class NpcEcoManager implements Listener {
 					{
 						economyNpc.onRightClick(player, characterTrait, npc);
 						
-						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+						if ( !economyNpc.locked() )
 							playerInteraction.remove(playerName);
 					}
 					else
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
-						EconomyNpc newNpc = new PlayerTrader(npc, characterTrait.getTraderTrait());
+						EconomyNpc newNpc = new PlayerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -417,7 +413,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new PlayerTrader(npc, characterTrait.getTraderTrait());
+					EconomyNpc newNpc = new PlayerTrader(characterTrait, npc, player);
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
@@ -428,9 +424,7 @@ public class NpcEcoManager implements Listener {
 			}
 			case MARKET_TRADER:
 			{
-				characterTrait.getInventoryTrait().setPlayer(player);
-				
-				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getTraderType().toString() ) )
+				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
@@ -442,14 +436,14 @@ public class NpcEcoManager implements Listener {
 					{
 						economyNpc.onRightClick(player, characterTrait, npc);
 						
-						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+						if ( !economyNpc.locked() )
 							playerInteraction.remove(playerName);
 					}
 					else
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
-						EconomyNpc newNpc = new MarketTrader(npc, characterTrait.getTraderTrait());
+						EconomyNpc newNpc = new MarketTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -459,7 +453,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new MarketTrader(npc, characterTrait.getTraderTrait());
+					EconomyNpc newNpc = new MarketTrader(characterTrait, npc, player);
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
@@ -468,10 +462,10 @@ public class NpcEcoManager implements Listener {
 				}
 				return;
 			}
-			case PLAYER_BANK:
+			case PRIVATE_BANKER:
 			{
 
-				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
@@ -483,7 +477,7 @@ public class NpcEcoManager implements Listener {
 					{
 						economyNpc.onRightClick(player, characterTrait, npc);
 						
-						if ( !TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+						if ( !economyNpc.locked() )
 							playerInteraction.remove(playerName);
 					}
 					else
@@ -508,7 +502,7 @@ public class NpcEcoManager implements Listener {
 				else
 				{
 
-					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 					{
 						player.sendMessage( locale.getLocaleString("lacks-permissions") );
 						return;
@@ -528,9 +522,9 @@ public class NpcEcoManager implements Listener {
 				}
 				return;
 			}
-			case MONEY_BANK:
+			case MONEY_BANKER:
 			{
-				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getTraderType().toString() ) )
+				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 				{
 					player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
@@ -570,6 +564,6 @@ public class NpcEcoManager implements Listener {
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event)
 	{
-		Trader.removeDescriptions(event.getPlayer().getInventory());
+		NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
 	}
 }

@@ -4,6 +4,8 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 
@@ -239,11 +241,11 @@ public class BankerCommandExecutor implements CommandExecutor {
 		
 		//server trader as default
 		if ( permsManager.has(player, "dtl.banker.types.player") )
-			return EcoNpcType.PLAYER_BANK;
+			return EcoNpcType.PRIVATE_BANKER;
 		else
 		//next default is player trader 
 		if ( permsManager.has(player, "dtl.banker.types.money") )
-			return EcoNpcType.MONEY_BANK;
+			return EcoNpcType.MONEY_BANKER;
 		
 		//else return no default
 		return null;
@@ -265,14 +267,14 @@ public class BankerCommandExecutor implements CommandExecutor {
 		//show current trader type
 		if ( type == null )
 		{			
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:banker").replace("{value}", banker.getNpc().getTrait(TraderCharacterTrait.class).getTraderType().toString().split("-")[0]) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:banker").replace("{value}", banker.getNpc().getTrait(TraderCharacterTrait.class).getType().toString().split("-")[0]) );
 		}
 		//change trader type
 		else
 		{
 
 		//	banker.getTraderConfig().setTraderType(type);
-			banker.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);
+			banker.getNpc().getTrait(TraderCharacterTrait.class).setType(type);
 			
 			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:banker").replace("{value}", typeString) );
 		}
@@ -340,7 +342,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		npc.spawn(player.getLocation());
 		
 		//change the trader settings
-		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
+		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
 		
 		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:banker") );
 		return true;

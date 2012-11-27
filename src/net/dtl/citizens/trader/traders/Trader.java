@@ -4,10 +4,9 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -18,19 +17,16 @@ import org.bukkit.inventory.PlayerInventory;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
-import net.dtl.citizens.trader.LocaleManager;
-import net.dtl.citizens.trader.LoggingManager;
-import net.dtl.citizens.trader.PatternsManager;
-import net.dtl.citizens.trader.PermissionsManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.PatternsManager;
+import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
 
 public abstract class Trader implements EconomyNpc {
@@ -49,15 +45,15 @@ public abstract class Trader implements EconomyNpc {
 	private TraderConfigPart traderConfig;
 	
 	//Trader info
+	protected Player player;
 	private TraderStatus traderStatus;
 	private Inventory inventory;
-	private Player player;
 	private NPC npc;
 	
 	//Trader runtime 
 	private StockItem selectedItem = null; 
 	private Boolean inventoryClicked = true;
-	private Integer lastSlot = -1;
+//	private Integer lastSlot = -1;
 
 
 	public Trader(TraderCharacterTrait trait, NPC npc, Player player) {
@@ -134,11 +130,11 @@ public abstract class Trader implements EconomyNpc {
 		return slot >= ( getInventory().getSize() - range );
 	}
 
-	public final boolean inventoryHasPlace(Player player, int slot) {
+	public final boolean inventoryHasPlace(int slot) {
 		int amountToAdd = selectedItem.getAmount(slot);
-		return this.inventoryHasPlaceAmount(player, amountToAdd);
+		return this.inventoryHasPlaceAmount(amountToAdd);
 	}
-	public final boolean inventoryHasPlaceAmount(Player player,int amount) {
+	public final boolean inventoryHasPlaceAmount(int amount) {
 		PlayerInventory inventory = player.getInventory();
 		int amountToAdd = amount;
 		
@@ -169,10 +165,10 @@ public abstract class Trader implements EconomyNpc {
 		return false;
 	}
 	
-	public final boolean addSelectedToInventory(Player player, int slot) {
-		return addAmountToInventory(player, selectedItem.getAmount(slot));
+	public final boolean addSelectedToInventory(int slot) {
+		return addAmountToInventory(selectedItem.getAmount(slot));
 	}
-	public final boolean addAmountToInventory(Player player, int amount) {
+	public final boolean addAmountToInventory(int amount) {
 		PlayerInventory inventory = player.getInventory();
 		int amountToAdd = amount;
 
@@ -238,184 +234,66 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	
-	/* *
-	 * Switching to the MultipleAmount's selection
-	 * 
-	 */
+	//swithing inventory (amounts selection)
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
-		if ( TraderStatus.hasManageMode(traderStatus) )
+		if ( traderStatus.isManaging() )
 			TraderStockPart.setManagerInventoryWith(inventory, item);
 		else
-			traderStock.setInventoryWith(inventory, item);
+			traderStock.setInventoryWith(inventory, item, player);
 		selectedItem = item;
 	}
 	
-	public static void removeDescriptions(Inventory inventory)
-	{		
-		/*CraftItemStack i = new CraftItemStack(Material.APPLE);
-		NBTTagCompound t = i.getHandle().getTag();
-		
-		if ( t == null )
-			t = new NBTTagCompound();
-		
-		NBTTagList list = new NBTTagList();
-		list.add(new NBTTagString("other", "A description1"));
-		list.add(new NBTTagString("other", "A description2"));
-		t.set("Lore", list);
-		
-		i.getHandle().setTag(t);
-		
-		addDescription(i, new String[] { "Item price", "Stack price" });*/
-		
-		for ( ItemStack item : inventory.getContents() )
-		{
-			if ( item != null )
-			{
-				net.minecraft.server.ItemStack c = ((CraftItemStack)item).getHandle();
-				NBTTagCompound tc = c.getTag();
-				
-				if ( tc != null )
-				{
-					if ( tc.hasKey("display") )
-					{
-						NBTTagCompound d = tc.getCompound("display");
-						
-						if ( d != null )
-						{
-							if ( d.hasKey("Lore") )
-							{
-								
-								NBTTagList oldList = d.getList("Lore");
-								NBTTagList newList = new NBTTagList();
-								
-								for ( int j = 0 ; j < oldList.size() ; ++j )
-									if ( !oldList.get(j).getName().equals("dtl_trader") && !oldList.get(j).getName().isEmpty() )
-										newList.add(oldList.get(j));
-								
-								d.set("Lore", newList);
-							}
-						}
-					}
-				}
-			}
-		}		
-	}
-	
-	public static void addDescription(CraftItemStack item, List<String> lore)
-	{
-		net.minecraft.server.ItemStack c = item.getHandle();
-		NBTTagCompound tag = c.getTag();
-
-		if ( tag == null )
-			tag = new NBTTagCompound();
-		c.setTag(tag);
-		
-		if(!tag.hasKey("display")) 
-			tag.set("display", new NBTTagCompound());
-		
-		NBTTagCompound d = tag.getCompound("display");
-		
-		if ( !d.hasKey("Lore") )
-			d.set("Lore", new NBTTagList());
-		
-		NBTTagList list = d.getList("Lore");
-			
-		for ( String line : lore )
-			list.add(new NBTTagString("dtl_trader", line.replace('^', '§')));
-
-	}
-	
-	public static void resetDescription(CraftItemStack item)
-	{
-		net.minecraft.server.ItemStack c = item.getHandle();
-		NBTTagCompound tag = c.getTag();
-
-		if ( tag == null )
-			tag = new NBTTagCompound();
-		c.setTag(tag);
-		
-		if(!tag.hasKey("display")) 
-			tag.set("display", new NBTTagCompound());
-		
-		NBTTagCompound d = tag.getCompound("display");
-		
-		if ( !d.hasKey("Lore") )
-			d.set("Lore", new NBTTagList());
-		
-
-		NBTTagList list = d.getList("Lore");
-		NBTTagList newList = new NBTTagList();
-		
-		for ( int j = 0 ; j < list.size() ; ++j )
-			if ( !list.get(j).getName().equals("dtl_trader") && !list.get(j).getName().isEmpty() )
-				newList.add(list.get(j));
-		
-		d.set("Lore", newList);
-
-	}
 	
 	
 	//===============================================================================================
 	
-	public boolean checkBuyLimits(Player p, int scale) {
-		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0,scale) ) {
+	public boolean checkBuyLimits(int scale) {
+		return selectedItem.getLimitSystem().checkLimit(player.getName(),0,scale);
+	}
+	
+	public boolean checkLimits() {
+		if ( !selectedItem.getLimitSystem().checkLimit(player.getName(),0) ) {
 		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
 			return false;
 		}
 		return true;
 	}
 	
-	public boolean checkLimits(Player p) {
-		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),0) ) {
+	public boolean checkLimits(int slot) {
+		if ( !selectedItem.getLimitSystem().checkLimit(player.getName(),slot) ) {
 		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
 			return false;
 		}
 		return true;
 	}
 	
-	public boolean checkLimits(Player p, int slot) {
-		if ( !selectedItem.getLimitSystem().checkLimit(p.getName(),slot) ) {
-		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
-			return false;
-		}
-		return true;
+	public boolean updateBuyLimits(int scale) {
+		return selectedItem.getLimitSystem().updateLimit(0, scale, player.getName());
 	}
 	
-	public boolean updateBuyLimits(String p, int scale) {
-		return selectedItem.getLimitSystem().updateLimit(0, scale, p);
+	public boolean updateLimits(int slot) {
+		return selectedItem.getLimitSystem().updateLimit(slot, player.getName());
 	}
 	
-	public boolean updateLimits(String p, int slot) {
-		return selectedItem.getLimitSystem().updateLimit(slot, p);
+	public boolean updateLimits() {
+		return selectedItem.getLimitSystem().updateLimit(0, player.getName());
 	}
-	
-	public boolean updateLimits(String p) {
-		return selectedItem.getLimitSystem().updateLimit(0, p);
-	}
-	
-	
-	/* *
-	 * saving the new amounts found in the select multiple items mode
-	 */
+
+	//saving amounts
 	public final void saveManagedAmouts() {
-		traderStock.saveNewAmouts(inventory, selectedItem);
+		TraderStockPart.saveNewAmouts(inventory, selectedItem);
 	}
 	
-	/**
-	 * checking sell/buy mode by wool color
-	 * 
-	 */
+	//checking mode by wool
 	public boolean isSellModeByWool() {
-		return isWool(inventory.getItem(inventory.getSize()-1), config.getItemManagement(1));//5
+		return isWool(inventory.getItem(inventory.getSize()-1), itemsConfig.getItemManagement(1));//5
 	}
 	public boolean isBuyModeByWool() {
-		return isWool(inventory.getItem(inventory.getSize()-1), config.getItemManagement(0));//3
+		return isWool(inventory.getItem(inventory.getSize()-1), itemsConfig.getItemManagement(0));//3
 	}
 	
-	/**
-	 * 
-	 */
+	//getting mode
 	public TraderStatus getBasicManageModeByWool() 
 	{
 		if ( isSellModeByWool() )
@@ -425,146 +303,108 @@ public abstract class Trader implements EconomyNpc {
 		return TraderStatus.MANAGE;
 	}
 	
-	/* * ===============================================================================================
-	 * Item Sell and buy management
-	 * 
-	 */
-	
-	/* *
-	 * handling a transaction if the player buys something from the trader
-	 * 
-	 */
-	public boolean buyTransaction(Player p, double price) {
-		return traderConfig.buyTransaction(p, price);
+	//when a player is buying
+	public boolean buyTransaction(double price) {
+		return traderConfig.buyTransaction(player.getName(), price);
 	}
 	
-	/* *
-	 * handling a transaction if the player sells something to the trader
-	 * 
-	 */
-	public boolean sellTransaction(Player p, double price) {
-		return traderConfig.sellTransaction(p, price);
+	//when a player is selling
+	public boolean sellTransaction(double price) {
+		return traderConfig.sellTransaction(player.getName(), price);
+	}
+
+	//when a player is selling
+	public boolean sellTransaction(double price, ItemStack item) {
+		return traderConfig.sellTransaction(player.getName(), price*((int)item.getAmount() / selectedItem.getAmount()));
 	}
 	
-	public boolean sellTransaction(Player p, double price, ItemStack item) {
-		/* *
-		 * Fast implementation for a more comfortable selling
-		 * going to change this in future
-		 * 
-		 */
-	//	if ( item.getAmount() == 1 )
-	//		return traderConfig.sellTransaction(p, price*getMaxAmount(item));
-	//	int scale = ;
-		return traderConfig.sellTransaction(p, price*((int)item.getAmount() / selectedItem.getAmount()));
-	}
-	
-	/* * ===============================================================================================
-	 * Other management functions 
-	 * 
-	 */
-	
-	/* *
-	 * reset the trader with a given status (needed on inventory switching)
-	 * 
-	 */
+	//reset the trader
 	public final Trader reset(TraderStatus status) {
 		traderStatus = status;
 		selectedItem = null;
 		inventoryClicked = true;
-		slotClicked = -1;
+//		lastSlot = -1;
 		return this;
 	}
 	
-	/* *
-	 * Setting the trader Status
-	 */
-	public final void setTraderStatus(TraderStatus s) {
-		traderStatus = s;
-	}
-	
-	/* *
-	 * Setting the last clicked inventory
-	 * 
-	 * true => top
-	 * false => bottom
-	 * 
-	 */
+	//
 	public final void setInventoryClicked(boolean c) {
 		inventoryClicked = c;
 	}
 	
-	/* *
-	 * getting last clicked inventory
-	 * 
-	 */
+	//
 	public final boolean getInventoryClicked() {
 		return inventoryClicked;
 	}
 	
-	/* *
-	 * Setting the last clicked slot in any inventory
-	 */
+	/*
+	//
 	public final void setClickedSlot(Integer s) {
-		slotClicked = s;
+		lastSlot = s;
 	}
 	
-	/* *
-	 * getting last clicked slot
-	 */
+	//
 	public final Integer getClickedSlot() {
-		return slotClicked;
-	}
+		return lastSlot;
+	}*/
 	
-	/* *
-	 * comparing functions for TraderStatus, TraderType, WalletType
-	 */
+	//trader status easy check
 	public final boolean equalsTraderStatus(TraderStatus status) {
 		return traderStatus.equals(status);
 	}
-	public final boolean equalsTraderType(EcoNpcType type) {
+	/*public final boolean equalsTraderType(EcoNpcType type) {
 		return traderConfig.getTraderType().equals(type);
 	}
 	public final boolean equalsWalletType(WalletType type) {
 		return traderConfig.getWalletType().equals(type);
-	}
+	}*/
 
-	/* *
-	 * getTraderStatus
-	 * 
-	 */
+	public final boolean locked()
+	{
+		return traderStatus.isManaging();
+	}
+	
+	//get traders status
 	public final TraderStatus getTraderStatus() {
 		return traderStatus;
 	}
 	
-	/* *
-	 * get the traders inventory 
-	 */
+	//set trader status
+	public final void setTraderStatus(TraderStatus status)
+	{
+		traderStatus = status;
+	}
+	
+	//get the traders inventory
+	@Override
 	public final Inventory getInventory() {
 		return inventory;
 	}
 	
-	/* *
-	 * get the traders wallet 
-	 */
+	//getting wallet
+	@Override
 	public final Wallet getWallet() {
 		return traderConfig.getWallet();
 	}	
-	/* *
-	 * get the traders inventory stock
-	 */
-	public final TraderStockPart getTraderStock() {
+
+	//getting the stock
+	public final TraderStockPart getStock() {
 		return traderStock;
 	}
 	
+	//Not needed in any trader type
+	@Override
+	public final void settingsMode(InventoryClickEvent event) {
+		((Player)event.getWhoClicked()).sendMessage(ChatColor.RED+"Settings Mode can't be used here");
+		event.setCancelled(true);
+	}
 	
-	/* * ===============================================================================================
-	 * Static functions for cleaner code
-	 * 
-	 */
+	//static helper methods
 	public static boolean isWool(ItemStack itemToCompare,ItemStack managementItem) {
 		return itemToCompare.equals(new ItemStack(managementItem.getTypeId(),1,(short)0,managementItem.getData().getData()));
 	}
 	
+	//TODO add to config
 	public static double calculatePrice(ItemStack is) {
 		if ( is.getType().equals(Material.WOOD) )
 			return is.getAmount()*0.01;		
@@ -576,7 +416,8 @@ public abstract class Trader implements EconomyNpc {
 			return is.getAmount()*100;
 		return is.getAmount();
 	}
-	
+
+	//TODO add to config
 	public static int calculateLimit(ItemStack is) {
 		if ( is.getType().equals(Material.DIRT) )
 			return is.getAmount()*10;		
@@ -584,7 +425,8 @@ public abstract class Trader implements EconomyNpc {
 			return is.getAmount()*100;
 		return is.getAmount();
 	}
-	
+
+	//TODO add to config
 	public static int calculateTimeout(ItemStack is) {
 		if ( is.getType().equals(Material.DIRT) )
 			return is.getAmount()*60;		
@@ -594,7 +436,8 @@ public abstract class Trader implements EconomyNpc {
 			return is.getAmount()*3600*24;
 		return is.getAmount();
 	}
-	 
+
+	
 	public static StockItem toStockItem(ItemStack is) {
 		String itemInfo = is.getTypeId()+":"+ is.getData().getData() +" a:"+is.getAmount() + " d:" + is.getDurability();
 		if ( !is.getEnchantments().isEmpty() ) {
@@ -606,37 +449,37 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	public static TraderStatus getStartStatus(Player player) {
-		if ( permissions.has(player, "dtl.trader.options.sell") )
+		if ( permissionsManager.has(player, "dtl.trader.options.sell") )
 			return TraderStatus.SELL;
-		else if ( permissions.has(player, "dtl.trader.options.buy") )
+		else if ( permissionsManager.has(player, "dtl.trader.options.buy") )
 			return TraderStatus.BUY;
 		return null;
 	}
 	
 	public static TraderStatus getManageStartStatus(Player player) {
-		if ( permissions.has(player, "dtl.trader.options.sell") )
+		if ( permissionsManager.has(player, "dtl.trader.options.sell") )
 			return TraderStatus.MANAGE_SELL;
-		else if ( permissions.has(player, "dtl.trader.options.buy") )
+		else if ( permissionsManager.has(player, "dtl.trader.options.buy") )
 			return TraderStatus.MANAGE_BUY;
 		return null;
 	}
 	
-	
+	public abstract EcoNpcType getType();
 	
 	//loging function
-	public void log(String action, String player, int id, byte data, int amount, double price) 
+	public void log(String action, int id, byte data, int amount, double price) 
 	{
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("HH-mm-ss");
 		
 		DecimalFormat dec = new DecimalFormat("#.##");
 		
-		logging.log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
+		loggingManager.log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player.getName() + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
 	}
 	
 	public void playerLog(String owner, String buyer, String action, StockItem item, int slot)
 	{
-		logging.playerLog(owner, npc.getName(), locale.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
+		loggingManager.playerLog(owner, npc.getName(), localeManager.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
 	}
 	
 	

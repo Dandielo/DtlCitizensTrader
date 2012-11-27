@@ -9,7 +9,7 @@ import java.util.Map;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
-import net.dtl.citizens.trader.PatternsManager;
+import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
@@ -61,6 +61,12 @@ public class TraderStockPart implements InventoryHolder {
 		this.reloadStock();
 		return true;
 	}
+	public void removePattern()
+	{
+		pattern = null;
+		reloadStock();
+	}
+	
 	
 	public void reloadStock()
 	{
@@ -256,21 +262,30 @@ public class TraderStockPart implements InventoryHolder {
 			}
 		}
 	}
-	
+	*/
 	//Returning the displayInventory
 	@Override
-	public Inventory getInventory() {
-		Inventory inv = Bukkit.createInventory(this,size,"sellstockroom");
+	public Inventory getInventory() 
+	{
+		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
+		
+		for( StockItem item : stock.get("sell") ) 
+		{
+			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, "sell", pattern, null));
 
-        for ( StockItem item : sellStock )
-        {
-        	if ( item.getSlot() < 0 )
-        		item.setSlot(inv.firstEmpty());
-            inv.setItem( item.getSlot() ,item.getItemStack());
+			chk.addEnchantments(item.getItemStack().getEnchantments());
+
+	        if ( item.getSlot() < 0 )
+        		item.setSlot(inventory.firstEmpty());
+	        inventory.setItem(item.getSlot(),chk);
         }
-		return inv;
+
+        if ( !stock.get( "buy" ).isEmpty() )
+        	inventory.setItem(stockSize - 1, itemsConfig.getItemManagement( "buy" ) );
+        
+		return inventory;
 	}
-	
+	/*
 	
 	
 	

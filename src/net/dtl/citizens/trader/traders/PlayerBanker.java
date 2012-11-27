@@ -417,31 +417,31 @@ public class PlayerBanker extends Banker {
 			}
 				
 			
-			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+		//	if ( getTraderStatus() )
 			{
-				setTraderStatus(TraderStatus.BANK);
+			//	setTraderStatus(TraderStatus.BANK);
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				
-				return false;
+			//	return false;
 			}	
 			
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
-			setTraderStatus(TraderStatus.MANAGE);
+		//	setTraderStatus(TraderStatus.MANAGE);
 			
 			return false;
 		}
 		else
 		if ( player.getItemInHand().getTypeId() == itemConfig.getSettingsWand().getTypeId() )
 		{
-			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+			//if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
 			{
-				setTraderStatus(TraderStatus.BANK);
+			//	setTraderStatus(TraderStatus.BANK);
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				
-				return true;
+			//	return true;
 			}	
 			
-			setTraderStatus(TraderStatus.BANK_SETTINGS);
+			//setTraderStatus(TraderStatus.BANK_SETTINGS);
 			useSettingsInv();
 			settingsInventory();
 			setBankStatus(BankStatus.SETTINGS);
@@ -455,8 +455,8 @@ public class PlayerBanker extends Banker {
 			//player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(getWithdrawFee())) );
 		}
 
-		if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
-			player.openInventory(getInventory());
+		//if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
+	//		player.openInventory(getInventory());
 		return true;
 		
 	}

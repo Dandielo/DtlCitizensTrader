@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader;
+package net.dtl.citizens.trader.managers;
 
 
 import java.io.File;
@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import net.dtl.citizens.trader.CitizensTrader;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;

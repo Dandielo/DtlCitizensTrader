@@ -16,37 +16,26 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
-import net.dtl.citizens.trader.parts.TraderTrait;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
 public class ServerTrader extends Trader {
 
 	private TransactionPattern pattern;
 	
-	public ServerTrader(NPC n, TraderTrait c) {
-		super(n, c);
-		pattern = patterns.getPattern(this.getTraderConfig().getPattern());
+	public ServerTrader(TraderCharacterTrait trait, NPC npc, Player player) {
+		super(trait, npc, player);
+	//	pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
 
 	@Override
-	public void settingsMode(InventoryClickEvent event) {
-		
-		((Player)event.getWhoClicked()).sendMessage(ChatColor.RED+"Settings Mode Inactive! Switch to simple mode!");
-		event.setCancelled(true);
-	}
-
-	@Override
-	public void simpleMode(InventoryClickEvent event) {
-		
-		
-		Player p = (Player) event.getWhoClicked();
-		DecimalFormat f = new DecimalFormat("#.##");
+	public void simpleMode(InventoryClickEvent event) 
+	{
+	//	DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -63,33 +52,35 @@ public class ServerTrader extends Trader {
 			if ( isManagementSlot(slot, 1) ) 
 			{
 				
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) ) 
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(7)) ) 
 				{
 					switchInventory(TraderStatus.SELL);		
 				}
 				else 
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) )
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(0)) )
 				{
-					if ( !permissions.has(p, "dtl.trader.options.sell") )
+					if ( !permissionsManager.has(player, "dtl.trader.options.sell") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-xxx","object:tab") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
 					}
 					else
 					{
 						switchInventory(TraderStatus.SELL);	
+						//TODO add debug mode
 					//	p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:sell") );
 					}
 				} 
 				else 
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) ) 
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(1)) ) 
 				{
-					if ( !permissions.has(p, "dtl.trader.options.buy") )
+					if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-xxx","object:tab") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
 					}
 					else
 					{
 						switchInventory(TraderStatus.BUY);	
+						//TODO add debug mode
 					//	p.sendMessage( locale.getLocaleString("xxx-transaction-tab","transaction:buy") );
 					}	
 				}
@@ -102,67 +93,61 @@ public class ServerTrader extends Trader {
 				{
 					
 					if ( getSelectedItem().hasMultipleAmouts() 
-							&& permissions.has(p, "dtl.trader.options.sell-amounts") )
+							&& permissionsManager.has(player, "dtl.trader.options.sell-amounts") )
 					{
-						
 						switchInventory(getSelectedItem());
 						setTraderStatus(TraderStatus.SELL_AMOUNT);
-						
 					}
 					else 
 					{
-					//	if ( getClickedSlot() == slot ) 
+						double price = getPrice(player, "sell");
+						//checks
+						if ( !checkLimits() )
 						{
-							double price = getPrice(p, "sell");
-							//checks
-							if ( !checkLimits(p) )
-							{
-								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
-								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
-							}
-							else
-							if ( !inventoryHasPlace(p,0) )
-							{
-								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
-								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
-							}
-							else
-							if ( !buyTransaction(p, price) )
-							{
-								p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
-								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
-							}
-							else
-							{
-								//send message
-							//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
+							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
+						}
+						else
+						if ( !inventoryHasPlace(0) )
+						{
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
+							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+						}
+						else
+						if ( !buyTransaction(price) )
+						{
+							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
+						}
+						else
+						{
+							//TODO add debug mode
+						//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
+							addSelectedToInventory(0);
 
-								addSelectedToInventory(p,0);
-
-
-								updateLimits(p.getName());
-								
-								//call event Denizen Transaction Trigger
-								Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
-								
-								//logging
-								log("buy", 
-									p.getName(), 
-									getSelectedItem().getItemStack().getTypeId(),
-									getSelectedItem().getItemStack().getData().getData(), 
-									getSelectedItem().getAmount(), 
-									price );
-								
-							}
+							updateLimits();
+							
+							//call event Denizen Transaction Trigger
+							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
+							
+							//logging
+							log("buy", 
+								getSelectedItem().getItemStack().getTypeId(),
+								getSelectedItem().getItemStack().getData().getData(), 
+								getSelectedItem().getAmount(), 
+								price );
 							
 						}
+						
+						//TODO remove?
 					//	else
-						{
+					//	{
+							//TODO add debug mode
 					//		p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
 					//		p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 					//		setClickedSlot(slot);
-						}
+					//	}
 					}
 				}
 			} 
@@ -172,64 +157,59 @@ public class ServerTrader extends Trader {
 				
 				if ( !event.getCurrentItem().getType().equals(Material.AIR) ) 
 				{
-					
-				//	if ( getClickedSlot() == slot ) 
+					double price = getPrice(player, "sell", slot);
+					if ( !checkLimits(slot) )
 					{
-
-						double price = getPrice(p, "sell", slot);
-						if ( !checkLimits(p,slot) )
-						{
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
-							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
-						}
-						else
-						if ( !inventoryHasPlace(p,slot) )
-						{
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
-							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
-						}
-						else
-						if ( !buyTransaction(p, price) ) 
-						{
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
-							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
-						}
-						else
-						{
-							//send message
-					//		p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
-							
-							/* *
-							 * better version of Inventory.addItem();
-							 * 
-							 */
-							addSelectedToInventory(p, slot);
-							
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
-							
-							updateLimits(p.getName(), slot);
-							switchInventory(getSelectedItem());
-							
-							//logging
-							log("buy", 
-								p.getName(), 
-								getSelectedItem().getItemStack().getTypeId(),
-								getSelectedItem().getItemStack().getData().getData(), 
-								getSelectedItem().getAmount(slot), 
-								price );
-							
-						} 
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 					}
-				//	else 
+					else
+					if ( !inventoryHasPlace(slot) )
 					{
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_SPACE));
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+					}
+					else
+					if ( !buyTransaction(price) ) 
+					{
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+					}
+					else
+					{
+						//send message
+						//TODO add debug mode
+				//		p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
+						
+						
+						addSelectedToInventory(slot);
+						
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_SELL));
+						
+						updateLimits(slot);
+						switchInventory(getSelectedItem());
+						
+						//logging
+						log("buy", 
+							getSelectedItem().getItemStack().getTypeId(),
+							getSelectedItem().getItemStack().getData().getData(), 
+							getSelectedItem().getAmount(slot), 
+							price );
+						
+					}
+					//TODO remove?
+				//	else 
+				//	{
 						
 				//		p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell", slot)) ) );
 				//		p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
 				//		setClickedSlot(slot);
-					}
+				//	}
 				}
 			} 
-			else 
+			
+			//TODO remove ?
+		/*	else 
 			if ( equalsTraderStatus(TraderStatus.BUY) )
 			{
 				
@@ -238,8 +218,8 @@ public class ServerTrader extends Trader {
 
 				//	p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")) ) );
 				}
-			}
-			setInventoryClicked(true);
+			}*/
+		//	setInventoryClicked(true);
 		} 
 		else
 		{
@@ -249,54 +229,56 @@ public class ServerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() )
 				{
 					
-					if ( getClickedSlot() == slot && !getInventoryClicked() ) 
+					
+					//TODO remove ?
+				//	if ( getClickedSlot() == slot && !getInventoryClicked() ) 
+				//	{
+					double price = getPrice(player, "buy");
+					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+					if ( !checkBuyLimits(scale) )
 					{
-						double price = getPrice(p, "buy");
-						int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-						if ( !checkBuyLimits(p, scale) )
-						{
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
-							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
-						}
-						else
-						if ( !sellTransaction(p, price, event.getCurrentItem()) )
-						{
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
-							p.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
-						}
-						else
-						{
-						//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
-
-							//TODO
-							updateBuyLimits(p.getName(), scale);
-
-							Trader.resetDescription((CraftItemStack) event.getCurrentItem());
-							removeFromInventory(event.getCurrentItem(), event);
-							
-							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
-							
-							//logging
-							log("sell", 
-								p.getName(), 
-								getSelectedItem().getItemStack().getTypeId(),
-								getSelectedItem().getItemStack().getData().getData(), 
-								getSelectedItem().getAmount()*scale, 
-								price*scale );
-							
-						} 
-					} 
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_LIMIT));
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
+					}
+					else
+					if ( !sellTransaction(price, event.getCurrentItem()) )
+					{
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
+					}
 					else
 					{
+					//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+
+						//TODO
+						updateBuyLimits(scale);
+
+						NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+						removeFromInventory(event.getCurrentItem(), event);
+						
+						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
+						
+						//logging
+						log("sell", 
+							getSelectedItem().getItemStack().getTypeId(),
+							getSelectedItem().getItemStack().getData().getData(), 
+							getSelectedItem().getAmount()*scale, 
+							price*scale );
+						
+					
+					} 
+				//	else
+				//	{
 					//	p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-						setClickedSlot(slot);
-					}
+				//		player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
+				//		setClickedSlot(slot);
+				//	}
 				}
 			} 
 			else
 			if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) )
 			{ 
+				//TODO add descriptions ("Can't sell here");
 				//p.sendMessage( locale.getLocaleString("amount-exception") );
 				event.setCancelled(true);
 				return;
@@ -305,65 +287,64 @@ public class ServerTrader extends Trader {
 			if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) 
 			{				
 				
-				if ( getClickedSlot() == slot && !getInventoryClicked() && permissions.has(p, "dtl.trader.options.buy") ) 
+			//	if ( getClickedSlot() == slot && !getInventoryClicked() && permissionsManager.has(player, "dtl.trader.options.buy") ) 
+			//	{
+
+				double price = getPrice(player, "buy");
+				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
-
-					double price = getPrice(p, "buy");
-					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-					if ( !permissions.has(p, "dtl.trader.options.buy") )
-					{
-						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
-					}
-					else
-					if ( !checkBuyLimits(p, scale) )
-					{
-						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
-						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
-					}
-					else
-					if ( !sellTransaction(p, price, event.getCurrentItem()) )
-					{
-						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
-						p.sendMessage( locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
-					}
-					else
-					{
-					//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
-
-						
-						//limits update
-						updateBuyLimits(p.getName(),scale);
-						
-						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
-						
-						Trader.resetDescription((CraftItemStack) event.getCurrentItem());
-						
-						//inventory cleanup
-						removeFromInventory(event.getCurrentItem(),event);
-						
-						//logging
-						log("sell", 
-							p.getName(), 
-							getSelectedItem().getItemStack().getTypeId(),
-							getSelectedItem().getItemStack().getData().getData(), 
-							getSelectedItem().getAmount()*scale, 
-							price*scale );
-
-					}
+					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
+				}
+				else
+				if ( !checkBuyLimits(scale) )
+				{
+					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
+					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
+				}
+				else
+				if ( !sellTransaction(price, event.getCurrentItem()) )
+				{
+					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
+					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 				}
 				else
 				{
-					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
-						 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-					{
-				//		p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-						
-						setClickedSlot(slot);
-					}
+				//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+
+					
+					//limits update
+					updateBuyLimits(scale);
+					
+					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
+					
+					NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+					
+					//inventory cleanup
+					removeFromInventory(event.getCurrentItem(),event);
+					
+					//logging
+					log("sell", 
+						getSelectedItem().getItemStack().getTypeId(),
+						getSelectedItem().getItemStack().getData().getData(), 
+						getSelectedItem().getAmount()*scale, 
+						price*scale );
+
 				}
+		//	}
+			//	else
+			//	{
+			//		if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
+			//			 !event.getCurrentItem().getType().equals(Material.AIR) ) 
+			//		{
+				//		p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
+			//			player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
+			//			
+			//			setClickedSlot(slot);
+			//		}
+			//	}
 			}
-			setInventoryClicked(false);
+		//	setInventoryClicked(false);
 		}
 		event.setCancelled(true);
 	}
@@ -374,7 +355,7 @@ public class ServerTrader extends Trader {
 		
 		//Going to hide this in the future as an CustomEvent, for developers also
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
-		Player p = (Player) event.getWhoClicked();
+	//	Player p = (Player) event.getWhoClicked();
 		int slot = event.getSlot();		
 		
 		if ( slot < 0 )
@@ -395,12 +376,12 @@ public class ServerTrader extends Trader {
 				
 				
 				//price managing
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(2)) ) 
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(2)) ) 
 				{
 					
-					if ( !permissions.has(p, "dtl.trader.managing.price") )
+					if ( !permissionsManager.has(player, "dtl.trader.managing.price") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:price") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:price") );
 					}
 					else
 					{
@@ -408,18 +389,18 @@ public class ServerTrader extends Trader {
 						this.setTraderStatus(TraderStatus.MANAGE_PRICE);
 						
 
-						getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(6));
+						getInventory().setItem(getInventory().getSize() - 2, itemsConfig.getItemManagement(6));
 						getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 						
 
 						//send message
-						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
+						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
 					}
 						
 				} 
 				else 
 				//is any mode used? return to item adding
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(6)) ) 
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(6)) ) 
 				{
 					//close any management mode, switch to the default buy/sell management
 					if ( isSellModeByWool() )
@@ -428,21 +409,21 @@ public class ServerTrader extends Trader {
 						this.setTraderStatus(TraderStatus.MANAGE_BUY);
 					
 					
-					getInventory().setItem(getInventory().getSize() - 2, config.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
-					getInventory().setItem(getInventory().getSize() - 3, config.getItemManagement(4) );// ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ?  : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
+					getInventory().setItem(getInventory().getSize() - 2, itemsConfig.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
+					getInventory().setItem(getInventory().getSize() - 3, itemsConfig.getItemManagement(4) );// ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ?  : config.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
-					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
+					player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
 					
 				}
 				else 
 				//global limits management
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(4)) )
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(4)) )
 				{
 
-					if ( !permissions.has(p, "dtl.trader.managing.global-limits") )
+					if ( !permissionsManager.has(player, "dtl.trader.managing.global-limits") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
 					}
 					else
 					{
@@ -450,20 +431,20 @@ public class ServerTrader extends Trader {
 						setTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL);
 						
 						//wool update
-						getInventory().setItem(getInventory().getSize()-3, config.getItemManagement(6));
-						getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(5));
+						getInventory().setItem(getInventory().getSize()-3, itemsConfig.getItemManagement(6));
+						getInventory().setItem(getInventory().getSize()-2, itemsConfig.getItemManagement(5));
 	
 						//send message
-						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:global-limit") );
+						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:global-limit") );
 					}					
 				} 
 				else 
 				//player limits management
-				if ( isWool(event.getCurrentItem(),config.getItemManagement(5)) ) 
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(5)) ) 
 				{
-					if ( !permissions.has(p, "dtl.trader.managing.player-limits") )
+					if ( !permissionsManager.has(player, "dtl.trader.managing.player-limits") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
 					}
 					else
 					{
@@ -471,19 +452,19 @@ public class ServerTrader extends Trader {
 						setTraderStatus(TraderStatus.MANAGE_LIMIT_PLAYER);
 						
 						//wool update
-						getInventory().setItem(getInventory().getSize()-2, config.getItemManagement(4));
+						getInventory().setItem(getInventory().getSize()-2, itemsConfig.getItemManagement(4));
 	
 						//send message
-						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:player-limit") );
+						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:player-limit") );
 					}					
 				}
 				else
 				// add a nice support to this system
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(1)) )
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(1)) )
 				{
-					if ( !permissions.has(p, "dtl.trader.options.buy") )
+					if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy") );
 					}
 					else
 					{
@@ -491,16 +472,16 @@ public class ServerTrader extends Trader {
 						
 	
 						//send message
-						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy") );
+						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy") );
 						
 					}
 				}
 				else
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(0)) )
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(0)) )
 				{
-					if ( !permissions.has(p, "dtl.trader.options.sell") )
+					if ( !permissionsManager.has(player, "dtl.trader.options.sell") )
 					{
-						p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:sell") );
+						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:sell") );
 					}
 					else
 					{
@@ -509,20 +490,20 @@ public class ServerTrader extends Trader {
 						switchInventory(TraderStatus.MANAGE_SELL);
 						
 						//send message
-						p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
+						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
 						
 					}
 				}
 				else 
 				//leaving the amount managing
-				if ( isWool(event.getCurrentItem(), config.getItemManagement(7)) ) {
+				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(7)) ) {
 
 					//update amounts and status
 					saveManagedAmouts();
 					switchInventory(TraderStatus.MANAGE_SELL);
 					
 
-					p.sendMessage( locale.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
+					player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
 				}
 				
 				event.setCancelled(true);
@@ -539,14 +520,16 @@ public class ServerTrader extends Trader {
 					if ( equalsTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL) )
 					{
 
-						//show the current limit
+						//show the current timeout
+						//TODO add to description
 						if ( event.getCursor().getType().equals(Material.AIR) ) 
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
-								p.sendMessage(locale.getLocaleString("xxx-value", "manage:global-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalTimeout()) );
+								player.sendMessage(localeManager.getLocaleString("xxx-value", "manage:global-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalTimeout()) );
 								
-							
 						}
+						
+						//TODO dynamic description changing
 						//timeout changing
 						else
 						{
@@ -562,7 +545,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								p.sendMessage(locale.getLocaleString("xxx-value-changed", "manage:global-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalTimeout()) );
+								player.sendMessage(localeManager.getLocaleString("xxx-value-changed", "manage:global-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalTimeout()) );
 							}
 
 						}
@@ -576,14 +559,16 @@ public class ServerTrader extends Trader {
 					{
 
 						//show the current limit
+						//TODO add to description
 						if ( event.getCursor().getType().equals(Material.AIR) ) 
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
-								p.sendMessage(locale.getLocaleString("xxx-value", "manage:player-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerTimeout()) );
+								player.sendMessage(localeManager.getLocaleString("xxx-value", "manage:player-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerTimeout()) );
 							
 							
 						}
-						//timeout changing
+						//TODO dynamic desc changing
+						//limit changing
 						else
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
@@ -598,7 +583,8 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changePlayerTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								p.sendMessage(locale.getLocaleString("xxx-value-changed", "manage:player-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerTimeout()) );
+								//add to config 
+								player.sendMessage(localeManager.getLocaleString("xxx-value-changed", "manage:player-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerTimeout()) );
 								}
 
 						}
@@ -618,7 +604,7 @@ public class ServerTrader extends Trader {
 						{ 
 							//we got sell managing?
 							if ( selectItem(slot,TraderStatus.MANAGE_SELL).hasSelectedItem()
-									&& permissions.has(p, "dtl.trader.managing.multiple-amounts") )
+									&& permissionsManager.has(player, "dtl.trader.managing.multiple-amounts") )
 							{
 								//inventory and status update
 								switchInventory(getSelectedItem());
@@ -644,9 +630,9 @@ public class ServerTrader extends Trader {
 						 //r.click = stack price
 						 if ( event.isRightClick() )
 						 {
-							if ( !permissions.has(p, "dtl.trader.managing.stack-price") )
+							if ( !permissionsManager.has(player, "dtl.trader.managing.stack-price") )
 							{
-								p.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
+								player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
 								selectItem(null);
 								event.setCancelled(true);
 								return;
@@ -658,13 +644,13 @@ public class ServerTrader extends Trader {
 								if ( getSelectedItem().hasStackPrice() ) 
 								{
 									getSelectedItem().setStackPrice(false);
-									p.sendMessage( locale.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
+									player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
 								} 
 								//change the price to a stack-price
 								else
 								{
 									getSelectedItem().setStackPrice(true);
-									p.sendMessage( locale.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
+									player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 								}
 
 								getSelectedItem().setAsPatternItem(false);
@@ -691,32 +677,24 @@ public class ServerTrader extends Trader {
 								 
 								 //set the item to the stock
 								 if ( this.isBuyModeByWool() )
-									 getTraderStock().addItem(false, item);
+									 getStock().addItem("buy", item);
 								 if ( this.isSellModeByWool() )
-									 getTraderStock().addItem(true, item);
-								 
-								/* if ( pattern != null )
-								 {
-									 if ( isBuyModeByWool() )
-										 pattern.getItemPrice(item, "buy");
-									 if ( isSellModeByWool() )
-										 pattern.getItemPrice(item, "sell");
-								 }*/
+									 getStock().addItem("sell", item);
 									 
-								 p.sendMessage( locale.getLocaleString("xxx-item", "action:added") );
+								 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 							 }
 							 
 							 //select an item if it exists in the traders inventory
 							 if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() )
 							 {
 								 getSelectedItem().setSlot(-2);
-								 p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+								 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 							 }
 							 
 							 //set the managed items slot
 							 item.setSlot(slot);
 							 item.setAsPatternItem(false);
-							 p.sendMessage( locale.getLocaleString("xxx-item", "action:updated") );
+							 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 							 
 						} 
 						else 
@@ -726,7 +704,7 @@ public class ServerTrader extends Trader {
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() )
 							{
 								getSelectedItem().setSlot(-2);
-								p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+								player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 							}
 							
 						}
@@ -743,7 +721,7 @@ public class ServerTrader extends Trader {
 
 							//invalid item
 
-							p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:invalid") );
 							event.setCancelled(true);
 						}
 						if ( !event.getCursor().getType().equals(Material.AIR) )
@@ -762,7 +740,7 @@ public class ServerTrader extends Trader {
 
 							//select item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
-								p.sendMessage( locale.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
 						} 
 						else
@@ -780,7 +758,7 @@ public class ServerTrader extends Trader {
 
 								getSelectedItem().setAsPatternItem(false);
 								getSelectedItem().setPetternListening(false);
-								p.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							}
 							
 						}
@@ -804,7 +782,7 @@ public class ServerTrader extends Trader {
 							//select item which limit will be shown up
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								p.sendMessage( locale.getLocaleString("xxx-value", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 							}
 							
 							
@@ -823,7 +801,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
 
 								getSelectedItem().setAsPatternItem(false);
-								p.sendMessage( locale.getLocaleString("xxx-value-changed", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 							
 							}
 
@@ -847,7 +825,7 @@ public class ServerTrader extends Trader {
 							//select item which limit will be shown up
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								p.sendMessage( locale.getLocaleString("xxx-value", "manage:player-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerLimit()) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:player-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerLimit()) );
 							}
 							
 							
@@ -866,7 +844,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changePlayerLimit(calculateLimit(event.getCursor()));
 								
 								getSelectedItem().setAsPatternItem(false);
-								p.sendMessage( locale.getLocaleString("xxx-value-changed", "manage:player-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerLimit()) );
+								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "manage:player-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerLimit()) );
 							
 							}
 
@@ -897,15 +875,15 @@ public class ServerTrader extends Trader {
 
 					//remove it from the stock
 					if ( equalsTraderStatus(TraderStatus.MANAGE_SELL) )
-						getTraderStock().removeItem(true, getSelectedItem().getSlot());
+						getStock().removeItem("sell", getSelectedItem().getSlot());
 					if ( equalsTraderStatus(TraderStatus.MANAGE_BUY) )
-						getTraderStock().removeItem(false, getSelectedItem().getSlot());
+						getStock().removeItem("buy", getSelectedItem().getSlot());
 					
 					//reset the item
 					selectItem(null);
 					
 					//send a message
-					p.sendMessage( locale.getLocaleString("xxx-item", "action:removed") );
+					player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
 					
 				} 
 				else
@@ -917,7 +895,7 @@ public class ServerTrader extends Trader {
 					{
 						selectItem( toStockItem(event.getCurrentItem()) );
 						//send a message
-						p.sendMessage( locale.getLocaleString("xxx-item", "action:selected") );
+						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 					}
 				}
 			} 
@@ -927,65 +905,52 @@ public class ServerTrader extends Trader {
 	}
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
-//System.out.print("ac");
+	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) 
+	{
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
-				&& !permissions.has(player, "dtl.trader.bypass.creative") )
+				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-creative") );
+			player.sendMessage( localeManager.getLocaleString("lacks-permissions-creative") );
 			return false;
 		}
-		//System.out.print("acc");
-		
-		if ( player.getItemInHand().getTypeId() == config.getManageWand().getTypeId() )
+		if ( player.getItemInHand().getTypeId() == itemsConfig.getManageWand().getTypeId() )
 		{
 			
-			if ( !permissions.has(player, "dtl.trader.bypass.managing") 
+			if ( !permissionsManager.has(player, "dtl.trader.bypass.managing") 
 				&& !player.isOp() )
 			{
-				if ( !permissions.has(player, "dtl.trader.options.manage") )
+				if ( !permissionsManager.has(player, "dtl.trader.options.manage") )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+					player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
-				if ( !trait.getTraderTrait().getOwner().equals(player.getName()) )
+				if ( !trait.getConfig().getOwner().equals(player.getName()) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+					player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
 			}
-			//System.out.print("ac4");
 			
-			if ( TraderStatus.hasManageMode(this.getTraderStatus()) )
+			if ( getTraderStatus().isManaging() )
 			{
-				//System.out.print("a");
-				trait.getInventoryTrait().setPlayer(player);
-				//System.out.print("a");
 				switchInventory( getStartStatus(player) );
-				//System.out.print("a");
 				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				return true;
 			}	
 
-			//System.out.print("bs");
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 
-			//System.out.print("bs");
-			trait.getInventoryTrait().setPlayer(player);
-			//System.out.print("bs");
 			switchInventory( getManageStartStatus(player) );
-			//System.out.print("bs");
 			return true;
 		}
 
-		//System.out.print("bs2");
-		Trader.removeDescriptions(player.getInventory());
-		if ( !TraderStatus.hasManageMode(this.getTraderStatus()) )
+		NBTTagEditor.removeDescriptions(player.getInventory());
+		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player.getInventory());	
 		
 		player.openInventory(getInventory());
 		return true;
-	}/**/
+	}
 
 	public void loadDescriptions(Inventory inventory)
 	{
@@ -996,18 +961,18 @@ public class ServerTrader extends Trader {
 			
 			if ( item != null )
 			{
-				StockItem stockItem = this.getTraderStock().getItem(item, TraderStatus.BUY, false, false);
+				StockItem stockItem = this.getStock().getItem(item, TraderStatus.BUY, false, false);
 				
 				if ( stockItem != null )
 				{
 					int scale = item.getAmount() / stockItem.getAmount(); 
 
 					List<String> lore = new ArrayList<String>(); ;
-					for ( String l : config.getPriceLore("buy") )
+					for ( String l : itemsConfig.getPriceLore("buy") )
 						lore.add(l.replace("{unit}", stockItem.getPrice()+"").replace("{stack}", stockItem.getPrice()*scale+""));
 					
 					if ( scale > 0 )
-						Trader.addDescription((CraftItemStack) item, lore);				
+						NBTTagEditor.addDescription((CraftItemStack) item, lore);				
 				}
 			}
 		}
@@ -1023,5 +988,11 @@ public class ServerTrader extends Trader {
 			return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
 		return getSelectedItem().getRawPrice()*getSelectedItem().getAmount(slot);
 	}
+
+	@Override
+	public EcoNpcType getType() {
+		return EcoNpcType.SERVER_TRADER;
+	}
+	
 }
 

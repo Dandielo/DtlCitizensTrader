@@ -7,8 +7,11 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
-import net.dtl.citizens.trader.parts.TraderTrait;
-import net.dtl.citizens.trader.parts.TraderTrait.WalletType;
+import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.PermissionsManager;
+import net.dtl.citizens.trader.objects.Wallet.WalletType;
+import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.Trader;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
@@ -77,10 +80,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					Trader trader = (Trader) economyNpc;
 					player.sendMessage(ChatColor.GOLD + "==== " + ChatColor.YELLOW + trader.getNpc().getName() + ChatColor.GOLD + " ====");
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getTraderConfig().getTraderType().toString()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getTraderConfig().getOwner()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getWalletType().toString()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getTraderConfig().getPattern()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString()));
+					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getStock().getPattern().getName()));
 					
 				}
 				return true;
@@ -145,7 +148,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					for ( int i = 1 ; i < args.length ; ++i )
 						name += args[i];
 					
-					EconomyNpc trader = traderManager.getServerTraderByName(name);
+					Trader trader = (Trader) traderManager.getServerTraderByName(name, player);
 					
 					if ( trader == null )
 					{
@@ -330,7 +333,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 
-	private boolean traderManage(Player player, EconomyNpc economyNpc) 
+	private boolean traderManage(Player player, Trader economyNpc) 
 	{
 		Trader trader = (Trader) economyNpc;
 		
@@ -342,7 +345,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
 			}
-			if ( !trader.getTraderConfig().getOwner().equals(player.getName()) )
+			if ( !trader.getConfig().getOwner().equals(player.getName()) )
 			{
 				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
@@ -350,7 +353,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}
 		
 		
-		if ( TraderStatus.hasManageMode(economyNpc.getTraderStatus()) )
+		if ( economyNpc.getTraderStatus().isManaging() )
 		{
 			traderManager.removeInteractionNpc(player.getName());
 			//economyNpc.setTraderStatus(TraderStatus.SELL);
@@ -372,7 +375,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		for ( NPC npc : TraderCommandExecutor.traderManager.getAllServerTraders() )
 		{
-			npc.getTrait(TraderCharacterTrait.class).getInventoryTrait().reloadStock();
+			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
 		}
 		
 		return true;
@@ -380,8 +383,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 	private boolean removePattern(Player player, Trader trader) {
 		
-		trader.getTraderStock().removePattern();
-		trader.getTraderConfig().setPattern("");
+		trader.getStock().removePattern();
 		trader.getInventory().clear();
 		player.sendMessage( locale.getLocaleString("removed-pattern") );
 		
@@ -421,9 +423,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		
-		if ( trader.getTraderStock().setPattern(args[2]) )
+		if ( trader.getStock().setPattern(args[2]) )
 		{
-			trader.getTraderConfig().setPattern(args[2]);
 			player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[2].toLowerCase()) );
 		}
 		else
@@ -441,13 +442,13 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:stock") );
 				return true;
 			}
-			trader.getTraderStock().clearStock(args[1]);
+			trader.getStock().clearStock(args[1]);
 			
 			player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:" + args[1], "action:cleared") );
 			return true;
 		}
 		
-		trader.getTraderStock().clearStock("");
+		trader.getStock().clearStock("");
 		
 		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:sell", "action:cleared") );
 		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:buy", "action:cleared") );
@@ -543,11 +544,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		else
 		//next default is npc wallet
 		if ( permsManager.has(player, "dtl.trader.wallets.npc") )
-			return WalletType.NPC_WALLET;
+			return WalletType.NPC;
 		else
 		//next default is player wallet
 		if ( permsManager.has(player, "dtl.trader.wallets.owner") )
-			return WalletType.OWNER_WALLET;
+			return WalletType.OWNER;
 		else
 		//next server default is custom bank
 		if ( permsManager.has(player, "dtl.trader.wallets.bank") )
@@ -584,7 +585,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		
-		int size = trader.getTraderStock().getStockSize(status);
+	/*	int size = trader.getStock().getStockSize(status);
 		int totalPages = ( size % 10 == 0 ? ( size / 10 ) : ( size / 10 ) + 1 );
 		
 		
@@ -592,8 +593,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		player.sendMessage( locale.getLocaleString("list-header").replace("{curp}", "" + (page+1)).replace("{allp}", "" + totalPages) );
 		
 		
-		for ( String item : trader.getTraderStock().getItemList(status, locale.getLocaleString("list-message"), page) )
-			player.sendMessage(item);
+		for ( String item : trader.getStock().getItemList(status, locale.getLocaleString("list-message"), page) )
+			player.sendMessage(item);*/
 		return true;
 	}
 	
@@ -612,17 +613,17 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( wallet == null )
 		{
 			String account = ""; 
-			if ( trader.getTraderConfig().getWalletType().equals(WalletType.TOWNY) )
+			if ( trader.getWallet().getType().equals(WalletType.TOWNY) )
 				account = trader.getWallet().getTown();
-			if ( trader.getTraderConfig().getWalletType().equals(WalletType.SIMPLE_CLANS) )
+			if ( trader.getWallet().getType().equals(WalletType.SIMPLE_CLANS) )
 				account = trader.getWallet().getClan();
-			if ( trader.getTraderConfig().getWalletType().equals(WalletType.FACTIONS) )
+			if ( trader.getWallet().getType().equals(WalletType.FACTIONS) )
 				account = trader.getWallet().getFaction();
-			if ( trader.getTraderConfig().getWalletType().equals(WalletType.BANK) )
+			if ( trader.getWallet().getType().equals(WalletType.BANK) )
 				account = trader.getWallet().getBank();
 			
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getTraderConfig().getWalletType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
 			
 		}
 		//change wallet
@@ -723,7 +724,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			
 			//set the wallet type for both trader and wallet
-			trader.getTraderConfig().setWalletType(wallet);
+			trader.getWallet().setType(wallet);
 
 			//send message
 			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"§6:§e"+bankAccount)) );
@@ -742,7 +743,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//show current trader type
 		if ( type == null )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getTraderConfig().getTraderType().toString()) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()) );
 		}
 		//change trader type
 		else
@@ -754,13 +755,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				return true;
 			}
 
-			trader.getTraderConfig().setTraderType(type);
-			trader.getNpc().getTrait(TraderCharacterTrait.class).setTraderType(type);
+			trader.getNpc().getTrait(TraderCharacterTrait.class).setType(type);
 			
 			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:trader").replace("{value}", typeString) );
 		}
 		
-		return true;
+		return false;
 	}
 	
 	//show the traders balance
@@ -840,7 +840,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//setting the traders owner
 	private boolean setOwner(Player player, Trader trader, String owner) {
 		
-		trader.getTraderConfig().setOwner(owner);
+		trader.getConfig().setOwner(owner);
 		player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:owner").replace("{value}", owner) );
 		
 		return true;
@@ -849,7 +849,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//getting the traders owner
 	private boolean getOwner(Player player, Trader trader) {
 
-		player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getTraderConfig().getOwner() ) );
+		player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner() ) );
 
 		
 		return true;
@@ -875,7 +875,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("o:") )
 			{
 				owner = arg.substring(2);
-				walletType = WalletType.OWNER_WALLET;
+				walletType = WalletType.OWNER;
 			}
 			else
 			if ( arg.startsWith("sc:") )
@@ -955,9 +955,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.spawn(player.getLocation());
 		
 		//change the trader settings
-		TraderTrait settings = npc.getTrait(TraderCharacterTrait.class).getTraderTrait();
-		npc.getTrait(TraderCharacterTrait.class).setTraderType(traderType);
-		settings.setWalletType(walletType);
+		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
+		settings.getWallet().setType(walletType);
 		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
 		{
 			Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);

@@ -4,6 +4,7 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
+import net.dtl.citizens.trader.parts.BankTrait;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
@@ -133,6 +134,12 @@ public class TraderCharacterTrait extends Trait {
 			}
 			return "";
 		}
+	}
+
+	//TODO CHANGE THIS!
+	public BankTrait getBankTrait() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	

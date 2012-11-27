@@ -72,7 +72,7 @@ public class DenizenCommandTraderTransaction extends AbstractDenizenTraderComman
 					if ( status == null )
 						throw new CommandException("...Usage: TRADER_TRANSACTION [START/CANCEL] [SELL/BUY]");
 						
-					Trader trader = new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
+					Trader trader = null;//new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
 					npcManager.addInteractionNpc(theEntry.getPlayer().getName(), trader);
 					
 					switch( status )

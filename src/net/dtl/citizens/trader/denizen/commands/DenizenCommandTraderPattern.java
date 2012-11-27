@@ -67,7 +67,7 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 					
 					
 					if ( economyNpc == null )
-						economyNpc = new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
+						economyNpc = null ;//new ServerTrader(traderNpc.getTrait(TraderCharacterTrait.class), traderNpc, player);
 					
 					if ( !( economyNpc instanceof Trader ) )
 						return false;
@@ -76,9 +76,9 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 					
 					if ( patternName != null )
 					{
-						if ( trader.getTraderStock().setPattern(patternName) )
+						if ( trader.getStock().setPattern(patternName) )
 						{
-							trader.getTraderConfig().setPattern(patternName);
+							//trader.getConfig().setPattern(patternName);
 							trader.switchInventory(trader.getTraderStatus());
 							
 							
@@ -97,15 +97,15 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 					
 					
 					if ( economyNpc == null )
-						economyNpc = new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
+						economyNpc = null;//new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
 					
 					if ( !( economyNpc instanceof Trader ) )
 						return false;
 					
 					Trader trader = (Trader) economyNpc;// new ServerTrader(traderNpc, traderNpc.getTrait(TraderCharacterTrait.class).getTraderTrait());
 					
-					trader.getTraderConfig().setPattern("");
-					trader.getTraderStock().removePattern();
+				//	trader.getConfig().setPattern("");
+					trader.getStock().removePattern();
 					trader.switchInventory(trader.getTraderStatus());
 					
 				//	Packet103SetSlot packet = new Packet103SetSlot();

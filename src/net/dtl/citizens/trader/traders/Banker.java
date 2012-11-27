@@ -13,11 +13,13 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
-import net.dtl.citizens.trader.LocaleManager;
-import net.dtl.citizens.trader.PermissionsManager;
+import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.BankTab;
+import net.dtl.citizens.trader.objects.Wallet;
+import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.BankTrait;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.milkbowl.vault.economy.Economy;
@@ -106,7 +108,7 @@ abstract public class Banker implements EconomyNpc {
 	protected BankItem selectedItem;
 	
 	protected Inventory tabInventory;
-	protected TraderStatus traderStatus;
+//	protected TraderStatus traderStatus;
 	protected BankStatus bankStatus;
 	protected NPC npc;
 	
@@ -122,7 +124,7 @@ abstract public class Banker implements EconomyNpc {
 		//loading accoutns
 		
 		
-		traderStatus = TraderStatus.BANK;
+	//	traderStatus = TraderStatus.BANK;
 		bankStatus = BankStatus.ITEM_MANAGING;
 		tab = BankTabType.Tab1;
 
@@ -676,7 +678,7 @@ abstract public class Banker implements EconomyNpc {
 		return tabInventory;
 	}
 	
-	@Override
+/*	@Override
 	public TraderStatus getTraderStatus() {
 		return traderStatus;
 	}
@@ -684,11 +686,23 @@ abstract public class Banker implements EconomyNpc {
 	@Override
 	public void setTraderStatus(TraderStatus status) {
 		traderStatus = status;
+	}*/
+	
+	@Override
+	public final boolean locked()
+	{
+		return false;
 	}
 
 	@Override
 	public int getNpcId() {
 		return npc.getId();
+	}
+	
+	@Override
+	public Wallet getWallet()
+	{
+		return new Wallet(WalletType.NPC);
 	}
 	
 	
