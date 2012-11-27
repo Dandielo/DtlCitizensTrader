@@ -19,7 +19,7 @@ public class Wallet {
 	private Clan clan = null; 
 	private Town town = null;
 	private Faction faction = null;
-	private String bank;
+	private String bank = "";
 	
 	//for private money
 	private double money; 
@@ -218,6 +218,7 @@ public class Wallet {
 		}
 		
 		//get the name of the type
+		@Override
 		public String toString() {
 			switch( this )
 			{

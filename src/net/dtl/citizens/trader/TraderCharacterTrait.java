@@ -55,6 +55,9 @@ public class TraderCharacterTrait extends Trait {
 		if ( type.equals("trader") )
 		{
 			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
+			config = new TraderConfigPart();
+			stock = new TraderStockPart("Stock");
+			
 			config.load(data);
 			stock.load(data);
 		}

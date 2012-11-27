@@ -39,13 +39,17 @@ public class TraderStockPart implements InventoryHolder {
 		stockSize = size;
         if( size <= 0 || size > 54 ){
         	throw new IllegalArgumentException("Size must be between 1 and 54");}
+        
+        stock = new HashMap<String, List<StockItem>>();
+        stock.put("sell", new ArrayList<StockItem>());
+        stock.put("buy", new ArrayList<StockItem>());
     }
 	
 	private int stockSize;
 	private String name;
 	private TransactionPattern pattern;
 	
-	private Map<String,List<StockItem>> stock = new HashMap<String, List<StockItem>>();
+	private Map<String,List<StockItem>> stock;
 	
 	//set/get the pattern
 	public TransactionPattern getPattern()

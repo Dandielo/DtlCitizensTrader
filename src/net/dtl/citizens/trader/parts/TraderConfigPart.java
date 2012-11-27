@@ -145,7 +145,7 @@ public class TraderConfigPart {
 			else
 			//TODO this one is deprecated, remove with version 3.0!!
 			{
-				wallet = new Wallet( WalletType.getTypeByName(data.getString("wallet-type").split(":")[0]) );
+				wallet = new Wallet( WalletType.getTypeByName(data.getString("wallet-type")) );
 				
 				if ( wallet.getType().equals(WalletType.SIMPLE_CLANS)
 						&& CitizensTrader.getSimpleClans() != null )
