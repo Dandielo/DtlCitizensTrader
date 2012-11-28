@@ -23,6 +23,7 @@ import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
@@ -227,12 +228,17 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	//switching inventory = change items in it
+	public final void switchInventory(TraderStatus status, String type) {
+		inventory.clear();
+		traderStock.inventoryView(inventory, status, player, type);
+	//	reset(status);
+	}
+	//switching inventory = change items in it
 	public final void switchInventory(TraderStatus status) {
 		inventory.clear();
-		traderStock.inventoryView(inventory, status, player);
+		traderStock.inventoryView(inventory, status, player, "manage");
 		reset(status);
 	}
-	
 	
 	//swithing inventory (amounts selection)
 	public final void switchInventory(StockItem item) {
@@ -337,27 +343,10 @@ public abstract class Trader implements EconomyNpc {
 		return inventoryClicked;
 	}
 	
-	/*
-	//
-	public final void setClickedSlot(Integer s) {
-		lastSlot = s;
-	}
-	
-	//
-	public final Integer getClickedSlot() {
-		return lastSlot;
-	}*/
-	
 	//trader status easy check
 	public final boolean equalsTraderStatus(TraderStatus status) {
 		return traderStatus.equals(status);
 	}
-	/*public final boolean equalsTraderType(EcoNpcType type) {
-		return traderConfig.getTraderType().equals(type);
-	}
-	public final boolean equalsWalletType(WalletType type) {
-		return traderConfig.getWalletType().equals(type);
-	}*/
 
 	public final boolean locked()
 	{
@@ -482,8 +471,6 @@ public abstract class Trader implements EconomyNpc {
 		loggingManager.playerLog(owner, npc.getName(), localeManager.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
 	}
 	
-	
-	
 	//Trader status enumeration
 	public enum TraderStatus {
 		SELL, BUY, SELL_AMOUNT, MANAGE_SELL, MANAGE_LIMIT_GLOBAL, MANAGE_LIMIT_PLAYER, MANAGE_SELL_AMOUNT, MANAGE_PRICE, MANAGE_BUY, MANAGE;
@@ -528,5 +515,11 @@ public abstract class Trader implements EconomyNpc {
 	}
 
 
+	//Test methods
+	public void resetLores(String lore)
+	{
+		
+	}
+	
 	
 }

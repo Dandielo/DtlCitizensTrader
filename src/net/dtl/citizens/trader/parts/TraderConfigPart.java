@@ -19,7 +19,7 @@ public class TraderConfigPart {
 	private boolean enabled;
 	
 	public TraderConfigPart() {
-		wallet = null;
+		wallet = new Wallet(WalletType.NPC);
 		owner = "no owner";
 		enabled = true;
 	}
@@ -112,15 +112,15 @@ public class TraderConfigPart {
 		return success;
 	}
 	
-	public Clan getClan(String tag)
+	public static Clan getClan(String tag)
 	{
 		return CitizensTrader.getSimpleClans().getClanManager().getClan(tag);
 	}
-	public Town getTown(String tag)
+	public static Town getTown(String tag)
 	{
 		return CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(tag);
 	}
-	public Faction getFaction(String tag)
+	public static Faction getFaction(String tag)
 	{
 		return Factions.i.getByTag(tag);
 	}

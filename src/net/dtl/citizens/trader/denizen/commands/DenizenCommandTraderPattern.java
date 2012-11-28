@@ -13,6 +13,8 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 
 	enum Action { SET, REMOVE }
 	
+	
+	//TODO fix server traders without players
 	@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 		

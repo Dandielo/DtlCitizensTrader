@@ -34,8 +34,8 @@ public class Wallet {
 	public WalletType getType() {
 		return type;
 	}
-	public void setType(WalletType w) {
-		type = w;
+	public void setType(WalletType type) {
+		this.type = type;
 	}
 	
 	//set/get money for "private" wallet

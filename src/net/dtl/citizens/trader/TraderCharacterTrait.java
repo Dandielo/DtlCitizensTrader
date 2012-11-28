@@ -16,9 +16,6 @@ public class TraderCharacterTrait extends Trait {
 
 	public TraderCharacterTrait() {
 		super("trader");
-	//	this.traderTrait = new TraderTrait();
-	//	this.inventoryTrait = new InventoryPart();
-	//	this.bankTrait = new BankTrait();
 	}
 	
 	@Override
@@ -29,14 +26,15 @@ public class TraderCharacterTrait extends Trait {
 	public TraderStockPart getStock() {
 		return stock;
 	}
-	
 	public TraderConfigPart getConfig() {
 		return config;
 	}
-	/*
-	public BankTrait getBankTrait() {
-		return bankTrait;
-	}*/
+	
+	public void implementTrader()
+	{
+		config = new TraderConfigPart();
+		stock = new TraderStockPart("Stock");
+	}
 	
 	//The EcoNpc's type
 	public EcoNpcType getType()
@@ -55,8 +53,12 @@ public class TraderCharacterTrait extends Trait {
 		if ( type.equals("trader") )
 		{
 			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
-			config = new TraderConfigPart();
-			stock = new TraderStockPart("Stock");
+			
+			if ( config == null )
+			{
+				config = new TraderConfigPart();
+				stock = new TraderStockPart("Stock");
+			}
 			
 			config.load(data);
 			stock.load(data);

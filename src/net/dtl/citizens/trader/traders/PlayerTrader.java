@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -14,7 +15,9 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.LimitSystem;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
+import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class PlayerTrader extends Trader {
 
@@ -359,13 +362,13 @@ public class PlayerTrader extends Trader {
 				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(6)) )
 				{
 					
-					
 					//close any management mode, switch to the default buy/sell management
 					if ( isSellModeByWool() )
 						this.setTraderStatus(TraderStatus.MANAGE_SELL);
 					if ( isBuyModeByWool() )
 						this.setTraderStatus(TraderStatus.MANAGE_BUY);
-					
+
+					switchInventory(getBasicManageModeByWool(), "manage");
 					
 					getInventory().setItem(getInventory().getSize() - 2, itemsConfig.getItemManagement(2) );//new ItemStack(Material.WOOL,1,(short)0,(byte)15));
 					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? itemsConfig.getItemManagement(4) : itemsConfig.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
@@ -383,7 +386,8 @@ public class PlayerTrader extends Trader {
 					else
 					{
 						//switch to price setting mode
-						this.setTraderStatus(TraderStatus.MANAGE_PRICE);
+						setTraderStatus(TraderStatus.MANAGE_PRICE);
+						switchInventory(getBasicManageModeByWool(), "price");
 						
 
 						getInventory().setItem(getInventory().getSize() - 2, itemsConfig.getItemManagement(6));
@@ -404,8 +408,9 @@ public class PlayerTrader extends Trader {
 					}
 					else
 					{
-						
+					//	switchManageInventory("limit", TraderStatus.MANAGE_LIMIT_GLOBAL);
 						setTraderStatus(TraderStatus.MANAGE_LIMIT_GLOBAL);
+						switchInventory(getBasicManageModeByWool(), "glimit");
 						
 						
 						
@@ -428,8 +433,6 @@ public class PlayerTrader extends Trader {
 					else
 					{
 						switchInventory(TraderStatus.MANAGE_BUY);
-						
-						
 						
 						getInventory().setItem(getInventory().getSize() - 1, itemsConfig.getItemManagement(0));
 						getInventory().setItem(getInventory().getSize() - 3, itemsConfig.getItemManagement(3));
@@ -469,7 +472,8 @@ public class PlayerTrader extends Trader {
 				{
 					
 					this.saveManagedAmouts();
-					this.switchInventory(TraderStatus.MANAGE_SELL);
+					switchInventory(TraderStatus.MANAGE_SELL);
+					//this.switchInventory(TraderStatus.MANAGE_SELL);
 					
 					getInventory().setItem(getInventory().getSize() - 1, itemsConfig.getItemManagement(1));
 					
@@ -629,6 +633,11 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().setStackPrice(true);
 								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 							}
+							
+							
+							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							
 						}
 						
 						//reset the selection
@@ -705,6 +714,11 @@ public class PlayerTrader extends Trader {
 							else
 								getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 							
+
+							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							
+							
 							//show the new price
 							player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
@@ -749,6 +763,9 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getLimitSystem().changeGlobalLimit(-calculateLimit(event.getCursor()));
 							else
 								getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
+							
+							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), null, player));
 							
 							player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:buy-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 						
@@ -1089,7 +1106,7 @@ public class PlayerTrader extends Trader {
 			}	
 			
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
-			switchInventory( getManageStartStatus(player) );
+			switchInventory(getManageStartStatus(player) );
 			return true;
 		}
 

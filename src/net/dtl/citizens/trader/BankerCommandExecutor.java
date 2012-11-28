@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 
 public class BankerCommandExecutor implements CommandExecutor {
 
+	//TODO Total redo!
 	//plugin instance
 	public static CitizensTrader plugin;
 	

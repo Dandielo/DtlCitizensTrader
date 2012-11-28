@@ -44,8 +44,9 @@ public class ItemsConfig {
 		
 		pricesLore = new HashMap<String,List<String>>();
 		
-		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("player-inventory"));
-		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory"));
+		pricesLore.put("pbuy", traderSection.getConfigurationSection("prices-lore").getStringList("player-inventory"));
+		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-sell"));
+		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-buy"));
 		
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
@@ -191,7 +192,10 @@ public class ItemsConfig {
 			return new ItemStack(0);
 		}
 	}
-	
+
+	public ItemStack getItemManagement(String stock) {
+		return buttons.get(stock+"-tab");
+	}
 	
 	public static String buildPath(String... path) {
 		StringBuilder builder = new StringBuilder();
@@ -214,9 +218,5 @@ public class ItemsConfig {
 		return builder.toString();
 	}
 
-	public ItemStack getItemManagement(String opositeStock) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -137,7 +137,7 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
-	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player) {
+	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type) {
 
 		if ( !s.isManaging() )
 		{
@@ -161,7 +161,7 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for( StockItem item : stock.get(s.toString()) )
 			{
-				ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, s.toString(), pattern, player));
+				ItemStack chk = setLore(createCraftItem(item), getLore(type, item, s.toString(), pattern, player));
  
 	            //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -249,24 +249,23 @@ public class TraderStockPart implements InventoryHolder {
 		}
 		inventory.setItem(inventory.getSize() - 1, itemsConfig.getItemManagement(7));
 	}
-		
-	/*//patterns manager
+
 	public void linkItems()
 	{
-		for ( StockItem item : sellStock )
+		for ( StockItem item : stock.get("sell") )
 		{
-			for ( int i = 0 ; i < buyStock.size() ; ++i )
+			for ( int i = 0 ; i < stock.get("buy").size() ; ++i )
 			{
-				if ( item.equals(buyStock.get(i)) )
+				if ( item.equals(stock.get("buy").get(i)) )
 				{
-					item.getLimitSystem().linkWith(buyStock.get(i));
-					buyStock.get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
-					buyStock.get(i).getLimitSystem().linkWith(item);
+					item.getLimitSystem().linkWith(stock.get("buy").get(i));
+					stock.get("buy").get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
+					stock.get("buy").get(i).getLimitSystem().linkWith(item);
 				}
 			}
 		}
 	}
-	*/
+
 	//Returning the displayInventory
 	@Override
 	public Inventory getInventory() 
@@ -289,86 +288,7 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
-	/*
 	
-	
-	
-	
-	public int getStockSize(TraderStatus status) 
-	{
-		if ( status.equals(TraderStatus.SELL) )
-			return sellStock.size();
-		return buyStock.size();
-	}
-	
-	public List<String> getItemList(TraderStatus status, String format, int page) 
-	{
-		//the list we will privide the player 
-		List<String> items = new ArrayList<String>();
-		
-		//the fariable to be fetched through
-		List<StockItem> stockItems = null;
-		
-		
-		//set the stockItems variable
-		if ( TraderStatus.SELL.equals(status) )
-			stockItems = sellStock;
-		if ( TraderStatus.BUY.equals(status) )
-			stockItems = buyStock;	
-
-		
-		//index variable
-		int i = 0;
-		
-		//fetch the list we will display
-		for ( StockItem item : stockItems )
-		{
-			String itemDisplay = format;
-			
-			//item id display
-			itemDisplay = itemDisplay.replace("{nr}", String.valueOf(i+1) );
-			
-			//item id display
-			itemDisplay = itemDisplay.replace("{id}", String.valueOf(item.getItemStack().getTypeId()) );
-
-			//item id display
-			itemDisplay = itemDisplay.replace("{data}", String.valueOf(item.getItemStack().getData().getData()) );
-			
-			//amount display
-			itemDisplay = itemDisplay.replace("{amount}", String.valueOf(item.getAmount()) );
-			
-			//price display
-			itemDisplay = itemDisplay.replace("{price}", String.valueOf(item.getPrice()) );
-			
-			//slot display
-			itemDisplay = itemDisplay.replace("{slot}", String.valueOf(item.getSlot()) );
-			
-			//global limit display
-			itemDisplay = itemDisplay.replace("{gl}", String.valueOf(item.getLimitSystem().getGlobalLimit()) );
-
-			//item name display
-			itemDisplay = itemDisplay.replace("{name}", String.valueOf(item.getItemStack().getType().name().toLowerCase()) );
-			
-			if ( i >= page * 10 && i < ( ( 1 + page ) * 10 ) )
-				items.add(itemDisplay);
-			
-			++i;
-		}
-		
-		
-		
-		return items;
-	}
-	
-	
-	
-	
-	
-	
-
-	//NBT tags
-	*/
-
 	@SuppressWarnings("unchecked")
 	public void load(DataKey data) {
 		if ( data.keyExists("sell") )
@@ -449,19 +369,67 @@ public class TraderStockPart implements InventoryHolder {
 		return cis;
 	}
 	
+	public static List<String> getLore(String type, StockItem item, String stock, TransactionPattern pattern, Player player)
+	{
+		if ( type.equals("glimit") )
+			return getLimitLore(item, stock, pattern, player);
+		if ( type.equals("plimit") )
+			return getPlayerLimitLore(item, stock, pattern, player);
+		if ( type.equals("manage") )
+			return getManageLore(item, stock, pattern, player);
+		return getPriceLore(item, stock, pattern, player);
+	}
+	
 	public static List<String> getPriceLore(StockItem item, String stock, TransactionPattern pattern, Player player)
 	{
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
-		
+
 		if ( pattern != null )
 			price = format.format(pattern.getItemPrice(player, item, stock, 0, 0.0));
 		else
 			price = format.format(item.getPrice());
 		
 		List<String> lore = new ArrayList<String>();
-		for ( String line : itemsConfig.getPriceLore("sell") )
+		for ( String line : itemsConfig.getPriceLore(stock) )
 			lore.add(line.replace("{price}", price));
+		
+		return lore;
+	}
+	
+	public static List<String> getManageLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	{
+		List<String> lore = new ArrayList<String>();
+		if ( item.hasStackPrice() )
+			lore.add("^7Stack price");
+		if ( item.isPatternListening() )
+			lore.add("^7Pattern price");
+		if ( item.isPatternItem() )
+			lore.add("^7Pattern item");
+		
+		return lore;
+	}
+	
+	public static List<String> getPlayerLimitLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	{
+		List<String> lore = new ArrayList<String>();
+		if ( item.getLimitSystem().hasLimit() )
+		{
+			lore.add("^7Limit: ^6" +item.getLimitSystem().getPlayerLimit());
+			lore.add("^7Timeout: ^6" + item.getLimitSystem().getPlayerTimeout());
+		}
+		
+		return lore;
+	}
+	
+	public static List<String> getLimitLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	{
+		List<String> lore = new ArrayList<String>();
+		if ( item.getLimitSystem().hasLimit() )
+		{
+			lore.add("^7Limit: ^e" + item.getLimitSystem().getGlobalAmount() + "^6/" + item.getLimitSystem().getGlobalLimit());
+			lore.add("^7Timeout: ^6" + item.getLimitSystem().getGlobalTimeout());
+		}
 		
 		return lore;
 	}

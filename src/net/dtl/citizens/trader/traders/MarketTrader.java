@@ -518,7 +518,7 @@ public class MarketTrader extends Trader {
 			}	
 			
 			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
-			switchInventory( getManageStartStatus(player) );
+			switchInventory(getManageStartStatus(player) );
 			return true;
 		}
 

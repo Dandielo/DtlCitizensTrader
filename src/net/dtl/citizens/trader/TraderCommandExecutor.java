@@ -953,11 +953,17 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.addTrait(MobType.class);
 		npc.getTrait(MobType.class).setType(entityType);
 		npc.spawn(player.getLocation());
+		System.out.print("a");
 		
+		npc.getTrait(TraderCharacterTrait.class).implementTrader();
 		//change the trader settings
 		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		System.out.print("abc");
 		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
+		System.out.print("aba");
 		settings.getWallet().setType(walletType);
+		System.out.print("ab");
+		
 		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
 		{
 			Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);
