@@ -27,7 +27,7 @@ import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
 public class ServerTrader extends Trader {
 
-	private TransactionPattern pattern;
+	private TransactionPattern pattern = getStock().getPattern();
 	
 	public ServerTrader(TraderCharacterTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
@@ -293,6 +293,7 @@ public class ServerTrader extends Trader {
 			//	{
 
 				double price = getPrice(player, "buy");
+				System.out.print("p: "+price);
 				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
@@ -305,7 +306,7 @@ public class ServerTrader extends Trader {
 					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 				}
 				else
-				if ( !sellTransaction(price, event.getCurrentItem()) )
+				if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 				{
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
@@ -970,44 +971,6 @@ public class ServerTrader extends Trader {
 		
 		player.openInventory(getInventory());
 		return true;
-	}
-
-	public void loadDescriptions(Inventory inventory)
-	{
-		DecimalFormat f = new DecimalFormat("#.##");
-		for ( int i = 0 ; i < inventory.getSize() ; ++i )
-		{
-			ItemStack item = inventory.getItem(i);
-			
-			
-			if ( item != null )
-			{
-				StockItem stockItem = this.getStock().getItem(item, TraderStatus.BUY, false, false);
-				
-				if ( stockItem != null )
-				{
-					int scale = item.getAmount() / stockItem.getAmount(); 
-
-					List<String> lore = new ArrayList<String>(); ;
-					for ( String l : itemsConfig.getPriceLore("pbuy") )
-						lore.add(l.replace("{unit}", f.format(stockItem.getPrice())+"").replace("{stack}", f.format(stockItem.getPrice()*scale)+""));
-					
-					if ( scale > 0 )
-						NBTTagEditor.addDescription((CraftItemStack) item, lore);				
-				}
-			}
-		}
-	}
-	
-	public double getPrice(Player player, String transaction)
-	{
-		return getPrice(player, transaction, 0);
-	}
-	public double getPrice(Player player, String transaction, int slot)
-	{
-		if ( pattern != null )
-			return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
-		return getSelectedItem().getRawPrice()*getSelectedItem().getAmount(slot);
 	}
 
 	@Override

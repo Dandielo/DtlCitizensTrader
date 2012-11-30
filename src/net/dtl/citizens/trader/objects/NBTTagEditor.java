@@ -39,6 +39,9 @@ public class NBTTagEditor extends NBTTagCompound {
 									if ( !oldList.get(j).getName().equals("dtl_trader") && !oldList.get(j).getName().isEmpty() )
 										newList.add(oldList.get(j));
 								
+								if ( newList.size() == 0 )
+									c.setTag(null);
+								
 								d.set("Lore", newList);
 							}
 						}

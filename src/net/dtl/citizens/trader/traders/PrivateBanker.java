@@ -15,12 +15,12 @@ import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.parts.BankTrait;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
-public class PlayerBanker extends Banker {
+public class PrivateBanker extends Banker {
 
 	
 	int lastSlot = -1;
 	
-	public PlayerBanker(NPC bankerNpc, BankTrait bankConfiguragion, String player) { 
+	public PrivateBanker(NPC bankerNpc, BankTrait bankConfiguragion, String player) { 
 		super(bankerNpc, bankConfiguragion, player);
 		
 	//	withdrawFee = bankerNpc.getTrait(TraderCharacterTrait.class).getBankTrait().getWithdrawFee();//config.getDouble("bank.withdraw-fee");

@@ -3,10 +3,13 @@ package net.dtl.citizens.trader.traders;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -321,7 +324,7 @@ public abstract class Trader implements EconomyNpc {
 
 	//when a player is selling
 	public boolean sellTransaction(double price, ItemStack item) {
-		return traderConfig.sellTransaction(player.getName(), price*((int)item.getAmount() / selectedItem.getAmount()));
+		return traderConfig.sellTransaction(player.getName(), price);
 	}
 	
 	//reset the trader
@@ -514,11 +517,43 @@ public abstract class Trader implements EconomyNpc {
 		}
 	}
 
-
-	//Test methods
-	public void resetLores(String lore)
+	
+	public double getPrice(Player player, String transaction)
 	{
-		
+		return getPrice(player, transaction, 0);
+	}
+	public double getPrice(Player player, String transaction, int slot)
+	{
+		if ( getStock().getPattern() != null )
+			return getStock().getPattern() .getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+		return ( getSelectedItem().hasStackPrice() ? getSelectedItem().getPrice() : getSelectedItem().getPrice()*getSelectedItem().getAmount(slot) );
+	}
+	
+	public void loadDescriptions(Inventory inventory)
+	{
+		DecimalFormat f = new DecimalFormat("#.##");
+		for ( int i = 0 ; i < inventory.getSize() ; ++i )
+		{
+			ItemStack item = inventory.getItem(i);
+			
+			
+			if ( item != null )
+			{
+				StockItem stockItem = this.getStock().getItem(item, TraderStatus.BUY, true, false);
+				
+				if ( stockItem != null )
+				{
+					int scale = item.getAmount() / stockItem.getAmount(); 
+
+					List<String> lore = new ArrayList<String>(); ;
+					for ( String l : itemsConfig.getPriceLore("pbuy") )
+						lore.add(l.replace("{unit}", f.format(stockItem.getPrice())+"").replace("{stack}", f.format(stockItem.getPrice()*scale)+""));
+					
+					if ( scale > 0 )
+						NBTTagEditor.addDescription((CraftItemStack) item, lore);				
+				}
+			}
+		}
 	}
 	
 	

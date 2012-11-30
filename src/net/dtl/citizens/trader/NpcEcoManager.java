@@ -19,7 +19,7 @@ import net.dtl.citizens.trader.traders.Banker;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.MarketTrader;
 import net.dtl.citizens.trader.traders.MoneyBanker;
-import net.dtl.citizens.trader.traders.PlayerBanker;
+import net.dtl.citizens.trader.traders.PrivateBanker;
 import net.dtl.citizens.trader.traders.PlayerTrader;
 import net.dtl.citizens.trader.traders.ServerTrader;
 import net.dtl.citizens.trader.traders.Trader;
@@ -484,7 +484,7 @@ public class NpcEcoManager implements Listener {
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
-						EconomyNpc newNpc = new PlayerBanker(npc, characterTrait.getBankTrait(), playerName);
+						EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 						Banker banker = (Banker) playerInteraction.get(playerName);
 						if ( !Banker.hasAccount(player) ) {
 							playerInteraction.remove(playerName);
@@ -508,7 +508,7 @@ public class NpcEcoManager implements Listener {
 						return;
 					}
 					
-					EconomyNpc newNpc = new PlayerBanker(npc, characterTrait.getBankTrait(), playerName);
+					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 					
 				//	Banker banker = (Banker) newNpc;
 					if ( !Banker.hasAccount(player) ) {

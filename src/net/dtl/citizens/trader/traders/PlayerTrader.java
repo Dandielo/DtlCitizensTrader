@@ -227,20 +227,20 @@ public class PlayerTrader extends Trader {
 					
 				//	if ( getClickedSlot() == slot && !getInventoryClicked() )
 				//	{
-						
+					double price = getPrice(player, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 					if ( !checkBuyLimits(scale) )
 					{
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 					}
 					else
-					if ( !sellTransaction(getSelectedItem().getPrice(),event.getCurrentItem()) )
+					if ( !sellTransaction(price*scale,event.getCurrentItem()) )
 					{
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 					}
 					else
 					{
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+						player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 
 						updateBuyLimits(scale);
@@ -252,7 +252,7 @@ public class PlayerTrader extends Trader {
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount()*scale, 
-							getSelectedItem().getPrice()*scale );
+							price*scale );
 
 						//sending a message to the traders owner
 						this.messageOwner("sold", player.getName(), getSelectedItem(), 0);
@@ -279,8 +279,8 @@ public class PlayerTrader extends Trader {
 			{
 			//	if ( getClickedSlot() == slot && !getInventoryClicked() )
 			//	{
-				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
-			
+				double price = getPrice(player, "buy");
+				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount();
 				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
 					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
@@ -291,13 +291,13 @@ public class PlayerTrader extends Trader {
 					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 				}
 				else
-				if ( !sellTransaction(getSelectedItem().getPrice(),event.getCurrentItem()) )
+				if ( !sellTransaction(price*scale,event.getCurrentItem()) )
 				{
 					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 				}
 				else
 				{
-					player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(getSelectedItem().getPrice()*scale) ) );
+					player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 					
 					updateBuyLimits(scale);
 					
@@ -308,7 +308,7 @@ public class PlayerTrader extends Trader {
 						getSelectedItem().getItemStack().getTypeId(),
 						getSelectedItem().getItemStack().getData().getData(), 
 						getSelectedItem().getAmount()*scale, 
-						getSelectedItem().getPrice()*scale );
+						price*scale );
 
 					//sending a message to the traders owner
 					this.messageOwner("sold", player.getName(), getSelectedItem(), 0);
@@ -716,7 +716,7 @@ public class PlayerTrader extends Trader {
 							
 
 							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), getBasicManageModeByWool().toString(), null, player));
 							
 							
 							//show the new price
@@ -1056,8 +1056,6 @@ public class PlayerTrader extends Trader {
 		
 		setInventoryClicked(false);
 	}
-		
-//	}
 	
 	public void messageOwner(String action, String buyer, StockItem item, int slot)
 	{
@@ -1109,6 +1107,11 @@ public class PlayerTrader extends Trader {
 			switchInventory(getManageStartStatus(player) );
 			return true;
 		}
+
+		//DEscriptions for player items
+		NBTTagEditor.removeDescriptions(player.getInventory());
+		if ( !getTraderStatus().isManaging() )
+			loadDescriptions(player.getInventory());
 
 		player.openInventory(getInventory());
 		return true;
