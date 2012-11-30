@@ -178,10 +178,8 @@ public class TransactionPattern {
 	{
 		double price = nprice;
 
-		System.out.print(price);
 		if ( item.isPatternListening() )
 		{
-			System.out.print(price);
 			if ( patternPrices.containsKey(transation) )
 				if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
 					price = patternPrices.get(transation).get(item.getIdAndData());
@@ -190,7 +188,6 @@ public class TransactionPattern {
 						if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
 							price = entry.getValue();
 
-			System.out.print(price);
 			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
@@ -199,14 +196,11 @@ public class TransactionPattern {
 		}
 		else
 			price = item.getRawPrice();
-		System.out.print(price);
 
 		if ( !item.hasStackPrice() && nprice == 0.0 )
 			price *= item.getAmount(slot);
-		System.out.print(price);
 		
 		price *= multiplier.get(transation);
-		System.out.print(price);
 		return price;
 	}
 	
