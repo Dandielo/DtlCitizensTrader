@@ -62,6 +62,9 @@ public class TraderCharacterTrait extends Trait {
 			
 			config.load(data);
 			stock.load(data);
+			
+			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
+				stock.linkItems();
 		}
 		else
 		if ( type.equals("banker") )

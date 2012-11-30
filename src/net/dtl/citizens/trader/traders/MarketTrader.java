@@ -242,7 +242,7 @@ public class MarketTrader extends Trader {
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 					}
 					else
-					if ( !sellTransaction(price, event.getCurrentItem()) )
+					if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 					{
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 					}
@@ -305,7 +305,7 @@ public class MarketTrader extends Trader {
 					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 				}
 				else
-				if ( !sellTransaction(price, event.getCurrentItem()) )
+				if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 				{
 					player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 				}
