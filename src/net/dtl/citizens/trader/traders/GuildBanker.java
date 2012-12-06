@@ -5,12 +5,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.parts.BankTrait;
+import net.dtl.citizens.trader.parts.BankerPart;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
 public class GuildBanker extends Banker {
 
-	public GuildBanker(NPC traderNpc, BankTrait bankConfiguragion) {
+	public GuildBanker(NPC traderNpc, BankerPart bankConfiguragion) {
 		super(traderNpc, bankConfiguragion, "");
 		// TODO Auto-generated constructor stub
 	}

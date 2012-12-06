@@ -2,15 +2,16 @@ package net.dtl.citizens.trader.objects;
 
 import java.util.List;
 
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTTagString;
+
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
-public class NBTTagEditor extends NBTTagCompound {
+public class NBTTagEditor {
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
@@ -18,7 +19,7 @@ public class NBTTagEditor extends NBTTagCompound {
 		{
 			if ( item != null )
 			{
-				net.minecraft.server.ItemStack c = ((CraftItemStack)item).getHandle();
+				net.minecraft.server.v1_4_5.ItemStack c = ((CraftItemStack)item).getHandle();
 				NBTTagCompound tc = c.getTag();
 				
 				if ( tc != null )
@@ -53,7 +54,7 @@ public class NBTTagEditor extends NBTTagCompound {
 	
 	public static void addDescription(CraftItemStack item, List<String> lore)
 	{
-		net.minecraft.server.ItemStack c = item.getHandle();
+		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
 		NBTTagCompound tag = c.getTag();
 
 		if ( tag == null )
@@ -77,7 +78,7 @@ public class NBTTagEditor extends NBTTagCompound {
 	
 	public static void removeDescription(CraftItemStack item)
 	{
-		net.minecraft.server.ItemStack c = item.getHandle();
+		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
 		NBTTagCompound tag = c.getTag();
 
 		if ( tag == null )

@@ -12,7 +12,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
-import net.dtl.citizens.trader.parts.BankTrait;
+import net.dtl.citizens.trader.parts.BankerPart;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
 public class PrivateBanker extends Banker {
@@ -20,11 +20,9 @@ public class PrivateBanker extends Banker {
 	
 	int lastSlot = -1;
 	
-	public PrivateBanker(NPC bankerNpc, BankTrait bankConfiguragion, String player) { 
+	public PrivateBanker(NPC bankerNpc, BankerPart bankConfiguragion, String player) { 
 		super(bankerNpc, bankConfiguragion, player);
 		
-	//	withdrawFee = bankerNpc.getTrait(TraderCharacterTrait.class).getBankTrait().getWithdrawFee();//config.getDouble("bank.withdraw-fee");
-	//	depositFee = bankerNpc.getTrait(TraderCharacterTrait.class).getBankTrait().getDepositFee();//config.getDouble("bank.deposit-fee");
 		initializeTabPrices();
 		
 		account = bankAccounts.get(player);
@@ -199,9 +197,9 @@ public class PrivateBanker extends Banker {
 		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		
-		if ( this.getBankStatus().equals(BankStatus.ITEM_MANAGING) )
+		if ( this.getBankStatus().equals(BankStatus.TAB_DISPLAY) )
 		{
-		
+		 
 			if ( top )
 			{
 				

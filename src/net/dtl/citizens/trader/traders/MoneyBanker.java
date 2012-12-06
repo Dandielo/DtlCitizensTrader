@@ -10,7 +10,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
-import net.dtl.citizens.trader.parts.BankTrait;
+import net.dtl.citizens.trader.parts.BankerPart;
 
 public class MoneyBanker extends Banker {
 	
@@ -18,7 +18,7 @@ public class MoneyBanker extends Banker {
 	private static double itemValue; 
 	private String player;
 	
-	public MoneyBanker(NPC traderNpc, BankTrait bankConfiguragion, String player) { 
+	public MoneyBanker(NPC traderNpc, BankerPart bankConfiguragion, String player) { 
 		super(traderNpc, bankConfiguragion, player);
 
 		account = new PlayerBankAccount(player, false);

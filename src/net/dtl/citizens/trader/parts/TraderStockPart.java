@@ -13,12 +13,12 @@ import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTTagString;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -123,7 +123,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		for( StockItem item : stock.get(startingStock) ) 
 		{
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, startingStock, pattern, player));
+			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, startingStock, pattern, player));
 
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -137,13 +137,14 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
-	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type) {
-
+	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type)
+	{
+		
 		if ( !s.isManaging() )
 		{
 			for( StockItem item : stock.get(s.toString()) ) 
 			{
-				ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, s.toString(), pattern, player));
+				ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, s.toString(), pattern, player));
             	
 				chk.addEnchantments(item.getItemStack().getEnchantments());
 				
@@ -227,9 +228,9 @@ public class TraderStockPart implements InventoryHolder {
 	
 	public void setInventoryWith(Inventory inventory, StockItem item, Player player) {
 		int i = 0;
-		for ( Integer amount : item.getAmounts() ) {
-			
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, "sell", pattern, player));
+		for ( Integer amount : item.getAmounts() ) 
+		{
+			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, i, "sell", pattern, player));
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 			
 			
@@ -274,7 +275,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		for( StockItem item : stock.get("sell") ) 
 		{
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, "sell", pattern, null));
+			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, "sell", pattern, null));
 
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -340,7 +341,7 @@ public class TraderStockPart implements InventoryHolder {
 	public static ItemStack setLore(CraftItemStack cis, List<String> lore)
 	{
 		//CraftItemStack cis = new CraftItemStack(item);
-		net.minecraft.server.ItemStack mis = cis.getHandle();
+		net.minecraft.server.v1_4_5.ItemStack mis = cis.getHandle();
 		
 		NBTTagCompound c = mis.getTag(); 
 		if ( c == null )
@@ -377,18 +378,18 @@ public class TraderStockPart implements InventoryHolder {
 			return getPlayerLimitLore(item, stock, pattern, player);
 		if ( type.equals("manage") )
 			return getManageLore(item, stock, pattern, player);
-		return getPriceLore(item, stock, pattern, player);
+		return getPriceLore(item, 0, stock, pattern, player);
 	}
 	
-	public static List<String> getPriceLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getPriceLore(StockItem item, int i, String stock, TransactionPattern pattern, Player player)
 	{
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
 
 		if ( pattern != null )
-			price = format.format(pattern.getItemPrice(player, item, stock, 0, 0.0));
+			price = format.format(pattern.getItemPrice(player, item, stock, i, 0.0));
 		else
-			price = format.format(item.getPrice());
+			price = format.format(item.getPrice(i));
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : itemsConfig.getPriceLore(stock) )

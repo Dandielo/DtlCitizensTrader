@@ -4,12 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
+
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+import net.minecraft.server.v1_4_5.NBTTagList;
+import net.minecraft.server.v1_4_5.NBTTagString;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemsConfig {	
@@ -69,7 +70,7 @@ public class ItemsConfig {
 	public ItemStack initializeItemWithName(CraftItemStack cis, String name, List<String> lore)
 	{
 		//CraftItemStack cis = new CraftItemStack(item);
-		net.minecraft.server.ItemStack mis = cis.getHandle();
+		net.minecraft.server.v1_4_5.ItemStack mis = cis.getHandle();
 		
 		NBTTagCompound c = mis.getTag(); 
 		if ( c == null )

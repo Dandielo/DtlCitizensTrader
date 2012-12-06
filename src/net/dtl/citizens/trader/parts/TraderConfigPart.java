@@ -32,68 +32,6 @@ public class TraderConfigPart {
 		return this.owner;
 	}
 	
-	/*
-	public void setWalletType(WalletType type) {
-		// if the trader is a server trader (admin shop) allow to sat anny walet
-		if ( tType.equals(TraderType.SERVER_TRADER) ) 
-		{
-			wType = type;
-			w.setWalletType(wType);
-		}
-		else
-		// if the trader is a player trader
-		if ( tType.equals(TraderType.PLAYER_TRADER) ) 
-		{
-			
-			//disallow infinite money
-			if ( type.equals(WalletType.INFINITE) )
-				return;
-			
-			
-			wType = type;
-			w.setWalletType(wType);
-		}
-		else
-		// if the trader is a player trader
-		if ( tType.equals(TraderType.MARKET_TRADER) ) 
-		{
-			
-			//disallow infinite money
-			if ( type.equals(WalletType.INFINITE) )
-				return;
-			
-			
-			wType = type;
-			w.setWalletType(wType);
-		}
-	}*/
-	
-	/*
-	public void setTraderType(TraderType type) {
-		if ( type.equals(TraderType.PLAYER_TRADER) ) {
-			tType = type;
-			wType = WalletType.NPC_WALLET;
-		}
-		if ( type.equals(TraderType.SERVER_TRADER) ) {
-			tType = type;
-			wType = WalletType.INFINITE;
-		}
-		if ( type.equals(TraderType.MARKET_TRADER) ) {
-			tType = type;
-			wType = WalletType.OWNER_WALLET;
-		}
-		w.setWalletType(wType);
-		return;
-	}*/
-	
-	/*
-	public TraderType getTraderType() {
-		return tType;
-	}
-	public WalletType getWalletType() {
-		return wType;
-	}*/
-	
 	public Wallet getWallet() {
 		return wallet;
 	}

@@ -4,7 +4,7 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizens.trader.parts.BankTrait;
+import net.dtl.citizens.trader.parts.BankerPart;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
@@ -13,6 +13,7 @@ public class TraderCharacterTrait extends Trait {
 	
 	private TraderConfigPart config;
 	private TraderStockPart stock;
+	private BankerPart banker;
 
 	public TraderCharacterTrait() {
 		super("trader");
@@ -34,6 +35,10 @@ public class TraderCharacterTrait extends Trait {
 	{
 		config = new TraderConfigPart();
 		stock = new TraderStockPart("Stock");
+	}
+	public void implementBanker()
+	{
+		banker = new BankerPart();
 	}
 	
 	//The EcoNpc's type
@@ -57,7 +62,7 @@ public class TraderCharacterTrait extends Trait {
 			if ( config == null )
 			{
 				config = new TraderConfigPart();
-				stock = new TraderStockPart("Stock");
+				stock = new TraderStockPart(getNPC().getFullName() + "'s stock");
 			}
 			
 			config.load(data);
@@ -70,6 +75,28 @@ public class TraderCharacterTrait extends Trait {
 		if ( type.equals("banker") )
 		{
 			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
+			
+			if ( banker == null )
+				banker = new BankerPart();
+			
+			banker.load(data);
+		}
+		//old version loading
+		else
+		{
+			this.type = EcoNpcType.getTypeByName( data.getString("trader-type") );
+			
+			if ( config == null )
+			{
+				config = new TraderConfigPart();
+				stock = new TraderStockPart(getNPC().getFullName() + "'s stock");
+			}
+			
+			config.load(data);
+			stock.load(data);
+			
+			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
+				stock.linkItems();
 		}
 	}
 
@@ -79,14 +106,18 @@ public class TraderCharacterTrait extends Trait {
 		{
 			data.setString("type", "banker");
 			data.setString("banker", type.toString());
+			
+			banker.save(data);
 		}
 		else if ( type.isTrader() )
 		{
 			data.setString("type", "trader");
 			data.setString("trader", type.toString());
 			
-			config.save(data);
-			stock.save(data);
+			if ( config != null )
+				config.save(data);
+			if ( stock != null )
+				stock.save(data);
 		}
 	}
 	
@@ -145,7 +176,7 @@ public class TraderCharacterTrait extends Trait {
 	}
 
 	//TODO CHANGE THIS!
-	public BankTrait getBankTrait() {
+	public BankerPart getBankTrait() {
 		// TODO Auto-generated method stub
 		return null;
 	}

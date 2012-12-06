@@ -1,17 +1,14 @@
 package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
@@ -23,7 +20,6 @@ import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.parts.TraderStockPart;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 
 public class ServerTrader extends Trader {
 
@@ -771,7 +767,7 @@ public class ServerTrader extends Trader {
 								getSelectedItem().setPetternListening(false);
 								
 								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), getBasicManageModeByWool().toString(), pattern, player));
+								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), pattern, player));
 								
 								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							}

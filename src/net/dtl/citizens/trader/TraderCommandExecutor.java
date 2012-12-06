@@ -14,7 +14,6 @@ import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.Trader;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
@@ -197,19 +196,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 						return true;
 					
 					return openTraderInventory(player, trader);
-				}
-				//list command
-				if ( args[0].equals("list") )
-				{
-					if (  args.length < 2 )
-					{
-						player.sendMessage( locale.getLocaleString("xxx-argument-missing").replace("{argument}", "Transaction type") );
-						return true;
-					}
-					if ( !this.generalChecks(player, "list", ( args.length >= 2 ? args[1] : null )) )
-						return true;
-					
-					return getItemList(player, trader, args, TraderStatus.getByName(args[1]) );	
 				}
 				if ( args[0].equals("type") )
 				{
@@ -559,45 +545,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	}
 
 	
-	
-	public boolean getItemList(Player player, Trader trader, String[] args, TraderStatus status) 
-	{
-		//default page '0'
-		int page = 0;
-		
-		try 
-		{
-
-			//have we maybe got a page number?
-			if ( args.length > 2 )
-			{
-				//get the page number, My Precious... ;>
-				page = Integer.parseInt(args[2]) - 1;
-			}
-			
-		} 
-		catch (NumberFormatException e)
-		{
-			
-			//come on can;t you write a normal number... ?
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:page") );
-		//	player.sendMessage( locale.getLocaleString("command-template").replace("{command}", "list").replace("{args}", "<transaction> [page]") );
-			return true;
-		}
-		
-	/*	int size = trader.getStock().getStockSize(status);
-		int totalPages = ( size % 10 == 0 ? ( size / 10 ) : ( size / 10 ) + 1 );
-		
-		
-		//we got a item list
-		player.sendMessage( locale.getLocaleString("list-header").replace("{curp}", "" + (page+1)).replace("{allp}", "" + totalPages) );
-		
-		
-		for ( String item : trader.getStock().getItemList(status, locale.getLocaleString("list-message"), page) )
-			player.sendMessage(item);*/
-		return true;
-	}
-	
 	//set the traders wallet type
 	public boolean setWallet(Player player, Trader trader, String walletString, String bankAccount)
 	{
@@ -797,7 +744,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		trader.getWallet().setMoney(money - withdraw);
 		DecimalFormat f = new DecimalFormat("#.##");
 
-		plugin.getEconomy().depositPlayer(player.getName(), withdraw);
+		CitizensTrader.getEconomy().depositPlayer(player.getName(), withdraw);
 		
 		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:withdrawed").replace("{value}", withdrawString) );
 		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
@@ -822,7 +769,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			return true;
 		}
 		
-		if ( !plugin.getEconomy().withdrawPlayer(player.getName(), deposit).type.equals(ResponseType.SUCCESS) )
+		if ( !CitizensTrader.getEconomy().withdrawPlayer(player.getName(), deposit).type.equals(ResponseType.SUCCESS) )
 		{
 			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
 			return true;
