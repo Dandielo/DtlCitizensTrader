@@ -1,7 +1,7 @@
 package net.dtl.citizens.trader.denizen;
 
-import net.aufdemrand.denizen.triggers.AbstractTrigger;
+import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
 
-public class AbstractDenizenTraderTrigger extends AbstractTrigger {
+public abstract class AbstractDenizenTraderTrigger extends AbstractTrigger {
 
 }

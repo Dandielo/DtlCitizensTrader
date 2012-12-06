@@ -270,10 +270,10 @@ public class NpcEcoManager implements Listener {
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
 
-		CitizensTrader.getInstance();
+	/*	CitizensTrader.getInstance();
 		if ( CitizensTrader.getDenizen() != null && 
 				CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
-			return;
+			return;*/
 
 	/*	
 		CraftItemStack cis = new CraftItemStack(Material.DIAMOND_SWORD);

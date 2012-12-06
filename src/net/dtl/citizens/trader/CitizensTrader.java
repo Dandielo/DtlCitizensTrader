@@ -201,7 +201,7 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public void initializeDenizenTriggers()
 	{
-		if ( denizen != null )
+	/*	if ( denizen != null )
 		{
 			info("Registering triggers... ");
 			DenizenTriggerTransactionTrigger transaction = new DenizenTriggerTransactionTrigger();
@@ -225,7 +225,7 @@ public class CitizensTrader extends JavaPlugin {
 			{
 				e.printStackTrace();
 			}
-		}
+		}*/
 	}
 	
 	public static Denizen getDenizen()

@@ -1,7 +1,7 @@
 package net.dtl.citizens.trader.denizen;
 
 import net.aufdemrand.denizen.Denizen;
-import net.aufdemrand.denizen.commands.AbstractCommand;
+import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.denizen.commands.DenizenCommandTraderPattern;
@@ -22,8 +22,8 @@ abstract public class AbstractDenizenTraderCommand extends AbstractCommand {
 		{
 			CitizensTrader.info("Hooked into " + denizen.getDescription().getFullName());
 			CitizensTrader.info("Registering commands... ");
-			denizen.getCommandRegistry().registerCommand("TRADER_TRANSACTION", new DenizenCommandTraderTransaction());
-			denizen.getCommandRegistry().registerCommand("TRADER_PATTERN", new DenizenCommandTraderPattern());
+			denizen.getCommandRegistry().register("TRADER_TRANSACTION", new DenizenCommandTraderTransaction());
+			denizen.getCommandRegistry().register("TRADER_PATTERN", new DenizenCommandTraderPattern());
 		}
 	}
 	

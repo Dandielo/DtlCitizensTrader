@@ -1,5 +1,7 @@
 package net.dtl.citizens.trader.denizen.commands;
 
+import net.aufdemrand.denizen.exceptions.CommandExecutionException;
+import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
@@ -15,7 +17,7 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 	
 	
 	//TODO fix server traders without players
-	@Override
+	/*@Override
 	public boolean execute(ScriptEntry theEntry) throws CommandException {
 		
 
@@ -25,12 +27,10 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 		
 		NPC traderNpc = theEntry.getDenizen().getCitizensEntity();
 		
-		/* Match arguments to expected variables */
 		if ( theEntry.arguments() == null )
 			throw new CommandException("...Usage: TRADER_PATTERN [SET/REMOVE] (PAT:PATTERN_NAME)");
 		
 		
-		/* Match arguments to expected variables */
 		for ( String thisArg : theEntry.arguments() )
 		{
 			//if the arguments starts a transaction
@@ -56,7 +56,6 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 		isTraderNpc = npcManager.isEconomyNpc(traderNpc);
 		
 		
-		/*Execute the command if all args are set*/
 		if ( isTraderNpc )
 		{
 	
@@ -125,6 +124,27 @@ public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 		}	
 		
 		return false;
+	}*/
+
+
+	@Override
+	public void onEnable() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void execute(String arg0) throws CommandExecutionException {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	@Override
+	public void parseArgs(ScriptEntry arg0) throws InvalidArgumentsException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
