@@ -1,42 +1,44 @@
 package net.dtl.citizens.trader.objects;
 
+import net.minecraft.server.v1_4_5.NBTTagCompound;
+
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
-public class BankItem {
-	
+public class BankItem
+{
+	//Support for anvil items
+	private String name;
 	private ItemStack item = null;
-	//private List<Integer> amouts = new ArrayList<Integer>();
-	//private boolean stackPrice = false;
-	//private double price = 0;
 	private int slot = -1;
-	//private LimitSystem limit;
 	
-	public BankItem(String data) {
-		//limit = new LimitSystem(this);
+	public BankItem(String data)
+	{
 		String[] values = data.split(" ");
-		for ( String value : values ) {
-			if ( item == null ) {
+		for ( String value : values ) 
+		{
+			if ( item == null )
+			{
 				
-				
-				/* *
-				 * StockItem required properties
-				 * id => ItemId
-				 * data => itemData
-				 * 
-				 */
-				if ( value.contains(":") ) {
+				if ( value.contains(":") ) 
+				{
 					String[] itemData = value.split(":");
 					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
-				//	amouts.add(1);
-				} else {
-					item = new ItemStack(Integer.parseInt(value),1);
-				//	amouts.add(1);
 				}
-			} else {
+				else
+				{
+					item = new ItemStack(Integer.parseInt(value),1);
+				}
+			}
+			else
+			{
 				if ( value.length() > 2 ) 
 				{
-				
+					if ( value.startsWith("n:") && !value.contains("/") && !value.contains(";") )
+					{
+						setName(value.substring(2));
+					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") )
 					{
 						slot = Integer.parseInt(value.substring(2));
@@ -81,6 +83,7 @@ public class BankItem {
 		//saving the item amounts
 		itemString += " a:" + item.getAmount();
 		
+		
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
 			itemString += " e:";
@@ -89,6 +92,9 @@ public class BankItem {
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
+		
+		if ( !name.isEmpty() )
+			itemString += " n:" + name;
 		
 		return itemString;
 	}
@@ -99,6 +105,32 @@ public class BankItem {
 	public void setSlot(int s) {
 		slot = s;
 	}
+	
+	private void setName(String name)
+	{
+		net.minecraft.server.v1_4_5.ItemStack cis = ((CraftItemStack)item).getHandle();
+		NBTTagCompound tag = cis.getTag();
+		
+		NBTTagCompound dis = tag.getCompound("display");
+		if ( dis == null )
+			dis = new NBTTagCompound();
+		
+		tag.set("display", dis);
+
+		dis.setString("Name", name);
+	}
+	
+	/*private String getName()
+	{
+		net.minecraft.server.v1_4_5.ItemStack cis = ((CraftItemStack)item).getHandle();
+		NBTTagCompound tag = cis.getTag();
+		
+		NBTTagCompound dis = tag.getCompound("display");
+		if ( dis == null )
+			return "";
+		
+		return dis.getString("Name");
+	}*/
 	
 	@Override
 	public boolean equals(Object o)
