@@ -1,71 +1,75 @@
 package net.dtl.citizens.trader.traders;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.parts.BankerPart;
+import net.milkbowl.vault.economy.Economy;
 
 public class MoneyBanker extends Banker {
+	
+	private static Economy economy = CitizensTrader.getEconomy();
 	
 	private static ItemStack exchangeItem;
 	private static double itemValue; 
 	private String player;
 	
-	public MoneyBanker(NPC traderNpc, BankerPart bankConfiguragion, String player) { 
-		super(traderNpc, bankConfiguragion, player);
+	public MoneyBanker(NPC traderNpc, TraderCharacterTrait trait, String p) { 
+		super(traderNpc, trait.getBankTrait(), p);
 
 		account = new PlayerBankAccount(player, false);
-		
-		this.player = player;
+		player = p;
 
-		exchangeItem = new BankItem(config.getString("money-bank.exchange-item", "388")).getItemStack();
-		itemValue = config.getDouble("money-bank.item-value", 10.0);
+		exchangeItem = itemConfig.getExchangeItem();
+		itemValue = CitizensTrader.getInstance().getConfig().getDouble("bank.money-bank.item-value", 10.0);
 
-		tabInventory = account.cleanInventory(54, "Banker " + npc.getName());
-
-		switchInventory2();
+		tabInventory = account.exchangeInventory(54, "Banker " + npc.getName());
+		switchInventory();
 	}
 
 
-	public void switchInventory2()
+	public void switchInventory()
 	{
-		double balance = econ.getBalance(this.player);
-		int amount = (int) (balance / itemValue);
 		selectItem(toBankItem(exchangeItem));
-		this.addAmountToBankerInventory(tabInventory, amount);
+		addAmountToBankerInventory(tabInventory, (int) (economy.getBalance(player) / itemValue));
 		selectItem(null);
 	}
 	
 	
 	@Override
 	public void settingsMode(InventoryClickEvent event) {
-		
-		
 	}
 
 	@Override
-	public void simpleMode(InventoryClickEvent event) {
+	public void simpleMode(InventoryClickEvent event)
+	{
+		Player player = (Player) event.getWhoClicked();
+		String playerName = (String) event.getWhoClicked().getName();
 		
-		Player p = (Player) event.getWhoClicked();
-		String player = (String) event.getWhoClicked().getName();
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
 		{
-			//
 			return;
 		}
 		
 		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+		
 		ItemStack current = event.getCurrentItem();
 		ItemStack cursor = event.getCursor();
 		
@@ -75,7 +79,7 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+					player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 					event.setCancelled(true);
 					return;
 				}
@@ -83,9 +87,9 @@ public class MoneyBanker extends Banker {
 				if ( current.getTypeId() != 0 )
 				{
 					double withdraw = current.getAmount()*itemValue;
-					econ.withdrawPlayer(player, withdraw);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
-					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
+					economy.withdrawPlayer(playerName, withdraw);
+					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
@@ -104,15 +108,15 @@ public class MoneyBanker extends Banker {
 
 					double withdraw = amount*itemValue;
 						
-					econ.withdrawPlayer(player, withdraw);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
-					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
+					economy.withdrawPlayer(playerName, withdraw);
+					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
+					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
 					if ( cursor.getTypeId() != exchangeItem.getTypeId() )
 					{
-						p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+						player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 						event.setCancelled(true);
 						return;
 					}
@@ -121,9 +125,9 @@ public class MoneyBanker extends Banker {
 					if ( event.isRightClick() )
 						deposit = itemValue;
 					
-					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", cursor.getType().name()).replace("{amount}", ""+ cursor.getAmount()) );
-					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
+					economy.depositPlayer(playerName, deposit);
+					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", cursor.getType().name()).replace("{amount}", ""+ cursor.getAmount()) );
+					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}
@@ -133,7 +137,7 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					p.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+					player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 					event.setCancelled(true);
 					return;
 				}
@@ -141,9 +145,9 @@ public class MoneyBanker extends Banker {
 				if ( current.getTypeId() != 0 )
 				{
 					double deposit = current.getAmount()*itemValue;
-					econ.depositPlayer(player, deposit);
-					p.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
-					p.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
+					economy.depositPlayer(playerName, deposit);
+					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}
@@ -171,8 +175,11 @@ public class MoneyBanker extends Banker {
 			while ( amountToAdd > 0 )
 			{
 			
-				ItemStack is = selectedItem.getItemStack().clone();
+				ItemStack is = selectedItem.getItemStack().clone();				
 				is.setAmount(amountToAdd);
+				
+				//NBT description
+				setDescription(is, amountToAdd);
 				
 				//create a new bank item
 				if ( inventory.firstEmpty() < 0 || inventory.firstEmpty() >= 54 )
@@ -180,29 +187,23 @@ public class MoneyBanker extends Banker {
 				inventory.setItem(inventory.firstEmpty(), is);
 				amountToAdd -= 64;
 			}
-			/* *
-			 * setting the item into a free slot
-			 * don't using the addItem() bacause it's a workaround for this function
-			 * 
-			 */
 			return true;
 		}
 		
-		/* *
-		 * Item couldn't be added to the inventory
-		 * 
-		 */
 		return false;
 	}
-
+	
+	public static void setDescription(ItemStack item, int amount)
+	{
+		List<String> lore = new ArrayList<String>();
+		lore.add("^r^7Value: ^6" + new DecimalFormat("#.##").format(amount * itemValue));
+		NBTTagEditor.addDescription((CraftItemStack)item, lore);
+	}
 
 	@Override
 	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
-		
-
 		player.openInventory(getInventory());
 		return true;
-		
 	}
 	
 	
