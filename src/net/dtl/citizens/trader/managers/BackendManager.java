@@ -14,23 +14,23 @@ public class BackendManager {
 	private FileConfiguration config;
 	
 	//Backend instance
-	private Backend backend;
+	private Backend players;
 
 	
 	public BackendManager()
 	{
 		config = CitizensTrader.getInstance().getConfig();
-		backend = new FileBackend(config);
+		players = new FileBackend(config, "player-accounts");
 	}
 	
 	public Backend getBackend()
 	{
-		return backend;
+		return players;
 	}
 	
 	public Map<String, BankAccount> getBankAccounts()
 	{
-		return backend.getAccounts();
+		return players.getAccounts();
 	}
 	
 }

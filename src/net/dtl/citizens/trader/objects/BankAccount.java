@@ -3,43 +3,57 @@ package net.dtl.citizens.trader.objects;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bukkit.Bukkit;
-import org.bukkit.inventory.Inventory; 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.backends.Backend;
-import net.dtl.citizens.trader.traders.Banker.BankTabType;
 
 abstract public class BankAccount implements InventoryHolder  {
 	//
-	protected static Backend backend = CitizensTrader.getBackendManager().getBackend();
+	//protected static Backend backend = CitizensTrader.getBackendManager().getBackend();
+	protected static ConfigurationSection config = CitizensTrader.getInstance().getConfig();
 	
 	//Stored items
-	protected Map<BankTabType, BankTab> bankTabs;	
-	//protected Map<BankTab, ItemStack> tabItems;
+	protected Map<String, BankTab> bankTabs;	
 	
 	//bank account owner
 	protected String owner;
 	protected int availableTabs;
+	protected AccountType type;
 	
 	//Constructor
-	public BankAccount()
+	public BankAccount(String owner)
 	{
-		owner = "";
-		bankTabs = new HashMap<BankTabType, BankTab>();
-		
-		//storedItems = new HashMap<BankTab, List<BankItem>>();
-		//tabItems = new HashMap<BankTab, ItemStack>();
+		this.owner = owner;
+		bankTabs = new HashMap<String, BankTab>();
+	}
+
+	public String getOwner()
+	{
+		return owner;
 	}
 	
-	public BankTab getBankTab(BankTabType key)
-	{
-		return bankTabs.get(key);
-	}
+	public abstract AccountType getType();
 	
-	public Inventory inventoryView(int size, String name) {
+	//Bank tab methods
+	public abstract BankTab getBankTab(String tab);
+	
+	public abstract boolean maxed();
+	
+	public abstract String nextTabName();
+	
+	public abstract boolean addBankTab();
+	
+	//Item management methods
+	public abstract void addItem(String tab, BankItem item);
+
+	public abstract void updateItem(String tab, BankItem oldItem, BankItem newItem);
+	
+	public abstract void removeItem(String tab, BankItem item);
+
+	public abstract BankItem getItem(String tab, int slot);
+	
+/*	public Inventory inventoryView(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
 		for( BankItem item : bankTabs.get(BankTabType.Tab1).getTabItems() ) {
@@ -88,53 +102,7 @@ abstract public class BankAccount implements InventoryHolder  {
 		return inv;
 	}
 	
-	public boolean hasAllTabs()
-	{
-		if ( bankTabs.containsKey(BankTabType.Tab9) )
-			return true;
-		return false;
-	}
 	
-	public BankTabType nextTab()
-	{
-		if ( bankTabs.containsKey(BankTabType.Tab9) )
-			return null;
-		
-		final String bankTabName = "tab";
-		for ( int i = 0 ; i < 9 ; ++ i )
-		{
-			BankTabType tab = BankTabType.getTabByName(bankTabName+(i+1));
-			
-			if ( !bankTabs.containsKey(tab) )
-				return tab;
-		}
-		
-		return null;
-	}
-	
-	public BankTabType addBankTab()
-	{
-		if ( bankTabs.containsKey(BankTabType.Tab9) )
-			return null;
-		
-		final String bankTabName = "tab";
-		
-		for ( int i = 0 ; i < 9 ; ++ i )
-		{
-			BankTabType tab = BankTabType.getTabByName(bankTabName+(i+1));
-			
-			if ( !bankTabs.containsKey(tab) )
-			{
-			//	storedItems.put(tab, new ArrayList<BankItem>());
-			//	tabItems.put(tab, new ItemStack(35,1));
-				bankTabs.put(tab, new BankTab(new ItemStack(35,1), tab.toString(), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size")));
-				backend.addBankTab(owner, tab);
-				return tab;
-			}
-		}
-		
-		return null;
-	}
 	
 	public void increaseTabSize(BankTabType tabType)
 	{
@@ -198,68 +166,42 @@ abstract public class BankAccount implements InventoryHolder  {
 		
 		for ( BankTabType tab : bankTabs.keySet() )
 		{
-			/*if ( tab.equals(btab) )
-				for ( int j = 0 ; j < 9 ; ++j )
-				{
-					inventory.setItem(((lastRow-1)*9)+j, tabItems.get(tab) );
-				}*/
+			//if ( tab.equals(btab) )
+			//	for ( int j = 0 ; j < 9 ; ++j )
+			//	{
+			//		inventory.setItem(((lastRow-1)*9)+j, tabItems.get(tab) );
+			//	}
 			
 			inventory.setItem((lastRow*9) + Integer.parseInt(tab.toString().substring(3))-1, bankTabs.get(tab).getTabItem() );
 			++i;
 		}
 		if ( i < 54 && availableTabs > i % 45 )
 			inventory.setItem(i, new ItemStack(35,1) );
-	}
+	}*/
 	
-	public void addItem(BankTabType tabType, BankItem item)
-	{
-		BankTab tab = bankTabs.get(tabType);//.getTabItems();
-		
-		if ( tab == null )
-			return;
-		
-		tab.addItem(item);
-		backend.addItem(owner, tabType, item);
-	}
-
-	public void updateItem(BankTabType tab, BankItem oldItem, BankItem newItem) {
-		removeItem(tab, oldItem);
-		addItem(tab, newItem);
-		/*List<BankItem> items = storedItems.get(tab);
-		
-		if ( items == null )
-			return;
-		
-		items.add(item);
-		backend.addItem(owner, tab, item);*/
-	}
 	
-	public void setBankTabItem(BankTabType tab, BankItem item)
-	{
-		bankTabs.get(tab).setTabItem(item.getItemStack());
-		backend.setBankTabItem(owner, tab, item);
-	}
-	
-	public boolean removeItem(BankTabType tabType, BankItem item)
-	{
-		BankTab tab = bankTabs.get(tabType);
+	public enum AccountType {
+		PLAYER, GUILD, ABSTRACT;
 		
-		if ( tab == null )
-			return false;
-		
-		tab.removeItem(item);
-		backend.removeItem(owner, tabType, item);
-		
-		return true;
-	}
-
-	public BankItem getItem(int slot, BankTabType tab) {
-		for ( BankItem item : bankTabs.get(tab).getTabItems() )
+		public boolean isPlayer()
 		{
-			if ( item.getSlot() == slot )
-				return item;
+			return this.equals(PLAYER);
 		}
-		return null;
+		
+		public boolean isGuild()
+		{
+			return this.equals(GUILD);
+		}
+		
+		public boolean isAbstract()
+		{
+			return this.equals(ABSTRACT);
+		}
+		
+		@Override
+		public String toString()
+		{
+			return ( this.equals(PLAYER) ? "player" : "guild" );
+		}
 	}
-	
 }

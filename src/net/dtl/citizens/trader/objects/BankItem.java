@@ -8,10 +8,11 @@ import org.bukkit.inventory.ItemStack;
 
 public class BankItem
 {
-	//Support for anvil items
-	private String name;
 	private ItemStack item = null;
 	private int slot = -1;
+	
+	//Support for anvil named items
+	private String name;
 	
 	public BankItem(String data)
 	{

@@ -8,10 +8,12 @@ import org.bukkit.inventory.ItemStack;
 public class BankTab {
 	private String tabName;
 	private int tabSize;
-	private ItemStack tabItem;
+	private BankItem tabItem;
+	
+	//item list
 	private List<BankItem> items;
 	
-	public BankTab(ItemStack item, String name, int size)
+	public BankTab(BankItem item, String name, int size)
 	{
 		items = new ArrayList<BankItem>();
 		tabItem = item;
@@ -29,12 +31,12 @@ public class BankTab {
 		return tabName;
 	}
 	
-	public void setTabItem(ItemStack item)
+	public void setTabItem(BankItem item)
 	{
 		tabItem = item;
 	}
 	
-	public ItemStack getTabItem()
+	public BankItem getTabItem()
 	{
 		return tabItem;
 	}
@@ -49,11 +51,6 @@ public class BankTab {
 		return tabSize;
 	}
 	
-	public List<BankItem> getTabItems()
-	{
-		return items;
-	}
-	
 	public void setTabItems(List<BankItem> items)
 	{
 		if ( items == null )
@@ -61,7 +58,21 @@ public class BankTab {
 		
 		this.items = items;
 	}
+	
+	public List<BankItem> getTabItems()
+	{
+		return items;
+	}
 
+	//TODO shoudl i do it in the "right" way?
+	public BankItem getBankItem(int slot)
+	{
+		for ( BankItem item : items )
+			if ( item.getSlot() == slot )
+				return item;
+		return null;
+	}
+	
 	public void addItem(BankItem item)
 	{
 		items.add(item);

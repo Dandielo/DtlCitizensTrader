@@ -7,11 +7,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dtl.citizens.trader.CitizensTrader;
+import static net.dtl.citizens.trader.CitizensTrader.*;
 import net.dtl.citizens.trader.backends.Backend;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
-import net.dtl.citizens.trader.traders.Banker.BankTabType;
+import net.dtl.citizens.trader.objects.BankTab;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -25,17 +25,18 @@ public class FileBackend extends Backend {
 	protected FileConfiguration accounts;
 	protected File accountsFile;
 	
-	public FileBackend(ConfigurationSection config) {		
-		String accountsFilename = config.getString("bank.player-accounts.file");
+	public FileBackend(ConfigurationSection config, String accounts) {		
+		super(SaveTrigger.ACCOUNT);
+		String accountsFilename = config.getString("bank." + accounts + ".file");
 
 		// Default settings
 		if ( accountsFilename == null ) 
 		{
-			accountsFilename = "player_accounts.yml";
-			config.set("bank.player-accounts.file", "player_accounts.yml");
+			accountsFilename = accounts + ".yml";
+			config.set("bank." + accounts + ".file", accountsFilename);
 		}
 
-		String baseDir = config.getString("bank.player-accounts.basedir", "plugins/DtlCitizensTrader/bank" );// "plugins/PermissionsEx");
+		String baseDir = config.getString("bank." + accounts + ".basedir", "plugins/DtlCitizensTrader/bank" );// "plugins/PermissionsEx");
 
 		if ( baseDir.contains("\\") && !"\\".equals(File.separator) ) 
 		{
@@ -57,9 +58,6 @@ public class FileBackend extends Backend {
 			try 
 			{
 				accountsFile.createNewFile();
-
-				// Load default permissions
-				
 				this.save();
 			} 
 			catch (IOException e)
@@ -69,7 +67,9 @@ public class FileBackend extends Backend {
 		}
 	}
 	
-	public void reload() {
+	@Override
+	public void reload() 
+	{
 		accounts = new YamlConfiguration();
 		accounts.options().pathSeparator(PATH_SEPARATOR);
 				
@@ -79,26 +79,168 @@ public class FileBackend extends Backend {
 		} 
 		catch (FileNotFoundException e)
 		{
-		//	severe(e.getMessage());
+			severe(accountsFile.getName() + " not found!");
 		} 
 		catch (Throwable e)
 		{
-			throw new IllegalStateException("Error loading warps file", e);
+			throw new IllegalStateException("Error loading accounts", e);
 		}
 	}
 
-	public void save() {
+	@Override
+	public void save()
+	{
 		try 
 		{
-			this.accounts.save(accountsFile);
+			accounts.save(accountsFile);
 		} 
 		catch (IOException e) 
 		{
-		//	severe("Error during saving warps file: " + e.getMessage());
+			severe("Error while saving accounts!");
 		}
 	}
 	
-	public static String buildPath(String... path) {
+	@Override
+	public Map<String, BankAccount> getAccounts() 
+	{
+		reload();
+		
+		Map<String,BankAccount> accountList = new HashMap<String,BankAccount>();
+		
+		if ( !accounts.contains("accounts") )
+			return accountList;
+		
+		if ( accounts.getConfigurationSection("accounts").getKeys(false) == null )
+			return accountList;
+		
+		for ( String accountName : accounts.getConfigurationSection("accounts").getKeys(false) ) {
+
+			FileBankAccount account = getFileAccount(accountName);
+			if ( account != null )
+				accountList.put(accountName, account.toPlayerAccount());
+		}
+
+		return accountList;
+	}
+	
+	public FileBankAccount getFileAccount(String accountName) {
+		return new FileBankAccount(accountName, accounts);
+	}
+	
+	
+	//Managing methods
+	@Override
+	public void addItem(String owner, String tab, BankItem item)
+	{
+		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", tab, "content"));
+		list.add(item.toString());
+		
+		accounts.set(buildPath("accounts", owner, "tabs", tab, "content"), list);
+
+		if ( trigger.itemSaving() )
+			save();
+	}
+
+	@Override
+	public void updateItem(String owner, String tab, BankItem oldItem, BankItem newItem)
+	{
+		removeItem(owner, tab, oldItem);
+		addItem(owner, tab, newItem);
+	}
+
+	@Override
+	public void removeItem(String owner, String tab, BankItem item)
+	{
+		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", tab, "content"));
+		list.remove(item.toString());
+		
+		accounts.set(buildPath("accounts", owner, "tabs", tab, "content"), list);
+		
+		if ( trigger.itemSaving() )
+			save();
+	}
+
+	@Override
+	public void setTabSize(String owner, String tab, int tabSize) {
+		accounts.set(buildPath("accounts", owner, "tabs", tab, "tab-size"), tabSize);
+		
+		if ( trigger.tabSaving() )
+			save();
+	}
+	
+	@Override
+	public void setBankTabItem(String owner, String tab, BankItem item) {
+		accounts.set(buildPath("accounts", owner, "tabs", tab, "tab-item"), item.toString());
+		
+		if ( trigger.tabSaving() )
+			save();
+	}
+	
+	@Override
+	public void addBankTab(String owner, BankTab tab) {
+		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", owner, "tabs"));
+		
+		
+		tabs.set(buildPath(tab.toString(), "tab-item"), tab.getTabItem().toString());
+		tabs.set(buildPath(tab.toString(), "tab-name"), tab.getTabName());
+	//	tabs.set(buildPath(tab.toString(), "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
+		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
+		
+		if ( trigger.tabSaving() )
+			save();
+	}
+	
+	@Override
+	public BankAccount newAccount(String owner)
+	{
+	//	accounts.set(buildPath("accounts", owner, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("max-tabs"));
+		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-item"), "35:0 a:1");
+		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-name"), "tab1");
+	//	accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));//buildPath("accounts", owner, "tabs", "tab1", "tab-size"), 1);
+		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "content"), new String[0]);
+		
+		if ( trigger.accountSaving() )
+			save();
+		
+		return new FileBankAccount(owner, accounts);
+	}
+	
+	@Override
+	public void removeAccount(String owner)
+	{
+		ConfigurationSection accounts = this.accounts.getConfigurationSection(buildPath("accounts"));
+		
+		ConfigurationSection nAccounts = new YamlConfiguration();
+		
+		for ( String key : accounts.getKeys(false) )
+		{
+			if ( !key.equals(owner) )
+				nAccounts.set(key, accounts.getConfigurationSection(key));
+		}
+		
+		this.accounts.set(buildPath("accounts"), nAccounts);
+	}
+	/*@Override
+
+
+	@Override
+	public void addBankTab(String player, BankTabType tab) {
+		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", player, "tabs"));
+		
+		
+		tabs.set(buildPath(tab.toString(), "tab-item"), "35:0 a:1");
+		tabs.set(buildPath(tab.toString(), "tab-name"), tab.toString());
+		tabs.set(buildPath(tab.toString(), "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
+		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
+		
+		//if ( saveTrigger.equals("item") )
+		this.save();
+	}
+	
+	*/
+	
+	public static String buildPath(String... path) 
+	{
 		StringBuilder builder = new StringBuilder();
 
 		boolean first = true;
@@ -117,104 +259,6 @@ public class FileBackend extends Backend {
 		}
 
 		return builder.toString();
-	}
-	
-	@Override
-	public Map<String, BankAccount> getAccounts() {
-	//	System.out.print("ad");
-		this.reload();
-		
-		Map<String,BankAccount> accountList = new HashMap<String,BankAccount>();
-
-	//	System.out.print("ad3");
-		if ( !accounts.contains("accounts") )
-			return accountList;
-	//	System.out.print("ad2");
-		if ( accounts.getConfigurationSection("accounts").getKeys(false) == null )
-			return accountList;
-	//	System.out.print("ad");
-		
-		for ( String accountName : accounts.getConfigurationSection("accounts").getKeys(false) ) {
-
-		//	System.out.print("ac");
-			BankAccount account = getAccount(accountName);
-			if ( account != null )
-				accountList.put(accountName, account);
-		}
-
-		return accountList;
-	}
-
-	@Override
-	public void increaseTabSize(String player, BankTabType tab, int tabSize) {
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-size"), tabSize);
-		
-		this.save();
-	}
-
-	@Override
-	public void setBankTabItem(String player, BankTabType tab, BankItem item) {
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "tab-item"), item.toString());
-		
-		this.save();
-	}
-
-	@Override
-	public void addItem(String player, BankTabType tab, BankItem item)
-	{
-		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
-		list.add(item.toString());
-		
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "content"), list);
-
-		if ( saveTrigger.equals("item") )
-			this.save();
-	}
-	
-	public void removeItem(String player, BankTabType tab, BankItem item)
-	{
-		List<String> list = accounts.getStringList(buildPath("accounts", player, "tabs", tab.toString(), "content"));
-	//	System.out.print(list);
-	//	System.out.print(item.toString());
-		list.remove(item.toString());
-		
-		
-		accounts.set(buildPath("accounts", player, "tabs", tab.toString(), "content"), list);
-		
-		if ( saveTrigger.equals("item") )
-			this.save();
-			
-	}
-
-	@Override
-	public void addBankTab(String player, BankTabType tab) {
-		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", player, "tabs"));
-		
-		
-		tabs.set(buildPath(tab.toString(), "tab-item"), "35:0 a:1");
-		tabs.set(buildPath(tab.toString(), "tab-name"), tab.toString());
-		tabs.set(buildPath(tab.toString(), "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
-		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
-		
-		//if ( saveTrigger.equals("item") )
-		this.save();
-	}
-	
-	public BankAccount newAccount(String player)
-	{
-		accounts.set(buildPath("accounts", player, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("max-tabs"));
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-item"), "35:0 a:1");
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-name"), "tab1");
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));//buildPath("accounts", player, "tabs", "tab1", "tab-size"), 1);
-		accounts.set(buildPath("accounts", player, "tabs", "tab1", "content"), new String[0]);
-		
-		this.save();
-		
-		return new FileBankAccount(player, accounts);
-	}
-	
-	public FileBankAccount getAccount(String accountName) {
-		return new FileBankAccount(accountName, accounts);
 	}
 
 	

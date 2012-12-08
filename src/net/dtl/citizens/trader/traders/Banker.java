@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
+import net.dtl.citizens.trader.managers.BankAccountsManager;
 import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.BankAccount;
@@ -27,98 +28,86 @@ import net.milkbowl.vault.economy.Economy;
 abstract public class Banker implements EconomyNpc {
 	
 	public enum BankStatus {
-		TAB_DISPLAY, SETTING_TAB_ITEM, SETTINGS;
+		TAB, REMOTE_TAB, SETTING_TAB;
 	}
 	
 	//static global settigns
-	protected static FileConfiguration config;
-	protected static ItemsConfig itemConfig;
-	protected static Map<BankTabType, Double> tabPrices;
-	
-	protected static Economy econ;
-	
-	//players using the Banker atm
-	protected static Map<String, BankAccount> bankAccounts;
-	
 	protected static PermissionsManager permissions;
 	protected static LocaleManager locale;
+	protected static BankAccountsManager accounts;
 	
-	//bank settings
+	protected static ItemsConfig itemConfig;
+
+	protected BankerPart settings;
+	protected BankStatus bankStatus;
+	
 	protected BankAccount account;
-	protected BankerPart bank;
-	protected BankTabType tab;
+	protected Inventory tabInventory;
 	
+	protected String tab;
 	protected BankItem selectedItem;
 	
-	protected Inventory tabInventory;
-//	protected TraderStatus traderStatus;
-	protected BankStatus bankStatus;
 	protected NPC npc;
 	
 	public Banker(NPC bankerNpc, BankerPart bankConfiguration, String player) {
 
 		permissions = CitizensTrader.getPermissionsManager();
 		
-		econ = CitizensTrader.getEconomy();
-		config = CitizensTrader.getInstance().getConfig();
 		itemConfig = CitizensTrader.getInstance().getItemConfig();
 		
 		locale = CitizensTrader.getLocaleManager();
 		//loading accoutns
 		
-		bankStatus = BankStatus.TAB_DISPLAY;
-		tab = BankTabType.Tab1;
-
-		bank = bankConfiguration;
+		bankStatus = BankStatus.TAB;
 		npc = bankerNpc;
-		
+	}
+	
+	@Override
+	public NPC getNpc()
+	{
+		return npc;
+	}
+	
+	@Override
+	public int getNpcId()
+	{
+		return npc.getId();
 	}
 
-	public static boolean hasAccount(Player player)
-	{
-		return bankAccounts.containsKey(player.getName());
+	@Override
+	public Inventory getInventory() {
+		return tabInventory;
 	}
 	
-	protected static void initializeTabPrices()
+	@Override
+	public final boolean locked()
 	{
-		tabPrices = new HashMap<BankTabType, Double>();
-		for ( String key : config.getConfigurationSection("bank.tab-prices").getKeys(false) )
-		{
-			tabPrices.put(BankTabType.getTabByName(key), config.getDouble("bank.tab-prices."+key, 0.0));
-		}
+		return false;
 	}
 	
-	public static void reloadAccounts()
+	@Override
+	public Wallet getWallet()
 	{
-		bankAccounts = CitizensTrader.getBackendManager().getBankAccounts();
+		return new Wallet(WalletType.NPC);
 	}
 	
-	public void switchInventory()
+	public void switchInventory(String tab)
 	{
 		tabInventory.clear();
-		if ( bankStatus.equals(BankStatus.TAB_DISPLAY) )
-			account.inventoryView(tabInventory, tab);
+		//TODO inventory view
+		//account.inventoryView(tabInventory, tab);
 	}
 	
-	public double getTabPrice(BankTabType type)
+	/*public double getTabPrice(BankTabType type)
 	{
 		if ( type == null || !tabPrices.containsKey(type) )
 			return 0.0;
 		return tabPrices.get(type);
-	}
+	}*/
 	
-	public double getWithdrawFee()
+	public void tabTransaction(String tab, String player)
 	{
-		return this.getbankTrait().getWithdrawFee();
-	}
-	
-	public double getDepositFee()
-	{
-		return this.getbankTrait().getDepositFee();
-	}
-	
-	public boolean tabTransaction(BankTabType type, String player)
-	{
+		/*
 		if ( type == null )
 			return false;
 		
@@ -133,62 +122,37 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
+		*/
 	}
 	
-	public boolean depositFee(String player)
+	public BankerPart getSettings()
 	{
-		if ( econ.getBalance(player) >= this.getbankTrait().getDepositFee() )
-		{
-			econ.withdrawPlayer(player, this.getbankTrait().getDepositFee() );
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public boolean withdrawFee(String player)
-	{
-		if ( econ.getBalance(player) >= this.getbankTrait().getWithdrawFee() )
-		{
-			econ.withdrawPlayer(player, this.getbankTrait().getWithdrawFee() );
-			return true;
-		}
-		
-		return false;
-	}
-	
-	public NPC getNpc()
-	{
-		return npc;
-	}
-	
-	public BankerPart getbankTrait()
-	{
-		return this.bank;
+		return settings;
 	}
 	
 	public void useSettingsInv()
 	{
-		tabInventory = account.inventoryView(54, "Bank account settings");
+	//	tabInventory = account.inventoryView(54, "Bank account settings");
 	}
 	
 	public void settingsInventory()
 	{
 		tabInventory.clear();
-		account.settingsView(tabInventory, tab);
+		//TODO settinsg inventory
+	//	account.settingsView(tabInventory, tab);
 	}
 	
-	public BankStatus getBankStatus()
+	public BankStatus getStatus()
 	{
 		return bankStatus;
 	}
 	
-	public void setBankStatus(BankStatus status)
+	public void setStatus(BankStatus status)
 	{
 		bankStatus = status;
 	}
 
-	public void setBankTabType(BankTabType tab)
+/*	public void setBankTabType(String tab)
 	{
 		this.tab = tab;
 	}
@@ -196,58 +160,36 @@ abstract public class Banker implements EconomyNpc {
 	public BankTabType getBankTabType()
 	{
 		return tab;
-	}
+	}*/
 	
-	public BankTab getBankTab()
+	public BankTab getTab(String owner)
 	{
-		return account.getBankTab(tab);
+		return account.getBankTab(owner);
 	}
 	
-	public boolean isExistingTab(int slot)
-	{
-		if ( account.getBankTab(BankTabType.getTabByName("tab"+slot)) != null )
-			return true;
-		return false;
-	}
-	
+	//TODO is needed?
 	public void setBankTabItem(ItemStack item)
 	{
-		account.setBankTabItem(tab, toBankItem(item));
+		account.getBankTab(tab).setTabItem(toBankItem(item));
 	}
 	//tab function
 	
 	public boolean hasAllTabs()
 	{
-		return account.hasAllTabs();
-	}
-	
-	public BankTabType nextBankTab()
-	{
-		return account.nextTab();
+		return account.maxed();
 	}
 	
 	public boolean addBankTab()
 	{
-		BankTabType newTab = account.addBankTab();
+		//TODO add tab function
+	/*	BankTabType newTab = account.addBankTab();
 		if ( newTab != null )
 		{
 			tab = newTab;
 			return true;
 		}
+		return false;*/
 		return false;
-	}
-	
-	public boolean hasTabSize(int size)
-	{
-		if ( account.getBankTab(tab).getTabSize() < size )
-			return false;
-		return true;
-					
-	}
-	
-	public void increaseTabSize()
-	{
-		account.increaseTabSize(tab);
 	}
 	
 	//selecting items
@@ -257,7 +199,7 @@ abstract public class Banker implements EconomyNpc {
 	}
 	
 	public final Banker selectItem(int slot) {
-		selectedItem = account.getItem(slot, tab);
+		selectedItem = account.getItem(tab, slot);
 
 		return this;
 	} 
@@ -270,22 +212,22 @@ abstract public class Banker implements EconomyNpc {
 		return selectedItem;
 	}
 	
-	public void updateBankAccountItem(BankItem oldItem, BankItem newItem)
+	public void updateAccountItem(BankItem oldItem, BankItem newItem)
 	{
 		account.updateItem(tab, oldItem, newItem);
 	}
 	
-	public void addItemToBankAccount(BankItem item)
+	public void addItemToAccount(BankItem item)
 	{
 		account.addItem(tab, item);
 	}
 	
-	public void removeItemFromBankAccount(BankItem item)
+	public void removeItemFromAccount(BankItem item)
 	{
 		account.removeItem(tab, item);
 	}
 	
-	//inventory events
+	/*//inventory events
 	public final boolean playerInventoryHasPlace(Player player) {
 		int amountToAdd = selectedItem.getItemStack().getAmount();
 		return this.inventoryHasPlaceAmount(player.getInventory(), amountToAdd);
@@ -371,13 +313,13 @@ abstract public class Banker implements EconomyNpc {
 		int amountToAdd = selectedItem.getItemStack().getAmount();
 		return addAmountToBankerInventory(tabInventory, amountToAdd);
 		
-	}
+	}*/
 	
 	/**
 	 * SelfWritten Inventory.addItem() function for a work around with a bukkit inventory function bug
 	 * 
 	 */
-	public final boolean addAmountToInventory(Inventory nInventory, int amount) {
+/*	public final boolean addAmountToInventory(Inventory nInventory, int amount) {
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 		
@@ -487,20 +429,6 @@ abstract public class Banker implements EconomyNpc {
 		return false;
 	}
 	
-	
-	public boolean rowClicked( int row, int slot )
-	{
-		//int rows = ( tabInventory.getSize() / 9 ) - 1;
-		if ( ( ( row - 1 ) * 9 ) <= slot && slot < ( row * 9 ) )
-			return true;
-		return false;
-	}
-	
-	public int getRowSlot( int slot )
-	{
-		return slot % 9;
-	}
-	
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
 		if ( item.getAmount() != selectedItem.getItemStack().getAmount() ) {
 			if ( item.getAmount() % selectedItem.getItemStack().getAmount() == 0 ) 
@@ -512,33 +440,21 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
-	}
+	}*/
 	
-	//Overridden
-	@Override
-	public Inventory getInventory() {
-		return tabInventory;
-	}
-	
-	@Override
-	public final boolean locked()
+	//Helper methods
+	public static boolean rowClicked( int row, int slot )
 	{
+		if ( ( ( row - 1 ) * 9 ) <= slot && slot < ( row * 9 ) )
+			return true;
 		return false;
 	}
-
-	@Override
-	public int getNpcId() {
-		return npc.getId();
-	}
 	
-	@Override
-	public Wallet getWallet()
+	public static int getRowSlot( int slot )
 	{
-		return new Wallet(WalletType.NPC);
+		return slot % 9;
 	}
 	
-	
-	//utilities
 	public static BankItem toBankItem(ItemStack is) {
 		if ( is.getTypeId() == 0 )
 			return null;
@@ -553,58 +469,4 @@ abstract public class Banker implements EconomyNpc {
 	}
 
 	
-	//BankTab System
-		public enum BankTabType {
-			Tab1, Tab2, Tab3, Tab4, Tab5, Tab6, Tab7, Tab8, Tab9;
-			
-			@Override 
-			public String toString()
-			{
-				switch( this )
-				{
-				case Tab1:
-					return "tab1";
-				case Tab2:
-					return "tab2";
-				case Tab3:
-					return "tab3";
-				case Tab4:
-					return "tab4";
-				case Tab5:
-					return "tab5";
-				case Tab6:
-					return "tab6";
-				case Tab7:
-					return "tab7";
-				case Tab8:
-					return "tab8";
-				case Tab9:
-					return "tab9";
-				} 
-				return "";
-			}
-			
-			public static BankTabType getTabByName(String tabName) 
-			{
-				if ( tabName.equals("tab1") )
-					return Tab1;
-				if ( tabName.equals("tab2") )
-					return Tab2;
-				if ( tabName.equals("tab3") )
-					return Tab3;
-				if ( tabName.equals("tab4") )
-					return Tab4;
-				if ( tabName.equals("tab5") )
-					return Tab5;
-				if ( tabName.equals("tab6") )
-					return Tab6;
-				if ( tabName.equals("tab7") )
-					return Tab7;
-				if ( tabName.equals("tab8") )
-					return Tab8;
-				if ( tabName.equals("tab9") )
-					return Tab9;
-				return null;
-			}
-		}
 }

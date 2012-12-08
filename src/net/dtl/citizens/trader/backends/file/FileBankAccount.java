@@ -5,61 +5,114 @@ import java.util.List;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.BankTab;
-import net.dtl.citizens.trader.traders.Banker.BankTabType;
+import net.dtl.citizens.trader.objects.PlayerBankAccount;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import static net.dtl.citizens.trader.backends.file.FileBackend.*;
 
 public class FileBankAccount extends BankAccount {
 	
-	public FileBankAccount(String accountName, FileConfiguration accounts) {
+	public FileBankAccount(String owner, FileConfiguration accounts) {
 		//super
-		super();
-		
-		owner = accountName;
+		super(owner);
 		
 		//geting the overall account info
-		ConfigurationSection accountInfo = accounts.getConfigurationSection(buildPath("accounts",accountName));
+		ConfigurationSection accountInfo = accounts.getConfigurationSection(buildPath("accounts", owner));
 
-		//System.out.print("ab");
 		//loading tabs
-		ItemStack tabItem = new ItemStack(35,1);
+		BankItem tabItem = new BankItem("35 a:1");//new ItemStack(35,1);
 		String tabName = "";
 		int tabSize = 1;
 
-		availableTabs = accountInfo.getInt("available-tabs");
+	//	availableTabs = accountInfo.getInt("available-tabs", );
 				
 		for ( String tab : accountInfo.getConfigurationSection("tabs").getKeys(false) )
 		{
-		//	System.out.print("a");
 			//list to save the items
-			tabItem = new BankItem( accountInfo.getString(buildPath("tabs",tab,"tab-item")) ).getItemStack();
+			tabItem = new BankItem( accountInfo.getString(buildPath("tabs",tab,"tab-item")) );
 			tabName = accountInfo.getString(buildPath("tabs",tab,"tab-name"));
-			tabSize = accountInfo.getInt(buildPath("tabs",tab,"tab-size"));//accountInfo.getInt(buildPath("tabs",tab,"tab-size"));
+			//TODO tab size 
+	//		tabSize = accountInfo.getInt(buildPath("tabs",tab,"tab-size"));//accountInfo.getInt(buildPath("tabs",tab,"tab-size"));
 
 			List<BankItem> items = new ArrayList<BankItem>();
-			//fetching item list
 			for ( String item : accountInfo.getStringList(buildPath("tabs",tab,"content")) )
 			{
-		//		System.out.print(BankTab.getTabByName(tab));
 				items.add(new BankItem(item));
 			}
 			
 			BankTab bankTab = new BankTab(tabItem, tabName, tabSize);
 			bankTab.setTabItems(items);
 			
-			bankTabs.put(BankTabType.getTabByName(tab), bankTab);
+			bankTabs.put(tabName, bankTab);
 			
 			
-		//	this.storedItems.put(BankTab.getTabByName(tab), items);
-		//	this.tabItems.put(BankTab.getTabByName(tab), tabItem);
 		}
 
-		//if ( storedItems.isEmpty() )
-		//	storedItems.put(BankTab.Tab1, new ArrayList<BankItem>());
+		
+	}
+	
+	public PlayerBankAccount toPlayerAccount()
+	{
+		return new PlayerBankAccount(this);
+	}
+
+	@Override
+	public Inventory getInventory() {
+		return null;
+	}
+
+	@Override
+	public AccountType getType() {
+		return AccountType.ABSTRACT;
+	}
+
+	@Override
+	public BankTab getBankTab(String tab) {
+		return null;
+	}
+
+	@Override
+	public boolean maxed() {
+		return false;
+	}
+
+	@Override
+	public String nextTabName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean addBankTab() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void addItem(String tab, BankItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeItem(String tab, BankItem item) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BankItem getItem(String tab, int slot) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void updateItem(String tab, BankItem oldItem, BankItem newItem) {
+		// TODO Auto-generated method stub
 		
 	}
 

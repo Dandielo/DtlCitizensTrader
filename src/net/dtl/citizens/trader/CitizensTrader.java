@@ -192,11 +192,11 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public void initializeDenizenCommands()
 	{
-		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+	/*	denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		if ( denizen != null )
 		{
 			AbstractDenizenTraderCommand.initializeDenizenCommands(denizen);
-		}
+		}*/
 	}
 	
 	public void initializeDenizenTriggers()
