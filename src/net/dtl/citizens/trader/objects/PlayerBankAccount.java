@@ -8,23 +8,25 @@ public class PlayerBankAccount extends BankAccount
 {	
 	private Backend players = CitizensTrader.getBackendManager().getBackend();
 	
-	public PlayerBankAccount(String owner, boolean save) {
+	public PlayerBankAccount(String owner) {
 		//super
 		super(owner);
+		bankTabs.put(0, new BankTab(new BankItem("35:0 a:1 n:First tab"), 0, "First tab", config.getInt("bank.tab-size")));
 	}
 	
 	public PlayerBankAccount(BankAccount account)
 	{
 		super(account.getOwner());
+		bankTabs = account.bankTabs;
 	}
 
 	//Bank tab methods
 	@Override
-	public BankTab getBankTab(String tab)
+	public BankTab getBankTab(int tab)
 	{
 		return bankTabs.get(tab);
 	}
-
+	
 	@Override
 	public boolean maxed()
 	{
@@ -44,9 +46,9 @@ public class PlayerBankAccount extends BankAccount
 			return false;
 		
 		String tabName = "tab" + (bankTabs.size() + 1 );
-		BankTab tab = new BankTab(new BankItem("35:" + bankTabs.size() + " a:1"), tabName, config.getInt("bank.tab-size"));
+		BankTab tab = new BankTab(new BankItem("35:" + bankTabs.size() + " a:1"), bankTabs.size(), tabName, config.getInt("bank.tab-size"));
 		
-		bankTabs.put(tabName, tab);
+		bankTabs.put(tab.getId(), tab);
 		players.addBankTab(owner, tab);
 		
 		return true;
@@ -54,14 +56,15 @@ public class PlayerBankAccount extends BankAccount
 	
 	//Item management methods
 	@Override
-	public void addItem(String tab, BankItem item)
+	public void addItem(int tab, BankItem item)
 	{
+		System.out.print("added");
 		bankTabs.get(tab).addItem(item);
 		players.addItem(owner, tab, item);
 	}
 
 	@Override
-	public void updateItem(String tab, BankItem oldItem, BankItem newItem) 
+	public void updateItem(int tab, BankItem oldItem, BankItem newItem) 
 	{
 		bankTabs.get(tab).removeItem(oldItem);
 		bankTabs.get(tab).addItem(newItem);
@@ -70,14 +73,14 @@ public class PlayerBankAccount extends BankAccount
 	}
 
 	@Override
-	public void removeItem(String tab, BankItem item)
+	public void removeItem(int tab, BankItem item)
 	{
 		bankTabs.get(tab).removeItem(item);
 		players.removeItem(owner, tab, item);
 	}
 
 	@Override
-	public BankItem getItem(String tab, int slot) 
+	public BankItem getItem(int tab, int slot) 
 	{
 		return bankTabs.get(tab).getBankItem(slot);
 	}

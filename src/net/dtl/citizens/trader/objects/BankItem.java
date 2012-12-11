@@ -1,7 +1,5 @@
 package net.dtl.citizens.trader.objects;
 
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-
 import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -12,7 +10,7 @@ public class BankItem
 	private int slot = -1;
 	
 	//Support for anvil named items
-	private String name;
+	private String name = "";
 	
 	public BankItem(String data)
 	{
@@ -25,11 +23,11 @@ public class BankItem
 				if ( value.contains(":") ) 
 				{
 					String[] itemData = value.split(":");
-					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
+					item = new CraftItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
 				}
 				else
 				{
-					item = new ItemStack(Integer.parseInt(value),1);
+					item = new CraftItemStack(Integer.parseInt(value),1);
 				}
 			}
 			else
@@ -107,20 +105,16 @@ public class BankItem
 		slot = s;
 	}
 	
-	private void setName(String name)
+	public void setName(String name)
 	{
-		net.minecraft.server.v1_4_5.ItemStack cis = ((CraftItemStack)item).getHandle();
-		NBTTagCompound tag = cis.getTag();
-		
-		NBTTagCompound dis = tag.getCompound("display");
-		if ( dis == null )
-			dis = new NBTTagCompound();
-		
-		tag.set("display", dis);
-
-		dis.setString("Name", name);
+		NBTTagEditor.setName(item, name);
+		this.name = name;
 	}
 	
+	public String getName()
+	{
+		return name;
+	}
 	/*private String getName()
 	{
 		net.minecraft.server.v1_4_5.ItemStack cis = ((CraftItemStack)item).getHandle();

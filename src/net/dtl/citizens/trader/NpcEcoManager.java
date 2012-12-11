@@ -465,7 +465,7 @@ public class NpcEcoManager implements Listener {
 					return;
 				}
 				
-				if ( economyNpc != null )
+			/*	if ( economyNpc != null )
 				{
 					if ( economyNpc.getNpcId() == npc.getId() )
 					{
@@ -493,7 +493,7 @@ public class NpcEcoManager implements Listener {
 						
 					}
 				}
-				else
+				else*/
 				{
 
 					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
@@ -503,12 +503,6 @@ public class NpcEcoManager implements Listener {
 					}
 					
 					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
-					
-				//	Banker banker = (Banker) newNpc;
-					//if ( !Banker.hasAccount(player) ) {
-					///	playerInteraction.remove(playerName);
-					//	return;
-					//}
 					
 					playerInteraction.put(playerName, newNpc);
 					newNpc.onRightClick(player, characterTrait, npc);

@@ -131,9 +131,9 @@ permissions:
   dtl.banker.types.*:
     default: op
     children:
-      dtl.banker.types.player-bank: true
-      dtl.banker.types.guild-bank: true
-      dtl.banker.types.money-bank: true
+      dtl.banker.types.private: true
+      dtl.banker.types.guild: true
+      dtl.banker.types.money: true
   dtl.banker.managing.*: 
     default: op
     children: 

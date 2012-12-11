@@ -104,6 +104,49 @@ public class NBTTagEditor {
 		d.set("Lore", newList);
 
 	}
+	public static String getName(ItemStack item)
+	{
+		return getName((CraftItemStack)item);
+	}
 	
+	public static String getName(CraftItemStack item)
+	{
+		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
+		NBTTagCompound tag = c.getTag();
+
+		if ( tag == null )
+			return "";
+		
+		if(!tag.hasKey("display")) 
+			return "";
+		
+		NBTTagCompound d = tag.getCompound("display");
+		
+		if ( !d.hasKey("Name") )
+			return "";
+		
+		return d.getString("Name");
+	}
 	
+	public static void setName(ItemStack item, String name)
+	{
+		setName((CraftItemStack)item, name);
+	}
+	public static void setName(CraftItemStack item, String name)
+	{
+		net.minecraft.server.v1_4_5.ItemStack cis = item.getHandle();
+		NBTTagCompound tag = cis.getTag();
+
+		if ( tag == null )
+			tag = new NBTTagCompound();
+		cis.setTag(tag);
+		
+		NBTTagCompound dis = tag.getCompound("display");
+		if ( dis == null )
+			dis = new NBTTagCompound();
+		
+		tag.set("display", dis);
+
+		dis.setString("Name", name);
+	}
 }

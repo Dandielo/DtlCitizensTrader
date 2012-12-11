@@ -177,8 +177,7 @@ public class TraderCharacterTrait extends Trait {
 
 	//TODO CHANGE THIS!
 	public BankerPart getBankTrait() {
-		// TODO Auto-generated method stub
-		return null;
+		return banker;
 	}
 	
 	

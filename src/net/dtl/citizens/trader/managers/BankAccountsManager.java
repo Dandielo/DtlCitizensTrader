@@ -4,6 +4,7 @@ import java.util.Map;
 
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.objects.BankAccount;
+import net.dtl.citizens.trader.objects.PlayerBankAccount;
 
 public class BankAccountsManager {
 	protected static Map<String, BankAccount> accounts;
@@ -22,6 +23,8 @@ public class BankAccountsManager {
 	
 	public BankAccount getAccount(String owner)
 	{
+		if ( !accountExists(owner) )
+			addAccount(owner);
 		return accounts.get(owner);
 	}
 	
@@ -36,9 +39,9 @@ public class BankAccountsManager {
 		return accounts.containsKey(owner);
 	}
 	
-	public void addAccount(BankAccount account)
+	public void addAccount(String owner)
 	{
-		accounts.put(account.getOwner(), account);
-		backendManager.getBackend().newAccount(account.getOwner());
+		accounts.put(owner, new PlayerBankAccount(owner));
+		backendManager.getBackend().newAccount(owner);
 	}
 }

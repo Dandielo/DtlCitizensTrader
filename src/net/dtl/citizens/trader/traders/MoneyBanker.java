@@ -30,7 +30,7 @@ public class MoneyBanker extends Banker {
 	public MoneyBanker(NPC traderNpc, TraderCharacterTrait trait, String p) { 
 		super(traderNpc, trait.getBankTrait(), p);
 
-		account = new PlayerBankAccount(player, false);
+		account = new PlayerBankAccount(player);
 		player = p;
 
 		exchangeItem = itemConfig.getExchangeItem();

@@ -26,7 +26,7 @@ public class FileBackend extends Backend {
 	protected File accountsFile;
 	
 	public FileBackend(ConfigurationSection config, String accounts) {		
-		super(SaveTrigger.ACCOUNT);
+		super(SaveTrigger.ITEM);
 		String accountsFilename = config.getString("bank." + accounts + ".file");
 
 		// Default settings
@@ -130,47 +130,47 @@ public class FileBackend extends Backend {
 	
 	//Managing methods
 	@Override
-	public void addItem(String owner, String tab, BankItem item)
+	public void addItem(String owner, int tab, BankItem item)
 	{
-		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", tab, "content"));
+		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", ""+tab, "content"));
 		list.add(item.toString());
 		
-		accounts.set(buildPath("accounts", owner, "tabs", tab, "content"), list);
+		accounts.set(buildPath("accounts", owner, "tabs", ""+tab, "content"), list);
 
 		if ( trigger.itemSaving() )
 			save();
 	}
 
 	@Override
-	public void updateItem(String owner, String tab, BankItem oldItem, BankItem newItem)
+	public void updateItem(String owner, int tab, BankItem oldItem, BankItem newItem)
 	{
 		removeItem(owner, tab, oldItem);
 		addItem(owner, tab, newItem);
 	}
 
 	@Override
-	public void removeItem(String owner, String tab, BankItem item)
+	public void removeItem(String owner, int tab, BankItem item)
 	{
-		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", tab, "content"));
+		List<String> list = accounts.getStringList(buildPath("accounts", owner, "tabs", ""+tab, "content"));
 		list.remove(item.toString());
 		
-		accounts.set(buildPath("accounts", owner, "tabs", tab, "content"), list);
+		accounts.set(buildPath("accounts", owner, "tabs", ""+tab, "content"), list);
 		
 		if ( trigger.itemSaving() )
 			save();
 	}
 
 	@Override
-	public void setTabSize(String owner, String tab, int tabSize) {
-		accounts.set(buildPath("accounts", owner, "tabs", tab, "tab-size"), tabSize);
+	public void setTabSize(String owner, int tab, int tabSize) {
+		accounts.set(buildPath("accounts", owner, "tabs", ""+tab, "tab-size"), tabSize);
 		
 		if ( trigger.tabSaving() )
 			save();
 	}
 	
 	@Override
-	public void setBankTabItem(String owner, String tab, BankItem item) {
-		accounts.set(buildPath("accounts", owner, "tabs", tab, "tab-item"), item.toString());
+	public void setBankTabItem(String owner, int tab, BankItem item) {
+		accounts.set(buildPath("accounts", owner, "tabs", ""+tab, "tab-item"), item.toString());
 		
 		if ( trigger.tabSaving() )
 			save();
@@ -181,10 +181,10 @@ public class FileBackend extends Backend {
 		ConfigurationSection tabs = accounts.getConfigurationSection(buildPath("accounts", owner, "tabs"));
 		
 		
-		tabs.set(buildPath(tab.toString(), "tab-item"), tab.getTabItem().toString());
-		tabs.set(buildPath(tab.toString(), "tab-name"), tab.getTabName());
-	//	tabs.set(buildPath(tab.toString(), "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
-		tabs.set(buildPath(tab.toString(), "content"), new String[0]);
+		tabs.set(buildPath(tab.getId()+"", "tab-item"), tab.getTabItem().toString());
+		tabs.set(buildPath(tab.getId()+"", "tab-name"), tab.getName());
+	//	tabs.set(buildPath(tab.toString(, "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));
+		tabs.set(buildPath(tab.getId()+"", "content"), new String[0]);
 		
 		if ( trigger.tabSaving() )
 			save();
@@ -194,10 +194,10 @@ public class FileBackend extends Backend {
 	public BankAccount newAccount(String owner)
 	{
 	//	accounts.set(buildPath("accounts", owner, "available-tabs"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("max-tabs"));
-		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-item"), "35:0 a:1");
-		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-name"), "tab1");
+		accounts.set(buildPath("accounts", owner, "tabs", "0", "tab-item"), "35:0 a:1");
+		accounts.set(buildPath("accounts", owner, "tabs", "0", "tab-name"), "First tab");
 	//	accounts.set(buildPath("accounts", owner, "tabs", "tab1", "tab-size"), CitizensTrader.getInstance().getConfig().getConfigurationSection("bank").getInt("tab-size"));//buildPath("accounts", owner, "tabs", "tab1", "tab-size"), 1);
-		accounts.set(buildPath("accounts", owner, "tabs", "tab1", "content"), new String[0]);
+		accounts.set(buildPath("accounts", owner, "tabs", "0", "content"), new String[0]);
 		
 		if ( trigger.accountSaving() )
 			save();

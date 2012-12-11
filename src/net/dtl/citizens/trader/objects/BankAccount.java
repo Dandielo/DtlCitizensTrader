@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import net.dtl.citizens.trader.CitizensTrader;
 
@@ -16,7 +17,7 @@ abstract public class BankAccount implements InventoryHolder  {
 	protected static ConfigurationSection config = CitizensTrader.getInstance().getConfig();
 	
 	//Stored items
-	protected Map<String, BankTab> bankTabs;	
+	protected Map<Integer, BankTab> bankTabs;	
 	
 	//bank account owner
 	protected String owner;
@@ -27,7 +28,7 @@ abstract public class BankAccount implements InventoryHolder  {
 	public BankAccount(String owner)
 	{
 		this.owner = owner;
-		bankTabs = new HashMap<String, BankTab>();
+		bankTabs = new HashMap<Integer, BankTab>();
 	}
 
 	public String getOwner()
@@ -38,7 +39,7 @@ abstract public class BankAccount implements InventoryHolder  {
 	public abstract AccountType getType();
 	
 	//Bank tab methods
-	public abstract BankTab getBankTab(String tab);
+	public abstract BankTab getBankTab(int tab);
 	
 	public abstract boolean maxed();
 	
@@ -47,35 +48,39 @@ abstract public class BankAccount implements InventoryHolder  {
 	public abstract boolean addBankTab();
 	
 	//Item management methods
-	public abstract void addItem(String tab, BankItem item);
+	public abstract void addItem(int tab, BankItem item);
 
-	public abstract void updateItem(String tab, BankItem oldItem, BankItem newItem);
+	public abstract void updateItem(int tab, BankItem oldItem, BankItem newItem);
 	
-	public abstract void removeItem(String tab, BankItem item);
+	public abstract void removeItem(int tab, BankItem item);
 
-	public abstract BankItem getItem(String tab, int slot);
+	public abstract BankItem getItem(int tab, int slot);
 	
 	public Inventory exchangeInventory(int size, String name)
 	{
 		return Bukkit.createInventory(this, size, name);
 	}
-/*	public Inventory inventoryView(int size, String name) {
-		Inventory view = Bukkit.createInventory(this, size, name);
-		
-		for( BankItem item : bankTabs.get(BankTabType.Tab1).getTabItems() ) {
+	public Inventory inventoryView(String name) {
+		System.out.print("0 "+bankTabs.get(0)+" "+bankTabs.keySet().toArray()[0]);
+		Inventory view = Bukkit.createInventory(this, (bankTabs.get(0).getTabSize()+1)*9, name);
+		System.out.print("a");
+		for( BankItem item : bankTabs.get(0).getTabItems() ) 
+		{
 
-	        ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
-	        chk.addEnchantments(item.getItemStack().getEnchantments());
+			System.out.print("b");
+	        ItemStack chk = item.getItemStack().clone();//new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+	     //   chk.addEnchantments(item.getItemStack().getEnchantments());
 	
 	        if ( item.getSlot() < 0 )
         		item.setSlot(view.firstEmpty());
 	        view.setItem(item.getSlot(),chk);
         }
 
+		System.out.print("c");
 		tabSelectionView(view);
 		return view;
 	}
-	
+	/*
 	public Inventory inventoryTabView(BankTabType type) {
 		BankTab tab = bankTabs.get(type);
 		
@@ -116,8 +121,8 @@ abstract public class BankAccount implements InventoryHolder  {
 			backend.increaseTabSize(owner, tabType, tab.getTabSize());
 		}
 	}
-
-	public void inventoryView(Inventory inventory, BankTabType tab)
+*/
+	public void inventoryView(Inventory inventory, int tab)
 	{
 		
 		for ( BankItem item : bankTabs.get(tab).getTabItems() )
@@ -129,19 +134,12 @@ abstract public class BankAccount implements InventoryHolder  {
 	public void tabSelectionView(Inventory inventory)
 	{
 		int lastRow = ( inventory.getSize() / 9 ) - 1;
-		//System.out.print("a");
 		int i = lastRow * 9;
 		
-		for ( BankTabType tab : bankTabs.keySet() )
-		{
-
-			inventory.setItem(i + Integer.parseInt(tab.toString().substring(3))-1, bankTabs.get(tab).getTabItem());
-		//	++i;
-		}
-	//	for ( BankItem item : storedItems.get(tab) )
-	//		inventory.setItem(item.getSlot(), item.getItemStack());
+		for ( BankTab tab : bankTabs.values() )
+			inventory.setItem(i++, tab.getTabItem().getItemStack());
 	}
-	
+	/*
 	public void settingsView(Inventory inventory, BankTabType btab)
 	{
 		int lastRow = ( inventory.getSize() / 9 ) - 1;

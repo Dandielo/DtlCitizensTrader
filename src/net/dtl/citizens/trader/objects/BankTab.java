@@ -3,9 +3,8 @@ package net.dtl.citizens.trader.objects;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.inventory.ItemStack;
-
 public class BankTab {
+	private final int id;
 	private String tabName;
 	private int tabSize;
 	private BankItem tabItem;
@@ -13,20 +12,26 @@ public class BankTab {
 	//item list
 	private List<BankItem> items;
 	
-	public BankTab(BankItem item, String name, int size)
+	public BankTab(BankItem item, int tid, String name, int size)
 	{
+		id = tid;
 		items = new ArrayList<BankItem>();
 		tabItem = item;
 		tabName = name;
 		tabSize = size;
 	}
 	
-	public void setTabName(String name)
+	public int getId()
+	{
+		return id;
+	}
+	
+	public void setName(String name)
 	{
 		tabName = name;
 	}
 	
-	public String getTabName()
+	public String getName()
 	{
 		return tabName;
 	}
@@ -81,5 +86,11 @@ public class BankTab {
 	public void removeItem(BankItem item)
 	{
 		items.remove(item);
+	}
+	
+	@Override
+	public boolean equals(Object obj)
+	{
+		return id == ((BankTab)obj).getId();
 	}
 }

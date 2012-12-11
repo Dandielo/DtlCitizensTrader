@@ -11,6 +11,7 @@ import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerSoldTrigger;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerTransactionTrigger;
 import net.dtl.citizens.trader.managers.BackendManager;
+import net.dtl.citizens.trader.managers.BankAccountsManager;
 import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
@@ -50,6 +51,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static LocaleManager localeManager;
 	private static LoggingManager logManager;
 	private static PatternsManager patternsManager;
+	private static BankAccountsManager accountsManager;
 	
 	//Trader configuration
 	private static ItemsConfig itemConfig;
@@ -102,6 +104,9 @@ public class CitizensTrader extends JavaPlugin {
 		
 		npcEcoManager = new NpcEcoManager();
 		logManager = new LoggingManager();
+		
+		accountsManager = new BankAccountsManager();
+		accountsManager.loadAccounts();
 		
 		
 		//initializing vault plugin
@@ -275,6 +280,11 @@ public class CitizensTrader extends JavaPlugin {
 	public static PatternsManager getPatternsManager()
 	{
 		return patternsManager;
+	}
+	
+	public static BankAccountsManager getAccountsManager()
+	{
+		return accountsManager;
 	}
 	
 	public static Economy getEconomy()

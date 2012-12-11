@@ -1,5 +1,8 @@
 package net.dtl.citizens.trader.traders;
 
+import java.util.Map;
+
+import org.bukkit.craftbukkit.v1_4_5.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -13,6 +16,7 @@ import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.BankAccount;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.BankTab;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.BankerPart;
@@ -36,20 +40,20 @@ abstract public class Banker implements EconomyNpc {
 	protected BankAccount account;
 	protected Inventory tabInventory;
 	
-	protected String tab;
+	protected int tab;
 	protected BankItem selectedItem;
 	
 	protected NPC npc;
 	
-	public Banker(NPC bankerNpc, BankerPart bankConfiguration, String player) {
+	public Banker(NPC bankerNpc, BankerPart bankConfiguration, String owner) {
 
 		permissions = CitizensTrader.getPermissionsManager();
-		
 		itemConfig = CitizensTrader.getInstance().getItemConfig();
-		
 		locale = CitizensTrader.getLocaleManager();
+		accounts = CitizensTrader.getAccountsManager();
+		settings = bankConfiguration;
 		//loading accoutns
-		
+
 		bankStatus = BankStatus.TAB;
 		npc = bankerNpc;
 	}
@@ -83,12 +87,20 @@ abstract public class Banker implements EconomyNpc {
 		return new Wallet(WalletType.NPC);
 	}
 	
+	public void switchInventory()
+	{
+		tabInventory.clear();
+		//TODO inventory view
+		account.inventoryView(tabInventory, tab);
+	}
+	
+	/*
 	public void switchInventory(String tab)
 	{
 		tabInventory.clear();
 		//TODO inventory view
 		//account.inventoryView(tabInventory, tab);
-	}
+	}*/
 	
 	/*public double getTabPrice(BankTabType type)
 	{
@@ -99,17 +111,23 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean withdrawFee(Player player)
 	{
-		return getWallet().withdraw(player.getName(), getSettings().getWithdrawFee());
+		System.out.print(player);
+		System.out.print(getSettings());
+		System.out.print(settings.getWallet());
+		return settings.getWallet().withdraw(player.getName(), getSettings().getWithdrawFee());
 	}
 	
 	public boolean depositFee(Player player)
 	{
-		return getWallet().withdraw(player.getName(), getSettings().getDepositFee());
+		System.out.print(player);
+		System.out.print(getSettings());
+		System.out.print(settings.getWallet());
+		return settings.getWallet().withdraw(player.getName(), getSettings().getDepositFee());
 	}
 	
-	public void tabTransaction(String tab, String player)
+	/*public void tabTransaction(String tab, String player)
 	{
-		/*
+		
 		if ( type == null )
 			return false;
 		
@@ -124,15 +142,15 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
-		*/
-	}
+		
+	}*/
 	
 	public BankerPart getSettings()
 	{
 		return settings;
 	}
 	
-	public void useSettingsInv()
+	/*public void useSettingsInv()
 	{
 	//	tabInventory = account.inventoryView(54, "Bank account settings");
 	}
@@ -142,7 +160,7 @@ abstract public class Banker implements EconomyNpc {
 		tabInventory.clear();
 		//TODO settinsg inventory
 	//	account.settingsView(tabInventory, tab);
-	}
+	}*/
 	
 	public BankStatus getStatus()
 	{
@@ -153,28 +171,28 @@ abstract public class Banker implements EconomyNpc {
 	{
 		bankStatus = status;
 	}
-
-/*	public void setBankTabType(String tab)
+	
+	public BankTab getTab(int tab)
+	{
+		return account.getBankTab(tab);
+	}
+	
+	public BankTab getTab()
+	{
+		return account.getBankTab(tab);
+	}
+	
+	public void setTab(int tab)
 	{
 		this.tab = tab;
 	}
 	
-	public BankTabType getBankTabType()
-	{
-		return tab;
-	}*/
-	
-	public BankTab getTab(String owner)
-	{
-		return account.getBankTab(owner);
-	}
-	
 	//TODO is needed?
+	/*
 	public void setBankTabItem(ItemStack item)
 	{
 		account.getBankTab(tab).setTabItem(toBankItem(item));
-	}
-	//tab function
+	}*/
 	
 	public boolean hasAllTabs()
 	{
@@ -229,38 +247,41 @@ abstract public class Banker implements EconomyNpc {
 		account.removeItem(tab, item);
 	}
 	
-	/*//inventory events
+	//inventory events
 	public final boolean playerInventoryHasPlace(Player player) {
 		int amountToAdd = selectedItem.getItemStack().getAmount();
-		return this.inventoryHasPlaceAmount(player.getInventory(), amountToAdd);
+		return inventoryHasPlaceAmount(player.getInventory(), amountToAdd);
 	}
 	
 	//inventory events
 	public final boolean bankerInventoryHasPlace() {
 		int amountToAdd = selectedItem.getItemStack().getAmount();
-		return this.bankerInventoryHasPlaceAmount(tabInventory, amountToAdd);
+		return bankerInventoryHasPlaceAmount(tabInventory, amountToAdd);
 	}
 
-	public final boolean inventoryHasPlaceAmount(Inventory nInventory,int amount) {
+	public final boolean inventoryHasPlaceAmount(Inventory nInventory, int amount)
+	{
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 		
-		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
-			
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() )
+		{
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
+			{
 				
-				
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
-					return true;
-				
-				
-				if ( item.getAmount() < 64 ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
+						return true;
+					
+					if ( item.getAmount() < 64 ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+					}
+					
+					
+					if ( amountToAdd <= 0 )
+						return true;
 				}
-				
-				
-				if ( amountToAdd <= 0 )
-					return true;
 			}
 		}
 		
@@ -271,81 +292,87 @@ abstract public class Banker implements EconomyNpc {
 		return false;
 	}
 	
-	public final boolean bankerInventoryHasPlaceAmount(Inventory nInventory,int amount) {
+	public final boolean bankerInventoryHasPlaceAmount(Inventory nInventory, int amount)
+	{
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 
-
-		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) {
+		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) 
+		{
 			ItemStack item = itemEntry.getValue();
 			
-			if ( this.rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
+			if ( rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
 				continue;
 			
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
+			{
 				
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
-					return true;
-				
-				if ( item.getAmount() < 64 ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
+						return true;
+					
+					if ( item.getAmount() < 64 ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+					}
+					
+					if ( amountToAdd <= 0 )
+						return true;
 				}
-				
-				if ( amountToAdd <= 0 )
-					return true;
 			}
 		}
 		
-		if ( inventory.firstEmpty() < inventory.getSize() 
+		if ( inventory.firstEmpty() < account.getBankTab(tab).getTabSize()*9
 				&& inventory.firstEmpty() >= 0 ) {
 			return true;
 		}
 		return false;
 	}
 	
-	public final boolean addSelectedToPlayerInventory(Player player) {
-
+	public final boolean addSelectedToPlayerInventory(Player player)
+	{
 		int amountToAdd = selectedItem.getItemStack().getAmount();
 		return addAmountToInventory(player.getInventory(), amountToAdd);
-		
 	}
 	
-	public final boolean addSelectedToBankerInventory() {
-
+	public final boolean addSelectedToBankerInventory()
+	{
 		int amountToAdd = selectedItem.getItemStack().getAmount();
 		return addAmountToBankerInventory(tabInventory, amountToAdd);
-		
-	}*/
+	}
 	
 	/**
 	 * SelfWritten Inventory.addItem() function for a work around with a bukkit inventory function bug
 	 * 
 	 */
-/*	public final boolean addAmountToInventory(Inventory nInventory, int amount) {
+	public final boolean addAmountToInventory(Inventory nInventory, int amount) {
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 		
-		
-		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) {
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() ) 
+		{
 			
-			
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
-				
-				
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
-					item.setAmount( item.getAmount() + amountToAdd );
-					return true;
-				} 
-				
-			 
-				if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
-					item.setAmount(selectedItem.getItemStack().getMaxStackSize());
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
+			{
+
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
+					
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
+						item.setAmount( item.getAmount() + amountToAdd );
+						return true;
+					} 
+					
+				 
+					if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
+						item.setAmount(selectedItem.getItemStack().getMaxStackSize());
+					}
+					
+					
+					if ( amountToAdd <= 0 )
+						return true;
 				}
-				
-				
-				if ( amountToAdd <= 0 )
-					return true;
 			}
 		}
 		
@@ -370,43 +397,50 @@ abstract public class Banker implements EconomyNpc {
 		Inventory inventory = nInventory;
 		int amountToAdd = amount;
 		
-		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) {
+		for ( Map.Entry<Integer, ? extends ItemStack> itemEntry : inventory.all(selectedItem.getItemStack().getType()).entrySet() ) 
+		{
 			ItemStack item = itemEntry.getValue();
 			
-			if ( this.rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
+			if ( rowClicked(account.getBankTab(tab).getTabSize()+1, itemEntry.getKey()) )
 				continue;
 			
 			selectItem(itemEntry.getKey());
 			BankItem oldItem = null;
 			
-			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) {
-				 
+			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
+			{
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
 				
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
-					oldItem = toBankItem(selectedItem.getItemStack());
-					oldItem.setSlot(selectedItem.getSlot());
-					selectedItem.getItemStack().setAmount(item.getAmount() + amountToAdd);
-					updateBankAccountItem(oldItem, selectedItem);
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
+						oldItem = toBankItem(selectedItem.getItemStack());
+						oldItem.setSlot(selectedItem.getSlot());
+						oldItem.setName(selectedItem.getName());
+						
+						selectedItem.getItemStack().setAmount(item.getAmount() + amountToAdd);
+						updateAccountItem(oldItem, selectedItem);
+						
+						item.setAmount( item.getAmount() + amountToAdd );
+						return true;
+					} 
 					
-					item.setAmount( item.getAmount() + amountToAdd );
-					return true;
-				} 
-				
-				
-				if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
-					item.setAmount(selectedItem.getItemStack().getMaxStackSize());
 					
-					oldItem = toBankItem(selectedItem.getItemStack());
-					oldItem.setSlot(selectedItem.getSlot());
+					if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
+						item.setAmount(selectedItem.getItemStack().getMaxStackSize());
+						
+						oldItem = toBankItem(selectedItem.getItemStack());
+						oldItem.setSlot(selectedItem.getSlot());
+						oldItem.setName(selectedItem.getName());
+						
+						selectedItem.getItemStack().setAmount(selectedItem.getItemStack().getMaxStackSize());
+						updateAccountItem(oldItem, selectedItem);
+					}
 					
-					selectedItem.getItemStack().setAmount(selectedItem.getItemStack().getMaxStackSize());
-					updateBankAccountItem(oldItem, selectedItem);
+					
+					if ( amountToAdd <= 0 )
+						return true;
 				}
-				
-				
-				if ( amountToAdd <= 0 )
-					return true;
 			}
 		}
 		
@@ -416,20 +450,23 @@ abstract public class Banker implements EconomyNpc {
 			
 			
 			ItemStack is = selectedItem.getItemStack().clone();
+			String name = selectedItem.getName();
 			is.setAmount(amountToAdd);
 			
 			//create a new bank item
 			selectedItem = toBankItem(is);
 			selectedItem.setSlot(inventory.firstEmpty());
-			addItemToBankAccount(selectedItem);
+			selectedItem.setName(name);
 			
+			addItemToAccount(selectedItem);
 			
 			inventory.setItem(inventory.firstEmpty(), is);
 			return true;
 		}
 		
 		return false;
-	}*/
+	}
+	/*
 	
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
 		if ( item.getAmount() != selectedItem.getItemStack().getAmount() ) {
@@ -442,7 +479,7 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
-	}
+	}*/
 	
 	//Helper methods
 	public static boolean rowClicked( int row, int slot )
@@ -467,6 +504,10 @@ abstract public class Banker implements EconomyNpc {
 			for ( Enchantment ench : is.getEnchantments().keySet() ) 
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
 		}
+		String name = NBTTagEditor.getName(is);
+		if ( !name.isEmpty() )
+			itemInfo += " n:"+name;
+		
 		return new BankItem(itemInfo);
 	}
 

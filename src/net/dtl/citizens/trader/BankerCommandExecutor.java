@@ -4,10 +4,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
-import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
-import net.dtl.citizens.trader.traders.Banker;
-import net.dtl.citizens.trader.traders.EconomyNpc;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -16,10 +13,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
+import static net.dtl.citizens.trader.CitizensTrader.*;
+
 public class BankerCommandExecutor implements CommandExecutor {
 
 	//plugin instance
-	public static CitizensTrader plugin;
+	private static CitizensTrader plugin;
+	private static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
 
 	//constructor
 	public BankerCommandExecutor(CitizensTrader instance) {
@@ -27,10 +27,20 @@ public class BankerCommandExecutor implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3) 
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) 
 	{
-		// TODO Auto-generated method stub
-		return false;
+		if ( !(sender instanceof Player) )
+		{
+			sender.sendMessage(ChatColor.RED + "Commands usable only by players!");
+			return true;
+		}
+		
+		Player player = (Player) sender;
+		if ( args[0].equals("create") )
+			this.createBanker(player, args);
+		
+		
+		return true;
 	}
 
 	/*
@@ -280,14 +290,14 @@ public class BankerCommandExecutor implements CommandExecutor {
 		return true;
 	}
 	
-	
+	*/
 	//creating a trader, its easy ;)
 	public boolean createBanker(Player player, String[] args)
 	{
 		String traderName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
-		EcoNpcType traderType = getDefaultBankerType(player);
+		EcoNpcType bankerType = EcoNpcType.PRIVATE_BANKER;
 		
 		
 		//lets fetch the argument list
@@ -297,15 +307,15 @@ public class BankerCommandExecutor implements CommandExecutor {
 			if ( arg.startsWith("t:") )
 			{
 				//do we have permissions to set this trader type?
-				if ( !permsManager.has(player, "dtl.banker.types." + arg.substring(2) + "-bank" ) )
+				if ( !permissionsManager.has(player, "dtl.banker.types." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;
 				}
-				traderType = EcoNpcType.getTypeByName(arg.substring(2)+ "-bank");
-				if ( traderType == null || traderType.isTrader() )
+				bankerType = EcoNpcType.getTypeByName(arg.substring(2));
+				if ( bankerType == null || bankerType.isTrader() )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
 					return true;
 				}
 			}
@@ -326,9 +336,9 @@ public class BankerCommandExecutor implements CommandExecutor {
 		else
 			traderName = traderName.substring(7, traderName.length()-1);
 		
-		if ( traderType == null || entityType == null )
+		if ( bankerType == null || entityType == null )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+		//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return true;
 		}
 		
@@ -340,9 +350,11 @@ public class BankerCommandExecutor implements CommandExecutor {
 		npc.spawn(player.getLocation());
 		
 		//change the trader settings
-		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
+		TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
+		trait.setType(bankerType);
+		trait.implementBanker();
 		
-		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:banker") );
+		//player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:banker") );
 		return true;
-	}*/
+	}
 }

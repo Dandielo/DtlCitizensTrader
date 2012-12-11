@@ -15,13 +15,13 @@ public abstract class Backend {
 	
 	abstract public Map<String, BankAccount> getAccounts();
 	
-	abstract public void addItem(String owner, String tab, BankItem item);
-	abstract public void updateItem(String owner, String tab, BankItem oldItem, BankItem newItem);
-	abstract public void removeItem(String owner, String tab, BankItem item);
+	abstract public void addItem(String owner, int tab, BankItem item);
+	abstract public void updateItem(String owner, int tab, BankItem oldItem, BankItem newItem);
+	abstract public void removeItem(String owner, int tab, BankItem item);
 	
 	abstract public void addBankTab(String owner, BankTab tab);
-	abstract public void setBankTabItem(String owner, String tab, BankItem item);
-	abstract public void setTabSize(String owner, String tabType, int tabSize);
+	abstract public void setBankTabItem(String owner, int tab, BankItem item);
+	abstract public void setTabSize(String owner, int tab, int tabSize);
 	
 	abstract public void removeAccount(String owner);
 	abstract public BankAccount newAccount(String owner);
