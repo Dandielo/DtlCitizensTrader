@@ -23,36 +23,15 @@ public class PrivateBanker extends Banker {
 	public PrivateBanker(NPC bankerNpc, BankerPart bankConfiguragion, String player) { 
 		super(bankerNpc, bankConfiguragion, player);
 		
-		initializeTabPrices();
 		
-		account = bankAccounts.get(player);
-		if ( account == null )
-		{
-			if ( tabPrices.containsKey(BankTabType.Tab1) && econ.getBalance(player) < tabPrices.get(BankTabType.Tab1) )
-			{
-				Bukkit.getPlayerExact(player).sendMessage( locale.getLocaleString("bank-account-no-money") );
-				return;
-			}
-			//create new account
-			account = new PlayerBankAccount(player, true);
-			bankAccounts.put(player, account);
-		}
-
 		tabInventory = account.inventoryTabView(tab);
-
-		//loading trader bank config
-		this.switchInventory();
 	}
 
-	
-	/**
-	 * Settings mode used by bankers and AuctionHouse
-	 *
-	 * @param event this is a pure InventoryClickEvent, all other functions are available in parent class
-	 */
 	@Override
-	public void settingsMode(InventoryClickEvent event) {
-		event.setCancelled(true);
+	public void settingsMode(InventoryClickEvent event) 
+	{
+		//unused atm
+	/*	event.setCancelled(true);
 		
 		Player player = (Player) event.getWhoClicked();
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -153,7 +132,7 @@ public class PrivateBanker extends Banker {
 			
 		}
 		lastSlot = slot;
-		
+		*/
 	}
 
 	@Override

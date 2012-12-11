@@ -18,30 +18,27 @@ import org.bukkit.entity.Player;
 
 public class BankerCommandExecutor implements CommandExecutor {
 
-	//TODO Total redo!
 	//plugin instance
 	public static CitizensTrader plugin;
-	
-	//managers
-	private static NpcEcoManager bankerManager;
-	private static PermissionsManager permsManager;
-	private static LocaleManager locale;
 
 	//constructor
 	public BankerCommandExecutor(CitizensTrader instance) {
 		plugin = instance;
-
-		locale = CitizensTrader.getLocaleManager();
-		permsManager = CitizensTrader.getPermissionsManager();
-		bankerManager = CitizensTrader.getNpcEcoManager();
 	}
-	
+
+	@Override
+	public boolean onCommand(CommandSender arg0, Command arg1, String arg2, String[] arg3) 
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	/*
 	//commands
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 
-		
-		//is player
+			//is player
 		if ( sender instanceof Player )
 		{
 			Player player = (Player) sender;
@@ -228,11 +225,11 @@ public class BankerCommandExecutor implements CommandExecutor {
 		}
 		
 		//have we got the needed args?
-	/*	if ( args.length > size )
-		{
-			player.sendMessage( locale.getLocaleString("missing-args") );
-			return false;
-		}	*/
+	//	if ( args.length > size )
+		//{
+		//	player.sendMessage( locale.getLocaleString("missing-args") );
+		//	return false;
+		//}	
 		
 		return true;
 	}
@@ -347,5 +344,5 @@ public class BankerCommandExecutor implements CommandExecutor {
 		
 		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:banker") );
 		return true;
-	}
+	}*/
 }

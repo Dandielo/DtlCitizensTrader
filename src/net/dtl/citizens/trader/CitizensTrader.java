@@ -144,7 +144,7 @@ public class CitizensTrader extends JavaPlugin {
 		
 
 		//loading accounts
-		Banker.reloadAccounts();
+		//TODO loading accounts
 		info("Loaded bank accounts");
 		
 		//Denizen commands

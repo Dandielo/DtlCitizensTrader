@@ -480,14 +480,14 @@ public class NpcEcoManager implements Listener {
 						
 						EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 						Banker banker = (Banker) playerInteraction.get(playerName);
-						if ( !Banker.hasAccount(player) ) {
-							playerInteraction.remove(playerName);
-							return;
-						}
+					//	if ( !Banker.hasAccount(player) ) {
+					//		playerInteraction.remove(playerName);
+					//		return;
+					//	}
 						
 						playerInteraction.put(playerName, newNpc);
-						player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
-						player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
+					//	player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
+					//	player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
 						
 						newNpc.onRightClick(player, characterTrait, npc);
 						
@@ -505,10 +505,10 @@ public class NpcEcoManager implements Listener {
 					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 					
 				//	Banker banker = (Banker) newNpc;
-					if ( !Banker.hasAccount(player) ) {
-						playerInteraction.remove(playerName);
-						return;
-					}
+					//if ( !Banker.hasAccount(player) ) {
+					///	playerInteraction.remove(playerName);
+					//	return;
+					//}
 					
 					playerInteraction.put(playerName, newNpc);
 					newNpc.onRightClick(player, characterTrait, npc);
@@ -529,7 +529,7 @@ public class NpcEcoManager implements Listener {
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
-						EconomyNpc newNpc = new MoneyBanker(npc, characterTrait.getBankTrait(), playerName);
+						EconomyNpc newNpc = new MoneyBanker(npc, characterTrait, playerName);
 						playerInteraction.put(playerName, newNpc);
 						
 						newNpc.onRightClick(player, characterTrait, npc);
@@ -538,7 +538,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new MoneyBanker(npc, characterTrait.getBankTrait(), playerName);
+					EconomyNpc newNpc = new MoneyBanker(npc, characterTrait, playerName);
 					playerInteraction.put(playerName, newNpc);
 					
 					newNpc.onRightClick(player, characterTrait, npc);

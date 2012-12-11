@@ -202,6 +202,14 @@ public class MoneyBanker extends Banker {
 
 	@Override
 	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+		
+		/*TODO add descriptions to player items be aware!
+		 * 
+		NBTTagEditor.removeDescriptions(player.getInventory());
+		if ( !getTraderStatus().isManaging() )
+			loadDescriptions(player.getInventory());
+		 */
+		
 		player.openInventory(getInventory());
 		return true;
 	}

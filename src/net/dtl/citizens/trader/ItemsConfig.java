@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 
+import net.dtl.citizens.trader.objects.BankItem;
 import net.minecraft.server.v1_4_5.NBTTagCompound;
 import net.minecraft.server.v1_4_5.NBTTagList;
 import net.minecraft.server.v1_4_5.NBTTagString;
@@ -24,11 +25,13 @@ public class ItemsConfig {
 	private Map<String, ItemStack> buttons;
 	private Map<String, List<String>> pricesLore;
 	
-	
 	//general settings
 	private long rclickInterval;
 	private ItemStack manageWand;
 	private ItemStack settingsWand;
+	
+	//bank settings
+	private ItemStack exchangeItem;
 
 	//functions
 	public ItemsConfig(ConfigurationSection config) {
@@ -40,7 +43,6 @@ public class ItemsConfig {
 		manageWand = convertStringData(config.getString("manage","280"), "", null);
 		settingsWand = convertStringData(config.getString("settings","340"), "", null);
 
-	//	System.out.print("sth else 2");
 		buttons = new HashMap<String, ItemStack>();
 		
 		pricesLore = new HashMap<String,List<String>>();
@@ -56,6 +58,8 @@ public class ItemsConfig {
 					traderSection.getString(buildPath("inventory-navigation", key, "name"), "") ,
 					traderSection.getStringList(buildPath("inventory-navigation", key, "lore")) ));
 		}
+		
+		exchangeItem = new BankItem(config.getString("bank.money-bank.exchange-item", "388")).getItemStack();
 	}
 	
 	public boolean disablePlugin() {
@@ -217,6 +221,10 @@ public class ItemsConfig {
 		}
 
 		return builder.toString();
+	}
+
+	public ItemStack getExchangeItem() {
+		return exchangeItem;
 	}
 
 

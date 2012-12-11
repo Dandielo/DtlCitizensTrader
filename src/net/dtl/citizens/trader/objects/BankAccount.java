@@ -3,7 +3,9 @@ package net.dtl.citizens.trader.objects;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import net.dtl.citizens.trader.CitizensTrader;
@@ -53,6 +55,10 @@ abstract public class BankAccount implements InventoryHolder  {
 
 	public abstract BankItem getItem(String tab, int slot);
 	
+	public Inventory exchangeInventory(int size, String name)
+	{
+		return Bukkit.createInventory(this, size, name);
+	}
 /*	public Inventory inventoryView(int size, String name) {
 		Inventory view = Bukkit.createInventory(this, size, name);
 		
@@ -89,11 +95,6 @@ abstract public class BankAccount implements InventoryHolder  {
 		return view;
 	}
 	
-	public Inventory cleanInventory(int size, String name) {
-		Inventory view = Bukkit.createInventory(this, size, name);
-		
-		return view;
-	}
 	
 	@Override
 	public Inventory getInventory() {

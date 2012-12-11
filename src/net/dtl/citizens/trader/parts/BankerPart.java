@@ -100,7 +100,7 @@ public class BankerPart {
 	//global static settings
 	protected static List<Double> tabPrices = new ArrayList<Double>(); 
 	
-	public double getTabPrice(int tab)
+	public static double getTabPrice(int tab)
 	{
 		return tabPrices.get(tab);
 	}
