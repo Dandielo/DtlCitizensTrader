@@ -136,9 +136,8 @@ public class PrivateBanker extends Banker {
 	}
 
 	@Override
-	public void simpleMode(InventoryClickEvent event) {
-		
-		
+	public void simpleMode(InventoryClickEvent event)
+	{
 		Player player = (Player) event.getWhoClicked();
 		int slot = event.getSlot();
 		
@@ -153,7 +152,7 @@ public class PrivateBanker extends Banker {
 				{
 					if ( item.getSlot() != -1 )
 					{
-						if ( !withdrawFee(player.getName()) )
+						if ( !withdrawFee(player) )
 						{
 							player.sendMessage( locale.getLocaleString("not-enough-money") );
 							event.setCancelled(true);

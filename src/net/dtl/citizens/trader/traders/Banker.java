@@ -1,13 +1,7 @@
 package net.dtl.citizens.trader.traders;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
@@ -22,8 +16,6 @@ import net.dtl.citizens.trader.objects.BankTab;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.BankerPart;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
-import net.milkbowl.vault.economy.Economy;
 
 abstract public class Banker implements EconomyNpc {
 	
@@ -104,6 +96,16 @@ abstract public class Banker implements EconomyNpc {
 			return 0.0;
 		return tabPrices.get(type);
 	}*/
+	
+	public boolean withdrawFee(Player player)
+	{
+		return getWallet().withdraw(player.getName(), getSettings().getWithdrawFee());
+	}
+	
+	public boolean depositFee(Player player)
+	{
+		return getWallet().withdraw(player.getName(), getSettings().getDepositFee());
+	}
 	
 	public void tabTransaction(String tab, String player)
 	{
@@ -427,7 +429,7 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
-	}
+	}*/
 	
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
 		if ( item.getAmount() != selectedItem.getItemStack().getAmount() ) {
@@ -440,7 +442,7 @@ abstract public class Banker implements EconomyNpc {
 		}
 		
 		return false;
-	}*/
+	}
 	
 	//Helper methods
 	public static boolean rowClicked( int row, int slot )
