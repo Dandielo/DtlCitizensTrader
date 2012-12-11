@@ -31,8 +31,7 @@ public class PrivateBanker extends Banker {
 	@Override
 	public void settingsMode(InventoryClickEvent event) 
 	{
-		//unused atm
-	/*	event.setCancelled(true);
+		event.setCancelled(true);
 		
 		Player player = (Player) event.getWhoClicked();
 		DecimalFormat decimalFormat = new DecimalFormat("#.##");
@@ -42,22 +41,21 @@ public class PrivateBanker extends Banker {
 		
 		if ( top )
 		{
-			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
+			if ( getStatus().equals(BankStatus.SETTING_TAB) )
 			{
-				player.sendMessage(locale.getLocaleString("tab-setting-xxx", "setting:tab-item", "action:canceled").replace("{tab}", getBankTab().getTabName()));
-				setBankStatus(BankStatus.SETTINGS);
+				player.sendMessage(locale.getLocaleString("tab-setting-xxx", "setting:tab-item", "action:canceled").replace("{tab}", getTab().getName()));
+				setStatus(BankStatus.SETTINGS);
 			}
 				
-			if ( rowClicked( 6, slot) )
+			if ( rowClicked(getTab().getTabSize()+1, slot) )
 			{
-
 				if ( event.getCurrentItem().getTypeId() == 35 )
 				{
-					if ( !isExistingTab(this.getRowSlot(slot+1)) )
+					if ( !hasTab(getRowSlot(slot)) )
 					{
 						if ( lastSlot != slot )
 						{
-							player.sendMessage( locale.getLocaleString("tab-price").replace("{value}", decimalFormat.format(this.getTabPrice(this.nextBankTab()))) );
+							player.sendMessage( locale.getLocaleString("tab-price").replace("{value}", decimalFormat.format(BankerPart.getTabPrice(tabs()))) );
 
 							lastSlot = slot;
 							return;
@@ -69,7 +67,7 @@ public class PrivateBanker extends Banker {
 							return;
 						}
 						
-						if ( !this.tabTransaction(this.nextBankTab(), player.getName()) )
+						if ( !tabTransaction(tabs(), player.getName()) )
 						{
 
 							player.sendMessage( locale.getLocaleString("not-enough-money") );
@@ -77,26 +75,29 @@ public class PrivateBanker extends Banker {
 						}
 						
 						if ( addBankTab() )
+						{
+							setTab(tabs()-1);
 							settingsInventory();
+						}
 						
-						player.sendMessage( locale.getLocaleString("tab-xxx", "action:{transaction}", "transaction:bought").replace("{tab}", this.getBankTab().getTabName()) );
+						player.sendMessage( locale.getLocaleString("tab-xxx", "action:{transaction}", "transaction:bought").replace("{tab}", this.getTab().getName()) );
 						lastSlot = slot;
 						return;
 					}
 				}
 				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
-					if ( !getBankTabType().equals(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1))) )							
+					if ( getTab().getId() != getTab(getRowSlot(slot)).getId() )							
 					{
-						this.setBankTabType(BankTabType.getTabByName("tab"+(getRowSlot(slot)+1)));
-						player.sendMessage( locale.getLocaleString("tab-switched").replace("{tab}", this.getBankTab().getTabName()) );
+						setTab(getRowSlot(slot));
+						player.sendMessage( locale.getLocaleString("tab-switched").replace("{tab}", getTab().getName()) );
 						settingsInventory();
 					}
 				} 
 			
 			} 
 			else 
-			if ( rowClicked( 5, slot) )	
+			if ( rowClicked(getTab().getTabSize(), slot) )	
 			{
 
 				if ( !permissions.has(player, "dtl.banker.settings.tab-item") )
@@ -105,24 +106,24 @@ public class PrivateBanker extends Banker {
 					return;
 				}
 				
-				if ( getBankStatus().equals(BankStatus.SETTINGS) )
+				if ( getStatus().equals(BankStatus.SETTINGS) )
 				{
-					player.sendMessage(locale.getLocaleString("select-tab-item").replace("{tab}", getBankTab().getTabName()) );
-					setBankStatus(BankStatus.SETTING_TAB_ITEM);
+					player.sendMessage(locale.getLocaleString("select-tab-item").replace("{tab}", getTab().getName()) );
+					setStatus(BankStatus.SETTING_TAB);
 				}
 			}
 			
 		}
 		else
 		{
-			if ( getBankStatus().equals(BankStatus.SETTING_TAB_ITEM) )
+			if ( getStatus().equals(BankStatus.SETTING_TAB) )
 			{
 				if ( event.getCurrentItem().getTypeId() != 0 )
 				{
-					setBankTabItem(event.getCurrentItem());
-					player.sendMessage( locale.getLocaleString("tab-setting-xxx", "setting:tab-item", "action:selected").replace("{tab}", getBankTab().getTabName()) );
+					getTab().setTabItem(toBankItem(event.getCurrentItem()));
+					player.sendMessage( locale.getLocaleString("tab-setting-xxx", "setting:tab-item", "action:selected").replace("{tab}", getTab().getName()) );
 					
-					setBankStatus(BankStatus.SETTINGS);
+					setStatus(BankStatus.SETTINGS);
 					settingsInventory();
 					lastSlot = slot;
 					return;
@@ -133,18 +134,17 @@ public class PrivateBanker extends Banker {
 			
 		}
 		lastSlot = slot;
-		*/
 	}
 
 	@Override
 	public void simpleMode(InventoryClickEvent event)
 	{
-		System.out.print("click");
+
 		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		Player player = (Player) event.getWhoClicked();
 		int slot = event.getSlot();
-		System.out.print(slot);
+
 		if ( slot < 0 )
 		{
 			//if sth is in hand just throw it out
@@ -244,17 +244,12 @@ public class PrivateBanker extends Banker {
 
 				selectItem(slot);
 				
-
-				System.out.print(item);
-				
 				if ( item != null )
 				{
-					System.out.print(item.getSlot());
 					if ( item.getSlot() == -1 )
 					{
 						if ( !depositFee(player) )
 						{
-							//TODO check
 							player.sendMessage( locale.getLocaleString("not-enough-money") );
 							event.setCancelled(true);
 							selectItem(item);
@@ -377,12 +372,10 @@ public class PrivateBanker extends Banker {
 		}
 		
 		if ( player.getItemInHand().getTypeId() == itemConfig.getSettingsWand().getTypeId() )
-		{/*
-			
-			//setTraderStatus(TraderStatus.BANK_SETTINGS);
+		{
 			useSettingsInv();
 			settingsInventory();
-			setStatus(BankStatus.SETTING_TAB);*/
+			setStatus(BankStatus.SETTINGS);
 		}
 		else
 		{

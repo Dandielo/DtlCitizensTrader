@@ -35,6 +35,7 @@ public class FileBankAccount extends BankAccount {
 			//list to save the items
 			tabItem = new BankItem( accountInfo.getString(buildPath("tabs",tab,"tab-item")) );
 			tabName = accountInfo.getString(buildPath("tabs",tab,"tab-name"));
+			tabItem.setName(tabName);
 			//TODO tab size 
 	//		tabSize = accountInfo.getInt(buildPath("tabs",tab,"tab-size"));//accountInfo.getInt(buildPath("tabs",tab,"tab-size"));
 
@@ -46,7 +47,6 @@ public class FileBankAccount extends BankAccount {
 			
 			BankTab bankTab = new BankTab(tabItem, bankTabs.size(), tabName, tabSize);
 			bankTab.setTabItems(items);
-			System.out.print(buildPath("tabs",tab,"tab-name"));
 			
 			bankTabs.put(bankTab.getId(), bankTab);
 			

@@ -39,6 +39,7 @@ public class BankTab {
 	public void setTabItem(BankItem item)
 	{
 		tabItem = item;
+		NBTTagEditor.setName(item.getItemStack(), tabName);
 	}
 	
 	public BankItem getTabItem()

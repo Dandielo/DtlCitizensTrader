@@ -36,7 +36,7 @@ public class BankItem
 				{
 					if ( value.startsWith("n:") && !value.contains("/") && !value.contains(";") )
 					{
-						setName(value.substring(2));
+						setName(value.substring(2).replace("[@]", " "));
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") )
 					{
@@ -91,9 +91,8 @@ public class BankItem
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
-		
 		if ( !name.isEmpty() )
-			itemString += " n:" + name;
+			itemString += " n:" + name.replace(" ", "[@]");
 		
 		return itemString;
 	}

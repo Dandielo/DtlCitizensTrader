@@ -15,6 +15,7 @@ import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.traders.Banker;
+import net.dtl.citizens.trader.traders.Banker.BankStatus;
 import net.dtl.citizens.trader.traders.EconomyNpc;
 import net.dtl.citizens.trader.traders.MarketTrader;
 import net.dtl.citizens.trader.traders.MoneyBanker;
@@ -176,11 +177,14 @@ public class NpcEcoManager implements Listener {
 			economyNpc.managerMode(event);
 			return;
 		}
-	/*	if ( TraderStatus.hasSettingsMode(economyNpc.getTraderStatus()) )
+		if ( economyNpc instanceof Banker )
 		{
-			economyNpc.settingsMode(event);
-			return;
-		}*/
+			if ( ((Banker)economyNpc).getStatus().settings() ) 
+			{
+				economyNpc.settingsMode(event);
+				return;			
+			}
+		}
 		economyNpc.simpleMode(event);
 	}
 	
@@ -465,35 +469,20 @@ public class NpcEcoManager implements Listener {
 					return;
 				}
 				
-			/*	if ( economyNpc != null )
+				if ( economyNpc != null )
 				{
-					if ( economyNpc.getNpcId() == npc.getId() )
-					{
-						economyNpc.onRightClick(player, characterTrait, npc);
-						
-						if ( !economyNpc.locked() )
-							playerInteraction.remove(playerName);
-					}
-					else
-					{
-						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
-						
-						EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
-						Banker banker = (Banker) playerInteraction.get(playerName);
-					//	if ( !Banker.hasAccount(player) ) {
-					//		playerInteraction.remove(playerName);
-					//		return;
-					//	}
-						
-						playerInteraction.put(playerName, newNpc);
-					//	player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
-					//	player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
-						
-						newNpc.onRightClick(player, characterTrait, npc);
-						
-					}
+					
+					player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+					
+					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
+					playerInteraction.put(playerName, newNpc);
+				//	player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
+				//	player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
+					
+					newNpc.onRightClick(player, characterTrait, npc);
+					
 				}
-				else*/
+				else
 				{
 
 					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )

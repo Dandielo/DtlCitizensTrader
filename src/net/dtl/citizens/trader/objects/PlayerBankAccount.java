@@ -38,15 +38,15 @@ public class PlayerBankAccount extends BankAccount
 	{
 		return "tab" + (bankTabs.size() + 1);
 	}
-
+	
 	@Override
 	public boolean addBankTab()
 	{
 		if ( maxed() )
 			return false;
 		
-		String tabName = "tab" + (bankTabs.size() + 1 );
-		BankTab tab = new BankTab(new BankItem("35:" + bankTabs.size() + " a:1"), bankTabs.size(), tabName, config.getInt("bank.tab-size"));
+		String tabName = "Tab " + (bankTabs.size() + 1 );
+		BankTab tab = new BankTab(new BankItem("35:" + bankTabs.size() + " a:1 n:"+tabName), bankTabs.size(), tabName, config.getInt("bank.tab-size"));
 		
 		bankTabs.put(tab.getId(), tab);
 		players.addBankTab(owner, tab);
@@ -58,7 +58,6 @@ public class PlayerBankAccount extends BankAccount
 	@Override
 	public void addItem(int tab, BankItem item)
 	{
-		System.out.print("added");
 		bankTabs.get(tab).addItem(item);
 		players.addItem(owner, tab, item);
 	}

@@ -21,7 +21,7 @@ abstract public class BankAccount implements InventoryHolder  {
 	
 	//bank account owner
 	protected String owner;
-	protected int availableTabs;
+	protected int availableTabs = config.getInt("bank.max-tabs", 9);
 	protected AccountType type;
 	
 	//Constructor
@@ -39,6 +39,11 @@ abstract public class BankAccount implements InventoryHolder  {
 	public abstract AccountType getType();
 	
 	//Bank tab methods
+	public int tabs()
+	{
+		return bankTabs.size();
+	}
+	
 	public abstract BankTab getBankTab(int tab);
 	
 	public abstract boolean maxed();
@@ -61,13 +66,10 @@ abstract public class BankAccount implements InventoryHolder  {
 		return Bukkit.createInventory(this, size, name);
 	}
 	public Inventory inventoryView(String name) {
-		System.out.print("0 "+bankTabs.get(0)+" "+bankTabs.keySet().toArray()[0]);
 		Inventory view = Bukkit.createInventory(this, (bankTabs.get(0).getTabSize()+1)*9, name);
-		System.out.print("a");
 		for( BankItem item : bankTabs.get(0).getTabItems() ) 
 		{
 
-			System.out.print("b");
 	        ItemStack chk = item.getItemStack().clone();//new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	     //   chk.addEnchantments(item.getItemStack().getEnchantments());
 	
@@ -76,7 +78,6 @@ abstract public class BankAccount implements InventoryHolder  {
 	        view.setItem(item.getSlot(),chk);
         }
 
-		System.out.print("c");
 		tabSelectionView(view);
 		return view;
 	}
@@ -139,44 +140,27 @@ abstract public class BankAccount implements InventoryHolder  {
 		for ( BankTab tab : bankTabs.values() )
 			inventory.setItem(i++, tab.getTabItem().getItemStack());
 	}
-	/*
-	public void settingsView(Inventory inventory, BankTabType btab)
+	
+	public void settingsView(Inventory inventory, int tab)
 	{
 		int lastRow = ( inventory.getSize() / 9 ) - 1;
 		int i = lastRow * 9;
 		
-		//tabs
-		//buy new tab
-	//	inventory.setItem(0, new ItemStack(35,1,(short)0,(byte)1));
-		
-		//set tab item
-	//	inventory.setItem(1, new ItemStack(35,1,(short)0,(byte)2));
-		
-		BankTab bankTab = bankTabs.get(btab);
+		BankTab bankTab = bankTabs.get(tab);
 		
 		for ( int j = 0 ; j < 9 ; ++j )
 		{
-		//	if ( j < bankTab.getTabSize() || j > 4 )
-				inventory.setItem(((lastRow-1)*9)+j, bankTab.getTabItem() );
-	//		if ( bankTab.getTabSize() < 5 )
-	//			inventory.setItem(((lastRow-1)*9)+bankTab.getTabSize(), new ItemStack(35,1) );
-				
+			inventory.setItem(((lastRow-1)*9)+j, bankTab.getTabItem().getItemStack() );
 		}
 		
-		for ( BankTabType tab : bankTabs.keySet() )
+		for ( Map.Entry<Integer, BankTab> mTab : bankTabs.entrySet() )
 		{
-			//if ( tab.equals(btab) )
-			//	for ( int j = 0 ; j < 9 ; ++j )
-			//	{
-			//		inventory.setItem(((lastRow-1)*9)+j, tabItems.get(tab) );
-			//	}
-			
-			inventory.setItem((lastRow*9) + Integer.parseInt(tab.toString().substring(3))-1, bankTabs.get(tab).getTabItem() );
+			inventory.setItem((lastRow*9) + mTab.getKey(), mTab.getValue().getTabItem().getItemStack() );
 			++i;
 		}
-		if ( i < 54 && availableTabs > i % 45 )
+		if ( i < inventory.getSize() && availableTabs > i % ( inventory.getSize() - 9 ) )
 			inventory.setItem(i, new ItemStack(35,1) );
-	}*/
+	}
 	
 	
 	public enum AccountType {

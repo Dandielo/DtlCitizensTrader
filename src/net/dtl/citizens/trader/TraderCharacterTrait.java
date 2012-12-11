@@ -74,7 +74,7 @@ public class TraderCharacterTrait extends Trait {
 		else
 		if ( type.equals("banker") )
 		{
-			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
+			this.type = EcoNpcType.getTypeByName( data.getString("banker") );
 			
 			if ( banker == null )
 				banker = new BankerPart();
@@ -101,12 +101,13 @@ public class TraderCharacterTrait extends Trait {
 	}
 
 	@Override
-	public void save(DataKey data) {
+	public void save(DataKey data) 
+	{
 		if ( type.isBanker() )
 		{
 			data.setString("type", "banker");
 			data.setString("banker", type.toString());
-			
+
 			banker.save(data);
 		}
 		else if ( type.isTrader() )

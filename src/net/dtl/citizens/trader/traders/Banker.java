@@ -24,7 +24,12 @@ import net.dtl.citizens.trader.parts.BankerPart;
 abstract public class Banker implements EconomyNpc {
 	
 	public enum BankStatus {
-		TAB, REMOTE_TAB, SETTING_TAB;
+		TAB, REMOTE_TAB, SETTINGS, SETTING_TAB;
+		
+		public boolean settings()
+		{
+			return this.equals(SETTINGS) || this.equals(SETTING_TAB);
+		}
 	}
 	
 	//static global settigns
@@ -111,56 +116,38 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean withdrawFee(Player player)
 	{
-		System.out.print(player);
-		System.out.print(getSettings());
-		System.out.print(settings.getWallet());
 		return settings.getWallet().withdraw(player.getName(), getSettings().getWithdrawFee());
 	}
 	
 	public boolean depositFee(Player player)
 	{
-		System.out.print(player);
-		System.out.print(getSettings());
-		System.out.print(settings.getWallet());
 		return settings.getWallet().withdraw(player.getName(), getSettings().getDepositFee());
 	}
 	
-	/*public void tabTransaction(String tab, String player)
+	public boolean tabTransaction(int tab, String player)
 	{
-		
-		if ( type == null )
+		double price = BankerPart.getTabPrice(tab);
+		if ( price == 0.0 )
 			return false;
 		
-		double price = tabPrices.get(type);
-		if ( price == 0.0 )
-			return true;
-		
-		if ( econ.getBalance(player) >= price )
-		{
-			econ.withdrawPlayer(player, price);
-			return true;
-		}
-		
-		return false;
-		
-	}*/
+		return settings.getWallet().withdraw(player, price);
+	}
 	
 	public BankerPart getSettings()
 	{
 		return settings;
 	}
 	
-	/*public void useSettingsInv()
+	public void useSettingsInv()
 	{
-	//	tabInventory = account.inventoryView(54, "Bank account settings");
+		tabInventory = account.inventoryView("Bank account settings");
 	}
 	
 	public void settingsInventory()
 	{
 		tabInventory.clear();
-		//TODO settinsg inventory
-	//	account.settingsView(tabInventory, tab);
-	}*/
+		account.settingsView(tabInventory, tab);
+	}
 	
 	public BankStatus getStatus()
 	{
@@ -187,12 +174,15 @@ abstract public class Banker implements EconomyNpc {
 		this.tab = tab;
 	}
 	
-	//TODO is needed?
-	/*
-	public void setBankTabItem(ItemStack item)
+	public boolean hasTab(int tab)
 	{
-		account.getBankTab(tab).setTabItem(toBankItem(item));
-	}*/
+		return account.getBankTab(tab) != null;
+	}
+	
+	public int tabs()
+	{
+		return account.tabs();
+	}
 	
 	public boolean hasAllTabs()
 	{
@@ -201,15 +191,7 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean addBankTab()
 	{
-		//TODO add tab function
-	/*	BankTabType newTab = account.addBankTab();
-		if ( newTab != null )
-		{
-			tab = newTab;
-			return true;
-		}
-		return false;*/
-		return false;
+		return account.addBankTab();
 	}
 	
 	//selecting items
@@ -506,7 +488,7 @@ abstract public class Banker implements EconomyNpc {
 		}
 		String name = NBTTagEditor.getName(is);
 		if ( !name.isEmpty() )
-			itemInfo += " n:"+name;
+			itemInfo += " n:"+name.replace(" ", "[@]");
 		
 		return new BankItem(itemInfo);
 	}

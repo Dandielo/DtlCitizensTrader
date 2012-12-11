@@ -28,39 +28,46 @@ public class BankerPart {
 	public BankerPart()
 	{
 		config = CitizensTrader.getInstance().getConfig();
-		wallet = new Wallet(WalletType.NPC);
+		wallet = new Wallet(WalletType.OWNER);
+		
+
+		for ( String key : config.getConfigurationSection("bank.tab-prices").getKeys(false) )
+		{
+			tabPrices.add(config.getDouble("bank.tab-prices."+key));
+		}
+		
 	}
 	
 	public void load(DataKey data) throws NPCLoadException 
 	{
-		feeDefaults = data.getBoolean("banker.feeDefaults", true);
+		feeDefaults = data.getBoolean("settings.feeDefaults", true);
 		if ( feeDefaults )
 		{
-			withdraw = config.getDouble("banker.withdraw-fee", 0.0);
-			deposit = config.getDouble("banker.deposit-fee", 0.0);
+			withdraw = config.getDouble("bank.withdraw-fee", 0.0);
+			deposit = config.getDouble("bank.deposit-fee", 0.0);
 		}
 		else
 		{
-			withdraw = data.getDouble("banker.withdraw-fee", 0.0);
-			deposit = data.getDouble("banker.deposit-fee", 0.0);
+			withdraw = data.getDouble("settings.withdraw-fee", 0.0);
+			deposit = data.getDouble("settings.deposit-fee", 0.0);
 		}
 			
-		settings = data.getBoolean("banker.settings-enabled", true);
+		settings = data.getBoolean("settings.settings-enabled", true);
 	}
 
 	public void save(DataKey data) 
 	{
 		if ( !feeDefaults )
 		{
-			data.setBoolean("banker.defaults", feeDefaults);
-			data.setDouble("banker.withdraw-fee", withdraw);
-			data.setDouble("banker.deposit-fee", withdraw);
-			data.setBoolean("banker.settings-enabled", settings);
+			data.setBoolean("settings.defaults", feeDefaults);
+			data.setDouble("settings.withdraw-fee", withdraw);
+			data.setDouble("settings.deposit-fee", withdraw);
+			data.setBoolean("settings.settings-enabled", settings);
 		}
 		else
 		{
-			data.setBoolean("banker.defaults", feeDefaults);
-			data.setBoolean("banker.settings-enabled", settings);
+			data.setBoolean("settings.defaults", feeDefaults);
+			data.setBoolean("settings.settings-enabled", settings);
 		}
 	}
 	
@@ -102,7 +109,7 @@ public class BankerPart {
 	
 	public static double getTabPrice(int tab)
 	{
-		return tabPrices.get(tab);
+		return tabPrices.size() > tab - 1 ? tabPrices.get(tab) : 0;
 	}
 	
 }
