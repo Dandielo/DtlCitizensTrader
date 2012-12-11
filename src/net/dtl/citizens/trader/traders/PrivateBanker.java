@@ -197,10 +197,10 @@ public class PrivateBanker extends Banker {
 					{
 						
 					}
-				
-					event.setCancelled(true);
-					return;
 				}
+				
+				event.setCancelled(true);
+				return;
 			}
 			else
 			{
