@@ -191,7 +191,9 @@ public class StockItem {
 		price = newPrice;
 	}
 	public double getPrice(int i) {
-		if ( i < amouts.size() )
+		if ( stackPrice )
+			return price;
+		if ( i < amouts.size() ) 
 			return price*amouts.get(i);
 		return 0;
 	}
