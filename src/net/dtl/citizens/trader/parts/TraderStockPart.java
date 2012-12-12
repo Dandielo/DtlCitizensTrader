@@ -291,7 +291,8 @@ public class TraderStockPart implements InventoryHolder {
 	}
 	
 	@SuppressWarnings("unchecked")
-	public void load(DataKey data) {
+	public void load(DataKey data) 
+	{
 		if ( data.keyExists("sell") )
 		{
 			for ( String item : (List<String>) data.getRaw("sell") ) 
@@ -315,11 +316,15 @@ public class TraderStockPart implements InventoryHolder {
 					stock.get("buy").add(0, stockItem);
 			}
 		}
-	
+		
+		setPattern( data.getString("pattern", "") );
 	}
 
 	public void save(DataKey data)
 	{
+		if ( !pattern.getName().isEmpty() )
+			data.setString("pattern", pattern.getName());
+		
 		List<String> sellList = new ArrayList<String>();
         for ( StockItem item : stock.get("sell") )
 			if ( !item.isPatternItem() )
