@@ -12,10 +12,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
+import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
+import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
@@ -24,6 +26,7 @@ import net.dtl.citizens.trader.parts.TraderStockPart;
 public class ServerTrader extends Trader {
 
 	private TransactionPattern pattern = getStock().getPattern();
+	private LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	public ServerTrader(TraderCharacterTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
@@ -33,7 +36,7 @@ public class ServerTrader extends Trader {
 	@Override
 	public void simpleMode(InventoryClickEvent event) 
 	{
-	//	DecimalFormat f = new DecimalFormat("#.##");
+		DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -118,9 +121,9 @@ public class ServerTrader extends Trader {
 							Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), TransactionResult.FAIL_MONEY));
 						}
 						else
-						{
+						{ 
 							//TODO add debug mode
-						//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
+							player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 							addSelectedToInventory(0);
 
@@ -177,7 +180,7 @@ public class ServerTrader extends Trader {
 					{
 						//send message
 						//TODO add debug mode
-				//		p.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
+						player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 						
 						
 						addSelectedToInventory(slot);
@@ -246,7 +249,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-					//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+						player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 						//TODO
 						updateBuyLimits(scale);
@@ -309,7 +312,7 @@ public class ServerTrader extends Trader {
 				}
 				else
 				{
-				//	p.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+					player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 					
 					//limits update
