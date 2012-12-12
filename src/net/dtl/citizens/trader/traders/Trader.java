@@ -526,7 +526,7 @@ public abstract class Trader implements EconomyNpc {
 	{
 		if ( getStock().getPattern() != null )
 			return getStock().getPattern() .getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
-		return ( getSelectedItem().hasStackPrice() ? getSelectedItem().getPrice() : getSelectedItem().getPrice()*getSelectedItem().getAmount(slot) );
+		return getSelectedItem().getPrice(slot);
 	}
 	
 	public void loadDescriptions(Inventory inventory)
