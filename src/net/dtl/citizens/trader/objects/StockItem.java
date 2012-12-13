@@ -44,7 +44,7 @@ public class StockItem {
 					
 					
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
-						price = Double.parseDouble(value.substring(2));
+						price = Double.parseDouble(value.substring(2).replace(',', '.'));
 						listenPattern = false;
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
