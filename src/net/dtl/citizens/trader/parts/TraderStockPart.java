@@ -13,12 +13,12 @@ import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-import net.minecraft.server.v1_4_5.NBTTagList;
-import net.minecraft.server.v1_4_5.NBTTagString;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -346,7 +346,7 @@ public class TraderStockPart implements InventoryHolder {
 	public static ItemStack setLore(CraftItemStack cis, List<String> lore)
 	{
 		//CraftItemStack cis = new CraftItemStack(item);
-		net.minecraft.server.v1_4_5.ItemStack mis = cis.getHandle();
+		net.minecraft.server.ItemStack mis = cis.getHandle();
 		
 		NBTTagCompound c = mis.getTag(); 
 		if ( c == null )

@@ -2,7 +2,6 @@ package net.dtl.citizens.trader.types;
 
 import java.util.Map;
 
-import org.bukkit.craftbukkit.v1_4_5.CraftServer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;

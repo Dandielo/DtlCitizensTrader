@@ -2,11 +2,12 @@ package net.dtl.citizens.trader.objects;
 
 import java.util.List;
 
-import net.minecraft.server.v1_4_5.NBTTagCompound;
-import net.minecraft.server.v1_4_5.NBTTagList;
-import net.minecraft.server.v1_4_5.NBTTagString;
+import net.minecraft.server.NBTTagCompound;
+import net.minecraft.server.NBTTagList;
+import net.minecraft.server.NBTTagString;
 
-import org.bukkit.craftbukkit.v1_4_5.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -19,7 +20,7 @@ public class NBTTagEditor {
 		{
 			if ( item != null )
 			{
-				net.minecraft.server.v1_4_5.ItemStack c = ((CraftItemStack)item).getHandle();
+				net.minecraft.server.ItemStack c = ((CraftItemStack)item).getHandle();
 				NBTTagCompound tc = c.getTag();
 				
 				if ( tc != null )
@@ -54,7 +55,7 @@ public class NBTTagEditor {
 	
 	public static void addDescription(CraftItemStack item, List<String> lore)
 	{
-		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
+		net.minecraft.server.ItemStack c = item.getHandle();
 		NBTTagCompound tag = c.getTag();
 
 		if ( tag == null )
@@ -78,7 +79,7 @@ public class NBTTagEditor {
 	
 	public static void removeDescription(CraftItemStack item)
 	{
-		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
+		net.minecraft.server.ItemStack c = item.getHandle();
 		NBTTagCompound tag = c.getTag();
 
 		if ( tag == null )
@@ -111,7 +112,7 @@ public class NBTTagEditor {
 	
 	public static String getName(CraftItemStack item)
 	{
-		net.minecraft.server.v1_4_5.ItemStack c = item.getHandle();
+		net.minecraft.server.ItemStack c = item.getHandle();
 		NBTTagCompound tag = c.getTag();
 
 		if ( tag == null )
@@ -134,7 +135,7 @@ public class NBTTagEditor {
 	}
 	public static void setName(CraftItemStack item, String name)
 	{
-		net.minecraft.server.v1_4_5.ItemStack cis = item.getHandle();
+		net.minecraft.server.ItemStack cis = item.getHandle();
 		NBTTagCompound tag = cis.getTag();
 
 		if ( tag == null )
