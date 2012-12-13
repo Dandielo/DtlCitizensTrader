@@ -322,8 +322,9 @@ public class TraderStockPart implements InventoryHolder {
 
 	public void save(DataKey data)
 	{
-		if ( !pattern.getName().isEmpty() )
-			data.setString("pattern", pattern.getName());
+		if ( pattern != null )
+			if ( !pattern.getName().isEmpty() )
+				data.setString("pattern", pattern.getName());
 		
 		List<String> sellList = new ArrayList<String>();
         for ( StockItem item : stock.get("sell") )

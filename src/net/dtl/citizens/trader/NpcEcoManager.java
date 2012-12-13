@@ -273,56 +273,6 @@ public class NpcEcoManager implements Listener {
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
-
-	/*	CitizensTrader.getInstance();
-		if ( CitizensTrader.getDenizen() != null && 
-				CitizensTrader.getDenizen().getDenizenNPCRegistry().isDenizenNPC(event.getNPC()) )
-			return;*/
-
-	/*	
-		CraftItemStack cis = new CraftItemStack(Material.DIAMOND_SWORD);
-		net.minecraft.server.ItemStack mis = cis.getHandle();
-		
-		//System.out.print(mis);
-		
-		NBTTagCompound c = mis.getTag(); 
-		//System.out.print(c);
-		if ( c == null )
-			c = new NBTTagCompound();
-		mis.setTag(c);
-		
-		if(!c.hasKey("display")) {
-			c.set("display", new NBTTagCompound());
-		}
-		 
-		NBTTagCompound d = c.getCompound("display");
-		 
-		if(!d.hasKey("Lore")) {
-		  d.set("Lore", new NBTTagList());
-		}
-		
-		if(!d.hasKey("color")) {
-		  d.set("color", new NBTTagInt("", 16));
-		}
-		else
-			d.set("color", new NBTTagInt("", 16));
-		
-		if(!d.hasKey("Name")) {
-			d.set("Name", new NBTTagString("", "Dandielos Item ;)"));
-		}
-		else
-			d.set("Name", new NBTTagString("", "Dandielos Item ;)"));
-			
-		
-		NBTTagList l = d.getList("Lore");
-		 
-		l.add(new NBTTagString("", "String here1"));
-		l.add(new NBTTagString("", "String here2"));
-		 
-		d.set("Lore", l);*
-		
-		player.getInventory().addItem(cis);*/
-
 		
 		
 		Player player = event.getClicker();
