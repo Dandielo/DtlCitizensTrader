@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.traders;
+package net.dtl.citizens.trader.types;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

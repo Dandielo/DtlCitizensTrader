@@ -2,8 +2,8 @@ package net.dtl.citizens.trader.events;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.objects.StockItem;
-import net.dtl.citizens.trader.traders.Trader;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
+import net.dtl.citizens.trader.types.Trader;
+import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Event;

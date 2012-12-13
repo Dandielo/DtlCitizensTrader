@@ -7,9 +7,9 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.command.exception.CommandException;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTraderCommand;
-import net.dtl.citizens.trader.traders.EconomyNpc;
-import net.dtl.citizens.trader.traders.ServerTrader;
-import net.dtl.citizens.trader.traders.Trader;
+import net.dtl.citizens.trader.types.EconomyNpc;
+import net.dtl.citizens.trader.types.ServerTrader;
+import net.dtl.citizens.trader.types.Trader;
 
 public class DenizenCommandTraderPattern extends AbstractDenizenTraderCommand {
 

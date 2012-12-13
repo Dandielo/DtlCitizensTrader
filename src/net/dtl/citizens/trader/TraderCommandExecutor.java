@@ -12,8 +12,8 @@ import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
-import net.dtl.citizens.trader.traders.EconomyNpc;
-import net.dtl.citizens.trader.traders.Trader;
+import net.dtl.citizens.trader.types.EconomyNpc;
+import net.dtl.citizens.trader.types.Trader;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 import net.sacredlabyrinth.phaed.simpleclans.Clan;
 

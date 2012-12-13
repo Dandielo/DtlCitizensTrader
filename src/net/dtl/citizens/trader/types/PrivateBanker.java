@@ -1,4 +1,4 @@
-package net.dtl.citizens.trader.traders;
+package net.dtl.citizens.trader.types;
 
 import java.text.DecimalFormat;
 
@@ -13,7 +13,7 @@ import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.parts.BankerPart;
-import net.dtl.citizens.trader.traders.Trader.TraderStatus;
+import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 public class PrivateBanker extends Banker {
 

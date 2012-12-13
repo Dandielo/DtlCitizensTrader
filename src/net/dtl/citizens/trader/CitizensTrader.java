@@ -16,7 +16,7 @@ import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
-import net.dtl.citizens.trader.traders.Banker;
+import net.dtl.citizens.trader.types.Banker;
 import net.dtl.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
