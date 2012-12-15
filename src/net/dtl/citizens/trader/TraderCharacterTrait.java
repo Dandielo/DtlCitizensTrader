@@ -84,7 +84,7 @@ public class TraderCharacterTrait extends Trait {
 		//old version loading
 		else
 		{
-			this.type = EcoNpcType.getTypeByName( data.getString("trader-type") );
+			this.type = EcoNpcType.getTypeByName( data.getString("trader-type", data.getString("type")) );
 			
 			if ( config == null )
 			{

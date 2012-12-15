@@ -5,6 +5,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.dtl.citizens.trader.CitizensTrader.*;
+
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -44,7 +46,14 @@ public class StockItem {
 					
 					
 					if ( value.startsWith("p:") && !value.contains("/") && !value.contains(";") ) {
-						price = Double.parseDouble(value.substring(2).replace(',', '.'));
+						try 
+						{
+							price = Double.parseDouble(value.substring(2));
+						}
+						catch (NumberFormatException e)
+						{
+							info("Has the locale changed? Decimal format has changed.");
+						}
 						listenPattern = false;
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
