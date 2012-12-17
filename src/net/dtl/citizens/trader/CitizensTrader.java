@@ -144,8 +144,8 @@ public class CitizensTrader extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(npcEcoManager, this);
 		
 		//register command executor
-		getCommand("trader").setExecutor(new TraderCommandExecutor(this));
-		getCommand("banker").setExecutor(new BankerCommandExecutor(this));
+		getCommand("trader").setExecutor(new TraderCommandExecutor());
+		getCommand("banker").setExecutor(new BankerCommandExecutor());
 		
 
 		//loading accounts

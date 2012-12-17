@@ -5,6 +5,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.managers.PermissionsManager;
+import net.dtl.citizens.trader.types.EconomyNpc;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -18,12 +19,11 @@ import static net.dtl.citizens.trader.CitizensTrader.*;
 public class BankerCommandExecutor implements CommandExecutor {
 
 	//plugin instance
-	private static CitizensTrader plugin;
+	private static NpcEcoManager npcManager = CitizensTrader.getNpcEcoManager();
 	private static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
 
 	//constructor
-	public BankerCommandExecutor(CitizensTrader instance) {
-		plugin = instance;
+	public BankerCommandExecutor() {
 	}
 
 	@Override
@@ -36,9 +36,24 @@ public class BankerCommandExecutor implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		if ( args[0].equals("create") )
-			this.createBanker(player, args);
+		EconomyNpc banker = npcManager.getInteractionNpc(player.getName());
 		
+		
+		if ( banker != null )
+		{
+			if ( args[0].equals("fee") );
+		}
+		else
+		{
+		
+			if ( args[0].equals("create") )
+				this.createBanker(player, args);
+			if ( args[0].equals("remote") );
+			if ( args[0].equals("tab") );
+			
+			
+		}
+			
 		
 		return true;
 	}

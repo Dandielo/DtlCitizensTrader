@@ -39,7 +39,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//	private boolean debug;
 	
 	//plugin instance
-	public static CitizensTrader plugin;
 	
 	//managers
 	private static NpcEcoManager traderManager;
@@ -49,9 +48,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 
 	
 	//constructor
-	public TraderCommandExecutor(CitizensTrader instance) {
-		plugin = instance;
-
+	public TraderCommandExecutor() {
 		locale = CitizensTrader.getLocaleManager();
 		permsManager = CitizensTrader.getPermissionsManager();
 		traderManager = CitizensTrader.getNpcEcoManager();
@@ -72,7 +69,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			if ( args.length < 1 )
 			{
-				player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + "" );
+				player.sendMessage(ChatColor.AQUA + "DtlTraders " + CitizensTrader.getInstance().getDescription().getVersion() + ChatColor.RED + "" );
 				
 				if ( economyNpc != null && economyNpc instanceof Trader )
 				{
@@ -98,7 +95,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				if ( args[0].equalsIgnoreCase("help") )
 				{
-					player.sendMessage(ChatColor.AQUA + "DtlTraders " + plugin.getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
+					player.sendMessage(ChatColor.AQUA + "DtlTraders " + CitizensTrader.getInstance().getDescription().getVersion() + ChatColor.RED + " - Trader commands list" );
 					return false;
 				}
 				//reload plugin
