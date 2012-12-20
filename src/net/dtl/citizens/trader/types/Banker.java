@@ -115,12 +115,12 @@ abstract public class Banker implements EconomyNpc {
 	
 	public boolean withdrawFee(Player player)
 	{
-		return settings.getWallet().withdraw(player.getName(), getSettings().getWithdrawFee());
+		return settings.withdraw(player.getName(), getSettings().getWithdrawFee());
 	}
 	
 	public boolean depositFee(Player player)
 	{
-		return settings.getWallet().withdraw(player.getName(), getSettings().getDepositFee());
+		return settings.withdraw(player.getName(), getSettings().getDepositFee());
 	}
 	
 	public boolean tabTransaction(int tab, String player)
@@ -129,7 +129,7 @@ abstract public class Banker implements EconomyNpc {
 		if ( price == 0.0 )
 			return false;
 		
-		return settings.getWallet().withdraw(player, price);
+		return settings.withdraw(player, price);
 	}
 	
 	public BankerPart getSettings()

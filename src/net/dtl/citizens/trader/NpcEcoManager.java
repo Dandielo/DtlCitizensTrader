@@ -24,9 +24,14 @@ import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
 import net.dtl.citizens.trader.types.Banker.BankStatus;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.Packet51MapChunk;
+import net.minecraft.server.WorldServer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,6 +41,8 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 public class NpcEcoManager implements Listener {
 	//trader configs
@@ -492,5 +499,43 @@ public class NpcEcoManager implements Listener {
 	public void onLogin(PlayerLoginEvent event)
 	{
 		NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
+	}
+	
+	
+	@EventHandler
+	public void onChunkLoad(PlayerMoveEvent event)
+	{ 
+		/*
+		CraftPlayer cp = (CraftPlayer)event.getPlayer();
+		EntityPlayer E = ((CraftPlayer)event.getPlayer()).getHandle();
+		WorldServer worldserver = E.server.getWorldServer(E.dimension);
+		
+		net.minecraft.server.Packet53BlockChange b = new net.minecraft.server.Packet53BlockChange();
+		b.a = E.getBukkitEntity().getLocation().getBlockX();
+		b.b = E.getBukkitEntity().getLocation().getBlockY()-1;
+		b.c = E.getBukkitEntity().getLocation().getBlockZ();
+		b.material = Material.AIR.getId();
+		b.data = 0;
+		E.netServerHandler.sendPacket(b);
+	//	E.netServerHandler.sendPacket(new Packet51MapChunk(worldserver.getChunkAt(willsend.x, willsend.z), true, 0));
+		
+		byte[] blocks = {
+				0x11, (byte) cp.getLocation().getBlockY(), 0x00, 0x30,
+				0x21, (byte) cp.getLocation().getBlockY(), 0x00, 0x30,
+				0x31, (byte) cp.getLocation().getBlockY(), 0x00, 0x30,
+				0x41, (byte) cp.getLocation().getBlockY(), 0x00, 0x30
+				
+		};
+		
+		net.minecraft.server.Packet52MultiBlockChange mb = new		net.minecraft.server.Packet52MultiBlockChange() ;
+		mb.a = cp.getLocation().getChunk().getX();
+		mb.b = cp.getLocation().getChunk().getZ();
+		mb.c = blocks;
+		mb.d = blocks.length*4;
+		
+
+		E.netServerHandler.sendPacket(mb);
+		
+		System.out.print("Loaded");*/
 	}
 }

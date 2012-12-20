@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTraderCommand;
 import net.dtl.citizens.trader.denizen.triggers.DenizenTriggerBoughtTrigger;
@@ -17,6 +18,8 @@ import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.types.Banker;
+import net.dtl.citizens.wallets.AbstractWallet;
+import net.dtl.citizens.wallets.WalletTrait;
 import net.dtl.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
@@ -290,6 +293,11 @@ public class CitizensTrader extends JavaPlugin {
 	public static Economy getEconomy()
 	{
 		return economy;
+	}
+
+	public static Wallets getDtlWallets()
+	{
+		return wallets;
 	}
 	
 	public static boolean dtlWalletsEnabled()

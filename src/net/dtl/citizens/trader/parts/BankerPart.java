@@ -2,13 +2,17 @@ package net.dtl.citizens.trader.parts;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import net.citizensnpcs.api.exception.NPCLoadException;
+import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
+import net.dtl.citizens.wallets.AbstractWallet;
+import net.dtl.citizens.wallets.Wallets;
 
 public class BankerPart {
 	
@@ -17,6 +21,7 @@ public class BankerPart {
 	
 	//deposit fee
 	private Wallet wallet;
+	private AbstractWallet dtlWallet;
 	
 	private double deposit;
 	private double withdraw;
@@ -36,6 +41,11 @@ public class BankerPart {
 			tabPrices.add(config.getDouble("bank.tab-prices."+key));
 		}
 		
+	}
+	
+	public void loadDtlWallet(NPC npc)
+	{
+		dtlWallet = Wallets.getWallet(npc);
 	}
 	
 	public void load(DataKey data) throws NPCLoadException 
@@ -99,10 +109,16 @@ public class BankerPart {
 		this.withdraw = fee;
 	}
 	
-	public Wallet getWallet()
+	public boolean withdraw(String player, double money)
+	{
+		if ( dtlWallet != null )
+			dtlWallet.deposit(money);
+		return wallet.withdraw(player, money);
+	}
+/*	public Wallet getWallet()
 	{
 		return wallet;
-	}
+	}*/
 	
 	//global static settings
 	protected static List<Double> tabPrices = new ArrayList<Double>(); 

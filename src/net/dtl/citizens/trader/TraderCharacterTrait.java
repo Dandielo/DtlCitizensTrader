@@ -24,6 +24,18 @@ public class TraderCharacterTrait extends Trait {
 		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
 	}
 	
+	@Override
+	public void onAttach()
+	{
+		type = EcoNpcType.SERVER_TRADER;
+		implementTrader();
+		
+		if ( CitizensTrader.dtlWalletsEnabled() )
+			config.loadDtlWallet(npc);
+		
+		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+	}
+	
 	public TraderStockPart getStock() {
 		return stock;
 	}
@@ -68,6 +80,9 @@ public class TraderCharacterTrait extends Trait {
 			config.load(data);
 			stock.load(data);
 			
+			if ( CitizensTrader.dtlWalletsEnabled() )
+				config.loadDtlWallet(npc);
+			
 			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
 				stock.linkItems();
 		}
@@ -78,6 +93,10 @@ public class TraderCharacterTrait extends Trait {
 			
 			if ( banker == null )
 				banker = new BankerPart();
+			
+
+			if ( CitizensTrader.dtlWalletsEnabled() )
+				banker.loadDtlWallet(npc);
 			
 			banker.load(data);
 		}
