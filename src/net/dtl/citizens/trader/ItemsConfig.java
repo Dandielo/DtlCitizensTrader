@@ -6,12 +6,9 @@ import java.util.Map;
 
 
 import net.dtl.citizens.trader.objects.BankItem;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class ItemsConfig {	
@@ -71,41 +68,14 @@ public class ItemsConfig {
 		return pricesLore.get(t);
 	}
 	
-	public ItemStack initializeItemWithName(CraftItemStack cis, String name, List<String> lore)
+	public ItemStack initializeItemWithName(ItemStack itemStack, String name, List<String> lore)
 	{
-		//CraftItemStack cis = new CraftItemStack(item);
-		net.minecraft.server.ItemStack mis = cis.getHandle();
-		
-		NBTTagCompound c = mis.getTag(); 
-		if ( c == null )
-			c = new NBTTagCompound();
-		mis.setTag(c);
-		
-		if(!c.hasKey("display")) {
-			c.set("display", new NBTTagCompound());
-		}
-		 
-		NBTTagCompound d = c.getCompound("display");
-		 
-
-		if ( !name.isEmpty() )
-			d.set("Name", new NBTTagString("", name.replace('^', '§')));
-
-		if(!d.hasKey("Lore")) {
-		  d.set("Lore", new NBTTagList());
-		}
-		
-		NBTTagList l = d.getList("Lore");
-		
-		
+		NBTTagEditor.setName(itemStack, name.replace('^', '§'));
 		if ( lore != null )
-			for ( String str : lore )
-			//	System.out.print(str);
-				if ( !str.isEmpty() )
-					l.add(new NBTTagString("", str.replace('^', '§')));
-		 
-		d.set("Lore", l);
-		return cis;
+			NBTTagEditor.addDescription(itemStack, lore);
+		
+		
+		return itemStack;
 	}
 	
 	public void reloadConfig()
@@ -151,7 +121,7 @@ public class ItemsConfig {
 			return null;
 		}
 		//		System.out.print("sth else");
-		return initializeItemWithName(new CraftItemStack(id,1,(short) 0,data), name, lore);//new ItemStack(id,1,(short) 0,data);
+		return initializeItemWithName(new ItemStack(id,1,data), name, lore);//new ItemStack(id,1,(short) 0,data);
 	}
 	
 	public String getLocaleFile() {

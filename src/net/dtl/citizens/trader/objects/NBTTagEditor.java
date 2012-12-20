@@ -1,15 +1,15 @@
 package net.dtl.citizens.trader.objects;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
-
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import net.dtl.citizens.trader.CitizensTrader;
+import org.bukkit.Bukkit;
 
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class NBTTagEditor {
@@ -20,134 +20,109 @@ public class NBTTagEditor {
 		{
 			if ( item != null )
 			{
-				net.minecraft.server.ItemStack c = ((CraftItemStack)item).getHandle();
-				NBTTagCompound tc = c.getTag();
-				
-				if ( tc != null )
+				int size = 0;
+				if ( CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy") != null )
 				{
-					if ( tc.hasKey("display") )
+					size = CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy").size();
+					
+					Map<String, Object> map = item.serialize();
+					ItemMeta meta = (ItemMeta) map.get("meta");
+					
+					if ( meta != null )
 					{
-						NBTTagCompound d = tc.getCompound("display");
-						
-						if ( d != null )
+						List<String> list = null;//new ArrayList<String>(meta.getLore()); 
+						if ( meta.getLore().size() > size )
 						{
-							if ( d.hasKey("Lore") )
-							{
-								
-								NBTTagList oldList = d.getList("Lore");
-								NBTTagList newList = new NBTTagList();
-								
-								for ( int j = 0 ; j < oldList.size() ; ++j )
-									if ( !oldList.get(j).getName().equals("dtl_trader") && !oldList.get(j).getName().isEmpty() )
-										newList.add(oldList.get(j));
-								
-								if ( newList.size() == 0 )
-									c.setTag(null);
-								
-								d.set("Lore", newList);
-							}
+							list = new ArrayList<String>(meta.getLore()); 
+							for ( int i = 0 ; i < list.size() - size ; ++i )
+								list.remove((meta.getLore().size()-1)-i);
 						}
+						meta.setLore(list);
 					}
+					
+					map.remove("meta");
+					if ( meta != null && meta.hasLore() )
+						map.put("meta", meta);
+					
+					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+					
 				}
 			}
 		}		
 	}
 	
-	public static void addDescription(CraftItemStack item, List<String> lore)
+	public static ItemStack addDescription(ItemStack item, List<String> lore)
 	{
-		net.minecraft.server.ItemStack c = item.getHandle();
-		NBTTagCompound tag = c.getTag();
-
-		if ( tag == null )
-			tag = new NBTTagCompound();
-		c.setTag(tag);
+		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		
-		if(!tag.hasKey("display")) 
-			tag.set("display", new NBTTagCompound());
+		List<String> list = new ArrayList<String>();
+		for ( String s : lore )
+			list.add(s.replace('^', '§'));
 		
-		NBTTagCompound d = tag.getCompound("display");
+		meta.setLore(list);
+		Map<String, Object> map = item.serialize();
 		
-		if ( !d.hasKey("Lore") )
-			d.set("Lore", new NBTTagList());
+		map.put("meta", meta);
 		
-		NBTTagList list = d.getList("Lore");
-			
-		for ( String line : lore )
-			list.add(new NBTTagString("dtl_trader", line.replace('^', '§')));
-
+		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+		
+		return ItemStack.deserialize(map);
+	
 	}
 	
-	public static void removeDescription(CraftItemStack item)
+	public static void removeDescriptionPlayer(ItemStack item, int size)
 	{
-		net.minecraft.server.ItemStack c = item.getHandle();
-		NBTTagCompound tag = c.getTag();
-
-		if ( tag == null )
-			tag = new NBTTagCompound();
-		c.setTag(tag);
-		
-		if(!tag.hasKey("display")) 
-			tag.set("display", new NBTTagCompound());
-		
-		NBTTagCompound d = tag.getCompound("display");
-		
-		if ( !d.hasKey("Lore") )
-			d.set("Lore", new NBTTagList());
-		
-
-		NBTTagList list = d.getList("Lore");
-		NBTTagList newList = new NBTTagList();
-		
-		for ( int j = 0 ; j < list.size() ; ++j )
-			if ( !list.get(j).getName().equals("dtl_trader") && !list.get(j).getName().isEmpty() )
-				newList.add(list.get(j));
-		
-		d.set("Lore", newList);
-
+		if ( item.hasItemMeta() )
+		{
+			ItemMeta meta = item.getItemMeta();
+			if ( meta.hasLore() )
+			{
+				List<String> list = null;//new ArrayList<String>(meta.getLore()); 
+				if ( meta.getLore().size() > size )
+				{
+					list = new ArrayList<String>(meta.getLore()); 
+					for ( int i = 0 ; i < list.size() - size ; ++i )
+						list.remove((meta.getLore().size()-1)-i);
+					
+				}
+				System.out.print(list);
+				meta.setLore(list);
+			}
+		}
+	
 	}
+	
+	public static void removeDescription(ItemStack item)
+	{
+		if ( item.hasItemMeta() )
+		{
+			ItemMeta meta =  item.getItemMeta();
+			if ( meta.hasLore() )
+			{
+				meta.setLore(null);
+			}
+		}
+	
+	}
+	
 	public static String getName(ItemStack item)
-	{
-		return getName((CraftItemStack)item);
-	}
-	
-	public static String getName(CraftItemStack item)
-	{
-		net.minecraft.server.ItemStack c = item.getHandle();
-		NBTTagCompound tag = c.getTag();
+	{		
+		String name = "";
+		if ( item.hasItemMeta() )
+			name = item.getItemMeta().getDisplayName();
 
-		if ( tag == null )
-			return "";
-		
-		if(!tag.hasKey("display")) 
-			return "";
-		
-		NBTTagCompound d = tag.getCompound("display");
-		
-		if ( !d.hasKey("Name") )
-			return "";
-		
-		return d.getString("Name");
+		return name;
 	}
 	
 	public static void setName(ItemStack item, String name)
 	{
-		setName((CraftItemStack)item, name);
-	}
-	public static void setName(CraftItemStack item, String name)
-	{
-		net.minecraft.server.ItemStack cis = item.getHandle();
-		NBTTagCompound tag = cis.getTag();
-
-		if ( tag == null )
-			tag = new NBTTagCompound();
-		cis.setTag(tag);
+		/*WTH is going on?! why do i need to serialize it?! GUYS FOCUS!*/
+		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		meta.setDisplayName(name);
 		
-		NBTTagCompound dis = tag.getCompound("display");
-		if ( dis == null )
-			dis = new NBTTagCompound();
+		Map<String, Object> map = item.serialize();
+		map.put("meta", meta);
 		
-		tag.set("display", dis);
-
-		dis.setString("Name", name);
+		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 	}
 }

@@ -2,8 +2,6 @@ package net.dtl.citizens.trader.types;
 
 import java.text.DecimalFormat;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -11,9 +9,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.BankItem;
-import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.dtl.citizens.trader.parts.BankerPart;
-import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 public class PrivateBanker extends Banker {
 

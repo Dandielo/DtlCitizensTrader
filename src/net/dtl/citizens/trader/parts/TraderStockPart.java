@@ -13,16 +13,13 @@ import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
-import net.minecraft.server.NBTTagCompound;
-import net.minecraft.server.NBTTagList;
-import net.minecraft.server.NBTTagString;
 
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class TraderStockPart implements InventoryHolder {
 	private static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
@@ -344,36 +341,22 @@ public class TraderStockPart implements InventoryHolder {
 	}
 
 	//Static methods
-	public static ItemStack setLore(CraftItemStack cis, List<String> lore)
-	{
-		//CraftItemStack cis = new CraftItemStack(item);
-		net.minecraft.server.ItemStack mis = cis.getHandle();
+	public static ItemStack setLore(ItemStack cis, List<String> lore)
+	{		
+		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(cis.getType());
 		
-		NBTTagCompound c = mis.getTag(); 
-		if ( c == null )
-			c = new NBTTagCompound();
-		mis.setTag(c);
+		List<String> list = new ArrayList<String>();
+		for ( String s : lore )
+			list.add(s.replace('^', '§'));
 		
-		if(!c.hasKey("display")) {
-			c.set("display", new NBTTagCompound());
-		}
-		 
-		NBTTagCompound d = c.getCompound("display");
-		 
-		if(!d.hasKey("Lore")) {
-		  d.set("Lore", new NBTTagList());
-		}
+		meta.setLore(list);
+		Map<String, Object> map = cis.serialize();
 		
-		NBTTagList l = d.getList("Lore");
+		map.put("meta", meta);
 		
+		cis.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 		
-		if ( lore != null )
-			for ( String str : lore )
-				if ( !str.isEmpty() )
-					l.add(new NBTTagString("dtl_trader", str.replace('^', '§')));
-		 
-		d.set("Lore", l);
-		return cis;
+		return ItemStack.deserialize(map);
 	}
 	
 	public static List<String> getLore(String type, StockItem item, String stock, TransactionPattern pattern, Player player)
@@ -441,9 +424,9 @@ public class TraderStockPart implements InventoryHolder {
 		return lore;
 	}
 	
-	public static CraftItemStack createCraftItem(StockItem item)
+	public static ItemStack createCraftItem(StockItem item)
 	{
-		return new CraftItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability());
+		return new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability());
 	}
 
 	public static String opositeStock(String stock)

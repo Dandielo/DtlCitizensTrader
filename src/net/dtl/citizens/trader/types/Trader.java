@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -393,7 +392,8 @@ public abstract class Trader implements EconomyNpc {
 	
 	//static helper methods
 	public static boolean isWool(ItemStack itemToCompare,ItemStack managementItem) {
-		return itemToCompare.equals(new ItemStack(managementItem.getTypeId(),1,(short)0,managementItem.getData().getData()));
+		return ( itemToCompare.getType().equals(managementItem.getType()) &&
+				itemToCompare.getDurability() == managementItem.getDurability() );
 	}
 	
 	//TODO add to config
@@ -550,7 +550,7 @@ public abstract class Trader implements EconomyNpc {
 						lore.add(l.replace("{unit}", f.format(stockItem.getPrice())+"").replace("{stack}", f.format(stockItem.getPrice()*scale)+""));
 					
 					if ( scale > 0 )
-						NBTTagEditor.addDescription((CraftItemStack) item, lore);				
+						NBTTagEditor.addDescription(item, lore);			
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader.objects;
 
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 
@@ -23,11 +22,11 @@ public class BankItem
 				if ( value.contains(":") ) 
 				{
 					String[] itemData = value.split(":");
-					item = new CraftItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
+					item = new ItemStack(Integer.parseInt(itemData[0]), 1, Byte.parseByte(itemData[1]));
 				}
 				else
 				{
-					item = new CraftItemStack(Integer.parseInt(value),1);
+					item = new ItemStack(Integer.parseInt(value),1);
 				}
 			}
 			else

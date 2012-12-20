@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,16 +21,10 @@ import net.dtl.citizens.trader.types.PlayerTrader;
 import net.dtl.citizens.trader.types.PrivateBanker;
 import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
-import net.dtl.citizens.trader.types.Banker.BankStatus;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.Packet51MapChunk;
-import net.minecraft.server.WorldServer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -42,7 +35,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
 
 public class NpcEcoManager implements Listener {
 	//trader configs

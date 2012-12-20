@@ -4,7 +4,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
@@ -13,10 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
-import net.dtl.citizens.trader.parts.BankerPart;
 import net.milkbowl.vault.economy.Economy;
 
 public class MoneyBanker extends Banker {
@@ -197,7 +194,7 @@ public class MoneyBanker extends Banker {
 	{
 		List<String> lore = new ArrayList<String>();
 		lore.add("^r^7Value: ^6" + new DecimalFormat("#.##").format(amount * itemValue));
-		NBTTagEditor.addDescription((CraftItemStack)item, lore);
+		NBTTagEditor.addDescription(item, lore);
 	}
 
 	@Override

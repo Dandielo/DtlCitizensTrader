@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -414,7 +413,7 @@ public class PlayerTrader extends Trader {
 						
 						
 						
-						getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(short)0,(byte)0));
+						getInventory().setItem(getInventory().getSize() - 2, new ItemStack(Material.WOOL,1,(byte)0));
 						getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 						
 						//send message
@@ -635,8 +634,8 @@ public class PlayerTrader extends Trader {
 							}
 							
 							
-							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							NBTTagEditor.removeDescription(event.getCurrentItem());
+							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), null, player));
 							
 						}
 						
@@ -715,8 +714,8 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 							
 
-							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), null, player));
+							NBTTagEditor.removeDescription(event.getCurrentItem());
+							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), null, player));
 							
 							
 							//show the new price
@@ -764,8 +763,8 @@ public class PlayerTrader extends Trader {
 							else
 								getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
 							
-							NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-							TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							NBTTagEditor.removeDescription(event.getCurrentItem());
+							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), null, player));
 							
 							player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:buy-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 						

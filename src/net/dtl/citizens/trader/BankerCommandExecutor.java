@@ -14,8 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import static net.dtl.citizens.trader.CitizensTrader.*;
-
 public class BankerCommandExecutor implements CommandExecutor {
 
 	//plugin instance

@@ -35,7 +35,7 @@ public class StockItem {
 				
 				if ( value.contains(":") ) {
 					String[] itemData = value.split(":");
-					item = new ItemStack(Integer.parseInt(itemData[0]), 1, (short) 0, Byte.parseByte(itemData[1]));
+					item = new ItemStack(Integer.parseInt(itemData[0]), 1, Byte.parseByte(itemData[1]));
 					amouts.add(1);
 				} else {
 					item = new ItemStack(Integer.parseInt(value),1);

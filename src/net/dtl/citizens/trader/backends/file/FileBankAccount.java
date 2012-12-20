@@ -10,7 +10,6 @@ import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
 
 import static net.dtl.citizens.trader.backends.file.FileBackend.*;
 

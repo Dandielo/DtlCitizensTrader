@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -254,7 +253,7 @@ public class ServerTrader extends Trader {
 						//TODO
 						updateBuyLimits(scale);
 
-						NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+						NBTTagEditor.removeDescription(event.getCurrentItem());
 						removeFromInventory(event.getCurrentItem(), event);
 						
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
@@ -320,7 +319,7 @@ public class ServerTrader extends Trader {
 					
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), TransactionResult.SUCCESS_BUY));
 					
-					NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
+					NBTTagEditor.removeDescription(event.getCurrentItem());
 					
 					//inventory cleanup
 					removeFromInventory(event.getCurrentItem(),event);
@@ -457,6 +456,7 @@ public class ServerTrader extends Trader {
 						switchInventory(getBasicManageModeByWool(), "plimit");
 						
 						//wool update
+						getInventory().setItem(getInventory().getSize()-3, itemsConfig.getItemManagement(6));
 						getInventory().setItem(getInventory().getSize()-2, itemsConfig.getItemManagement(4));
 	
 						//send message
@@ -548,8 +548,8 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changeGlobalTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
 								
 								player.sendMessage(localeManager.getLocaleString("xxx-value-changed", "manage:global-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalTimeout()) );
 							}
@@ -587,8 +587,8 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimitSystem().changePlayerTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
 								
 								//add to config 
 								player.sendMessage(localeManager.getLocaleString("xxx-value-changed", "manage:player-timeout").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerTimeout()) );
@@ -660,8 +660,8 @@ public class ServerTrader extends Trader {
 									player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 								}
 								
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
 								
 								getSelectedItem().setAsPatternItem(false);
 							}
@@ -769,8 +769,8 @@ public class ServerTrader extends Trader {
 								getSelectedItem().setAsPatternItem(false);
 								getSelectedItem().setPetternListening(false);
 								
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), pattern, player));
 								
 								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							}
@@ -814,8 +814,8 @@ public class ServerTrader extends Trader {
 								else
 									getSelectedItem().getLimitSystem().changeGlobalLimit(calculateLimit(event.getCursor()));
 
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
 								
 								getSelectedItem().setAsPatternItem(false);
 								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
@@ -860,8 +860,8 @@ public class ServerTrader extends Trader {
 								else
 									getSelectedItem().getLimitSystem().changePlayerLimit(calculateLimit(event.getCursor()));
 								
-								NBTTagEditor.removeDescription((CraftItemStack) event.getCurrentItem());
-								TraderStockPart.setLore((CraftItemStack) event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
+								NBTTagEditor.removeDescription(event.getCurrentItem());
+								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), pattern, player));
 								
 								getSelectedItem().setAsPatternItem(false);
 								player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "manage:player-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getPlayerLimit()) );
