@@ -78,7 +78,7 @@ public class PermissionsManager {
 		//permissions ex
 		if ( permissionsEx != null )
 		{
-			return permissionsEx.has(player, permission, player.getWorld().getName());
+			return player.hasPermission(permission);
 		}
 		else
 		//using essentials group manager 

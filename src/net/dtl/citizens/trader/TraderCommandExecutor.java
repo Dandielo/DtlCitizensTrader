@@ -78,8 +78,10 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					player.sendMessage(ChatColor.GOLD + "==== " + ChatColor.YELLOW + trader.getNpc().getName() + ChatColor.GOLD + " ====");
 					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()));
 					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getStock().getPattern().getName()));
+					if ( !CitizensTrader.dtlWalletsEnabled() )
+						player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString()));
+					if ( trader.getStock().getPattern() != null )
+						player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getStock().getPattern().getName()));
 					
 				}
 				return true;

@@ -21,9 +21,10 @@ public class NBTTagEditor {
 			if ( item != null )
 			{
 				int size = 0;
-				if ( CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy") != null )
+				List<String> lore = CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy");
+				if ( lore != null )
 				{
-					size = CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy").size();
+					size = lore.size();
 					
 					Map<String, Object> map = item.serialize();
 					ItemMeta meta = (ItemMeta) map.get("meta");
@@ -31,11 +32,15 @@ public class NBTTagEditor {
 					if ( meta != null )
 					{
 						List<String> list = null;//new ArrayList<String>(meta.getLore()); 
-						if ( meta.getLore().size() > size )
+						if ( meta.getLore() != null && meta.getLore().size() >= size )
 						{
 							list = new ArrayList<String>(meta.getLore()); 
-							for ( int i = 0 ; i < list.size() - size ; ++i )
-								list.remove((meta.getLore().size()-1)-i);
+							int s = list.size();
+							
+							
+							for ( int i = 0 ; i + ( s - size /*last strings*/) < s ; ++i )
+								if ( list.get((s-1)-i).equals(lore.get((size-1) - i) ) )
+									list.remove((s-1)-i);
 						}
 						meta.setLore(list);
 					}

@@ -449,6 +449,7 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	public static TraderStatus getManageStartStatus(Player player) {
+		System.out.print(permissionsManager.has(player, "dtl.trader.options.sell"));
 		if ( permissionsManager.has(player, "dtl.trader.options.sell") )
 			return TraderStatus.MANAGE_SELL;
 		else if ( permissionsManager.has(player, "dtl.trader.options.buy") )
