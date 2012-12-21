@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
+import net.dtl.citizens.trader.denizen.triggers.TransactionTrigger;
 import net.dtl.citizens.trader.managers.BackendManager;
 import net.dtl.citizens.trader.managers.BankAccountsManager;
 import net.dtl.citizens.trader.managers.LocaleManager;
@@ -13,10 +15,14 @@ import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
+import net.minecraft.server.v1_4_6.NBTTagCompound;
+import net.minecraft.server.v1_4_6.NBTTagList;
+import net.minecraft.server.v1_4_6.NBTTagString;
 import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -29,6 +35,7 @@ import com.palmergames.bukkit.towny.Towny;
 public class CitizensTrader extends JavaPlugin {
 	//citizens trader logger
 	protected final static Logger logger = Logger.getLogger("Minecraft");
+	protected static CommandSender sender;
 	
 	//plugin instance
 	private static CitizensTrader instance;
@@ -59,10 +66,7 @@ public class CitizensTrader extends JavaPlugin {
 	@Override
 	public void onLoad()
 	{
-		//info("Loading v" + getDescription().getVersion());
-		
-		System.out.print(ChatColor.RESET.getChar());
-		
+		this.setEnabled(false);
 		//loading the stdConfig
 		saveDefaultConfig();
 		stdConfig = getConfig();
@@ -79,6 +83,9 @@ public class CitizensTrader extends JavaPlugin {
 	
 	@Override
 	public void onEnable() {
+		//loading sender
+		sender = Bukkit.getServer().getConsoleSender();
+		
 		//plugin description variable
 		PluginDescriptionFile pdfFile = getDescription();
 		
@@ -151,7 +158,7 @@ public class CitizensTrader extends JavaPlugin {
 		initializeDenizenTriggers();
 		
 		//plugin enabled
-		logger.info("["+ pdfFile.getName() + "] v" + pdfFile.getVersion() + " enabled.");
+		info("v" + pdfFile.getVersion() + " enabled.");
 
 	} 
 	
@@ -160,7 +167,7 @@ public class CitizensTrader extends JavaPlugin {
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
 
-		logger.info("["+ pdfFile.getName() + "] v" + pdfFile.getVersion() + " disabled.");
+		info("v" + pdfFile.getVersion() + " disabled.");
 	}
 	
 	//Hooking into clans and towny bank account
@@ -200,31 +207,12 @@ public class CitizensTrader extends JavaPlugin {
 	
 	public void initializeDenizenTriggers()
 	{
-	/*	if ( denizen != null )
+		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
+		if ( denizen != null )
 		{
-			info("Registering triggers... ");
-			DenizenTriggerTransactionTrigger transaction = new DenizenTriggerTransactionTrigger();
-			DenizenTriggerBoughtTrigger bought = new DenizenTriggerBoughtTrigger();
-			DenizenTriggerSoldTrigger sold = new DenizenTriggerSoldTrigger();
-			
-			try 
-			{
-				transaction.activateAs("transaction");
-				transaction.setEnabledByDefault(false);
-				bought.activateAs("bought");
-				bought.setEnabledByDefault(false);
-				sold.activateAs("sold");
-				sold.setEnabledByDefault(false);
-				
-				getServer().getPluginManager().registerEvents(transaction, this);
-				getServer().getPluginManager().registerEvents(bought, this);
-				getServer().getPluginManager().registerEvents(sold, this);
-			} 
-			catch (ActivationException e)
-			{
-				e.printStackTrace();
-			}
-		}*/
+			info("Registering Denizen triggers... ");
+			AbstractDenizenTrigger.registerTriggers();
+		}
 	}
 	
 	public static Denizen getDenizen()
@@ -305,7 +293,7 @@ public class CitizensTrader extends JavaPlugin {
 	//logger info
 	public static void info(String message)
 	{
-		logger.info("["+getInstance().getDescription().getName()+"] " + message);
+		sender.sendMessage("["+getInstance().getDescription().getName()+"] " + ChatColor.WHITE + message);
 	}
 	//logger warning
 	public static void warning(String message)

@@ -1,7 +1,5 @@
 package net.dtl.citizens.trader.managers;
 
-import java.util.logging.Logger;
-
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.Bukkit;
@@ -12,9 +10,9 @@ import de.bananaco.bpermissions.imp.Permissions;
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
 import net.dtl.permissions.bukkit.DtlPermissions;
+import static net.dtl.citizens.trader.CitizensTrader.*;
+
 public class PermissionsManager {
-	private final Logger logger = Logger.getLogger("Minecraft");
-	private final String pluginPrefix = "[DtlCitizensTrader] ";
 	
 	private DtlPermissions dtlPerms;
 	private Permissions bPermissions;
@@ -33,28 +31,28 @@ public class PermissionsManager {
 		dtlPerms = (DtlPermissions) Bukkit.getPluginManager().getPlugin("DtlPermissions");
 		if ( dtlPerms == null )
 			return;
-		logger.info(pluginPrefix + dtlPerms.getDescription().getName() + " ver" + dtlPerms.getDescription().getVersion() + " hooked!");
+		info(dtlPerms.getDescription().getName() + " ver" + dtlPerms.getDescription().getVersion() + " hooked!");
 	}
 	
 	public void initializeBPermissions() {
 		bPermissions = (Permissions) Bukkit.getPluginManager().getPlugin("bPermissions");
 		if ( bPermissions == null )
 			return;
-		logger.info(pluginPrefix + bPermissions.getDescription().getName() + " ver" + bPermissions.getDescription().getVersion() + " hooked!");
+		info(bPermissions.getDescription().getName() + " ver" + bPermissions.getDescription().getVersion() + " hooked!");
 	}
 	
 	public void initializePexPermissions() {
 		permissionsEx = (PermissionsEx) Bukkit.getPluginManager().getPlugin("PermissionsEx");
 		if ( permissionsEx == null )
 			return;
-		logger.info(pluginPrefix + permissionsEx.getDescription().getName() + " ver" + permissionsEx.getDescription().getVersion() + " hooked!");
+		info(permissionsEx.getDescription().getName() + " ver" + permissionsEx.getDescription().getVersion() + " hooked!");
 	}
 	
 	public void initializeGroupManager() {
 		gmPerms = (GroupManager) Bukkit.getPluginManager().getPlugin("GroupManager");
 		if ( gmPerms == null )
 			return;
-		logger.info(pluginPrefix + gmPerms.getDescription().getName() + " ver" + gmPerms.getDescription().getVersion() + " hooked!");
+		info(gmPerms.getDescription().getName() + " ver" + gmPerms.getDescription().getVersion() + " hooked!");
 	}
 	
 	public boolean has(final Player player, final String permission)

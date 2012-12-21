@@ -261,19 +261,11 @@ public abstract class Trader implements EconomyNpc {
 	}
 	
 	public boolean checkLimits() {
-		if ( !selectedItem.getLimitSystem().checkLimit(player.getName(),0) ) {
-		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
-			return false;
-		}
-		return true;
+		return selectedItem.getLimitSystem().checkLimit(player.getName(),0);
 	}
 	
 	public boolean checkLimits(int slot) {
-		if ( !selectedItem.getLimitSystem().checkLimit(player.getName(),slot) ) {
-		//	p.sendMessage(ChatColor.RED + "Limit reached, try again later.");
-			return false;
-		}
-		return true;
+		return selectedItem.getLimitSystem().checkLimit(player.getName(),slot);
 	}
 	
 	public boolean updateBuyLimits(int scale) {

@@ -5,11 +5,11 @@ import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
 
-abstract public class AbstractDenizenTraderCommand extends AbstractCommand {
+abstract public class AbstractDenizenCommand extends AbstractCommand {
 	
 	protected static NpcEcoManager npcManager;
 	
-	public AbstractDenizenTraderCommand()
+	public AbstractDenizenCommand()
 	{
 		npcManager = CitizensTrader.getNpcEcoManager();
 	}
