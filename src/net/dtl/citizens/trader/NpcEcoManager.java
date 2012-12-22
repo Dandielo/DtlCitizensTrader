@@ -272,7 +272,9 @@ public class NpcEcoManager implements Listener {
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
-		
+
+		if ( CitizensTrader.getDenizen() != null )
+			return;
 		
 		Player player = event.getClicker();
 		//used variables

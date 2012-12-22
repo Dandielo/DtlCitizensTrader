@@ -35,7 +35,7 @@ public class BankItem
 				{
 					if ( value.startsWith("n:") && !value.contains("/") && !value.contains(";") )
 					{
-						setName(value.substring(2).replace("[@]", " "));
+						setName(value.substring(2).replace("[&]", " ").replace("[@]", " "));
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") )
 					{
@@ -91,7 +91,7 @@ public class BankItem
 			}
 		}
 		if ( !name.isEmpty() )
-			itemString += " n:" + name.replace(" ", "[@]");
+			itemString += " n:" + name.replace(" ", "[&]");
 		
 		return itemString;
 	}
@@ -113,17 +113,6 @@ public class BankItem
 	{
 		return name;
 	}
-	/*private String getName()
-	{
-		net.minecraft.server.v1_4_5.ItemStack cis = ((CraftItemStack)item).getHandle();
-		NBTTagCompound tag = cis.getTag();
-		
-		NBTTagCompound dis = tag.getCompound("display");
-		if ( dis == null )
-			return "";
-		
-		return dis.getString("Name");
-	}*/
 	
 	@Override
 	public boolean equals(Object o)

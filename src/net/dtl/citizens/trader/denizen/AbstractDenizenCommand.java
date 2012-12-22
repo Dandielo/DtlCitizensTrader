@@ -1,9 +1,12 @@
 package net.dtl.citizens.trader.denizen;
 
+import org.bukkit.ChatColor;
+
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
+import net.dtl.citizens.trader.denizen.commands.TransactionCommand;
 
 abstract public class AbstractDenizenCommand extends AbstractCommand {
 	
@@ -20,6 +23,10 @@ abstract public class AbstractDenizenCommand extends AbstractCommand {
 		{
 			CitizensTrader.info("Hooked into " + denizen.getDescription().getFullName());
 			CitizensTrader.info("Registering commands... ");
+			
+			denizen.getCommandRegistry().register("transaction", new TransactionCommand());
+			
+			CitizensTrader.info("Registered denizen " + ChatColor.YELLOW + TransactionCommand.class.getSimpleName());
 		}
 	}
 	

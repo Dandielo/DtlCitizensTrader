@@ -235,13 +235,14 @@ public class ServerTrader extends Trader {
 				//	{
 					double price = getPrice(player, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
+					
 					if ( !checkBuyLimits(scale) )
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_LIMIT));
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 					}
 					else
-					if ( !sellTransaction(price, event.getCurrentItem()) )
+					if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
@@ -291,7 +292,7 @@ public class ServerTrader extends Trader {
 			//	{
 
 				double price = getPrice(player, "buy");
-				System.out.print("p: "+price);
+
 				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
