@@ -429,6 +429,9 @@ public abstract class Trader implements EconomyNpc {
 			for ( Enchantment ench : is.getEnchantments().keySet() ) 
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
 		}		
+		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
+		if ( !name.isEmpty() )
+			itemInfo += " n:" + NBTTagEditor.getName(is).replace(" ", "[&]");
 		return new StockItem(itemInfo);
 	}
 	
