@@ -17,6 +17,7 @@ public class StockItem {
 	protected double price = 0;
 	protected int slot = -1;
 	protected LimitSystem limit;
+	protected String name;
 	
 	protected boolean listenPattern = true;
 	protected boolean patternItem = false;
@@ -58,6 +59,10 @@ public class StockItem {
 					}
 					if ( value.startsWith("s:") && !value.contains("/") && !value.contains(";") ) {
 						slot = Integer.parseInt(value.substring(2));
+					}
+					if ( value.startsWith("n:") && !value.contains("/") && !value.contains(";") )
+					{
+						setName(value.substring(2).replace("[&]", " ").replace("[@]", " "));
 					}
 					if ( value.startsWith("d:") && !value.contains("/") && !value.contains(";") ) {
 						item.setDurability(Short.parseShort(value.substring(2)));
@@ -115,6 +120,17 @@ public class StockItem {
 			item.setAmount(amouts.get(0));
 		return item;
 	}
+	
+	public void setName(String name)
+	{
+		NBTTagEditor.setName(item, name);
+		this.name = name;
+	}
+	
+	public String getName()
+	{
+		return name;
+	}
 
 	@Override
 	public String toString() {
@@ -153,6 +169,9 @@ public class StockItem {
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
 			}
 		}
+		
+		if ( !name.isEmpty() )
+			itemString += " n:" + name.replace(" ", "[&]");
 		
 		//saving additional configurations
 		if ( stackPrice )
