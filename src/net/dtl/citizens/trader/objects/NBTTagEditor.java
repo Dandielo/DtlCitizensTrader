@@ -3,6 +3,8 @@ package net.dtl.citizens.trader.objects;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.dtl.citizens.trader.CitizensTrader;
 import org.bukkit.Bukkit;
@@ -39,8 +41,16 @@ public class NBTTagEditor {
 							
 							
 							for ( int i = 0 ; i + ( s - size /*last strings*/) < s ; ++i )
-								if ( list.get((s-1)-i).equals(lore.get((size-1) - i) ) )
+							{
+								//TODO Create global matches
+								String m = lore.get((size-1) - i);
+								m = m.replace("^", "[\\^|§]");
+								m = m.replace("{stack}", "\\d");
+								m = m.replace("{unit}", "\\d");
+								
+								if ( Pattern.matches(m, list.get((s-1)-i) ) )
 									list.remove((s-1)-i);
+							}
 						}
 						meta.setLore(list);
 					}
