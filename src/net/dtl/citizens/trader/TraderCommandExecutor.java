@@ -191,7 +191,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				if ( args[0].equals("open") )
 				{
-					if ( !this.generalChecks(player, "type", null) )
+					if ( !this.generalChecks(player, "open", null) )
 						return true;
 					
 					return openTraderInventory(player, trader);
@@ -389,7 +389,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}
 		if ( args[1].toLowerCase().equals("reload") )
 		{
-			if ( !permsManager.has(player, "dtl.trader.commands.patternreload") )
+			if ( !permsManager.has(player, "dtl.trader.commands.pattern-reload") )
 			{
 				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 				return true;

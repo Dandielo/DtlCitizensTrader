@@ -10,6 +10,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.managers.PatternsManager;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
@@ -120,7 +121,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		for( StockItem item : stock.get(startingStock) ) 
 		{
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, startingStock, pattern, player));
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, startingStock, pattern, player));
 
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -141,7 +142,7 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for( StockItem item : stock.get(s.toString()) ) 
 			{
-				ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, s.toString(), pattern, player));
+				ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, s.toString(), pattern, player));
             	
 				chk.addEnchantments(item.getItemStack().getEnchantments());
 				
@@ -159,7 +160,7 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for( StockItem item : stock.get(s.toString()) )
 			{
-				ItemStack chk = setLore(createCraftItem(item), getLore(type, item, s.toString(), pattern, player));
+				ItemStack chk = setLore(item.getItemStack(), getLore(type, item, s.toString(), pattern, player));
  
 	            //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
 	            chk.addEnchantments(item.getItemStack().getEnchantments());
@@ -227,7 +228,7 @@ public class TraderStockPart implements InventoryHolder {
 		int i = 0;
 		for ( Integer amount : item.getAmounts() ) 
 		{
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, i, "sell", pattern, player));
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", pattern, player));
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 			
 			
@@ -272,7 +273,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		for( StockItem item : stock.get("sell") ) 
 		{
-			ItemStack chk = setLore(createCraftItem(item), getPriceLore(item, 0, "sell", pattern, null));
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, "sell", pattern, null));
 
 			chk.addEnchantments(item.getItemStack().getEnchantments());
 
@@ -350,6 +351,8 @@ public class TraderStockPart implements InventoryHolder {
 			list.add(s.replace('^', '§'));
 		
 		meta.setLore(list);
+		meta.setDisplayName(NBTTagEditor.getName(cis));
+		
 		Map<String, Object> map = cis.serialize();
 		
 		map.put("meta", meta);
@@ -422,11 +425,6 @@ public class TraderStockPart implements InventoryHolder {
 		}
 		
 		return lore;
-	}
-	
-	public static ItemStack createCraftItem(StockItem item)
-	{
-		return new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(), item.getItemStack().getDurability());
 	}
 
 	public static String opositeStock(String stock)

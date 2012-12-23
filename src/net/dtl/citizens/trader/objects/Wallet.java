@@ -185,7 +185,7 @@ public class Wallet {
 	//Deprecated functions
 	@Deprecated
 	public void setEconomy(Economy e) {
-		economy = e;
+		//economy = e;
 	}
 	
 	public enum WalletType
@@ -210,8 +210,12 @@ public class Wallet {
 				return WalletType.INFINITE;
 			else if ( n.startsWith("simple-clans") )
 				return WalletType.SIMPLE_CLANS;
+			else if ( n.startsWith("clan") )
+				return WalletType.SIMPLE_CLANS;
 			else if ( n.startsWith("towny") )
 				return WalletType.TOWNY;
+			else if ( n.startsWith("faction") )
+				return WalletType.FACTIONS;
 			else if ( n.startsWith("factions") )
 				return WalletType.FACTIONS;
 			return null;
@@ -231,11 +235,11 @@ public class Wallet {
 			case INFINITE:
 				return "infinite";
 			case SIMPLE_CLANS:
-				return "simle-clans";
+				return "clan";
 			case TOWNY:
 				return "towny";
 			case FACTIONS:
-				return "factions";
+				return "faction";
 			default: 
 				break;
 			}

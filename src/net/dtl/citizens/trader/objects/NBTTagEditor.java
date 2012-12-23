@@ -56,7 +56,7 @@ public class NBTTagEditor {
 					}
 					
 					map.remove("meta");
-					if ( meta != null && meta.hasLore() )
+					if ( meta != null )
 						map.put("meta", meta);
 					
 					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
@@ -75,6 +75,7 @@ public class NBTTagEditor {
 			list.add(s.replace('^', '§'));
 		
 		meta.setLore(list);
+		meta.setDisplayName(item.getItemMeta().getDisplayName());
 		Map<String, Object> map = item.serialize();
 		
 		map.put("meta", meta);
@@ -85,37 +86,16 @@ public class NBTTagEditor {
 	
 	}
 	
-	public static void removeDescriptionPlayer(ItemStack item, int size)
-	{
-		if ( item.hasItemMeta() )
-		{
-			ItemMeta meta = item.getItemMeta();
-			if ( meta.hasLore() )
-			{
-				List<String> list = null;//new ArrayList<String>(meta.getLore()); 
-				if ( meta.getLore().size() > size )
-				{
-					list = new ArrayList<String>(meta.getLore()); 
-					for ( int i = 0 ; i < list.size() - size ; ++i )
-						list.remove((meta.getLore().size()-1)-i);
-					
-				}
-				System.out.print(list);
-				meta.setLore(list);
-			}
-		}
-	
-	}
 	
 	public static void removeDescription(ItemStack item)
 	{
-		if ( item.hasItemMeta() )
+		Map<String, Object> map = item.serialize();
+		if ( map.containsKey("meta") )
 		{
-			ItemMeta meta =  item.getItemMeta();
-			if ( meta.hasLore() )
-			{
-				meta.setLore(null);
-			}
+			ItemMeta meta = (ItemMeta) map.get("meta");
+			meta.setLore(null);
+			
+			item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 		}
 	
 	}
@@ -126,7 +106,7 @@ public class NBTTagEditor {
 		if ( item.hasItemMeta() )
 			name = item.getItemMeta().getDisplayName();
 
-		return name;
+		return name == null ? "" : name;
 	}
 	
 	public static void setName(ItemStack item, String name)

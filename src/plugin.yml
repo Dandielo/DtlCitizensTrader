@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizens.trader.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager,Towny,SimpleClans,Denizen,bPermissions,dtlWallets]
-version: 2.2.0 Beta
+version: 2.2.1 Beta
 description: >
              Citizens Character. 
 commands: 
@@ -56,7 +56,6 @@ permissions:
       dtl.trader.options.sell: true
       dtl.trader.options.sell-amounts: true
       dtl.trader.options.buy: true
-      dtl.trader.options.market: true
       dtl.trader.options.manage: false
   dtl.trader.types.*:
     default: true
@@ -73,7 +72,8 @@ permissions:
       dtl.trader.wallets.bank: true
       dtl.trader.wallets.infinite: true
       dtl.trader.wallets.towny: true
-      dtl.trader.wallets.simple-clans: true
+      dtl.trader.wallets.clan: true
+      dtl.trader.wallets.faction: true
   dtl.trader.managing.*: 
     default: op
     children: 
@@ -97,15 +97,15 @@ permissions:
       dtl.trader.commands.withdraw: true
       dtl.trader.commands.deposit: true
       dtl.trader.commands.pattern: true
-      dtl.trader.commands.patternreload: true
+      dtl.trader.commands.pattern-reload: true
       dtl.trader.commands.clear: true
       dtl.trader.commands.manage: true
+      dtl.trader.commands.open: true
   dtl.trader.bypass.*:
     default: op
     children: 
       dtl.trader.bypass.creative: true
       dtl.trader.bypass.managing: true
-      dtl.trader.bypass.market: true
       dtl.trader.bypass.drop-managing: true
   dtl.banker.*:
     default: op

@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import net.aufdemrand.denizen.Denizen;
+import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
@@ -271,9 +273,6 @@ public class NpcEcoManager implements Listener {
 	@EventHandler
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
-			return;
-
-		if ( CitizensTrader.getDenizen() != null )
 			return;
 		
 		Player player = event.getClicker();

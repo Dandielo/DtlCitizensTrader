@@ -144,19 +144,20 @@ public abstract class Trader implements EconomyNpc {
 		//get all item stack with the same type
 		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() )
 		{
-			
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
 			{
-				
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
-					return true;
-				
-				if ( item.getAmount() < 64 ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
+						return true;
+					
+					if ( item.getAmount() < 64 ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % 64; 
+					}
+					
+					if ( amountToAdd <= 0 )
+						return true;
 				}
-				
-				if ( amountToAdd <= 0 )
-					return true;
 			}
 		}
 
@@ -179,21 +180,24 @@ public abstract class Trader implements EconomyNpc {
 		{
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
 			{
-				//add amount to an item in the inventory, its done
-				if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
-					item.setAmount( item.getAmount() + amountToAdd );
-					return true;
-				} 
-				
-				//add amount to an item in the inventory, but we still got some left
-				if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
-					amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
-					item.setAmount(selectedItem.getItemStack().getMaxStackSize());
-				}
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				{
+					//add amount to an item in the inventory, its done
+					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
+						item.setAmount( item.getAmount() + amountToAdd );
+						return true;
+					} 
 					
-				//nothing left
-				if ( amountToAdd <= 0 )
-					return true;
+					//add amount to an item in the inventory, but we still got some left
+					if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
+						amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
+						item.setAmount(selectedItem.getItemStack().getMaxStackSize());
+					}
+						
+					//nothing left
+					if ( amountToAdd <= 0 )
+						return true;
+				}
 			}
 		}
 		
@@ -204,6 +208,23 @@ public abstract class Trader implements EconomyNpc {
 			//new stack
 			ItemStack is = selectedItem.getItemStack().clone();
 			is.setAmount(amountToAdd);
+			NBTTagEditor.removeDescription(is);
+			
+			StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
+			
+			if ( it != null )
+			{
+				int scale = is.getAmount() / it.getAmount();
+				
+				DecimalFormat f = new DecimalFormat("#.##");
+				
+				List<String> lore = new ArrayList<String>(); ;
+				for ( String l : itemsConfig.getPriceLore("pbuy") )
+					lore.add(l.replace("{unit}", f.format(it.getPrice())+"").replace("{stack}", f.format(it.getPrice()*scale)+""));
+				
+				if ( scale > 0 )
+					NBTTagEditor.addDescription(is, lore);	
+			}
 			
 			//set the item info the inv
 			inventory.setItem(inventory.firstEmpty(), is);

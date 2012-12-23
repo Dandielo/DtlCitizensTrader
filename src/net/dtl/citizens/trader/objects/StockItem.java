@@ -17,7 +17,7 @@ public class StockItem {
 	protected double price = 0;
 	protected int slot = -1;
 	protected LimitSystem limit;
-	protected String name;
+	protected String name = "";
 	
 	protected boolean listenPattern = true;
 	protected boolean patternItem = false;
