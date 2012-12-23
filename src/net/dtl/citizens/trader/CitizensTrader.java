@@ -155,8 +155,8 @@ public class CitizensTrader extends JavaPlugin {
 		info("Loaded bank accounts");
 		
 		//Denizen commands
-		initializeDenizenCommands();
-		initializeDenizenTriggers();
+		//initializeDenizenCommands();
+		//initializeDenizenTriggers();
 		
 		//plugin enabled
 		info("v" + pdfFile.getVersion() + " enabled.");

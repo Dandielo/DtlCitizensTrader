@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import net.dtl.citizens.trader.CitizensTrader;
 import org.bukkit.Bukkit;
 
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -69,6 +70,7 @@ public class NBTTagEditor {
 	public static ItemStack addDescription(ItemStack item, List<String> lore)
 	{
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		Map<Enchantment, Integer> ench = item.getEnchantments();
 		
 		List<String> list = new ArrayList<String>();
 		for ( String s : lore )
@@ -81,6 +83,7 @@ public class NBTTagEditor {
 		map.put("meta", meta);
 		
 		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+		item.addUnsafeEnchantments(ench);
 		
 		return ItemStack.deserialize(map);
 	
