@@ -4,11 +4,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static net.dtl.citizens.trader.CitizensTrader.*;
 
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BookMeta;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class StockItem {	
 	protected ItemStack item = null;
@@ -83,9 +88,20 @@ public class StockItem {
 						limit.setItemPlayerLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					if ( value.startsWith("e:") && !value.contains(";")  ) {
-						for ( String ench : value.substring(2).split(",") ) {
+						for ( String ench : value.substring(2).split(",") )
+						{
 							String[] enchData = ench.split("/");
-							item.addEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
+							item.addUnsafeEnchantment(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]));
+						}
+					}
+					if ( value.startsWith("se:") && !value.contains(";")  ) {
+						for ( String ench : value.substring(3).split(",") )
+						{
+							String[] enchData = ench.split("/");
+							EnchantmentStorageMeta meta = ((EnchantmentStorageMeta)item.getItemMeta());
+							if ( item.getType().equals(Material.ENCHANTED_BOOK) )
+								meta.addStoredEnchant(Enchantment.getById(Integer.parseInt(enchData[0])), Integer.parseInt(enchData[1]), true);
+							item.setItemMeta(meta);
 						}
 					}
 					if ( value.startsWith("l:") && !value.contains("/") && !value.contains(";") ) {
@@ -164,9 +180,25 @@ public class StockItem {
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
 			itemString += " e:";
+				
 			for ( int i = 0 ; i < item.getEnchantments().size() ; ++i ) {
-				Enchantment e = (Enchantment) item.getEnchantments().keySet().toArray()[i];
+				Enchantment e = (Enchantment) item.getItemMeta().getEnchants().keySet().toArray()[i];
 				itemString += e.getId() + "/" + item.getEnchantmentLevel(e) + ( i + 1 < item.getEnchantments().size() ? "," : "" );
+			}
+		}
+
+		if ( item.getType().equals(Material.ENCHANTED_BOOK) )
+		{
+			EnchantmentStorageMeta meta = (EnchantmentStorageMeta)item.getItemMeta();
+			
+			if ( !meta.getStoredEnchants().isEmpty() )
+			{
+				itemString += " se:";
+				int i = 0;
+				for ( Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet() ) {
+					itemString += e.getKey().getId() + "/" + e.getValue() + ( i + 1 < ((EnchantmentStorageMeta)item.getItemMeta()).getStoredEnchants().size() ? "," : "" );
+					++i;
+				}
 			}
 		}
 		
@@ -307,6 +339,10 @@ public class StockItem {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public void test()
+	{
 	}
 	
 	@Override

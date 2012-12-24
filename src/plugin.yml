@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizens.trader.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager,Towny,SimpleClans,Denizen,bPermissions,dtlWallets]
-version: 2.2.1 Beta
+version: 2.2.3 Beta
 description: >
              Citizens Character. 
 commands: 

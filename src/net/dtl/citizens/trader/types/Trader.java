@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
@@ -450,6 +452,18 @@ public abstract class Trader implements EconomyNpc {
 			for ( Enchantment ench : is.getEnchantments().keySet() ) 
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
 		}		
+		
+		if ( is.getType().equals(Material.ENCHANTED_BOOK) )
+		{
+			EnchantmentStorageMeta meta = (EnchantmentStorageMeta) is.getItemMeta();
+			if ( !meta.getStoredEnchants().isEmpty() )
+			{
+				itemInfo += " se:";
+				for ( Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet() )
+					itemInfo += e.getKey().getId() + "/" + e.getValue() + ",";
+			}
+		}
+		
 		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
 		if ( !name.isEmpty() )
 			itemInfo += " n:" + NBTTagEditor.getName(is).replace(" ", "[&]");

@@ -16,10 +16,13 @@ import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TraderStockPart implements InventoryHolder {
@@ -123,7 +126,7 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, startingStock, pattern, player));
 
-			chk.addEnchantments(item.getItemStack().getEnchantments());
+		//	chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	        if ( item.getSlot() < 0 )
         		item.setSlot(inventory.firstEmpty());
@@ -144,7 +147,7 @@ public class TraderStockPart implements InventoryHolder {
 			{
 				ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, s.toString(), pattern, player));
             	
-				chk.addEnchantments(item.getItemStack().getEnchantments());
+			//	chk.addEnchantments(item.getItemStack().getEnchantments());
 				
 				if ( item.getSlot() < 0 )
             		item.setSlot(inventory.firstEmpty());
@@ -162,8 +165,8 @@ public class TraderStockPart implements InventoryHolder {
 			{
 				ItemStack chk = setLore(item.getItemStack(), getLore(type, item, s.toString(), pattern, player));
  
-	            //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
-	            chk.addEnchantments(item.getItemStack().getEnchantments());
+	         //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
+	         //   chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	            if ( item.getSlot() < 0 )
             		item.setSlot(inventory.firstEmpty());
@@ -229,7 +232,7 @@ public class TraderStockPart implements InventoryHolder {
 		for ( Integer amount : item.getAmounts() ) 
 		{
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", pattern, player));
-			chk.addEnchantments(item.getItemStack().getEnchantments());
+		//	chk.addEnchantments(item.getItemStack().getEnchantments());
 			
 			
 			chk.setAmount(amount);
@@ -275,7 +278,7 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, "sell", pattern, null));
 
-			chk.addEnchantments(item.getItemStack().getEnchantments());
+		//	chk.addEnchantments(item.getItemStack().getEnchantments());
 
 	        if ( item.getSlot() < 0 )
         		item.setSlot(inventory.firstEmpty());
@@ -346,18 +349,30 @@ public class TraderStockPart implements InventoryHolder {
 	{		
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(cis.getType());
 		
-		List<String> list = new ArrayList<String>();
+		List<String> list = cis.getItemMeta().getLore();
+		if ( list == null )
+			list = new ArrayList<String>();
+		
 		for ( String s : lore )
 			list.add(s.replace('^', '§'));
 		
 		meta.setLore(list);
 		meta.setDisplayName(NBTTagEditor.getName(cis));
 		
+		for ( Map.Entry<Enchantment, Integer> e : cis.getEnchantments().entrySet() )
+			meta.addEnchant(e.getKey(), e.getValue(), true);
+		
+		if ( cis.getType().equals(Material.ENCHANTED_BOOK) )
+		{
+			for ( Map.Entry<Enchantment, Integer> e : ((EnchantmentStorageMeta)cis.getItemMeta()).getStoredEnchants().entrySet() )
+				((EnchantmentStorageMeta)meta).addStoredEnchant(e.getKey(),	e.getValue(), true);
+		}
+		
 		Map<String, Object> map = cis.serialize();
 		
 		map.put("meta", meta);
 		
-		cis.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+	//	cis.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 		
 		return ItemStack.deserialize(map);
 	}

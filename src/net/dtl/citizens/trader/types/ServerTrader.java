@@ -691,7 +691,7 @@ public class ServerTrader extends Trader {
 									 getStock().addItem("buy", item);
 								 if ( this.isSellModeByWool() )
 									 getStock().addItem("sell", item);
-									 
+
 								 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 							 }
 							 
@@ -700,6 +700,7 @@ public class ServerTrader extends Trader {
 							 {
 								 getSelectedItem().setSlot(-2);
 								 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
+								 
 							 }
 							 
 							 //set the managed items slot

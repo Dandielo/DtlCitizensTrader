@@ -89,7 +89,7 @@ public class NBTTagEditor {
 	
 	}
 	
-	
+
 	public static void removeDescription(ItemStack item)
 	{
 		Map<String, Object> map = item.serialize();

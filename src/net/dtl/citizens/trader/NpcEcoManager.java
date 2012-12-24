@@ -24,9 +24,12 @@ import net.dtl.citizens.trader.types.PrivateBanker;
 import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
+import net.minecraft.server.v1_4_6.EntityPlayer;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
