@@ -19,6 +19,7 @@ public class NBTTagEditor {
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
+		int s = 0;
 		for ( ItemStack item : inventory.getContents() )
 		{
 			if ( item != null )
@@ -35,35 +36,49 @@ public class NBTTagEditor {
 					if ( meta != null )
 					{
 						List<String> list = null;//new ArrayList<String>(meta.getLore()); 
-						if ( meta.getLore() != null && meta.getLore().size() >= size )
+						if ( meta.getLore() != null && meta.getLore().size() > size )
 						{
 							list = new ArrayList<String>(meta.getLore()); 
-							int s = list.size();
+							int listSize = list.size();
 							
-							
-							for ( int i = 0 ; i + ( s - size /*last strings*/) < s ; ++i )
+							int removed = 0;
+							//TODO fixed?
+							for ( int i = 0 ; i < listSize ; ++i )
 							{
-								//TODO Create global matches
-								String m = lore.get((size-1) - i);
-								m = m.replace("^", "[\\^|§]");
-								m = m.replace("{stack}", "\\d");
-								m = m.replace("{unit}", "\\d");
-								
-								if ( Pattern.matches(m, list.get((s-1)-i) ) )
-									list.remove((s-1)-i);
+								//TODO fixed?
+								for ( int j = 0 ; j < size ; ++j )
+								{
+									String m = lore.get(j);
+									m = m.replace("^", "[\\^|§]");
+									m = m.replace("{stack}", "\\d");
+									m = m.replace("{unit}", "\\d");
+									
+									if ( Pattern.matches(m, list.get(i-removed) ) )
+									{
+										list.remove(i-removed);
+										++removed;
+									}
+								}
 							}
 						}
-						meta.setLore(list);
+						if ( list != null && list.isEmpty() )
+							meta.setLore(null);
+						else
+							meta.setLore(list);
 					}
 					
 					map.remove("meta");
-					if ( meta != null )
+					if ( meta != null  )
 						map.put("meta", meta);
+					else 
+						map.put("meta", Bukkit.getItemFactory().getItemMeta(item.getType()));
 					
 					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 					
+					inventory.setItem(s, new ItemStack(item));
 				}
 			}
+			++s;
 		}		
 	}
 	
@@ -115,8 +130,17 @@ public class NBTTagEditor {
 	public static void setName(ItemStack item, String name)
 	{
 		/*WTH is going on?! why do i need to serialize it?! GUYS FOCUS!*/
+		ItemMeta oldMeta = item.getItemMeta();
+		
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		meta.setDisplayName(name);
+		
+		if ( oldMeta != null )
+		{
+			meta.setLore(oldMeta.getLore());
+			for ( Map.Entry<Enchantment, Integer> e : oldMeta.getEnchants().entrySet() )
+				meta.addEnchant(e.getKey(), e.getValue(), true);
+		}
 		
 		Map<String, Object> map = item.serialize();
 		map.put("meta", meta);

@@ -449,8 +449,8 @@ public abstract class Trader implements EconomyNpc {
 		String itemInfo = is.getTypeId()+":"+ is.getData().getData() +" a:"+is.getAmount() + " d:" + is.getDurability();
 		if ( !is.getEnchantments().isEmpty() ) {
 			itemInfo += " e:";
-			for ( Enchantment ench : is.getEnchantments().keySet() ) 
-				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
+			for ( Map.Entry<Enchantment, Integer> ench : is.getItemMeta().getEnchants().entrySet() ) 
+				itemInfo += ench.getKey().getId() + "/" + ench.getValue() + ",";
 		}		
 		
 		if ( is.getType().equals(Material.ENCHANTED_BOOK) )
@@ -466,7 +466,7 @@ public abstract class Trader implements EconomyNpc {
 		
 		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
 		if ( !name.isEmpty() )
-			itemInfo += " n:" + NBTTagEditor.getName(is).replace(" ", "[&]");
+			itemInfo += " n:" + name;
 		return new StockItem(itemInfo);
 	}
 	

@@ -12,7 +12,8 @@ import org.bukkit.entity.Player;
 
 public class TransactionPattern {
 	private final String name;
-
+	private final boolean tier;
+	
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
 	TreeMap<String, TransactionPattern> patternTiers;
@@ -20,6 +21,11 @@ public class TransactionPattern {
 	
 	public TransactionPattern(String name)
 	{
+		this(name, false);
+	}
+	public TransactionPattern(String name, boolean tier)
+	{
+		this.tier = tier;
 		this.name = name;
 		patternItems = new HashMap<String, List<StockItem>>();
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
@@ -89,7 +95,7 @@ public class TransactionPattern {
 				TransactionPattern tier = patternTiers.get(transaction);
 				if ( tier == null )
 				{
-					tier = new TransactionPattern(name+":"+transaction);
+					tier = new TransactionPattern(name+":"+transaction, true);
 					patternTiers.put(transaction, tier);
 				}
 				
@@ -173,10 +179,16 @@ public class TransactionPattern {
 	{
 		return patternItems.get(transation);
 	}
+	
+	public double getMultiplier(String transaction)
+	{
+		return multiplier.get(transaction);
+	}
 
 	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice) 
 	{
 		double price = nprice;
+		double m = multiplier.get(transation);
 
 		if ( item.isPatternListening() )
 		{
@@ -192,15 +204,18 @@ public class TransactionPattern {
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
 					price = tier.getValue().getItemPrice(player, item, transation, slot, price);
+					m = tier.getValue().getMultiplier(transation);
 				}
+			
+			if ( !tier )
+				price *= m;
 		}
 		else
 			price = item.getRawPrice();
 
-		if ( !item.hasStackPrice() && nprice == 0.0 )
+		if ( !item.hasStackPrice() && nprice == 0.0 && !tier )
 			price *= item.getAmount(slot);
 		
-		price *= multiplier.get(transation);
 		return price;
 	}
 	

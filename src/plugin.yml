@@ -2,7 +2,7 @@ name: DtlCitizensTrader
 main: net.dtl.citizens.trader.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [DtlPermissions,PexPermissions,GroupManager,Towny,SimpleClans,Denizen,bPermissions,dtlWallets]
-version: 2.2.3 Beta
+version: 2.2.4 Beta
 description: >
              Citizens Character. 
 commands: 
@@ -77,7 +77,7 @@ permissions:
   dtl.trader.managing.*: 
     default: op
     children: 
-      dtl.trader.managing.prices: true
+      dtl.trader.managing.price: true
       dtl.trader.managing.global-limits: true
       dtl.trader.managing.player-limits: true
       dtl.trader.managing.buy-limits: true
