@@ -12,18 +12,15 @@ commands:
       usage: |
              Usage: 
              /<command> help
-             /<command> create <name> [type] [wallet] [owner] [account] [entity]
-             /<command> list <stock> [page]
+             /<command> create [name] [type] [wallet] [owner] [entity]
              /<command> wallet [wallet] [account]
-             /<command> type [type]
-             /<command> manage <name>
+             /<command> manage (name)
              /<command> open
              /<command> owner [owner]
              /<command> log [trader name] 
              /<command> clearlog [trader name] 
              /<command> clear [stock]
-             /<command> pattern [action] 
-             /<command> pattern set (pattern)
+             /<command> pattern (action) [pattern]
              /<command> balance
              /<command> withdraw <amount>
              /<command> deposit <amount>
