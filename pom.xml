@@ -33,11 +33,13 @@
 	  	<repository>
 	    	<id>dtlTrad</id>
 	    	<name>DtlTraders</name>
+	    	<url></url>
 		</repository>
 		  <!-- use the following if you ARE using a snapshot version. -->
 	  	<snapshotRepository>
 	    	<id>tradSnap</id>
 	    	<name>DtlTraders Snapshots</name>
+	    	<url></url>
 	  	</snapshotRepository>
 	</distributionManagement>
 
