@@ -42,10 +42,21 @@
 	    	<url></url>
 	  	</snapshotRepository>
 	</distributionManagement>
-
+    
 	
 
 	<build>
+		<resources>
+	      <resource>
+	        <targetPath>META-INF/plexus</targetPath>
+	        <filtering>false</filtering>
+	        <directory>${basedir}/src/</directory>
+	        <excludes>
+	          <exclude>**/*.properties</exclude>
+	        </excludes>
+	      </resource>
+	    </resources>
+    
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
