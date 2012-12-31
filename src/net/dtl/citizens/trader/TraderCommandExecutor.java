@@ -266,8 +266,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					if ( !this.generalChecks(player, "deposit", null) )
 						return true;
-					
-					return withdraw(player, trader, args[1]);
+					return deposit(player, trader, args[1]);
 				}
 				//reload plugin
 				if ( args[0].equalsIgnoreCase("create") )
@@ -773,7 +772,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
 			return true;
 		}
-		
+
 		trader.getWallet().setMoney(money + deposit);
 		DecimalFormat f = new DecimalFormat("#.##");
 		
