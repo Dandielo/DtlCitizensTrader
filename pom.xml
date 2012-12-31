@@ -25,4 +25,23 @@
       </plugin>
     </plugins>
   </build>
+  
+  
+  <distributionManagement>
+	  <!-- use the following if you're not using a snapshot version. -->
+	  <repository>
+	    <id>dtlTradersRel</id>
+	    <name>DtlTraders</name>
+	    <url>scp:</url>
+	  </repository>
+	  <!-- use the following if you ARE using a snapshot version. -->
+	  <snapshotRepository>
+	    <id>trSnap</id>
+	    <name>DtlTraders Snapshots</name>
+	    <url>scp:</url>
+	  </snapshotRepository>
+  </distributionManagement>
+
+  
+  
 </project>
