@@ -55,12 +55,6 @@
 			<scope>provided</scope>
 		</dependency> 
 		<dependency>
-		  <groupId>com.sun</groupId>
-		  <artifactId>tools</artifactId>
-		  <scope>system</scope>
-		  <systemPath>${java.home}/../lib/tools.jar</systemPath>
-		</dependency>
-		<dependency>
 			<groupId>net.aufdemrand</groupId>
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
