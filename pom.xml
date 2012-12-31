@@ -6,8 +6,6 @@
   <name>DtlTraders</name>
   <description>Trader NPC's for Citizens 2</description>
   <build>
-    <sourceDirectory>C:\Users\Dandielo\Documents\GitHub\git\DtlCitizensTrader\DtlCitizensTrader\src</sourceDirectory>
-    <testSourceDirectory>C:\Users\Dandielo\Documents\GitHub\git\DtlCitizensTrader\DtlCitizensTrader\src\test\java</testSourceDirectory>
     
 	<directory>${basedir}/target</directory>
 	<finalName>${artifactId}-${version}</finalName>
