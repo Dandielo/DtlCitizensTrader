@@ -27,6 +27,21 @@
 		<developerConnection>scm:git:git:@github.com:Dandielo/DtlCitizensTrader.git</developerConnection>
 		<url>https://github.com/Dandielo/DtlCitizensTrader/tree/master/</url>
 	</scm>
+	
+	<distributionManagement>
+	 	<!-- use the following if you're not using a snapshot version. -->
+	  	<repository>
+	    	<id>dtlTrad</id>
+	    	<name>DtlTraders</name>
+		</repository>
+		  <!-- use the following if you ARE using a snapshot version. -->
+	  	<snapshotRepository>
+	    	<id>tradSnap</id>
+	    	<name>DtlTraders Snapshots</name>
+	  	</snapshotRepository>
+	</distributionManagement>
+
+	
 
 	<build>
         <plugins>
