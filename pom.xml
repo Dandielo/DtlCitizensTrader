@@ -32,13 +32,13 @@
 	  <repository>
 	    <id>dtlTradersRel</id>
 	    <name>DtlTraders</name>
-	    <url>file:///home/dtlTraders/release/repo</url>
+	    <url>file:///var/lib/jenkins/jobs/dtlTraders/workspace/release/repo</url>
 	  </repository>
 	  <!-- use the following if you ARE using a snapshot version. -->
 	  <snapshotRepository>
 	    <id>trSnap</id>
 	    <name>DtlTraders Snapshots</name>
-	    <url>file:///home/dtlTraders/snapshots/repo</url>
+	    <url>file:///var/lib/jenkins/jobs/dtlTraders/workspace/snapshots/repo</url>
 	  </snapshotRepository>
   </distributionManagement>
 
