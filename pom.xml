@@ -55,7 +55,18 @@
 	          <exclude>**/*.properties</exclude>
 	        </excludes>
 	      </resource>
-	    </resources>        
+	    </resources>   
+
+	    <testResources>
+	      <testResource>
+	        <targetPath>META-INF/dandielo/dtlTraders</targetPath>
+	        <filtering>false</filtering>
+	        <directory>${basedir}/src/</directory>
+	        <excludes>
+	          <exclude>**/*.properties</exclude>
+	        </excludes>
+	      </testResource>
+	    </testResources>    
     </build>
 
 	<url>http://wiki.citizensnpcs.com/DtlTraders</url>
