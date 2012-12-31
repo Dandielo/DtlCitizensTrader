@@ -5,6 +5,68 @@
   <version>2.3.0-SNAPSHOT</version>
   <name>DtlTraders</name>
   <description>Trader NPC's for Citizens 2</description>
+  
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<craftbukkit.version>LATEST</craftbukkit.version>
+		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
+		<vault.version>1.2.13-SNAPSHOT</vault.version>
+		<denizen.version>0.8-SNAPSHOT</denizen.version>
+				<build.number>Unknown</build.number>
+	</properties>
+
+	<!-- Repositories -->
+	<repositories>
+		<repository>
+			<id>bukkit-repo</id>
+			<url>http://repo.bukkit.org/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>everything</id>
+			<url>http://repo.citizensnpcs.com</url>
+		</repository>
+		<repository>
+			<id>vault-repo</id>
+			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+		</repository>
+        <repository>
+            <id>denizens-repo</id>
+            <url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/655/maven-repository/repository/</url>
+        </repository>
+	</repositories>
+	
+	<!-- Repositories -->
+ 	<dependencies>
+		<dependency>
+			<groupId>org.bukkit</groupId>
+			<artifactId>craftbukkit</artifactId>
+			<version>${craftbukkit.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.citizensnpcs</groupId>
+			<artifactId>citizens</artifactId>
+			<version>${citizens.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>		
+		<dependency>
+			<groupId>net.milkbowl.vault</groupId>
+			<artifactId>Vault</artifactId>
+			<version>${vault.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.aufdemrand.denizen</groupId>
+			<artifactId>Denizen</artifactId>
+			<version>${denizen.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+  
   <build>
     
 	<directory>${basedir}/target</directory>
@@ -21,10 +83,8 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>2.3.2</version>
+				<version>2.5.1</version>
         <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
         </configuration>
       </plugin>
     </plugins>
