@@ -14,12 +14,15 @@
   
     <resources>
       <resource>
-        <targetPath>META-INF</targetPath>
+        <targetPath></targetPath>
         <directory>src</directory>
         <includes>
-          <include>**/*.java</include>
+          <include>**/*.class</include>
           <include>**/*.yml</include>
         </includes>
+        <excludes>
+        	<exclude>**/*.java</exclude>
+        </excludes>
       </resource>
     </resources>
     <plugins>
