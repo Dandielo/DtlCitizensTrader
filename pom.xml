@@ -48,83 +48,14 @@
 	<build>
 		<resources>
 	      <resource>
-	        <targetPath>META-INF/plexus</targetPath>
+	        <targetPath>META-INF/dandielo/dtlTraders</targetPath>
 	        <filtering>false</filtering>
 	        <directory>${basedir}/src/</directory>
 	        <excludes>
 	          <exclude>**/*.properties</exclude>
 	        </excludes>
 	      </resource>
-	    </resources>
-    
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <artifactSet>
-                                <includes>
-                                    <include>org.abstractmeta</include>
-                                </includes>
-                            </artifactSet>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.abstractmeta</pattern>
-                                    <shadedPattern>org.shade.abstractmeta</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.2</version>
-                <configuration>
-                    <archive>
-                        <manifestEntries>
-                            <Svn-Revision>${SVN_REVISION}</Svn-Revision>
-                            <Build-Tag>${BUILD_TAG}</Build-Tag>
-                            <Build-Number>${BUILD_NUMBER}</Build-Number>
-                            <Build-Id>${BUILD_ID}</Build-Id>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <!-- put your configurations here -->
-                </configuration>
-            </plugin>
-
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<configuration>
-							    <stylesheetfile>${basedir}/src/javadoc/stylesheet.css</stylesheetfile>
-          						<javadocDirectory>${basedir}/src/javadoc</javadocDirectory>
-          						<docfilessubdirs>true</docfilessubdirs>
-								<links>
-									<link>http://commons.apache.org/lang/api</link>
-									<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
-								</links>
-							</configuration>
-						</plugin>
-
-        </plugins>
+	    </resources>        
     </build>
 
 	<url>http://wiki.citizensnpcs.com/DtlTraders</url>
