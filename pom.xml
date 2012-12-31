@@ -32,13 +32,13 @@
 	  <repository>
 	    <id>dtlTradersRel</id>
 	    <name>DtlTraders</name>
-	    <url>ftp.onuse.pl</url>
+	    <url>file:///home/dtlTraders/release/repo</url>
 	  </repository>
 	  <!-- use the following if you ARE using a snapshot version. -->
 	  <snapshotRepository>
 	    <id>trSnap</id>
 	    <name>DtlTraders Snapshots</name>
-	    <url>ftp.onuse.pl</url>
+	    <url>file:///home/dtlTraders/snapshots/repo</url>
 	  </snapshotRepository>
   </distributionManagement>
 
