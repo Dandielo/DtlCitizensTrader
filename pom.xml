@@ -9,7 +9,7 @@
     <sourceDirectory>C:\Users\Dandielo\Documents\GitHub\git\DtlCitizensTrader\DtlCitizensTrader\src</sourceDirectory>
     <testSourceDirectory>C:\Users\Dandielo\Documents\GitHub\git\DtlCitizensTrader\DtlCitizensTrader\src\test\java</testSourceDirectory>
     
-	<directory>${basedir}/builds</directory>
+	<directory>${basedir}/target</directory>
 	<finalName>${artifactId}-${version}</finalName>
   
     <resources>
@@ -17,6 +17,7 @@
         <directory>src</directory>
         <includes>
           <include>**/*.java</include>
+          <include>**/*.yml</include>
         </includes>
       </resource>
     </resources>
