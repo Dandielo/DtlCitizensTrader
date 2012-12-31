@@ -29,10 +29,6 @@
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
-		<repository>
-			<id>denizens-repo</id>
-			<url>http://ci.citizensnpcs.com/view/Characters/job/Denizen/655/maven-repository/repository/</url>
-		</repository>
 	</repositories>
 	
 	<!-- Repositories -->
