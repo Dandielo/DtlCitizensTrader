@@ -11,12 +11,12 @@
 		<craftbukkit.version>LATEST</craftbukkit.version>
 		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
-		<denizen.version>0.8-SNAPSHOT</denizen.version>
+		<denizen.version>0.8-PRERELEASE</denizen.version>
 				<build.number>Unknown</build.number>
 	</properties>
 
 	<!-- Repositories -->
-	<repositories>
+	<repositories> 
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>
@@ -29,7 +29,11 @@
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
-	</repositories>
+		<repository>
+			<id>denizen-repo</id>
+			<url>http://repo.citizensnpcs.com/net/aufdemrand</url>
+		</repository> 
+	</repositories> 
 	
 	<!-- Repositories -->
  	<dependencies>
@@ -55,14 +59,13 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.aufdemrand.denizen</groupId>
+			<groupId>net.aufdemrand</groupId>
 			<artifactId>Denizen</artifactId>
 			<version>${denizen.version}</version>
-			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-	</dependencies>
-  
+ 	</dependencies> 
+   
   <build>
     
 	<directory>${basedir}/target</directory>
