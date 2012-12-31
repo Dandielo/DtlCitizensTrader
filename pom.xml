@@ -29,10 +29,6 @@
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
-		<repository>
-			<id>everything</id>
-			<url>http://repo.citizensnpcs.com/net/aufdemrand/denizen</url>
-		</repository> 
 	</repositories> 
 	
 	<!-- Repositories -->
@@ -59,12 +55,12 @@
 			<scope>provided</scope>
 		</dependency> 
 		<dependency>
-			<groupId>net.aufdemrand.denizen</groupId>
-			<artifactId>Denizen</artifactId>
+			<groupId>net.aufdemrand</groupId>
+			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
 			<scope>provided</scope> 
 		</dependency>
- 	</dependencies>
+ 	</dependencies> 
    
   <build>
     
