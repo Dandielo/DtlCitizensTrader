@@ -55,6 +55,12 @@
 			<scope>provided</scope>
 		</dependency> 
 		<dependency>
+		  <groupId>com.sun</groupId>
+		  <artifactId>tools</artifactId>
+		  <scope>system</scope>
+		  <systemPath>${java.home}/../lib/tools.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>net.aufdemrand</groupId>
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
@@ -84,32 +90,6 @@
       </plugin>
     </plugins>
   </build>
-  
-  <profiles>
-    <profile>
-        <id>default-profile</id>
-        <activation>
-            <activeByDefault>true</activeByDefault>
-            <file>
-                <exists>${java.home}/../lib/tools.jar</exists>
-            </file>
-        </activation>
-        <properties>
-            <toolsjar>${java.home}/../lib/tools.jar</toolsjar>
-        </properties>
-    </profile>
-    <profile>
-      <id>osx_profile</id>
-      <activation>
-        <os>
-          <family>mac</family>
-        </os>
-      </activation>
-      <properties>
-        <toolsjar>${java.home}/../Classes/classes.jar</toolsjar>
-      </properties>
-    </profile>
-  </profiles>
   
   <distributionManagement>
 	  <!-- use the following if you're not using a snapshot version. -->
