@@ -14,7 +14,7 @@
   
     <resources>
       <resource>
-        <targetPath></targetPath>
+        <targetPath>/</targetPath>
         <directory>src</directory>
         <includes>
           <include>**/*.class</include>
