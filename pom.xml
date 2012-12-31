@@ -34,6 +34,18 @@
 	<!-- Repositories -->
  	<dependencies>
 		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-core</artifactId>
+			<version>2.3.4.1</version>
+	 		<exclusions>
+			    <exclusion>
+			        <groupId>com.sun</groupId>
+			        <artifactId>tools</artifactId>
+			    </exclusion>
+			</exclusions>
+		</dependency>
+ 	
+		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>craftbukkit</artifactId>
 			<version>${craftbukkit.version}</version>
