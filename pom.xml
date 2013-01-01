@@ -65,7 +65,7 @@
 			<groupId>net.dandielo.citizens</groupId>
 			<artifactId>wallets</artifactId>
 			<version>${wallets.version}</version> 
-			<scope>system</scope>
+			<scope>provided</scope>
 		</dependency>
  	</dependencies> 
 
