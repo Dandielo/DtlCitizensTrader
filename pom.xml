@@ -12,6 +12,7 @@
 		<citizens.version>2.0.6-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<denizen.version>0.8-PRERELEASE</denizen.version>
+		<wallets.version>1.0.0-SNAPSHOT</wallets.version>
 				<build.number>Unknown</build.number>
 	</properties>
 
@@ -28,7 +29,6 @@
 		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
-			
 		</repository>
 	</repositories> 
 	
@@ -60,6 +60,12 @@
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
 			<scope>provided</scope> 
+		</dependency>
+		<dependency>
+			<groupId>net.dandielo.citizens</groupId>
+			<artifactId>wallets</artifactId>
+			<version>${wallets.version}</version> 
+			<scope>system</scope>
 		</dependency>
  	</dependencies> 
 

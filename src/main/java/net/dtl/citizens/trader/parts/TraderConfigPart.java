@@ -7,12 +7,11 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.DataKey;
+import net.dandielo.citizens.wallets.AbstractWallet;
+import net.dandielo.citizens.wallets.Wallets;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
-import net.dtl.citizens.wallets.AbstractWallet;
-import net.dtl.citizens.wallets.Wallets;
-//import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 
 public class TraderConfigPart {
