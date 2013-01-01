@@ -63,10 +63,10 @@
 		</dependency>
 		<dependency>
 		    <groupId>net.dandielo.citizens</groupId>
-		    <artifactId>wallets</artifactId>
+		    <artifactId>dtlCitizensWallets</artifactId>
 			<version>${wallets.version}</version> 
 		    <scope>system</scope>
-		    <systemPath>../dtlWallets/ws/target/dtlCitizensWallets-1.0.0-SNAPSHOT.jar</systemPath>
+		    <systemPath>${project.basedir}/dtlWallets/ws/target/dtlCitizensWallets-1.0.0-SNAPSHOT.jar</systemPath>
 		</dependency>
  	</dependencies> 
 
