@@ -1,14 +1,14 @@
 package net.dtl.citizens.trader.objects;
-
+/*
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.integration.Econ;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Town;
-
+*/
 import net.dtl.citizens.trader.CitizensTrader;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
+//import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 public class Wallet {
 	//The wallet type
@@ -16,9 +16,9 @@ public class Wallet {
 	
 	//The associated plugin accounts
 	private static Economy economy;
-	private Clan clan = null; 
+	/*private Clan clan = null; 
 	private Town town = null;
-	private Faction faction = null;
+	private Faction faction = null;*/
 	private String bank = "";
 	
 	//for private money
@@ -47,7 +47,7 @@ public class Wallet {
 	}
 	
 	//Towny
-	public void setTown(Town ntown)
+	/*public void setTown(Town ntown)
 	{
 		town = ntown;
 	}
@@ -108,7 +108,7 @@ public class Wallet {
 			return "";
 		return faction.getTag();
 	}
-	
+	*/
 	//Bank
 	public boolean setBank(String player, String bankName)
 	{
@@ -143,15 +143,14 @@ public class Wallet {
 			case NPC: 
 				money += m;
 				break;
-			case SIMPLE_CLANS: 
+		/*	case SIMPLE_CLANS: 
 				clan.setBalance(clan.getBalance()+m); 
 				break;
 			case FACTIONS: 
 				Econ.deposit(faction.getAccountId(), m); 
 				break;
 			case TOWNY: 
-				townyDeposit(m);
-				break;
+				townyDeposit(m);*/
 			default:
 				break;
 		}
@@ -169,14 +168,14 @@ public class Wallet {
 				if ( money >= m ) 
 					money -= m; 
 				return money >= m;
-			case FACTIONS:
+	/*		case FACTIONS:
 				return Econ.withdraw(faction.getAccountId(), m);
 			case SIMPLE_CLANS:
 				if ( clan.getBalance() >= m ) 
 					clan.setBalance(clan.getBalance()-m);
 				return clan.getBalance() >= m;
 			case TOWNY:
-				return townyWithdraw(m);
+				return townyWithdraw(m);*/
 			default:
 				return true;
 		}

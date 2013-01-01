@@ -1,9 +1,9 @@
 package net.dtl.citizens.trader.parts;
-
+/*
 import com.massivecraft.factions.Faction;
 import com.massivecraft.factions.Factions;
 import com.palmergames.bukkit.towny.object.Town;
-
+*/
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.DataKey;
@@ -12,7 +12,7 @@ import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.wallets.AbstractWallet;
 import net.dtl.citizens.wallets.Wallets;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
+//import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 
 public class TraderConfigPart {
@@ -77,7 +77,7 @@ public class TraderConfigPart {
 		return success;
 	}
 	
-	public static Clan getClan(String tag)
+	/*public static Clan getClan(String tag)
 	{
 		return CitizensTrader.getSimpleClans().getClanManager().getClan(tag);
 	}
@@ -88,19 +88,19 @@ public class TraderConfigPart {
 	public static Faction getFaction(String tag)
 	{
 		return Factions.i.getByTag(tag);
-	}
+	}*/
 	
 	public void load(DataKey data) throws NPCLoadException 
 	{
 		if ( data.keyExists("wallet") )
 		{
 			wallet = new Wallet( WalletType.getTypeByName( data.getString("wallet.type") ) );
-			if ( data.keyExists("wallet.clan") )
+		/*	if ( data.keyExists("wallet.clan") )
 				wallet.setClan( getClan( data.getString("wallet.clan") ) );
 			if ( data.keyExists("wallet.town") )
 				wallet.setTown( getTown( data.getString("wallet.town") ) );
 			if ( data.keyExists("wallet.faction") )
-				wallet.setFaction( getFaction( data.getString("wallet.faction") ) );
+				wallet.setFaction( getFaction( data.getString("wallet.faction") ) );*/
 			if ( data.keyExists("wallet.bank") )
 				wallet.setBank( data.getString("owner", ""), data.getString("wallet.bank") );
 			
@@ -111,7 +111,7 @@ public class TraderConfigPart {
 		{
 			wallet = new Wallet( WalletType.getTypeByName(data.getString("wallet-type")) );
 			
-			if ( wallet.getType().equals(WalletType.SIMPLE_CLANS)
+	/*		if ( wallet.getType().equals(WalletType.SIMPLE_CLANS)
 					&& CitizensTrader.getSimpleClans() != null )
 			{
 				wallet.setClan( getClan( data.getString("wallet-type").split(":")[1] ) );
@@ -126,7 +126,7 @@ public class TraderConfigPart {
 			{
 				wallet.setFaction( getFaction( data.getString("wallet-type").split(":")[1] ) );
 			}
-			else
+			else*/
 				wallet.setType(WalletType.NPC);
 			
 			wallet.setMoney( data.getDouble("money", 0.0) );
@@ -142,12 +142,12 @@ public class TraderConfigPart {
 	{
 		data.setString("wallet.type", wallet.getType().toString());
 		
-		if ( !wallet.getTown().isEmpty() )
+		/*if ( !wallet.getTown().isEmpty() )
 			data.setString("wallet.town", wallet.getTown());
 		if ( !wallet.getClan().isEmpty() )
 			data.setString("wallet.clan", wallet.getClan());
 		if ( !wallet.getFaction().isEmpty() )
-			data.setString("wallet.faction", wallet.getFaction());
+			data.setString("wallet.faction", wallet.getFaction());*/
 		if ( !wallet.getBank().isEmpty() )
 			data.setString("wallet.bank", wallet.getBank());
 		

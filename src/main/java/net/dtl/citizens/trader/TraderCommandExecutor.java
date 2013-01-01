@@ -15,7 +15,7 @@ import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.types.EconomyNpc;
 import net.dtl.citizens.trader.types.Trader;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-import net.sacredlabyrinth.phaed.simpleclans.Clan;
+//import net.sacredlabyrinth.phaed.simpleclans.Clan;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -24,9 +24,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.Factions;
-import com.palmergames.bukkit.towny.object.Town;
+//import com.massivecraft.factions.Faction;
+//import com.massivecraft.factions.Factions;
+//import com.palmergames.bukkit.towny.object.Town;
 
 /**
  * 
@@ -558,17 +558,17 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		if ( wallet == null )
 		{
 			String account = ""; 
-			if ( trader.getWallet().getType().equals(WalletType.TOWNY) )
+		/*	if ( trader.getWallet().getType().equals(WalletType.TOWNY) )
 				account = trader.getWallet().getTown();
 			if ( trader.getWallet().getType().equals(WalletType.SIMPLE_CLANS) )
 				account = trader.getWallet().getClan();
 			if ( trader.getWallet().getType().equals(WalletType.FACTIONS) )
-				account = trader.getWallet().getFaction();
+				account = trader.getWallet().getFaction();*/
 			if ( trader.getWallet().getType().equals(WalletType.BANK) )
 				account = trader.getWallet().getBank();
 			
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "ï¿½6:ï¿½e" + account )) );
 			
 		}
 		//change wallet
@@ -595,7 +595,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					return true;
 				}
 			}
-			else
+			/*	else
 			//clan
 			if ( wallet.equals(WalletType.SIMPLE_CLANS) )
 			{
@@ -665,14 +665,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					return true;
 				}
 				trader.getWallet().setFaction(faction);
-			}
+			}*/
 			
 			
 			//set the wallet type for both trader and wallet
 			trader.getWallet().setType(wallet);
 
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"§6:§e"+bankAccount)) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"ï¿½6:ï¿½e"+bankAccount)) );
 		}
 		
 		
@@ -905,7 +905,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
 		settings.getWallet().setType(walletType);
 		
-		if ( walletType.equals(WalletType.SIMPLE_CLANS) )
+	/*	if ( walletType.equals(WalletType.SIMPLE_CLANS) )
 		{
 			Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);
 			if ( clan == null )
@@ -935,7 +935,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			settings.getWallet().setFaction(faction);
-		}
+		}*/
+		
 		settings.setOwner(owner);
 		
 		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:trader").replace("{name}", player.getName()) );

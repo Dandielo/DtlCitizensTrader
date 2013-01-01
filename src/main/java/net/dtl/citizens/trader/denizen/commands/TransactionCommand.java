@@ -7,7 +7,8 @@ import org.bukkit.inventory.ItemStack;
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
 import net.aufdemrand.denizen.exceptions.InvalidArgumentsException;
 import net.aufdemrand.denizen.scripts.ScriptEntry;
-import net.aufdemrand.denizen.scripts.helpers.ArgumentHelper.ArgumentType;
+import net.aufdemrand.denizen.utilities.arguments.aH;
+import net.aufdemrand.denizen.utilities.arguments.aH.ArgumentType;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
@@ -75,9 +76,9 @@ public class TransactionCommand extends AbstractDenizenCommand {
 
 	}
 
-	@Override
-	public void execute(String commandName) throws CommandExecutionException {
 
+	@Override
+	public void execute(ScriptEntry arg0) throws CommandExecutionException {
 		if ( action.equals("SELL") )
 		{
 			trader.selectItem(item, TraderStatus.SELL, false, false);
@@ -143,7 +144,6 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		{
 			
 		}
-		
 	}	
 
 }

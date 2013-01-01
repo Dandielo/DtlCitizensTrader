@@ -19,7 +19,7 @@ import net.milkbowl.vault.economy.Economy;
 import net.minecraft.server.v1_4_6.NBTTagCompound;
 import net.minecraft.server.v1_4_6.NBTTagList;
 import net.minecraft.server.v1_4_6.NBTTagString;
-import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
+//import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -28,10 +28,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.massivecraft.factions.P;
+/*
+im8port com.massivecraft.factions.P;
 import com.palmergames.bukkit.towny.Towny;
-
+*/
 
 public class CitizensTrader extends JavaPlugin {
 	//citizens trader logger
@@ -40,9 +40,9 @@ public class CitizensTrader extends JavaPlugin {
 	
 	//plugin instance
 	private static CitizensTrader instance;
-	private static SimpleClans clans;
+	/*private static SimpleClans clans;
 	private static Towny towny;
-	private static P factions;
+	private static P factions;*/
 	private static Denizen denizen;
 	private static Wallets wallets;
 	
@@ -174,7 +174,7 @@ public class CitizensTrader extends JavaPlugin {
 	//Hooking into clans and towny bank account
 	public void initializeSoftDependPlugins()
 	{
-		clans = (SimpleClans) Bukkit.getPluginManager().getPlugin("SimpleClans");
+	/*	clans = (SimpleClans) Bukkit.getPluginManager().getPlugin("SimpleClans");
 		if ( clans != null )
 		{
 			info("Hooked into " + clans.getDescription().getFullName());
@@ -188,7 +188,7 @@ public class CitizensTrader extends JavaPlugin {
 		if ( factions != null )
 		{
 			info("Hooked into " + factions.getDescription().getFullName());
-		}
+		}*/
 		
 		wallets = (Wallets) Bukkit.getPluginManager().getPlugin("dtlWallets");
 		if ( wallets != null )
@@ -221,7 +221,7 @@ public class CitizensTrader extends JavaPlugin {
 		return denizen;
 	}
 	
-	public static Towny getTowny() {
+/*	public static Towny getTowny() {
 		return towny;
 	}
 	
@@ -232,7 +232,7 @@ public class CitizensTrader extends JavaPlugin {
 	public static SimpleClans getSimpleClans()
 	{
 		return clans;
-	}
+	}*/
 	
 	//static functions
 	public static PermissionsManager getPermissionsManager()

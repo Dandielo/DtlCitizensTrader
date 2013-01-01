@@ -14,13 +14,13 @@ public class PatternCommand extends AbstractDenizenCommand {
 	}
 
 	@Override
-	public void execute(String arg0) throws CommandExecutionException {
+	public void parseArgs(ScriptEntry arg0) throws InvalidArgumentsException {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void parseArgs(ScriptEntry arg0) throws InvalidArgumentsException {
+	public void execute(ScriptEntry arg0) throws CommandExecutionException {
 		// TODO Auto-generated method stub
 		
 	}

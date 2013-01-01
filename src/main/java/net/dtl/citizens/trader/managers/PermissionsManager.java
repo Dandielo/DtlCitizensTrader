@@ -1,39 +1,47 @@
 package net.dtl.citizens.trader.managers;
-
-import org.anjocaido.groupmanager.GroupManager;
-import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
+import org.bukkit.plugin.RegisteredServiceProvider;
+import net.dtl.citizens.trader.CitizensTrader;
+/*
 import de.bananaco.bpermissions.imp.Permissions;
 
 import ru.tehkode.permissions.bukkit.PermissionsEx;
-
-import net.dtl.permissions.bukkit.DtlPermissions;
-import static net.dtl.citizens.trader.CitizensTrader.*;
+*/
+//import net.dtl.permissions.bukkit.DtlPermissions;
+import net.milkbowl.vault.permission.Permission;
 
 public class PermissionsManager {
 	
-	private DtlPermissions dtlPerms;
-	private Permissions bPermissions;
+//	private DtlPermissions dtlPerms;
+//	private Permissions bPermissions;
 //	private Permission vaultPerms;
-	private PermissionsEx permissionsEx;
-	private GroupManager gmPerms;
+//	private PermissionsEx permissionsEx;
+//	private GroupManager gmPerms;
+	private Permission permission;
 	
 	public PermissionsManager() {
-		this.initializeDtlPermissions();
+	/*	this.initializeDtlPermissions();
 		this.initializePexPermissions();
 		this.initializeBPermissions();
-		this.initializeGroupManager();
+		this.initializeGroupManager();*/
 	}
 	
-	public void initializeDtlPermissions() {
+	/*public void initializeDtlPermissions() {
 		dtlPerms = (DtlPermissions) Bukkit.getPluginManager().getPlugin("DtlPermissions");
 		if ( dtlPerms == null )
 			return;
 		info(dtlPerms.getDescription().getName() + " ver" + dtlPerms.getDescription().getVersion() + " hooked!");
-	}
+	}*/
 	
+	private boolean setupPermissions()
+    {
+        RegisteredServiceProvider<Permission> permissionProvider = CitizensTrader.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        if (permissionProvider != null) {
+            permission = permissionProvider.getProvider();
+        }
+        return (permission != null);
+    }
+/*
 	public void initializeBPermissions() {
 		bPermissions = (Permissions) Bukkit.getPluginManager().getPlugin("bPermissions");
 		if ( bPermissions == null )
@@ -53,7 +61,7 @@ public class PermissionsManager {
 		if ( gmPerms == null )
 			return;
 		info(gmPerms.getDescription().getName() + " ver" + gmPerms.getDescription().getVersion() + " hooked!");
-	}
+	}*/
 	
 	public boolean has(final Player player, final String permission)
 	{
@@ -63,38 +71,8 @@ public class PermissionsManager {
 			return player.hasPermission(permission);
 		}
 		return true;*/
-		return hasPermission(player, permission);
+		return this.permission.has(player, permission);//hasPermission(player, permission);
 	}
 	
-	public boolean hasPermission(final Player player, final String permission) {
-		//if using dtlPermissions System
-		if ( dtlPerms != null ) 
-		{
-			return dtlPerms.has(player, permission, player.getWorld().getName());
-		}
-		else
-		//permissions ex
-		if ( permissionsEx != null )
-		{
-			return player.hasPermission(permission);
-		}
-		else
-		//using essentials group manager 
-		if ( gmPerms != null )
-		{
-			final AnjoPermissionsHandler handler = gmPerms.getWorldsHolder().getWorldPermissions(player);
-			if (handler == null)
-			{
-				return false;
-			}
-			return handler.has(player, permission);
-		}
-		else
-		if ( bPermissions != null )
-		{
-			return bPermissions.has(player, permission);
-		}
-			
-		return player.hasPermission(permission);
-	}
+	
 }
