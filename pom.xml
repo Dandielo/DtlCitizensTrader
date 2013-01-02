@@ -32,7 +32,7 @@
 		</repository>
 	</repositories> 
 	
-	<!-- Repositories -->
+	<!-- Dependencies -->
  	<dependencies>
 		<dependency>
 			<groupId>org.bukkit</groupId>
