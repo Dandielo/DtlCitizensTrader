@@ -49,7 +49,7 @@ public class NBTTagEditor {
 								for ( int j = 0 ; j < size ; ++j )
 								{
 									String m = lore.get(j);
-									m = m.replace("^", "[\\^|ง]");
+									m = m.replace("^", "[\\^|ยง]");
 									m = m.replace("{stack}", "\\d");
 									m = m.replace("{unit}", "\\d");
 									
@@ -89,7 +89,7 @@ public class NBTTagEditor {
 		
 		List<String> list = new ArrayList<String>();
 		for ( String s : lore )
-			list.add(s.replace('^', 'ง'));
+			list.add(s.replace('^', 'ยง'));
 		
 		meta.setLore(list);
 		meta.setDisplayName(item.getItemMeta().getDisplayName());

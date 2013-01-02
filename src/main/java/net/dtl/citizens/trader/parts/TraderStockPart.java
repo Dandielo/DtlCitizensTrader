@@ -354,7 +354,7 @@ public class TraderStockPart implements InventoryHolder {
 			list = new ArrayList<String>();
 		
 		for ( String s : lore )
-			list.add(s.replace('^', 'ง'));
+			list.add(s.replace('^', 'ยง'));
 		
 		meta.setLore(list);
 		meta.setDisplayName(NBTTagEditor.getName(cis));

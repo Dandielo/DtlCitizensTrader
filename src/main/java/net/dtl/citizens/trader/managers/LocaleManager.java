@@ -143,24 +143,24 @@ public class LocaleManager {
 	/*		for ( String key : locale.getConfigurationSection("buttons").getKeys(false) )
 			{
 				List<String> lore = new ArrayList<String>();
-				lore.add(locale.getString(buildPath("buttons",key,"name")).replace('^', 'ง'));
+				lore.add(locale.getString(buildPath("buttons",key,"name")).replace('^', 'ยง'));
 				for ( String entry : locale.getStringList(buildPath("buttons",key,"lore")) )
-					lore.add(entry.replace('^', 'ง'));
+					lore.add(entry.replace('^', 'ยง'));
 				buttonsCache.put(key, (String[]) lore.toArray());
 				
-			//W	stringsCache.put(key, locale.getString(buildPath("buttons",key)).replace('^', 'ง') );
+			//W	stringsCache.put(key, locale.getString(buildPath("buttons",key)).replace('^', 'ยง') );
 			}*/
 			
 			for ( String key : locale.getConfigurationSection("messages").getKeys(false) )
 			{
-				stringsCache.put(key, locale.getString(buildPath("messages",key)).replace('^', 'ง') );
+				stringsCache.put(key, locale.getString(buildPath("messages",key)).replace('^', 'ยง') );
 			}
 			
 			for ( String keyword : locale.getConfigurationSection("keywords").getKeys(false) )
 			{
 				for ( String value : locale.getConfigurationSection(buildPath("keywords",keyword)).getKeys(false) )
 				{
-					keywordsCache.put(keyword+":"+value, locale.getString(buildPath("keywords",keyword,value)).replace('^', 'ง') );
+					keywordsCache.put(keyword+":"+value, locale.getString(buildPath("keywords",keyword,value)).replace('^', 'ยง') );
 				}
 			}
 			
