@@ -10,6 +10,7 @@ import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class TraderCharacterTrait extends Trait {
 	private EcoNpcType type = EcoNpcType.SERVER_TRADER;
+	private String defPattern;
 	
 	private TraderConfigPart config;
 	private TraderStockPart stock;
@@ -34,6 +35,8 @@ public class TraderCharacterTrait extends Trait {
 			config.loadDtlWallet(npc);
 		
 		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+		
+		defPattern = CitizensTrader.getInstance().getConfig().getString("trader.patterns.default","");
 	}
 	
 	public TraderStockPart getStock() {
@@ -82,6 +85,9 @@ public class TraderCharacterTrait extends Trait {
 			
 			if ( CitizensTrader.dtlWalletsEnabled() )
 				config.loadDtlWallet(npc);
+			
+			if ( this.type.equals(EcoNpcType.SERVER_TRADER) && !defPattern.isEmpty() )
+				stock.setPattern(defPattern);
 			
 			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
 				stock.linkItems();
