@@ -70,7 +70,7 @@ public class ItemsConfig {
 	
 	public ItemStack initializeItemWithName(ItemStack itemStack, String name, List<String> lore)
 	{
-		NBTTagEditor.setName(itemStack, name.replace('^', 'ง'));
+		NBTTagEditor.setName(itemStack, name.replace('^', 'ยง'));
 		if ( lore != null )
 			NBTTagEditor.addDescription(itemStack, lore);
 		
