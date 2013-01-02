@@ -61,12 +61,11 @@
 			<version>${denizen.version}</version>
 			<scope>provided</scope> 
 		</dependency>
-		<dependency>
+		<dependency> 
 		    <groupId>net.dandielo.citizens</groupId>
-		    <artifactId>dtlCitizensWallets</artifactId>
+		    <artifactId>wallets</artifactId>
 			<version>${wallets.version}</version> 
-		    <scope>system</scope>
-		    <systemPath>${project.basedir}/dtlWallets/ws/target/dtlCitizensWallets-1.0.0-SNAPSHOT.jar</systemPath>
+		    <scope>provided</scope>
 		</dependency>
  	</dependencies> 
 
