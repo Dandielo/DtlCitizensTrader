@@ -25,11 +25,23 @@ public class TransactionPattern {
 	}
 	public TransactionPattern(String name, boolean tier)
 	{
-		this.tier = tier;
+		//teh patterns name
 		this.name = name;
+		//is this pattern a tier?
+		this.tier = tier;
+		
+		//pattern items, needs to add both buy and sell when "items" section not in a pattern to avoid NPE
 		patternItems = new HashMap<String, List<StockItem>>();
+		patternItems.put("sell", new ArrayList<StockItem>());
+		patternItems.put("buy", new ArrayList<StockItem>());
+		
+		//pattern prices
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
+		
+		//pattenr triers
 		patternTiers = new TreeMap<String, TransactionPattern>();
+		
+		//multipliers
 		multiplier = new HashMap<String, Double>();
 		multiplier.put("sell", 1.00);
 		multiplier.put("buy", 1.00);
