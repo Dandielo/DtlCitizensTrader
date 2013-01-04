@@ -123,24 +123,24 @@ public class PatternsManager {
 			
 			for ( StockItem item : sellList )
 			{
-				patternsConfig.set(buildPath(name, "prices", "sell"), item.getRawPrice());
+				patternsConfig.set(buildPath(name, "prices", "sell", item.getIdAndData()), item.getRawPrice());
 			}
 			for ( StockItem item : buyList )
 			{
-				patternsConfig.set(buildPath(name, "prices", "buy"), item.getRawPrice());
+				patternsConfig.set(buildPath(name, "prices", "buy", item.getIdAndData()), item.getRawPrice());
 			}
 		}
 		
 		if ( mode.equals("items") || mode.equals("all") )
 		{
-			for ( StockItem item : sellList )
-			{
-				patternsConfig.set(buildPath(name, "items", "sell"), item.toString());
-			}
-			for ( StockItem item : buyList )
-			{
-				patternsConfig.set(buildPath(name, "items", "buy"), item.toString());
-			}
+	//	for ( StockItem item : sellList )
+	//	{
+			patternsConfig.set(buildPath(name, "items", "sell"), sellList);
+	//	}
+	//	for ( StockItem item : buyList )
+	//	{
+			patternsConfig.set(buildPath(name, "items", "buy"), buyList);
+	//	}
 		}
 		save();
 	}
