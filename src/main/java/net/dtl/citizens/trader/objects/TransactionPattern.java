@@ -16,6 +16,7 @@ public class TransactionPattern {
 	
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
+	TreeMap<String, TransactionPattern> patternInherits;
 	TreeMap<String, TransactionPattern> patternTiers;
 	HashMap<String, Double> multiplier;
 	
@@ -23,6 +24,7 @@ public class TransactionPattern {
 	{
 		this(name, false);
 	}
+	
 	public TransactionPattern(String name, boolean tier)
 	{
 		//teh patterns name
@@ -38,8 +40,9 @@ public class TransactionPattern {
 		//pattern prices
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
 		
-		//pattenr triers
+		//pattenr triers and inherits
 		patternTiers = new TreeMap<String, TransactionPattern>();
+		patternInherits = new TreeMap<String, TransactionPattern>();
 		
 		//multipliers
 		multiplier = new HashMap<String, Double>();
@@ -50,6 +53,18 @@ public class TransactionPattern {
 	public String getName()
 	{
 		return name;
+	}
+	
+	public void prepareInherits(ConfigurationSection inherits)
+	{
+		for ( String inherit : inherits.getStringList("inherits") )
+		{
+			TransactionPattern pattern = CitizensTrader.getPatternsManager().getPattern(inherit);
+			if ( pattern != null )
+				patternInherits.put(inherit, pattern);
+			else
+				CitizensTrader.warning("Could not load inherited pattern, does is it defined before this one?");
+		}
 	}
 	
 	public void loadPrices(ConfigurationSection prices)
@@ -204,6 +219,15 @@ public class TransactionPattern {
 
 		if ( item.isPatternListening() )
 		{
+			for ( Map.Entry<String, TransactionPattern> inherit : patternInherits.entrySet() )
+			{
+				if ( inherit.getValue() != null )
+				{
+					price = inherit.getValue().getItemPrice(player, item, transation, slot, price);
+					m = inherit.getValue().getMultiplier(transation);
+				}
+			}
+			
 			if ( patternPrices.containsKey(transation) )
 				if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
 					price = patternPrices.get(transation).get(item.getIdAndData());

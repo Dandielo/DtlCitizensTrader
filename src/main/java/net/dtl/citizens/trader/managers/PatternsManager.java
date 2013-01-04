@@ -3,13 +3,16 @@ package net.dtl.citizens.trader.managers;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 
 public class PatternsManager {
@@ -91,6 +94,11 @@ public class PatternsManager {
 					{
 						pattern.loadItems(patternsConfig.getConfigurationSection(buildPath(patternName, section)));
 					}
+					else 
+					if ( section.equals("inherits") )
+					{
+						pattern.prepareInherits(patternsConfig.getConfigurationSection(buildPath(patternName)));
+					}
 					
 				}
 
@@ -106,6 +114,35 @@ public class PatternsManager {
 		{
 			throw new IllegalStateException("Error loading patterns file", e);
 		}
+	}
+	
+	public void setFromList(String name, List<StockItem> sellList, List<StockItem> buyList, String mode)
+	{		
+		if ( mode.equals("prices") || mode.equals("all") )
+		{
+			
+			for ( StockItem item : sellList )
+			{
+				patternsConfig.set(buildPath(name, "prices", "sell"), item.getRawPrice());
+			}
+			for ( StockItem item : buyList )
+			{
+				patternsConfig.set(buildPath(name, "prices", "buy"), item.getRawPrice());
+			}
+		}
+		
+		if ( mode.equals("items") || mode.equals("all") )
+		{
+			for ( StockItem item : sellList )
+			{
+				patternsConfig.set(buildPath(name, "items", "sell"), item.toString());
+			}
+			for ( StockItem item : buyList )
+			{
+				patternsConfig.set(buildPath(name, "items", "buy"), item.toString());
+			}
+		}
+		save();
 	}
 
 	public void save() {

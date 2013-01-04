@@ -72,6 +72,10 @@ public class TraderStockPart implements InventoryHolder {
 		reloadStock();
 	}
 	
+	public List<StockItem> getStock(String stock)
+	{
+		return this.stock.get(stock);
+	}
 	
 	public void reloadStock()
 	{
@@ -455,5 +459,18 @@ public class TraderStockPart implements InventoryHolder {
 		
 		if ( si.getAmounts().size() > 1 )
 			si.getAmounts().remove(si.getAmounts().size()-1);
+	}
+
+	public void resetPrices() {
+		for ( StockItem item : stock.get("sell") )
+		{
+			item.setRawPrice(0.0);
+			item.setPetternListening(true);
+		}
+		for ( StockItem item : stock.get("buy") )
+		{
+			item.setRawPrice(0.0);
+			item.setPetternListening(true);
+		}
 	}
 }

@@ -9,6 +9,7 @@ import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
@@ -41,6 +42,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//plugin instance
 	
 	//managers
+	private static PatternsManager patternsManager;
 	private static NpcEcoManager traderManager;
 	private static PermissionsManager permsManager;
 	private static LoggingManager logManager;
@@ -53,6 +55,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		permsManager = CitizensTrader.getPermissionsManager();
 		traderManager = CitizensTrader.getNpcEcoManager();
 		logManager = CitizensTrader.getLoggingManager();
+		patternsManager = CitizensTrader.getPatternsManager();
 	}
 	
 	@Override
@@ -374,6 +377,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 	
+	private boolean resetPrices(Player player, Trader trader)
+	{
+		trader.getStock().resetPrices();
+		return true;
+	}
+	
 	private boolean pattern(Player player, Trader trader, String[] args) {
 		
 		if ( args.length <= 1 )
@@ -394,6 +403,28 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				return true;
 			}
 			return this.reloadPatterns(player, trader);
+		}
+		if ( args[1].equals("save") )
+		{
+			String target = args.length > 3 ? args[3] : "all";
+			String post = args.length > 4 ? args[4] : "";
+			
+			trader.getStock().getStock("sell");
+			patternsManager.setFromList(args[2], 
+										trader.getStock().getStock("sell"), 
+										trader.getStock().getStock("buy"), 
+										target );
+			
+			this.reloadPatterns(player, trader);
+			
+			if ( post.equals("clear") )
+				trader.getStock().clearStock();
+				
+			if ( post.equals("reset") )
+				trader.getStock().resetPrices();
+			
+			player.sendMessage("^6Pattern was saved, all patterns has been reloaded");
+			return true;
 		}
 		if ( !args[1].equals("set") )
 		{
@@ -805,9 +836,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	{
 		String traderName = "";
 		String owner = player.getName();
-		String clanTag = "";
+/*		String clanTag = "";
 		String townName = "";
-		String factionName = "";
+		String factionName = "";*/
 		
 		EntityType entityType = EntityType.PLAYER;
 		EcoNpcType traderType = getDefaultTraderType(player);
@@ -822,7 +853,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				owner = arg.substring(2);
 				walletType = WalletType.OWNER;
 			}
-			else
+		/*	else
 			if ( arg.startsWith("sc:") )
 			{
 				clanTag = arg.substring(3);
@@ -839,7 +870,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				factionName = arg.substring(2);
 				walletType = WalletType.FACTIONS;
-			}
+			}*/
 			else
 			//trader type set?
 			if ( arg.startsWith("t:") )
