@@ -423,7 +423,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			if ( post.equals("reset") )
 				trader.getStock().resetPrices();
 			
-			player.sendMessage("^6Pattern was saved, all patterns has been reloaded");
+			player.sendMessage(ChatColor.GOLD + "Pattern was saved, all patterns has been reloaded");
 			return true;
 		}
 		if ( !args[1].equals("set") )
