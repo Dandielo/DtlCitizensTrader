@@ -81,7 +81,7 @@ public class PatternsManager {
 
 			for ( String patternName : patternsConfig.getKeys(false) )
 			{
-				TransactionPattern pattern = new TransactionPattern(patternName);
+				TransactionPattern pattern = new TransactionPattern(patternName, this);
 				
 				for ( String section : patternsConfig.getConfigurationSection(patternName).getKeys(false) )
 				{	

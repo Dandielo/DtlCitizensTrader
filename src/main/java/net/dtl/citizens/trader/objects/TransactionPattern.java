@@ -7,10 +7,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.managers.PatternsManager;
+
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 public class TransactionPattern {
+	private static PatternsManager patternsManager;
+	
 	private final String name;
 	private final boolean tier;
 	
@@ -20,9 +24,10 @@ public class TransactionPattern {
 	TreeMap<String, TransactionPattern> patternTiers;
 	HashMap<String, Double> multiplier;
 	
-	public TransactionPattern(String name)
+	public TransactionPattern(String name, PatternsManager manager)
 	{
 		this(name, false);
+		manager = patternsManager;
 	}
 	
 	public TransactionPattern(String name, boolean tier)
@@ -59,7 +64,7 @@ public class TransactionPattern {
 	{
 		for ( String inherit : inherits.getStringList("inherits") )
 		{
-			TransactionPattern pattern = CitizensTrader.getPatternsManager().getPattern(inherit);
+			TransactionPattern pattern = patternsManager.getPattern(inherit);
 			if ( pattern != null )
 				patternInherits.put(inherit, pattern);
 			else
