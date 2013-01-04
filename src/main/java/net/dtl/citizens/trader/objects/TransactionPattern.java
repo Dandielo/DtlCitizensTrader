@@ -27,7 +27,7 @@ public class TransactionPattern {
 	public TransactionPattern(String name, PatternsManager manager)
 	{
 		this(name, false);
-		manager = patternsManager;
+		patternsManager = manager;
 	}
 	
 	public TransactionPattern(String name, boolean tier)
