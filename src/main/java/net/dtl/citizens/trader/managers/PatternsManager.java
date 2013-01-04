@@ -133,14 +133,19 @@ public class PatternsManager {
 		
 		if ( mode.equals("items") || mode.equals("all") )
 		{
-	//	for ( StockItem item : sellList )
-	//	{
-			patternsConfig.set(buildPath(name, "items", "sell"), sellList);
-	//	}
-	//	for ( StockItem item : buyList )
-	//	{
-			patternsConfig.set(buildPath(name, "items", "buy"), buyList);
-	//	}
+			List<String> stringSell = new ArrayList<String>();
+			List<String> stringBuy = new ArrayList<String>();
+			
+			for ( StockItem item : sellList )
+			{
+				stringSell.add(item.toString());
+			}
+			for ( StockItem item : buyList )
+			{
+				stringBuy.add(item.toString());
+			}
+			patternsConfig.set(buildPath(name, "items", "sell"), stringSell);
+			patternsConfig.set(buildPath(name, "items", "buy"), stringBuy);
 		}
 		save();
 	}
