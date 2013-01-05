@@ -2,6 +2,7 @@ package net.dtl.citizens.trader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -266,12 +267,30 @@ public class NpcEcoManager implements Listener {
 		
 	}
 	
+	public HashSet<String> tempOpening = new HashSet<String>();
+	
 	@EventHandler
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
 		
-		Player player = event.getClicker();
+		final Player player = event.getClicker();
+
+		if ( tempOpening.contains(player.getName()) )
+			return;
+		
+		tempOpening.add(player.getName());
+		
+		TimerTask task = new TimerTask()
+		{
+			@Override
+			public void run() {
+				tempOpening.remove(player.getName());
+			}
+		};
+		
+		timer.schedule(task, 1000);
+		
 		//used variables
 		final String playerName = player.getName();
 		NPC npc = event.getNPC();
