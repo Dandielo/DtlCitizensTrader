@@ -48,6 +48,13 @@ public class ServerTrader extends Trader {
 		
 		if ( top ) 
 		{
+
+			if ( event.isShiftClick() )
+			{
+				((Player)event.getWhoClicked()).sendMessage(ChatColor.GOLD + "You can't shift click this, Sorry");
+				event.setCancelled(true);
+				return;
+			}
 			
 			if ( isManagementSlot(slot, 1) ) 
 			{
