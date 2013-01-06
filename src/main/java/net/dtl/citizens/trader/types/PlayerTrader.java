@@ -40,6 +40,13 @@ public class PlayerTrader extends Trader {
 		
 		if ( top ) {
 			
+			if ( event.isShiftClick() )
+			{
+				((Player)event.getWhoClicked()).sendMessage(ChatColor.GOLD + "You can't shift click this, Sorry");
+				event.setCancelled(true);
+				return;
+			}
+			
 			if ( isManagementSlot(slot, 1) ) {
 				
 				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(7)) )
@@ -83,6 +90,7 @@ public class PlayerTrader extends Trader {
 			if ( equalsTraderStatus(TraderStatus.SELL) ) 
 			{
 
+				
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() )
 				{
 					
@@ -662,11 +670,12 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);
+							event.getCursor().setAmount(0);
 							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 						}
 						
 						
-						
+						event.getCurrentItem().setAmount(stockItem.getAmount());
 						stockItem.setSlot(clickedSlot);
 						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 						
@@ -679,6 +688,7 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);	
+							event.getCursor().setAmount(0);
 							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 						}
 						

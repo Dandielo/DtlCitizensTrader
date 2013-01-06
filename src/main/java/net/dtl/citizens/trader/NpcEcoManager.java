@@ -198,7 +198,6 @@ public class NpcEcoManager implements Listener {
 		if ( economyNpc == null )
 			return;
 		
-		
 		if ( economyNpc.locked() )
 		{
 			
@@ -215,6 +214,7 @@ public class NpcEcoManager implements Listener {
 			
 			return;
 		}
+		
 		
 		//remove the interaction
 		playerInteraction.remove(player.getName());
