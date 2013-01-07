@@ -654,56 +654,54 @@ public class PlayerTrader extends Trader {
 						event.setCancelled(true);
 						return;
 					}
-					
-					
-					//has a selected item, can change the position or throw away
-					if ( hasSelectedItem() ) 
-					{
-						//switch the items selected
-						
-						
-						
-						StockItem stockItem = getSelectedItem();
-						
-						
-						
-						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-						{
-							getSelectedItem().setSlot(-2);
-							
-							//manage items by myself, not allowing to touch them
-							event.setCursor(stockItem.getItemStack());
-							event.setCurrentItem(null);
-
-							player.sendMessage( localeManager.getLocaleString("item-changing-slot") );
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
-						}
-						
-
-						//manage items by myself, not allowing to touch them
-						event.setCursor(stockItem.getItemStack());
-						event.setCurrentItem(null);
-						
-						stockItem.setSlot(clickedSlot);
-						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
-						
-						
-					}
-					//no item selected, select an item and change it's slot to -2 (in management)
-					else
-					{
-						
-						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-						{
-							event.setCurrentItem(null);
-							getSelectedItem().setSlot(-2);		
-							player.sendMessage( localeManager.getLocaleString("item-changing-slot") );						
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
-						}
-						
-						
-					}
+					event.setCancelled(true);
+					player.sendMessage( localeManager.getLocaleString("invalid-action") );
 					return;
+					
+//					//has a selected item, can change the position or throw away
+//					if ( hasSelectedItem() ) 
+//					{
+//						//switch the items selected
+//						
+//						StockItem stockItem = getSelectedItem();
+//						
+//						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+//						{
+//							getSelectedItem().setSlot(-2);
+//							
+//							/*TODO fix this bug and allow changing items
+//							ItemStack temp = event.getCursor();
+//							temp.setAmount(0);
+//							event.setCursor(temp.clone());
+//							temp = event.getCurrentItem();
+//							temp.setAmount(stockItem.getAmount());
+//							event.setCurrentItem(temp);
+//							*/
+//							
+//							player.sendMessage( localeManager.getLocaleString("invalid-action") );
+//							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
+//						}
+//						
+//
+//						stockItem.setSlot(clickedSlot);
+//						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
+//						
+//						
+//					}
+//					//no item selected, select an item and change it's slot to -2 (in management)
+//					else
+//					{
+//						
+//						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
+//						{
+//							getSelectedItem().setSlot(-2);		
+//						//	player.sendMessage( localeManager.getLocaleString("item-changing-slot") );						
+//							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
+//						}
+//						
+//						
+//					}
+//					return;
 				}
 				else 
 				if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE) )
