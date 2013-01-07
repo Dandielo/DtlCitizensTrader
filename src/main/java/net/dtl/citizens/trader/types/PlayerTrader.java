@@ -670,12 +670,20 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
 							getSelectedItem().setSlot(-2);
-							event.getCurrentItem().setAmount(0);
+							
+							//manage items by myself, not allowing to touch them
+							event.setCursor(stockItem.getItemStack());
+							event.setCurrentItem(null);
+
+							player.sendMessage( localeManager.getLocaleString("item-changing-slot") );
 							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 						}
 						
+
+						//manage items by myself, not allowing to touch them
+						event.setCursor(stockItem.getItemStack());
+						event.setCurrentItem(null);
 						
-						event.getCursor().setAmount(stockItem.getAmount());
 						stockItem.setSlot(clickedSlot);
 						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 						
@@ -687,8 +695,9 @@ public class PlayerTrader extends Trader {
 						
 						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
 						{
-							getSelectedItem().setSlot(-2);	
-							event.getCurrentItem().setAmount(0);
+							event.setCurrentItem(null);
+							getSelectedItem().setSlot(-2);		
+							player.sendMessage( localeManager.getLocaleString("item-changing-slot") );						
 							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 						}
 						
