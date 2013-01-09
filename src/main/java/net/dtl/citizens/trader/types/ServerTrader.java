@@ -975,7 +975,7 @@ public class ServerTrader extends Trader {
 
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
-			loadDescriptions(player.getInventory());	
+			loadDescriptions(player, player.getInventory());	
 		
 		player.openInventory(getInventory());
 		return true;

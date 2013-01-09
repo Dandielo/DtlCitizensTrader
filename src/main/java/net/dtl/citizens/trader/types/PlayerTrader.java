@@ -1127,7 +1127,7 @@ public class PlayerTrader extends Trader {
 		//DEscriptions for player items
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
-			loadDescriptions(player.getInventory());
+			loadDescriptions(player, player.getInventory());
 
 		player.openInventory(getInventory());
 		return true;
