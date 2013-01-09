@@ -122,6 +122,10 @@ public abstract class Trader implements EconomyNpc {
 		selectedItem = traderStock.getItem(item, status, dura, amount);
 		return this;
 	}
+	public final Trader selectItem(ItemStack item, TraderStatus status, boolean amount) {
+		selectedItem = traderStock.getItem(item, status, StockItem.hasDurability(item), amount);
+		return this;
+	}
 	
 	public final boolean hasSelectedItem() {
 		return selectedItem != null;
@@ -556,7 +560,7 @@ public abstract class Trader implements EconomyNpc {
 	public double getPrice(Player player, String transaction, int slot)
 	{
 		if ( getStock().getPattern() != null )
-			return getStock().getPattern() .getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+			return getStock().getPattern().getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
 		return getSelectedItem().getPrice(slot);
 	}
 	

@@ -380,7 +380,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		return ItemStack.deserialize(map);
 	}
-	
+	 
 	public static List<String> getLore(String type, StockItem item, String stock, TransactionPattern pattern, Player player)
 	{
 		if ( type.equals("glimit") )

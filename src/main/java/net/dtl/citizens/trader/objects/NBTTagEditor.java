@@ -32,7 +32,7 @@ public class NBTTagEditor {
 					
 					Map<String, Object> map = item.serialize();
 					ItemMeta meta = (ItemMeta) map.get("meta");
-					
+
 					if ( meta != null )
 					{
 						List<String> list = null;//new ArrayList<String>(meta.getLore()); 

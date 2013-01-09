@@ -238,6 +238,12 @@ public class StockItem {
 		return price;
 	}*/
 	
+	public static boolean hasDurability(ItemStack item)
+	{
+		int id = item.getTypeId();
+		return ( id > 275 && id < 289 ) || ( id > 291 && id < 296 ) || ( id > 298 && id < 304 ) || ( id > 306 && id < 326 );// ? true : false );
+	}
+	
 	public double getPrice() {
 		if ( stackPrice )
 			return price;

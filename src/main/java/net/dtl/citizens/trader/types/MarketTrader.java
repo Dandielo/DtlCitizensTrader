@@ -238,7 +238,7 @@ public class MarketTrader extends Trader {
 			if ( equalsTraderStatus(TraderStatus.BUY) )
 			{
 				
-				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() ) 
+				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() ) 
 				{
 					
 			//		if ( getClickedSlot() == slot && !getInventoryClicked() )
@@ -296,7 +296,7 @@ public class MarketTrader extends Trader {
 				return;
 			}
 			else 
-			if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true,true).hasSelectedItem() )
+			if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() )
 			{
 			//	if ( getClickedSlot() == slot && !getInventoryClicked() )
 			//	{
