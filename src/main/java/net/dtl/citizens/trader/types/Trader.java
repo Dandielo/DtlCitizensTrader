@@ -565,6 +565,13 @@ public abstract class Trader implements EconomyNpc {
 		return getSelectedItem().getPrice(slot);
 	}
 	
+	public double getPrice(Player player, String transaction, StockItem item, int slot)
+	{
+		if ( getStock().getPattern() != null )
+			return getStock().getPattern().getItemPrice(player, item, transaction, slot, 0.0);
+		return item.getPrice(slot);
+	}
+	
 	public void loadDescriptions(Player player, Inventory inventory)
 	{
 		DecimalFormat f = new DecimalFormat("#.##");
@@ -583,7 +590,7 @@ public abstract class Trader implements EconomyNpc {
 
 					List<String> lore = new ArrayList<String>(); ;
 					for ( String l : itemsConfig.getPriceLore("pbuy") )
-						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", 0))+"").replace("{stack}", f.format(getPrice(player, "buy", 0)*scale)+""));
+						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0))+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale)+""));
 					
 					if ( scale > 0 )
 						NBTTagEditor.addDescription(item, lore);			
