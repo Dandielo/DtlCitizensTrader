@@ -111,6 +111,7 @@ messages:
   item-not-in-stock: ^6Item is not stock
   item-added-selling: ^6Added ^e{amount} ^6item{ending} for sell
   item-buy-limit: '^6Buy limit: ^e{amount}^6/^c{limit}' 
+  invalid-action: '^6You cannot move items in here, Sorry' 
   
 #Commands
   xxx-argument-invalid: ^e{argument} ^6argument is invalid
