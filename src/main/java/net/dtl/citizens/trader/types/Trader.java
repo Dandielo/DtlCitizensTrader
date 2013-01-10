@@ -226,7 +226,7 @@ public abstract class Trader implements EconomyNpc {
 				
 				List<String> lore = new ArrayList<String>(); ;
 				for ( String l : itemsConfig.getPriceLore("pbuy") )
-					lore.add(l.replace("{unit}", f.format(it.getPrice())+"").replace("{stack}", f.format(it.getPrice()*scale)+""));
+					lore.add(l.replace("{unit}", f.format(getPrice(player, "buy"))+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
 				
 				if ( scale > 0 )
 					NBTTagEditor.addDescription(is, lore);	
