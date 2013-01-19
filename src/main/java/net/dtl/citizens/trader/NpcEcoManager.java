@@ -262,9 +262,8 @@ public class NpcEcoManager implements Listener {
 	public void onNPCDespawn(NPCDespawnEvent event)
 	{
 		
-		if ( this.isEconomyNpc.contains(event.getNPC()) )
-			this.isEconomyNpc.remove(event.getNPC());
-		
+		//if ( this.isEconomyNpc.contains(event.getNPC()) )
+		//	this.isEconomyNpc.remove(event.getNPC());
 	}
 	
 	public HashSet<String> tempOpening = new HashSet<String>();
@@ -508,6 +507,5 @@ public class NpcEcoManager implements Listener {
 	{
 		NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
 	}
-	
 
 }
