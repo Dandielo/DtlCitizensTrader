@@ -1,6 +1,7 @@
 package net.dtl.citizens.trader.objects;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -16,6 +17,28 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class NBTTagEditor {
+	
+	public static void main(String[] args)
+	{
+		List<String> lore = new ArrayList<String>();
+		lore.add("^7Unit price: ^6{unit}");
+		lore.add("^7Stack price: ^6{stack}");
+		lore.add("^7Click to sell");
+		
+		List<String> list = new ArrayList();
+		list.add("A lore");
+		list.add("^7Unit price: ^632$");
+		list.add("^7Stack price: ^6324$");
+		list.add("§7Click to sell");
+		list.add("A second lore");
+		
+		
+		
+		for ( String s : list )
+			System.out.println(s);
+		
+		
+	}
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
@@ -39,24 +62,22 @@ public class NBTTagEditor {
 						if ( meta.getLore() != null && meta.getLore().size() > size )
 						{
 							list = new ArrayList<String>(meta.getLore()); 
-							int listSize = list.size();
 							
-							int removed = 0;
-							//TODO fixed?
-							for ( int i = 0 ; i < listSize ; ++i )
+							Iterator<String> it = list.iterator();
+							while(it.hasNext())
 							{
-								//TODO fixed?
-								for ( int j = 0 ; j < size ; ++j )
+								String line = it.next();
+								for ( int j = 0 ; j < lore.size() ; ++j )
 								{
 									String m = lore.get(j);
 									m = m.replace("^", "[\\^|§]");
-									m = m.replace("{stack}", "\\d");
-									m = m.replace("{unit}", "\\d");
-									
-									if ( Pattern.matches(m, list.get(i-removed) ) )
+									m = m.replace("{stack}", "\\S{1,}");
+									m = m.replace("{unit}", "\\S{1,}");
+
+									if ( Pattern.matches(m, line) )
 									{
-										list.remove(i-removed);
-										++removed;
+										it.remove();
+										j = lore.size();
 									}
 								}
 							}
@@ -87,7 +108,7 @@ public class NBTTagEditor {
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		Map<Enchantment, Integer> ench = item.getEnchantments();
 		
-		List<String> list = new ArrayList<String>();
+		List<String> list = ( item.getItemMeta().getLore() != null ? item.getItemMeta().getLore() : new ArrayList<String>() );
 		for ( String s : lore )
 			list.add(s.replace('^', '§'));
 		
