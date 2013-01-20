@@ -9,36 +9,16 @@ import java.util.regex.Pattern;
 
 import net.dtl.citizens.trader.CitizensTrader;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
 public class NBTTagEditor {
-	
-	public static void main(String[] args)
-	{
-		List<String> lore = new ArrayList<String>();
-		lore.add("^7Unit price: ^6{unit}");
-		lore.add("^7Stack price: ^6{stack}");
-		lore.add("^7Click to sell");
-		
-		List<String> list = new ArrayList();
-		list.add("A lore");
-		list.add("^7Unit price: ^632$");
-		list.add("^7Stack price: ^6324$");
-		list.add("§7Click to sell");
-		list.add("A second lore");
-		
-		
-		
-		for ( String s : list )
-			System.out.println(s);
-		
-		
-	}
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
@@ -97,6 +77,8 @@ public class NBTTagEditor {
 					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 					
 					inventory.setItem(s, new ItemStack(item));
+					
+					
 				}
 			}
 			++s;
@@ -115,6 +97,14 @@ public class NBTTagEditor {
 		meta.setLore(list);
 		meta.setDisplayName(item.getItemMeta().getDisplayName());
 		Map<String, Object> map = item.serialize();
+		
+		if ( item.getType().equals(Material.ENCHANTED_BOOK) )
+		{
+			EnchantmentStorageMeta em = (EnchantmentStorageMeta) item.getItemMeta();
+			if ( em.getStoredEnchants() != null )
+				for ( Map.Entry<Enchantment, Integer> e : em.getStoredEnchants().entrySet() )
+					((EnchantmentStorageMeta) meta).addStoredEnchant(e.getKey(), e.getValue(), true);
+		}
 		
 		map.put("meta", meta);
 		

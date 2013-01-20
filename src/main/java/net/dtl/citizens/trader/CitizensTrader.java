@@ -139,6 +139,13 @@ public class CitizensTrader extends JavaPlugin {
         //register the DtlTraderTrait
 		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("trader"));
 		
+		//register CItiTrader "compatibility" trait
+		if ( getConfig().getBoolean("trader.cititrader.convert") )
+		{
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("stockroom"));
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("wallet"));
+		}
+		
 		//register events
 		getServer().getPluginManager().registerEvents(npcEcoManager, this);
 		
