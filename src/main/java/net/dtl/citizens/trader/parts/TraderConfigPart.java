@@ -126,7 +126,7 @@ public class TraderConfigPart {
 				wallet.setFaction( getFaction( data.getString("wallet-type").split(":")[1] ) );
 			}
 			else*/
-				wallet.setType(WalletType.NPC);
+			wallet.setType(WalletType.NPC);
 			
 			wallet.setMoney( data.getDouble("money", 0.0) );
 		}

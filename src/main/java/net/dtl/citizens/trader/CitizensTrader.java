@@ -6,9 +6,11 @@ import net.aufdemrand.denizen.Denizen;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import net.dandielo.citizens.wallets.Wallets;
+import net.dtl.citizens.trader.cititrader.ShopTrait;
+import net.dtl.citizens.trader.cititrader.StockroomTrait;
+import net.dtl.citizens.trader.cititrader.WalletTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
-import net.dtl.citizens.trader.denizen.triggers.TransactionTrigger;
 import net.dtl.citizens.trader.managers.BackendManager;
 import net.dtl.citizens.trader.managers.BankAccountsManager;
 import net.dtl.citizens.trader.managers.LocaleManager;
@@ -142,8 +144,12 @@ public class CitizensTrader extends JavaPlugin {
 		//register CItiTrader "compatibility" trait
 		if ( getConfig().getBoolean("trader.cititrader.convert") )
 		{
-			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("stockroom"));
-			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("wallet"));
+			//if dtlWallets arent loaded
+			if ( !dtlWalletsEnabled() )
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(WalletTrait.class).withName("wallet"));
+
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(ShopTrait.class).withName("shop"));
+			CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(StockroomTrait.class).withName("stockroom"));
 		}
 		
 		//register events
@@ -152,11 +158,6 @@ public class CitizensTrader extends JavaPlugin {
 		//register command executor
 		getCommand("trader").setExecutor(new TraderCommandExecutor());
 		getCommand("banker").setExecutor(new BankerCommandExecutor());
-		
-
-		//loading accounts
-		//TODO loading accounts
-		info("Loaded bank accounts");
 		
 		//Denizen commands
 		//initializeDenizenCommands();
@@ -177,23 +178,7 @@ public class CitizensTrader extends JavaPlugin {
 	
 	//Hooking into clans and towny bank account
 	public void initializeSoftDependPlugins()
-	{
-	/*	clans = (SimpleClans) Bukkit.getPluginManager().getPlugin("SimpleClans");
-		if ( clans != null )
-		{
-			info("Hooked into " + clans.getDescription().getFullName());
-		}
-		towny = (Towny) Bukkit.getPluginManager().getPlugin("Towny");
-		if ( towny != null )
-		{
-			info("Hooked into " + towny.getDescription().getFullName());
-		}
-		factions = (P) Bukkit.getPluginManager().getPlugin("Factions");
-		if ( factions != null )
-		{
-			info("Hooked into " + factions.getDescription().getFullName());
-		}*/
-		
+	{		
 		wallets = (Wallets) Bukkit.getPluginManager().getPlugin("dtlWallets");
 		if ( wallets != null )
 		{
@@ -224,19 +209,6 @@ public class CitizensTrader extends JavaPlugin {
 	{
 		return denizen;
 	}
-	
-/*	public static Towny getTowny() {
-		return towny;
-	}
-	
-	public static P getFactions() {
-		return factions;
-	}
-	
-	public static SimpleClans getSimpleClans()
-	{
-		return clans;
-	}*/
 	
 	//static functions
 	public static PermissionsManager getPermissionsManager()
