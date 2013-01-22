@@ -14,12 +14,13 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.LimitSystem;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
 
 public class MarketTrader extends Trader {
 
-	private TransactionPattern pattern;
+	//private TransactionPattern pattern;
 	
 	public MarketTrader(TraderCharacterTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
@@ -530,6 +531,10 @@ public class MarketTrader extends Trader {
 			return true;
 		}
 
+		NBTTagEditor.removeDescriptions(player.getInventory());
+		if ( !getTraderStatus().isManaging() )
+			loadDescriptions(player, player.getInventory());	
+		
 		player.openInventory(getInventory());
 		return true;
 	}
@@ -540,7 +545,8 @@ public class MarketTrader extends Trader {
 	}
 	public double getPrice(Player player, String transaction, int slot)
 	{
-		return pattern.getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+	//	System.out.print(getSelectedItem() + " " + slot + " " + transaction + " " + player + " " + pattern );
+		return getStock().getPattern().getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
 	}
 
 	@Override
