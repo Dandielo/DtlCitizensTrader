@@ -168,7 +168,7 @@ public class LimitSystem {
 	
 	public String getStackAmount()
 	{
-		return limit.limit < 0 ? "unlimited" : String.valueOf(limit.getAmount());
+		return limit.limit < 0 ? "unlimited" : String.valueOf(limit.getAvaiableAmount());
 	}
 	
 	/* *
@@ -263,6 +263,11 @@ public class LimitSystem {
 		}
 		public void setLimit(int l) {
 			limit = l;
+		}
+		
+		public int getAvaiableAmount()
+		{
+			return limit - amount;
 		}
 		
 		public int getAmount() {
