@@ -17,6 +17,7 @@ import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
+import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class MarketTrader extends Trader {
 
@@ -72,7 +73,7 @@ public class MarketTrader extends Trader {
 					else
 					{
 						switchInventory(TraderStatus.SELL);	
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:sell") );
+					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:sell") );
 					}
 						
 					
@@ -87,7 +88,7 @@ public class MarketTrader extends Trader {
 					else
 					{
 						switchInventory(TraderStatus.BUY);	
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:buy") );
+					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:buy") );
 					}	
 				}
 			} 
@@ -440,13 +441,14 @@ public class MarketTrader extends Trader {
 		//just to be sure nothing will be out of the inventory range (-3 for managing)
 		if ( firstEmpty >= 0 && firstEmpty < getInventory().getSize() - 3 )
 		{
-			//set the item to the inventory
-			if ( getTraderStatus().equals(TraderStatus.SELL) )
-				getInventory().setItem(firstEmpty, itemToAdd.clone());
-			
-	
 			//change the item into the stock type
 			StockItem stockItem = toStockItem(itemToAdd.clone());
+			
+			//set the item to the inventory
+			if ( getTraderStatus().equals(TraderStatus.SELL) )
+			{
+				getInventory().setItem(firstEmpty, TraderStockPart.setLore(itemToAdd.clone(), TraderStockPart.getPriceLore(stockItem, 0, "sell", getStock().getPattern(), player)));
+			}
 			
 			
 			//link the items! :D

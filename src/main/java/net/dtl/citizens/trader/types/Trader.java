@@ -191,6 +191,7 @@ public abstract class Trader implements EconomyNpc {
 					//add amount to an item in the inventory, its done
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
 						item.setAmount( item.getAmount() + amountToAdd );
+						setItemPriceLore(item);
 						return true;
 					} 
 					
@@ -198,6 +199,7 @@ public abstract class Trader implements EconomyNpc {
 					if ( item.getAmount() < selectedItem.getItemStack().getMaxStackSize() ) {
 						amountToAdd = ( item.getAmount() + amountToAdd ) % selectedItem.getItemStack().getMaxStackSize(); 
 						item.setAmount(selectedItem.getItemStack().getMaxStackSize());
+						setItemPriceLore(item);
 					}
 						
 					//nothing left
@@ -214,7 +216,9 @@ public abstract class Trader implements EconomyNpc {
 			//new stack
 			ItemStack is = selectedItem.getItemStack().clone();
 			is.setAmount(amountToAdd);
-			NBTTagEditor.removeDescription(is);
+			
+			setItemPriceLore(is);
+		/*	NBTTagEditor.removeDescription(is);
 			
 			StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
 			
@@ -230,7 +234,7 @@ public abstract class Trader implements EconomyNpc {
 				
 				if ( scale > 0 )
 					NBTTagEditor.addDescription(is, lore);	
-			}
+			}*/
 			
 			//set the item info the inv
 			inventory.setItem(inventory.firstEmpty(), is);
@@ -239,6 +243,27 @@ public abstract class Trader implements EconomyNpc {
 		
 		//could not be added to inventory
 		return false;
+	}
+	
+	
+	public void setItemPriceLore(ItemStack is)
+	{
+		NBTTagEditor.removeDescription(is);
+		StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
+		
+		if ( it != null )
+		{
+			int scale = is.getAmount() / it.getAmount();
+			
+			DecimalFormat f = new DecimalFormat("#.##");
+			
+			List<String> lore = new ArrayList<String>(); ;
+			for ( String l : itemsConfig.getPriceLore("pbuy") )
+				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy"))+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
+			
+			if ( scale > 0 )
+				NBTTagEditor.addDescription(is, lore);	
+		}
 	}
 	
 	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
