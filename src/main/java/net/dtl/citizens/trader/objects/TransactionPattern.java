@@ -217,18 +217,23 @@ public class TransactionPattern {
 		return multiplier.get(transaction);
 	}
 
-	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice) 
+	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice)
+	{
+		return this.getItemPrice(player, item, transation, slot, nprice, true);			
+	}
+	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice, boolean mp) 
 	{
 		double price = nprice;
-		double m = multiplier.get(transation);
 
 		if ( item.isPatternListening() )
 		{
+			double m = 1.0;
+			
 			for ( Map.Entry<String, TransactionPattern> inherit : patternInherits.entrySet() )
 			{
 				if ( inherit.getValue() != null )
 				{
-					price = inherit.getValue().getItemPrice(player, item, transation, slot, price);
+					price = inherit.getValue().getItemPrice(player, item, transation, slot, price, false);
 					m = inherit.getValue().getMultiplier(transation);
 				}
 			}
@@ -244,11 +249,14 @@ public class TransactionPattern {
 			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
-					price = tier.getValue().getItemPrice(player, item, transation, slot, price);
+					price = tier.getValue().getItemPrice(player, item, transation, slot, price, false);
 					m = tier.getValue().getMultiplier(transation);
 				}
 			
-			if ( !tier )
+			if ( multiplier.get(transation) != 1.0 )
+				m = multiplier.get(transation);
+			
+			if ( !tier && mp )
 				price *= m;
 		}
 		else
