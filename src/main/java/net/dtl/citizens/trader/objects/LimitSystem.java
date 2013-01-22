@@ -166,6 +166,11 @@ public class LimitSystem {
 		return playerLimit.getAmount() + "/" + playerLimit.getLimit() + "/" + ( playerLimit.getTimeout() / 1000 );// + ( playerLimit.hasLimit() ? "pl" : "" );
 	}
 	
+	public String getStackAmount()
+	{
+		return limit.limit < 0 ? "unlimited" : String.valueOf(limit.getAmount());
+	}
+	
 	/* *
 	 * global limit
 	 */

@@ -404,7 +404,7 @@ public class TraderStockPart implements InventoryHolder {
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : itemsConfig.getPriceLore(stock) )
-			lore.add(line.replace("{price}", price).replace("{amount}", String.valueOf(item.getLimitSystem().getGlobalAmount())));
+			lore.add(line.replace("{price}", price).replace("{amount}", item.getLimitSystem().getStackAmount()));
 		
 		return lore;
 	}
