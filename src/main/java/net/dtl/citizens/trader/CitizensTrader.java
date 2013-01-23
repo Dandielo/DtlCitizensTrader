@@ -11,6 +11,7 @@ import net.dtl.citizens.trader.cititrader.StockroomTrait;
 import net.dtl.citizens.trader.cititrader.WalletTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
+import net.dtl.citizens.trader.denizen.TraderTags;
 import net.dtl.citizens.trader.managers.BackendManager;
 import net.dtl.citizens.trader.managers.BankAccountsManager;
 import net.dtl.citizens.trader.managers.LocaleManager;
@@ -160,8 +161,7 @@ public class CitizensTrader extends JavaPlugin {
 		getCommand("banker").setExecutor(new BankerCommandExecutor());
 		
 		//Denizen commands
-		//initializeDenizenCommands();
-		//initializeDenizenTriggers();
+		initializeDenizens();
 		
 		//plugin enabled
 		info("v" + pdfFile.getVersion() + " enabled.");
@@ -186,22 +186,17 @@ public class CitizensTrader extends JavaPlugin {
 		}
 	}
 	
-	public void initializeDenizenCommands()
+	
+	public void initializeDenizens()
 	{
 		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
 		if ( denizen != null )
 		{
 			AbstractDenizenCommand.initializeDenizenCommands(denizen);
-		}
-	}
-	
-	public void initializeDenizenTriggers()
-	{
-		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		if ( denizen != null )
-		{
 			info("Registering Denizen triggers... ");
 			AbstractDenizenTrigger.registerTriggers();
+			info("Registering replacement tags... ");
+			TraderTags.initializeDenizenTags(denizen);
 		}
 	}
 	
