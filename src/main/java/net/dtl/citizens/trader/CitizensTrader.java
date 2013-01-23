@@ -190,13 +190,16 @@ public class CitizensTrader extends JavaPlugin {
 	public void initializeDenizens()
 	{
 		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		if ( denizen != null && Denizen.versionTag.startsWith("0.8") )
+		if ( denizen != null )
 		{
-			AbstractDenizenCommand.initializeDenizenCommands(denizen);
-			info("Registering Denizen triggers... ");
-			AbstractDenizenTrigger.registerTriggers();
-			info("Registering replacement tags... ");
-			TraderTags.initializeDenizenTags(denizen);
+			if ( denizen.getDescription().getVersion().startsWith("0.8") )
+			{
+				AbstractDenizenCommand.initializeDenizenCommands(denizen);
+				info("Registering Denizen triggers... ");
+				AbstractDenizenTrigger.registerTriggers();
+				info("Registering replacement tags... ");
+				TraderTags.initializeDenizenTags(denizen);
+			}
 		}
 	}
 	
