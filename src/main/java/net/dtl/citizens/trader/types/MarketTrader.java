@@ -130,7 +130,7 @@ public class MarketTrader extends Trader {
 						}
 						else
 						{
-						//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
+							player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 
 							addSelectedToInventory(0);
@@ -192,7 +192,7 @@ public class MarketTrader extends Trader {
 					else
 					{
 						
-					//	player.sendMessage(locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
+						player.sendMessage(localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 						
 						addSelectedToInventory(slot);
 
