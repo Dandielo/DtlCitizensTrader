@@ -190,7 +190,7 @@ public class CitizensTrader extends JavaPlugin {
 	public void initializeDenizens()
 	{
 		denizen = (Denizen) Bukkit.getPluginManager().getPlugin("Denizen");
-		if ( denizen != null )
+		if ( denizen != null && Denizen.versionTag.startsWith("0.8") )
 		{
 			AbstractDenizenCommand.initializeDenizenCommands(denizen);
 			info("Registering Denizen triggers... ");
