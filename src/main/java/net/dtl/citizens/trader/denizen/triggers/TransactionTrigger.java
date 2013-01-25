@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import net.aufdemrand.denizen.npc.DenizenNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
+import net.aufdemrand.denizen.scripts.ScriptHelper;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
@@ -54,7 +55,7 @@ public class TransactionTrigger extends AbstractDenizenTrigger implements Listen
         String theStep = sH.getCurrentStep(player, script);
 
         // Gets entries from the script
-        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + sH.scriptKey);
+        List<String> theScript = sH.getScriptContents(sH.getTriggerScriptPath(script, theStep, name) + ScriptHelper.scriptKey);
 
         theScript.add(0, "FLAG 'T_RESULT:" + event.getResult().stringResult() + "'");
         theScript.add(0, "FLAG 'T_PRICE:" + event.getEndPrice() + "'");
