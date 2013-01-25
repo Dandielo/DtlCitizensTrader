@@ -99,7 +99,7 @@ public class ServerTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() )
 				{
 					
-					if ( getSelectedItem().hasMultipleAmouts() 
+					if ( getSelectedItem().hasMultipleAmounts() 
 							&& permissionsManager.has(player, "dtl.trader.options.sell-amounts") )
 					{
 						switchInventory(getSelectedItem());
@@ -512,7 +512,7 @@ public class ServerTrader extends Trader {
 				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(7)) ) {
 
 					//update amounts and status
-					saveManagedAmouts();
+					saveManagedAmounts();
 					switchInventory(TraderStatus.MANAGE_SELL);
 					
 
@@ -776,7 +776,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 
 								getSelectedItem().setAsPatternItem(false);
-								getSelectedItem().setPetternListening(false);
+								getSelectedItem().setPatternListening(false);
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), pattern, player));

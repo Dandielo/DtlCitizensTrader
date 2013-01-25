@@ -73,8 +73,7 @@ public class ItemsConfig {
 		NBTTagEditor.setName(itemStack, name.replace('^', '§'));
 		if ( lore != null )
 			NBTTagEditor.addDescription(itemStack, lore);
-		
-		
+
 		return itemStack;
 	}
 	
