@@ -1,7 +1,5 @@
 package net.dtl.citizens.trader.denizen;
 
-import org.bukkit.ChatColor;
-
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.dtl.citizens.trader.CitizensTrader;

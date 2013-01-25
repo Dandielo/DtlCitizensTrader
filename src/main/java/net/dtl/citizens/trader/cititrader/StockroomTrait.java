@@ -9,7 +9,6 @@ import net.citizensnpcs.api.util.ItemStorage;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.parts.TraderStockPart;
-import net.dtl.citizens.trader.types.Trader;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 public class StockroomTrait extends Trait {

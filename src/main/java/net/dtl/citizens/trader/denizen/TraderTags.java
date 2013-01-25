@@ -1,7 +1,6 @@
 package net.dtl.citizens.trader.denizen;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -15,7 +14,6 @@ import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.denizen.commands.TransactionCommand;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.types.ServerTrader;

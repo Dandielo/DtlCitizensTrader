@@ -16,7 +16,6 @@ import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
-import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class MarketTrader extends Trader {
