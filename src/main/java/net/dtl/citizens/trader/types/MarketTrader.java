@@ -99,7 +99,7 @@ public class MarketTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() )
 				{
 					
-					if ( getSelectedItem().hasMultipleAmouts() 
+					if ( getSelectedItem().hasMultipleAmounts() 
 							&& permissionsManager.has(player, "dtl.trader.options.sell-amounts"))
 					{
 
@@ -456,7 +456,7 @@ public class MarketTrader extends Trader {
 			
 			//disable pattern listening
 			stockItem.setAsPatternItem(false);
-			stockItem.setPetternListening(false);
+			stockItem.setPatternListening(false);
 			
 			
 			//set the stock items slot
@@ -472,7 +472,7 @@ public class MarketTrader extends Trader {
 			//set the new limit (how many items can players buy)
 			limitSystem.setGlobalLimit(itemToAdd.getAmount()*scale);
 			
-			stockItem.setPetternListening(true);
+			stockItem.setPatternListening(true);
 			//pattern.getItemPrice(stockItem, "sell");
 			//put it into the stock list
 			getStock().addItem("sell", stockItem);

@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
 public class StockItem {	
 	protected ItemStack item = null;
-	protected List<Integer> amouts = new ArrayList<Integer>();
+	protected List<Integer> amounts = new ArrayList<Integer>();
 	protected boolean stackPrice = false;
 	protected double price = 0;
 	protected int slot = -1;
@@ -43,10 +43,10 @@ public class StockItem {
 				if ( value.contains(":") ) {
 					String[] itemData = value.split(":");
 					item = new ItemStack(Integer.parseInt(itemData[0]), 1, Byte.parseByte(itemData[1]));
-					amouts.add(1);
+					amounts.add(1);
 				} else {
 					item = new ItemStack(Integer.parseInt(value),1);
-					amouts.add(1);
+					amounts.add(1);
 				}
 			} else {
 				if ( value.length() > 2 ) {
@@ -74,11 +74,11 @@ public class StockItem {
 						item.setDurability(Short.parseShort(value.substring(2)));
 					}
 					if ( value.startsWith("a:") && !value.contains("/") && !value.contains(";") ) {
-						amouts.clear();
+						amounts.clear();
 						for ( String amout : value.substring(2).split(",") )
-							amouts.add((Integer.parseInt(amout)==0?1:Integer.parseInt(amout)));
-						if ( amouts.size() > 0 )
-							item.setAmount(amouts.get(0));
+							amounts.add((Integer.parseInt(amout)==0?1:Integer.parseInt(amout)));
+						if ( amounts.size() > 0 )
+							item.setAmount(amounts.get(0));
 					}
 					if ( value.startsWith("gl:") && !value.contains(";") ) {
 						String[] limitData = value.substring(3).split("/");
@@ -176,8 +176,8 @@ public class StockItem {
 		
 		//saving the item amounts
 		itemString += " a:";
-		for ( int i = 0 ; i < amouts.size() ; ++i )
-			itemString += amouts.get(i) + ( i + 1 < amouts.size() ? "," : "" );
+		for ( int i = 0 ; i < amounts.size() ; ++i )
+			itemString += amounts.get(i) + ( i + 1 < amounts.size() ? "," : "" );
 		
 		//saving the item global limits
 		if ( limit.hasLimit() ) 
@@ -253,7 +253,7 @@ public class StockItem {
 	
 	/*public double getBuyPrice() {
 		if ( stackPrice )
-			return price/amouts.get(0);
+			return price/amounts.get(0);
 		return price;
 	}*/
 	
@@ -266,7 +266,7 @@ public class StockItem {
 	public double getPrice() {
 		if ( stackPrice )
 			return price;
-		return price*amouts.get(0);
+		return price*amounts.get(0);
 	}
 	public double getRawPrice() {
 		return price;
@@ -278,14 +278,14 @@ public class StockItem {
 	public double getPrice(int i) {
 		if ( stackPrice )
 			return price;
-		if ( i < amouts.size() ) 
-			return price*amouts.get(i);
+		if ( i < amounts.size() ) 
+			return price*amounts.get(i);
 		return 0;
 	}
-	public boolean hasMultipleAmouts() {
+	public boolean hasMultipleAmounts() {
 		if ( stackPrice )
 			return false;
-		return ( amouts.size() > 1 ? true : false );
+		return ( amounts.size() > 1 ? true : false );
 	}
 	
 	public int getSlot() {
@@ -295,22 +295,22 @@ public class StockItem {
 		slot = s;
 	}
 	public void resetAmounts(int a) {
-		amouts.clear();
+		amounts.clear();
 		item.setAmount(a);
-		amouts.add(a);
+		amounts.add(a);
 	}
 	public void addAmount(int a) {
 		patternItem = false;
-		amouts.add(a);
+		amounts.add(a);
 	}
 	public int getAmount() {
-		return amouts.get(0);
+		return amounts.get(0);
 	}
 	public int getAmount(int slot) {
-		return amouts.get(slot);
+		return amounts.get(slot);
 	}
 	public List<Integer> getAmounts() {
-		return amouts;
+		return amounts;
 	}
 	
 	public boolean isPatternItem()
@@ -326,7 +326,7 @@ public class StockItem {
 	{
 		return listenPattern;
 	}
-	public void setPetternListening(boolean listen)
+	public void setPatternListening(boolean listen)
 	{
 		listenPattern = listen;
 	}

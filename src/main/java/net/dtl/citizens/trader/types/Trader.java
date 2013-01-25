@@ -381,8 +381,8 @@ public abstract class Trader implements EconomyNpc {
 	}
 
 	//saving amounts
-	public final void saveManagedAmouts() {
-		TraderStockPart.saveNewAmouts(inventory, selectedItem);
+	public final void saveManagedAmounts() {
+		TraderStockPart.saveNewAmounts(inventory, selectedItem);
 	}
 	
 	//checking mode by wool

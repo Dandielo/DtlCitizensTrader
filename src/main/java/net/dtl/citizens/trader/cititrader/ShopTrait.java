@@ -42,7 +42,7 @@ public class ShopTrait extends Trait {
             StockItem item = Trader.toStockItem(k);
             if ( item != null )
             {
-            	item.setPetternListening(false);
+            	item.setPatternListening(false);
             	item.setRawPrice(price);
             	if ( stacksize > 1 )
             	{
@@ -72,7 +72,7 @@ public class ShopTrait extends Trait {
             StockItem item = Trader.toStockItem(k);
             if ( item != null )
             {
-            	item.setPetternListening(false);
+            	item.setPatternListening(false);
             	item.setRawPrice(price);
             	if ( stacksize > 1 )
             	{

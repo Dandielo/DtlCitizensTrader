@@ -498,7 +498,7 @@ public class TraderStockPart implements InventoryHolder {
 		return ( stock.equals("sell") ? "buy" : "sell" );
 	}
 
-	public static void saveNewAmouts(Inventory inventory, StockItem si) {
+	public static void saveNewAmounts(Inventory inventory, StockItem si) {
 		si.getAmounts().clear();
 		for ( ItemStack is : inventory.getContents() ) 
 			if ( is != null ) 
@@ -512,12 +512,12 @@ public class TraderStockPart implements InventoryHolder {
 		for ( StockItem item : stock.get("sell") )
 		{
 			item.setRawPrice(0.0);
-			item.setPetternListening(true);
+			item.setPatternListening(true);
 		}
 		for ( StockItem item : stock.get("buy") )
 		{
 			item.setRawPrice(0.0);
-			item.setPetternListening(true);
+			item.setPatternListening(true);
 		}
 	}
 }

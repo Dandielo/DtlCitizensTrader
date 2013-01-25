@@ -202,9 +202,6 @@ public class LocaleManager {
 		return this.getLocaleString(messageType, keyword1, keyword2).replaceFirst("\\{"+keyword3.split(":")[0]+"\\}", ( keyword3.split(":")[1].startsWith("{") ? keyword3.split(":")[1] : keywordsCache.get(keyword3) ) );
 	}
 	
-	
-	
-	
 	public void save() {
 		try 
 		{
@@ -215,5 +212,4 @@ public class LocaleManager {
 			CitizensTrader.severe("Error during saving permissions file: " + e.getMessage());
 		}
 	}
-
 }
