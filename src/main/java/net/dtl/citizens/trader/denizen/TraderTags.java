@@ -86,6 +86,8 @@ public class TraderTags implements Listener {
 				break;
 			case FAIL_SPACE:
 				transactionFailed.put(p.getName(), "inventory");
+				break;
+			default: break;
 			}
 			denizen.action("Transaction Failure", e.getParticipant());
 		}
