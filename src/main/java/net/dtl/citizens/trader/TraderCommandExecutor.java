@@ -599,7 +599,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				account = trader.getWallet().getBank();
 			
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "�6:�e" + account )) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
 			
 		}
 		//change wallet
@@ -703,7 +703,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			trader.getWallet().setType(wallet);
 
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"�6:�e"+bankAccount)) );
+			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"§6:§e"+bankAccount)) );
 		}
 		
 		
