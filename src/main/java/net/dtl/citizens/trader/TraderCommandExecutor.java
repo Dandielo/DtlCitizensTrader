@@ -377,11 +377,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		return true;
 	}
 	
-	private boolean resetPrices(Player player, Trader trader)
-	{
-		trader.getStock().resetPrices();
-		return true;
-	}
+//	private boolean resetPrices(Player player, Trader trader)
+//	{
+//		trader.getStock().resetPrices();
+//		return true;
+//	}
 	
 	private boolean pattern(Player player, Trader trader, String[] args) {
 		
