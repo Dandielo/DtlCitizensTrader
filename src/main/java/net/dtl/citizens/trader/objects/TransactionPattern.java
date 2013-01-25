@@ -207,9 +207,9 @@ public class TransactionPattern {
 		patternItems.put("buy", buy);
 	}
 	
-	public List<StockItem> getStockItems(String transation)
+	public List<StockItem> getStockItems(String transaction)
 	{
-		return patternItems.get(transation);
+		return patternItems.get(transaction);
 	}
 	
 	public double getMultiplier(String transaction)
@@ -217,11 +217,11 @@ public class TransactionPattern {
 		return multiplier.get(transaction);
 	}
 
-	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice)
+	public double getItemPrice(Player player, StockItem item, String transaction, int slot, double nprice)
 	{
-		return this.getItemPrice(player, item, transation, slot, nprice, true);			
+		return this.getItemPrice(player, item, transaction, slot, nprice, true);			
 	}
-	public double getItemPrice(Player player, StockItem item, String transation, int slot, double nprice, boolean mp) 
+	public double getItemPrice(Player player, StockItem item, String transaction, int slot, double nprice, boolean mp) 
 	{
 		double price = nprice;
 
@@ -233,28 +233,28 @@ public class TransactionPattern {
 			{
 				if ( inherit.getValue() != null )
 				{
-					price = inherit.getValue().getItemPrice(player, item, transation, slot, price, false);
-					m = inherit.getValue().getMultiplier(transation);
+					price = inherit.getValue().getItemPrice(player, item, transaction, slot, price, false);
+					m = inherit.getValue().getMultiplier(transaction);
 				}
 			}
 			
-			if ( patternPrices.containsKey(transation) )
-				if ( patternPrices.get(transation).containsKey(item.getIdAndData()) )
-					price = patternPrices.get(transation).get(item.getIdAndData());
+			if ( patternPrices.containsKey(transaction) )
+				if ( patternPrices.get(transaction).containsKey(item.getIdAndData()) )
+					price = patternPrices.get(transaction).get(item.getIdAndData());
 				else
-					for ( Map.Entry<String, Double> entry : patternPrices.get(transation).entrySet() )
+					for ( Map.Entry<String, Double> entry : patternPrices.get(transaction).entrySet() )
 						if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
 							price = entry.getValue();
 
 			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
-					price = tier.getValue().getItemPrice(player, item, transation, slot, price, false);
-					m = tier.getValue().getMultiplier(transation);
+					price = tier.getValue().getItemPrice(player, item, transaction, slot, price, false);
+					m = tier.getValue().getMultiplier(transaction);
 				}
 			
-			if ( multiplier.get(transation) != 1.0 )
-				m = multiplier.get(transation);
+			if ( multiplier.get(transaction) != 1.0 )
+				m = multiplier.get(transaction);
 			
 			if ( !tier && mp )
 				price *= m;

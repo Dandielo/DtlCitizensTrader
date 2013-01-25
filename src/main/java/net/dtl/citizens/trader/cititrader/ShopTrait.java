@@ -10,7 +10,6 @@ import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 import net.dtl.citizens.trader.types.Trader;
-import net.dtl.citizens.trader.types.Trader.TraderStatus;
 
 public class ShopTrait extends Trait {
 	private TraderCharacterTrait trait;
@@ -43,7 +42,7 @@ public class ShopTrait extends Trait {
             StockItem item = Trader.toStockItem(k);
             if ( item != null )
             {
-            	item.setPetternListening(false);
+            	item.setPatternListening(false);
             	item.setRawPrice(price);
             	if ( stacksize > 1 )
             	{
@@ -73,7 +72,7 @@ public class ShopTrait extends Trait {
             StockItem item = Trader.toStockItem(k);
             if ( item != null )
             {
-            	item.setPetternListening(false);
+            	item.setPatternListening(false);
             	item.setRawPrice(price);
             	if ( stacksize > 1 )
             	{

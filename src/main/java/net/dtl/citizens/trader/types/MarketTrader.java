@@ -16,7 +16,6 @@ import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
-import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class MarketTrader extends Trader {
@@ -100,7 +99,7 @@ public class MarketTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() )
 				{
 					
-					if ( getSelectedItem().hasMultipleAmouts() 
+					if ( getSelectedItem().hasMultipleAmounts() 
 							&& permissionsManager.has(player, "dtl.trader.options.sell-amounts"))
 					{
 
@@ -457,7 +456,7 @@ public class MarketTrader extends Trader {
 			
 			//disable pattern listening
 			stockItem.setAsPatternItem(false);
-			stockItem.setPetternListening(false);
+			stockItem.setPatternListening(false);
 			
 			
 			//set the stock items slot
@@ -473,7 +472,7 @@ public class MarketTrader extends Trader {
 			//set the new limit (how many items can players buy)
 			limitSystem.setGlobalLimit(itemToAdd.getAmount()*scale);
 			
-			stockItem.setPetternListening(true);
+			stockItem.setPatternListening(true);
 			//pattern.getItemPrice(stockItem, "sell");
 			//put it into the stock list
 			getStock().addItem("sell", stockItem);

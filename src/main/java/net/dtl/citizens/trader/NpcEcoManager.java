@@ -205,7 +205,7 @@ public class NpcEcoManager implements Listener {
 				if ( ((Trader)economyNpc).getTraderStatus().equals(TraderStatus.MANAGE_SELL_AMOUNT) )
 				{
 					//cast to trader type, (it's save)
-					((Trader)economyNpc).saveManagedAmouts();
+					((Trader)economyNpc).saveManagedAmounts();
 					((Trader)economyNpc).switchInventory(TraderStatus.MANAGE_SELL);
 					
 					//reset the traders status

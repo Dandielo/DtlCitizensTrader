@@ -94,7 +94,7 @@ public class PlayerTrader extends Trader {
 				if ( selectItem(slot, TraderStatus.SELL).hasSelectedItem() )
 				{
 					
-					if ( getSelectedItem().hasMultipleAmouts() 
+					if ( getSelectedItem().hasMultipleAmounts() 
 							&& permissionsManager.has(player, "dtl.trader.options.sell-amounts"))
 					{
 
@@ -478,7 +478,7 @@ public class PlayerTrader extends Trader {
 				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(7)) )	//unsupported wool data value
 				{
 					
-					this.saveManagedAmouts();
+					this.saveManagedAmounts();
 					switchInventory(TraderStatus.MANAGE_SELL);
 					//this.switchInventory(TraderStatus.MANAGE_SELL);
 					
@@ -959,7 +959,7 @@ public class PlayerTrader extends Trader {
 					
 					//pattern disabled always
 					stockItem.setAsPatternItem(false);
-					stockItem.setPetternListening(false);
+					stockItem.setPatternListening(false);
 					
 					
 					//set the stock items slot
