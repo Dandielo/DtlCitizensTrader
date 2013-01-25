@@ -206,8 +206,7 @@ public class TraderStockPart implements InventoryHolder {
 				return item;
 		return null;
 	}
-	public StockItem getItem(ItemStack itemStack, TraderStatus status, boolean dura,
-			boolean amount) {
+	public StockItem getItem(ItemStack itemStack, TraderStatus status, boolean dura, boolean amount) {
 		boolean equal = false;
 
 		for ( StockItem item : stock.get(status.toString()) ) 
@@ -215,7 +214,8 @@ public class TraderStockPart implements InventoryHolder {
 			equal = false;
 			if ( itemStack.getType().equals(item.getItemStack().getType()) ) 
 			{
-					equal = true;
+				equal = true;
+				
 				if ( dura ) 
 					equal = itemStack.getDurability() <= item.getItemStack().getDurability();
 				else
@@ -223,7 +223,54 @@ public class TraderStockPart implements InventoryHolder {
 				
 				if ( amount && equal )
 					equal =  itemStack.getAmount() >= item.getItemStack().getAmount();
-					
+
+				if ( equal ) {
+					// StockItem has 2 boolean properties that are set to true if its entry in an Items Pattern has the "ce" or "cel" flags  
+					boolean checkEnchant = item.isCheckingEnchantments();
+					boolean checkLevel = item.isCheckingEnchantmentLevels();
+
+					if ( checkEnchant || checkLevel ) {
+						Map<Enchantment,Integer> itemStackEnchantments = null;
+						Map<Enchantment,Integer> stockItemEnchantments = null;
+						
+						// special handling for Enchanted Books and stored enchantments
+						if ( itemStack.getType().equals(Material.ENCHANTED_BOOK) ) {
+							EnchantmentStorageMeta itemStackStorageMeta = (EnchantmentStorageMeta)itemStack.getItemMeta();
+							if (itemStackStorageMeta != null) {
+								itemStackEnchantments = itemStackStorageMeta.getStoredEnchants();
+							}
+
+							EnchantmentStorageMeta stockItemStorageMeta = (EnchantmentStorageMeta)item.getItemStack().getItemMeta();
+							if (stockItemStorageMeta != null) {
+								itemStackEnchantments = stockItemStorageMeta.getStoredEnchants();
+							}
+						}
+						else { // regular enchantments (not stored enchantments)
+							itemStackEnchantments = itemStack.getEnchantments();
+							stockItemEnchantments = item.getItemStack().getEnchantments();
+						}
+						
+						if (itemStackEnchantments == null || itemStackEnchantments.isEmpty()) {
+							equal = (stockItemEnchantments == null || stockItemEnchantments.isEmpty());
+						}
+						else {
+							equal = ( stockItemEnchantments != null 
+									&& !stockItemEnchantments.isEmpty() 
+									&& itemStackEnchantments.keySet().equals(stockItemEnchantments.keySet()) );
+						}
+
+						// equal is still true if both itemStacks had the same enchanments
+						if ( equal && checkLevel ) {
+							for ( Map.Entry<Enchantment,Integer> ench : itemStackEnchantments.entrySet() ) {
+								if ( ench.getValue() != stockItemEnchantments.get(ench.getKey()) ) {
+									equal = false;
+									break;
+								}
+							}
+						}
+					}
+				}
+
 				if ( equal )
 					return item;
 			}

@@ -27,6 +27,9 @@ public class StockItem {
 	protected boolean listenPattern = true;
 	protected boolean patternItem = false;
 	
+	protected boolean checkEnchantments = false;
+	protected boolean checkEnchantmentLevels = false;
+	
 	//just for override compatibility
 	protected StockItem()
 	{
@@ -110,7 +113,16 @@ public class StockItem {
 					if ( value.startsWith("id:") && !value.contains("/") && !value.contains(";") ) {
 					//	item.setDurability(Short.parseShort(value.substring(3)));
 					}
-				} 
+					
+					//use enchantments for comparison
+					if ( value.equals("ce") ) {
+						checkEnchantments = true;
+					}
+					//use enchantments and their levels for comparison
+					else if ( value.equals("cel") ) {
+						checkEnchantmentLevels = true;
+					}
+				}
 				else
 				{
 					//stack price management
@@ -127,13 +139,13 @@ public class StockItem {
 	}
 	
 	public ItemStack getItemStack() {
-		item.setAmount(amouts.get(0));
+		item.setAmount(amounts.get(0));
 		return item;
 	}
 	public ItemStack getItemStack(int slot) {
-		item.setAmount(amouts.get(slot));
+		item.setAmount(amounts.get(slot));
 		if ( stackPrice )
-			item.setAmount(amouts.get(0));
+			item.setAmount(amounts.get(0));
 		return item;
 	}
 	
@@ -210,6 +222,15 @@ public class StockItem {
 			itemString += " sp";
 		if ( listenPattern )
 			itemString += " pat";
+
+		//use enchantments for comparison
+		if ( checkEnchantments ) {
+			itemString += " ce";
+		}
+		//use enchantments and their levels for comparison
+		else if ( checkEnchantmentLevels ) {
+			itemString += " cel";
+		}
 		
 		return itemString;
 	}
@@ -312,6 +333,16 @@ public class StockItem {
 		listenPattern = listen;
 	}
 	
+	public boolean isCheckingEnchantments()
+	{
+		return checkEnchantments;
+	}
+	
+	public boolean isCheckingEnchantmentLevels()
+	{
+		return checkEnchantmentLevels;
+	}
+	
 	public LimitSystem getLimitSystem() {
 		return limit;
 	}
@@ -356,9 +387,22 @@ public class StockItem {
 	{
 		StockItem item = (StockItem) obj;
 		if ( //item.getSlot() == slot 
-				 item.getItemStack().getTypeId() == this.item.getTypeId()
-				&& item.getItemStack().getData().getData() == this.item.getData().getData() )
+			 item.getItemStack().getTypeId() == this.item.getTypeId()
+			 && item.getItemStack().getData().getData() == this.item.getData().getData() ) {
+			
+			if ( checkEnchantments || checkEnchantmentLevels ) {
+				if ( !item.getItemStack().getEnchantments().keySet().equals(this.item.getEnchantments().keySet()) )
+					return false;
+			}
+		
+			if ( checkEnchantmentLevels ) {
+				if ( !item.getItemStack().getEnchantments().values().equals(this.item.getEnchantments().values()) )
+					return false;
+			}
+		
 			return true;
+		}
+		
 		return false;
 	}
 

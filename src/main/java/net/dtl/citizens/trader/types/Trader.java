@@ -105,6 +105,54 @@ public abstract class Trader implements EconomyNpc {
 		
 			if ( amount && equal )
 				equal = itemToCompare.getAmount() == selectedItem.getItemStack().getAmount();
+
+			if ( equal ) {
+				// StockItem has 2 boolean properties that are set to true if its entry in an Items Pattern has the "ce" or "cel" flags  
+				boolean checkEnchant = selectedItem.isCheckingEnchantments();
+				boolean checkLevel = selectedItem.isCheckingEnchantmentLevels();
+
+				if ( checkEnchant || checkLevel ) {
+					Map<Enchantment,Integer> itemStackEnchantments = null;
+					Map<Enchantment,Integer> stockItemEnchantments = null;
+					
+					// special handling for Enchanted Books and stored enchantments
+					if ( itemToCompare.getType().equals(Material.ENCHANTED_BOOK) ) {
+						EnchantmentStorageMeta itemStackStorageMeta = (EnchantmentStorageMeta)itemToCompare.getItemMeta();
+						if (itemStackStorageMeta != null) {
+							itemStackEnchantments = itemStackStorageMeta.getStoredEnchants();
+						}
+
+						EnchantmentStorageMeta stockItemStorageMeta = (EnchantmentStorageMeta)selectedItem.getItemStack().getItemMeta();
+						if (stockItemStorageMeta != null) {
+							itemStackEnchantments = stockItemStorageMeta.getStoredEnchants();
+						}
+					}
+					else { // regular enchantments (not stored enchantments)
+						itemStackEnchantments = itemToCompare.getEnchantments();
+						stockItemEnchantments = selectedItem.getItemStack().getEnchantments();
+					}
+					
+					if (itemStackEnchantments == null || itemStackEnchantments.isEmpty()) {
+						equal = (stockItemEnchantments == null || stockItemEnchantments.isEmpty());
+					}
+					else {
+						equal = ( stockItemEnchantments != null 
+								&& !stockItemEnchantments.isEmpty() 
+								&& itemStackEnchantments.keySet().equals(stockItemEnchantments.keySet()) );
+					}
+
+					// equal is still true if both itemStacks had the same enchanments
+					if ( equal && checkLevel ) {
+						for ( Map.Entry<Enchantment,Integer> ench : itemStackEnchantments.entrySet() ) {
+							if ( ench.getValue() != stockItemEnchantments.get(ench.getKey()) ) {
+								equal = false;
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			return equal;
 		}
 		return false;
