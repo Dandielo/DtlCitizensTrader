@@ -242,7 +242,7 @@ public class TraderStockPart implements InventoryHolder {
 
 							EnchantmentStorageMeta stockItemStorageMeta = (EnchantmentStorageMeta)item.getItemStack().getItemMeta();
 							if (stockItemStorageMeta != null) {
-								itemStackEnchantments = stockItemStorageMeta.getStoredEnchants();
+								stockItemEnchantments = stockItemStorageMeta.getStoredEnchants();
 							}
 						}
 						else { // regular enchantments (not stored enchantments)
