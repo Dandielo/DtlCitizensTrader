@@ -41,19 +41,19 @@ public class ItemsConfig {
 		settingsWand = convertStringData(config.getString("settings","340"), "", null);
 
 		buttons = new HashMap<String, ItemStack>();
-		
+	/*	
 		pricesLore = new HashMap<String,List<String>>();
 		
 		pricesLore.put("pbuy", traderSection.getConfigurationSection("prices-lore").getStringList("player-inventory"));
 		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-sell"));
 		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-buy"));
+		*/
 		
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
-		//	System.out.print(key+" " +traderSection.getString(buildPath("inventory-navigation", key, "item")));
-			buttons.put(key, convertStringData( traderSection.getString(buildPath("inventory-navigation", key, "item")),
-					traderSection.getString(buildPath("inventory-navigation", key, "name"), "") ,
-					traderSection.getStringList(buildPath("inventory-navigation", key, "lore")) ));
+			buttons.put(key, convertStringData(traderSection.getString(buildPath("inventory-navigation", key, "item")),
+					CitizensTrader.getLocaleManager().name(key),
+					CitizensTrader.getLocaleManager().lore(key)) );
 		}
 		
 		exchangeItem = new BankItem(config.getString("bank.money-bank.exchange-item", "388")).getItemStack();
@@ -63,10 +63,10 @@ public class ItemsConfig {
 		return this.disablePlugin;
 	}
 	
-	public List<String> getPriceLore(String t)
-	{
-		return pricesLore.get(t);
-	}
+	//public List<String> getPriceLore(String t)
+	//{
+	//	return pricesLore.get(t);
+	//}
 	
 	public ItemStack initializeItemWithName(ItemStack itemStack, String name, List<String> lore)
 	{
@@ -87,9 +87,9 @@ public class ItemsConfig {
 		
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
-			buttons.put(key, convertStringData( traderSection.getString(buildPath("inventory-navigation", key, "item")),
-					traderSection.getString(buildPath("inventory-navigation", key, "name"), ""), 
-					traderSection.getStringList(buildPath("inventory-navigation", key, "lore"))));
+			buttons.put(key, convertStringData(traderSection.getString(buildPath("inventory-navigation", key, "item")),
+					CitizensTrader.getLocaleManager().name(key),
+					CitizensTrader.getLocaleManager().lore(key)) );
 		}
 	}
 	
@@ -101,8 +101,6 @@ public class ItemsConfig {
 		int id = 0;
 		byte data = 0;
 
-//		System.out.print(itemDataString + " " + name);
-		//try to get the id, data
 		try
 		{
 			if ( itemData.length > 0 )
@@ -119,7 +117,7 @@ public class ItemsConfig {
 			disablePlugin = true;
 			return null;
 		}
-		//		System.out.print("sth else");
+
 		return initializeItemWithName(new ItemStack(id,1,data), name, lore);//new ItemStack(id,1,(short) 0,data);
 	}
 	

@@ -23,7 +23,7 @@ import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
-import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
@@ -40,7 +40,7 @@ public abstract class Trader implements EconomyNpc {
 	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
 	protected static LoggingManager loggingManager = CitizensTrader.getLoggingManager();
 	protected static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
-	protected LocaleManager localeManager = CitizensTrader.getLocaleManager();
+	protected LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	//Configuration
 	protected static ItemsConfig itemsConfig = CitizensTrader.getInstance().getItemConfig();
@@ -306,7 +306,7 @@ public abstract class Trader implements EconomyNpc {
 			DecimalFormat f = new DecimalFormat("#.##");
 			
 			List<String> lore = new ArrayList<String>(); ;
-			for ( String l : itemsConfig.getPriceLore("pbuy") )
+			for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") ) //itemsConfig.getPriceLore("pbuy") )
 				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy"))+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
 			
 			if ( scale > 0 )
@@ -580,7 +580,8 @@ public abstract class Trader implements EconomyNpc {
 	
 	public void playerLog(String owner, String buyer, String action, StockItem item, int slot)
 	{
-		loggingManager.playerLog(owner, npc.getName(), localeManager.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
+		//TODO Log
+	//	loggingManager.playerLog(owner, npc.getName(), locale.message("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase() ).replace("{amount}", ""+item.getAmount(slot)) );
 	}
 	
 	//Trader status enumeration
@@ -662,7 +663,7 @@ public abstract class Trader implements EconomyNpc {
 					int scale = item.getAmount() / stockItem.getAmount(); 
 
 					List<String> lore = new ArrayList<String>(); ;
-					for ( String l : itemsConfig.getPriceLore("pbuy") )
+					for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") )
 						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0))+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale)+""));
 					
 					if ( scale > 0 )

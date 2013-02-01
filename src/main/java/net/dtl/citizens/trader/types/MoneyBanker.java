@@ -76,7 +76,8 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+					locale.sendMessage(player, "banker-item-invalid");
+				//	player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
 					event.setCancelled(true);
 					return;
 				}
@@ -85,8 +86,10 @@ public class MoneyBanker extends Banker {
 				{
 					double withdraw = current.getAmount()*itemValue;
 					economy.withdrawPlayer(playerName, withdraw);
-					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
-					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
+					locale.sendMessage(player, "banker-got-item", "name", current.getType().name(), "amount", current.getAmount());
+					locale.sendMessage(player, "banker-lost-money", "money", decimalFormat.format(withdraw));
+				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
@@ -106,14 +109,16 @@ public class MoneyBanker extends Banker {
 					double withdraw = amount*itemValue;
 						
 					economy.withdrawPlayer(playerName, withdraw);
-					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
-					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
+					locale.sendMessage(player, "banker-item-got", "name", current.getType().name(), "amount", current.getAmount());
+					locale.sendMessage(player, "banker-money-lost", "money", decimalFormat.format(withdraw));
+				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
+				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
 				if ( cursor.getTypeId() != 0 )
 				{
 					if ( cursor.getTypeId() != exchangeItem.getTypeId() )
 					{
-						player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+						locale.sendMessage(player, "banker-item-invalid");
 						event.setCancelled(true);
 						return;
 					}
@@ -123,8 +128,10 @@ public class MoneyBanker extends Banker {
 						deposit = itemValue;
 					
 					economy.depositPlayer(playerName, deposit);
-					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", cursor.getType().name()).replace("{amount}", ""+ cursor.getAmount()) );
-					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
+					locale.sendMessage(player, "banker-item-lost", "name", current.getType().name(), "amount", current.getAmount());
+					locale.sendMessage(player, "banker-money-got", "money", decimalFormat.format(deposit));
+				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", cursor.getType().name()).replace("{amount}", ""+ cursor.getAmount()) );
+				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}
@@ -134,7 +141,7 @@ public class MoneyBanker extends Banker {
 			{
 				if ( current.getTypeId() != exchangeItem.getTypeId() )
 				{
-					player.sendMessage( locale.getLocaleString("xxx-item", "action:invalid") );
+					locale.sendMessage(player, "banker-item-invalid");
 					event.setCancelled(true);
 					return;
 				}
@@ -143,8 +150,10 @@ public class MoneyBanker extends Banker {
 				{
 					double deposit = current.getAmount()*itemValue;
 					economy.depositPlayer(playerName, deposit);
-					player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
-					player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
+					locale.sendMessage(player, "banker-item-lost", "name", current.getType().name(), "amount", current.getAmount());
+					locale.sendMessage(player, "banker-money-got", "money", decimalFormat.format(deposit));
+				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:sold").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
+				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:got").replace("{money}", decimalFormat.format(deposit)) );
 				}
 			}
 		}

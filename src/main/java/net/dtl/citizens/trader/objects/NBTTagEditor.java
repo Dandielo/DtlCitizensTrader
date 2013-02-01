@@ -27,7 +27,7 @@ public class NBTTagEditor {
 			if ( item != null )
 			{
 				int size = 0;
-				List<String> lore = CitizensTrader.getInstance().getItemConfig().getPriceLore("pbuy");
+				List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 				if ( lore != null )
 				{
 					size = lore.size();

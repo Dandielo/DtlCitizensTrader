@@ -12,9 +12,9 @@ import net.dtl.citizens.trader.cititrader.WalletTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
 import net.dtl.citizens.trader.denizen.TraderTags;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.BackendManager;
 import net.dtl.citizens.trader.managers.BankAccountsManager;
-import net.dtl.citizens.trader.managers.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
@@ -28,10 +28,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-/*
-im8port com.massivecraft.factions.P;
-import com.palmergames.bukkit.towny.Towny;
-*/
 
 public class CitizensTrader extends JavaPlugin {
 	//citizens trader logger
@@ -72,20 +68,20 @@ public class CitizensTrader extends JavaPlugin {
 		saveDefaultConfig();
 		stdConfig = getConfig();
 		
-		//loading itemConfig
-		itemConfig = new ItemsConfig(stdConfig);
-		
 		//setting the plugins instance
 		instance = this;
-		
-		//sucessfully loaded
-	//	info("Loaded v" + getDescription().getVersion());
 	}
 	
 	@Override
 	public void onEnable() {
 		//loading sender
 		sender = Bukkit.getServer().getConsoleSender();
+		
+		info("Loading locale");
+		localeManager = new LocaleManager();
+		
+		//loading itemConfig
+		itemConfig = new ItemsConfig(stdConfig);
 		
 		//plugin description variable
 		PluginDescriptionFile pdfFile = getDescription();
@@ -96,10 +92,6 @@ public class CitizensTrader extends JavaPlugin {
 		//initializing all managers
 		info("Loading bank accounts");
 		backendManager = new BackendManager();
-		
-		
-		info("Loading locale");
-		localeManager = new LocaleManager();
 		
 		info("loading patterns");
 		patternsManager = new PatternsManager();

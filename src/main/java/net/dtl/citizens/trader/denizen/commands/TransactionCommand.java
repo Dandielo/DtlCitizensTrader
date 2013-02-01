@@ -18,7 +18,7 @@ import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
-import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
@@ -111,24 +111,28 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			if ( !trader.getSelectedItem().getLimitSystem().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
 			{
 				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_LIMIT));
-				player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
+				locale.sendMessage(player, "trader-transaction-failed-limit");
+			//	player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 			}
 			else
 			if ( !trader.inventoryHasPlaceAmount(qty) )
 			{
-				player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+			//	player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+				locale.sendMessage(player, "trader-transaction-failed-inventory");
 				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_SPACE));
 			}
 			else
 			if ( !trader.buyTransaction(price) )
 			{
-				player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+				//player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+				locale.sendMessage(player, "trader-transaction-failed-money");
 				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 			}
 			else
 			{ 
+				locale.sendMessage(player, "trader-transaction-success");
 				//TODO add debug mode
-				player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + trader.getSelectedItem().getAmount() ).replace("{price}", new DecimalFormat("#.##").format(price) ) );
+				//player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + trader.getSelectedItem().getAmount() ).replace("{price}", new DecimalFormat("#.##").format(price) ) );
 
 				trader.addAmountToInventory(qty);//.addSelectedToInventory(0);
 

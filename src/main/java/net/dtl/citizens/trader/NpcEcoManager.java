@@ -11,7 +11,7 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
-import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.types.Banker;
@@ -137,7 +137,8 @@ public class NpcEcoManager implements Listener {
 			return;
 		
 		event.setCancelled(true);
-		((Player)event.getPlayer()).sendMessage(ChatColor.RED + "You can't open this in manager mode");
+		locale.sendMessage((Player)event.getPlayer(), "error-managermode-enabled");
+		//((Player)event.getPlayer()).sendMessage(ChatColor.RED + "You can't open this in manager mode");
 	}
 	
 	
@@ -309,7 +310,8 @@ public class NpcEcoManager implements Listener {
 				{
 					if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 					{
-						player.sendMessage( locale.getLocaleString("lacks-permissions") );
+						locale.sendMessage(player, "error-nopermission");
+						//player.sendMessage( locale.getLocaleString("lacks-permissions") );
 						return;
 					}
 					
@@ -348,7 +350,8 @@ public class NpcEcoManager implements Listener {
 			{
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					locale.sendMessage(player, "error-nopermission");
+					//player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
 				}
 				
@@ -388,7 +391,8 @@ public class NpcEcoManager implements Listener {
 			{
 				if ( !permManager.has(player, "dtl.trader.types." + characterTrait.getType().toString() ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					locale.sendMessage(player, "error-nopermission");
+					//player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
 				}
 				
@@ -429,7 +433,8 @@ public class NpcEcoManager implements Listener {
 
 				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
 				}
 				
@@ -451,7 +456,8 @@ public class NpcEcoManager implements Listener {
 
 					if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 					{
-						player.sendMessage( locale.getLocaleString("lacks-permissions") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( locale.getLocaleString("lacks-permissions") );
 						return;
 					}
 					
@@ -467,7 +473,8 @@ public class NpcEcoManager implements Listener {
 			{
 				if ( !permManager.has(player, "dtl.banker.types." + characterTrait.getType().toString() ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions") );
 					return;
 				}
 				

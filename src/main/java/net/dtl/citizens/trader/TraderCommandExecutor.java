@@ -7,7 +7,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
-import net.dtl.citizens.trader.managers.LocaleManager;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
@@ -25,21 +25,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
-//import com.massivecraft.factions.Faction;
-//import com.massivecraft.factions.Factions;
-//import com.palmergames.bukkit.towny.object.Town;
-
 /**
- * 
  * @author Dandielo
- *
  */
 public final class TraderCommandExecutor implements CommandExecutor {
-	
-	//Config values
-	//	private boolean debug;
-	
-	//plugin instance
 	
 	//managers
 	private static PatternsManager patternsManager;
@@ -47,7 +36,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	private static PermissionsManager permsManager;
 	private static LoggingManager logManager;
 	private static LocaleManager locale;
-
 	
 	//constructor
 	public TraderCommandExecutor() {
@@ -79,21 +67,17 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					Trader trader = (Trader) economyNpc;
 					player.sendMessage(ChatColor.GOLD + "==== " + ChatColor.YELLOW + trader.getNpc().getName() + ChatColor.GOLD + " ====");
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()));
-					player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner()));
+					locale.sendMessage(player, "key-value", "key", "#trader-type", "value", trader.getType().toString());
+					locale.sendMessage(player, "key-value", "key", "#owner", "value", trader.getConfig().getOwner());
 					if ( !CitizensTrader.dtlWalletsEnabled() )
-						player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString()));
+						locale.sendMessage(player, "key-value", "key", "#wallet", "value", trader.getWallet().getType().toString());
 					if ( trader.getStock().getPattern() != null )
-						player.sendMessage(locale.getLocaleString("xxx-setting-value", "setting:pattern").replace("{value}", trader.getStock().getPattern().getName()));
-					
+						locale.sendMessage(player, "key-value", "key", "#pattern", "value", trader.getStock().getPattern().getName());
+
 				}
 				return true;
-				//return false;
 			}
 			
-			
-			
-
 			
 			//no npc selected
 			if ( economyNpc == null )
@@ -126,11 +110,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				if ( args[0].equals("reload") )
 				{
-					
-					sender.sendMessage( locale.getLocaleString("reload-config") );
+					locale.sendMessage(player, "plugin-reload");
+					//sender.sendMessage( locale.getLocaleString("reload-config") );
 					CitizensTrader.getInstance().getItemConfig().reloadConfig();
 					CitizensTrader.getInstance().reloadConfig();
-					CitizensTrader.getLocaleManager().reload();
+					CitizensTrader.getLocaleManager().load();
 					
 					return true;
 				}
@@ -141,7 +125,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					if ( args.length < 2 )
 					{
-						player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:name") );
+						locale.sendMessage(player, "error-argument-missing");
+						//TODO debug info
+						//player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:name") );
 						return true;
 					}
 					//TODO name adding
@@ -153,7 +139,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					
 					if ( trader == null )
 					{
-						player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:name") );
+						locale.sendMessage(player, "error-argument-invalid", "argument", name);
+						//player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:name") );
 						return true;
 					}
 					traderManager.addInteractionNpc(player.getName(), trader);
@@ -170,7 +157,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//is trader type
 				if ( !( economyNpc instanceof Trader ) )
 				{
-					player.sendMessage( locale.getLocaleString("xxx-not-selected", "object:trader") );
+					locale.sendMessage(player, "error-plugin-invalid-command");
+					//player.sendMessage( locale.getLocaleString("xxx-not-selected", "object:trader") );
 					return true;
 				}
 				
@@ -262,6 +250,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					if ( !this.generalChecks(player, "withdraw", null) )
 						return true;
+					if ( args.length < 2 )
+					{
+						locale.sendMessage(player, "error-argument-missing");
+						return true;
+					}
 					
 					return withdraw(player, trader, args[1]);
 				}
@@ -269,6 +262,12 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					if ( !this.generalChecks(player, "deposit", null) )
 						return true;
+					if ( args.length < 2 )
+					{
+						locale.sendMessage(player, "error-argument-missing");
+						return true;
+					}
+						
 					return deposit(player, trader, args[1]);
 				}
 				//reload plugin
@@ -281,11 +280,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				}
 				if ( args[0].equals("reload") )
 				{
-					
-					sender.sendMessage( locale.getLocaleString("reload-config") );
+					locale.sendMessage(player, "plugin-reload");
+					//sender.sendMessage( locale.getLocaleString("reload-config") );
 					CitizensTrader.getInstance().getItemConfig().reloadConfig();
 					CitizensTrader.getInstance().reloadConfig();
-					CitizensTrader.getLocaleManager().reload();
+					CitizensTrader.getLocaleManager().load();
 					
 					return true;
 				}
@@ -301,11 +300,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			if ( args[0].equals("reload") )
 			{
-				
-				sender.sendMessage( locale.getLocaleString("reload-config") );
+				locale.sendMessage(sender, "plugin-reload");
+//				sender.sendMessage( locale.getLocaleString("reload-config") );
 				CitizensTrader.getInstance().getItemConfig().reloadConfig();
 				CitizensTrader.getInstance().reloadConfig();
-				CitizensTrader.getLocaleManager().reload();
+				CitizensTrader.getLocaleManager().load();
 				
 				return true;
 			}
@@ -329,12 +328,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 			if ( !permsManager.has(player, "dtl.trader.options.manage") )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+				locale.sendMessage(player, "error-nopermission");
+				//player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
 			}
 			if ( !trader.getConfig().getOwner().equals(player.getName()) )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+				locale.sendMessage(player, "error-nopermission");
+				//player.sendMessage( locale.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 				return true;
 			}
 		}
@@ -369,25 +370,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	}
 
 	private boolean removePattern(Player player, Trader trader) {
-		
+
+		locale.sendMessage(player, "pattern-removed", "pattern", trader.getStock().getPattern().getName());
 		trader.getStock().removePattern();
 		trader.getInventory().clear();
-		player.sendMessage( locale.getLocaleString("removed-pattern") );
+		//player.sendMessage( locale.getLocaleString("removed-pattern") );
 		
 		return true;
 	}
-	
-//	private boolean resetPrices(Player player, Trader trader)
-//	{
-//		trader.getStock().resetPrices();
-//		return true;
-//	}
 	
 	private boolean pattern(Player player, Trader trader, String[] args) {
 		
 		if ( args.length <= 1 )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:action") );
+			locale.sendMessage(player, "error-argument-missing");
+			//player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:action") );
 			return true;
 		}
 		
@@ -399,15 +396,21 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		{
 			if ( !permsManager.has(player, "dtl.trader.commands.pattern-reload") )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+				locale.sendMessage(player, "error-nopermission");
+				//player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 				return true;
 			}
 			return this.reloadPatterns(player, trader);
 		}
 		if ( args[1].equals("save") )
 		{
+			if ( args.length < 3 )
+			{
+				locale.sendMessage(player, "error-argument-missing");
+				return true;
+			}
 			String target = args.length > 3 ? args[3] : "all";
-			String post = args.length > 4 ? args[4] : "";
+			String post = args.length > 3 ? args[4] : "";
 			
 			trader.getStock().getStock("sell");
 			patternsManager.setFromList(args[2], 
@@ -428,45 +431,54 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}
 		if ( !args[1].equals("set") )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:action") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", args[1]);
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:action") );
 			return true;
 		}
 		
 		if ( args.length <= 2 )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:pattern") );
+			locale.sendMessage(player, "error-argument-missing");
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-missing", "argument:pattern") );
 			return true;
 		}
 		
 		if ( trader.getStock().setPattern(args[2]) )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[2].toLowerCase()) );
+			locale.sendMessage(player, "key-change", "key", "#pattern", "value", args[2]);
+		//	player.sendMessage( locale.getLocaleString("xxx-value-changed", "", "manage:{argument}", "argument:pattern").replace("{value}", args[2].toLowerCase()) );
 		}
 		else
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:pattern") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", args[2]);
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:pattern") );
 		}
 		return true;
 	}
 
-	private boolean clear(Player player, Trader trader, String[] args) {
+	private boolean clear(Player player, Trader trader, String[] args) 
+	{
 		if ( args.length > 1 )
 		{
 			if ( !args[1].toLowerCase().equals("sell") || !args[1].toLowerCase().equals("buy") )
 			{
-				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:stock") );
+				locale.sendMessage(player, "error-argument-invalid", "argument", args[1]);
+			//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:stock") );
 				return true;
 			}
 			trader.getStock().clearStock(args[1]);
-			
-			player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:" + args[1], "action:cleared") );
+
+			locale.sendMessage(player, "trader-stock-cleared", "stock", args[1]);
+			//player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:" + args[1], "action:cleared") );
 			return true;
 		}
 		
 		trader.getStock().clearStock("");
-		
-		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:sell", "action:cleared") );
-		player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:buy", "action:cleared") );
+
+		locale.sendMessage(player, "trader-stock-cleared", "stock", "#sell-stock");
+		locale.sendMessage(player, "trader-stock-cleared", "stock", "#buy-stock");
+	//	player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:sell", "action:cleared") );
+	//	player.sendMessage( locale.getLocaleString("xxx-stock-cleared", "manage:buy", "action:cleared") );
 		return true;
 	}
 
@@ -486,7 +498,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		}
 		
 		logManager.clearPlayerLogs(player.getName(), trader);
-		player.sendMessage( locale.getLocaleString("log-xxx", "log:trader", "action:cleared") );
+		locale.sendMessage(player, "trader-log-cleared");
+	//	player.sendMessage( locale.getLocaleString("log-xxx", "log:trader", "action:cleared") );
 		
 		return true;
 	}
@@ -522,7 +535,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//check permissions
 		if ( !permsManager.has(player, "dtl.trader.commands." + commandPermission)  )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+			locale.sendMessage(player, "error-nopermission");
+		//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return false;
 		}
 		
@@ -530,7 +544,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//check permissions
 		if ( !permsManager.has(player, "dtl.trader.options." + optionsPermission)  )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+			locale.sendMessage(player, "error-nopermission");
+		//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return false;
 		}
 		
@@ -577,29 +592,14 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//set the traders wallet type
 	public boolean setWallet(Player player, Trader trader, String walletString, String bankAccount)
 	{
-
-		
 		WalletType wallet = WalletType.getTypeByName(walletString);
 		
 		
-		//towny
-		
-		
-		//show wallet
 		if ( wallet == null )
 		{
-			String account = ""; 
-		/*	if ( trader.getWallet().getType().equals(WalletType.TOWNY) )
-				account = trader.getWallet().getTown();
-			if ( trader.getWallet().getType().equals(WalletType.SIMPLE_CLANS) )
-				account = trader.getWallet().getClan();
-			if ( trader.getWallet().getType().equals(WalletType.FACTIONS) )
-				account = trader.getWallet().getFaction();*/
-			if ( trader.getWallet().getType().equals(WalletType.BANK) )
-				account = trader.getWallet().getBank();
-			
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
+			locale.sendMessage(player, "key-value", "key", "#wallet", "value", trader.getWallet().getType().toString());
+			//player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:wallet").replace("{value}", trader.getWallet().getType().toString() + ( account.isEmpty() ? "" : "§6:§e" + account )) );
 			
 		}
 		//change wallet
@@ -608,7 +608,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			if ( !permsManager.has(player, "dtl.trader.wallets." + walletString ) )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
+				locale.sendMessage(player, "error-nopermission");
+			//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
 				return true;
 			}
 			
@@ -617,93 +618,24 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			{
 				if ( bankAccount.isEmpty() )
 				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+					locale.sendMessage(player, "error-argument-missing");
+				//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
 				if ( !trader.getWallet().setBank(player.getName(), bankAccount) )
 				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
+					locale.sendMessage(player, "error-argument-invalid", "argument", bankAccount);
+				//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
 					return true;
 				}
 			}
-			/*	else
-			//clan
-			if ( wallet.equals(WalletType.SIMPLE_CLANS) )
-			{
-				if ( CitizensTrader.getSimpleClans() == null ) {
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:wallet") );
-					return true;
-				}
-				
-				if ( bankAccount.isEmpty() )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(bankAccount);
-				if ( clan == null )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				trader.getWallet().setClan(clan);
-				
-			}
-			else
-			//towny
-			if ( wallet.equals(WalletType.TOWNY) )
-			{
-				if ( CitizensTrader.getTowny() == null )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:wallet") );
-					return true;
-				}
-				//TODO
-				if ( bankAccount.isEmpty() )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(bankAccount.toLowerCase());
-				if ( town == null )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				
-				trader.getWallet().setTown(town);
-				
-			}
-			else
-			//towny
-			if ( wallet.equals(WalletType.FACTIONS) )
-			{
-				if ( CitizensTrader.getFactions() == null )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:wallet") );
-					return true;
-				}
-				
-				if ( bankAccount.isEmpty() )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				Faction faction = Factions.i.getByTag(bankAccount);
-				if ( faction == null )
-				{
-					player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-					return true;
-				}
-				trader.getWallet().setFaction(faction);
-			}*/
-			
 			
 			//set the wallet type for both trader and wallet
 			trader.getWallet().setType(wallet);
 
 			//send message
-			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"§6:§e"+bankAccount)) );
+			locale.sendMessage(player, "key-change", "key", "#wallet", "value", wallet.toString());
+			//player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:wallet").replace("{value}", walletString + (bankAccount.isEmpty()?"":"§6:§e"+bankAccount)) );
 		}
 		
 		
@@ -719,7 +651,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		//show current trader type
 		if ( type == null )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()) );
+			locale.sendMessage(player, "key-value", "key", "#trader-type", "value", trader.getType());
+		//	player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:trader").replace("{value}", trader.getType().toString()) );
 		}
 		//change trader type
 		else
@@ -727,13 +660,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			
 			if ( !permsManager.has(player, "dtl.trader.types." + typeString ) )
 			{
-				player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
+				locale.sendMessage(player, "error-nopermission");
+				//player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
 				return true;
 			}
 
 			trader.getNpc().getTrait(TraderCharacterTrait.class).setType(type);
-			
-			player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:trader").replace("{value}", typeString) );
+
+			locale.sendMessage(player, "key-change", "key", "#trader-type", "value", type);
+			//player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:trader").replace("{value}", typeString) );
 		}
 		
 		return false;
@@ -743,7 +678,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	public boolean balance(Player player, Trader trader)
 	{
 		DecimalFormat f = new DecimalFormat("#.##");
-		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney()) ) );
+		locale.sendMessage(player, "wallet-balance", "amount", f.format(trader.getWallet().getMoney()));
+		//player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney()) ) );
 		
 		return true;
 	}
@@ -760,13 +696,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", withdrawString);
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
 			return true;
 		}
 		
 		if ( withdraw > money )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", withdrawString);
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
 			return true;
 		}
 		
@@ -774,9 +712,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		DecimalFormat f = new DecimalFormat("#.##");
 
 		CitizensTrader.getEconomy().depositPlayer(player.getName(), withdraw);
-		
-		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:withdrawed").replace("{value}", withdrawString) );
-		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
+
+		locale.sendMessage(player, "wallet-withdraw", "amount", withdrawString);
+		locale.sendMessage(player, "wallet-balance", "amount", f.format(trader.getWallet().getMoney()));
+	//	player.sendMessage( locale.getLocaleString("xxx-wallet", "action:withdrawed").replace("{value}", withdrawString) );
+	//	player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
 		
 		
 		return true;
@@ -794,21 +734,24 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		} 
 		catch (NumberFormatException e)
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", depositString);
+		//	player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
 			return true;
 		}
 		
 		if ( !CitizensTrader.getEconomy().withdrawPlayer(player.getName(), deposit).type.equals(ResponseType.SUCCESS) )
 		{
-			player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:amount") );
+			locale.sendMessage(player, "error-argument-invalid", "argument", depositString);
 			return true;
 		}
 
 		trader.getWallet().setMoney(money + deposit);
 		DecimalFormat f = new DecimalFormat("#.##");
 		
-		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:deposited").replace("{value}", depositString) );
-		player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
+		locale.sendMessage(player, "wallet-deposit", "amount", depositString);
+		locale.sendMessage(player, "wallet-balance", "amount", f.format(trader.getWallet().getMoney()));	
+	//	player.sendMessage( locale.getLocaleString("xxx-wallet", "action:deposited").replace("{value}", depositString) );
+	//	player.sendMessage( locale.getLocaleString("xxx-wallet", "action:balance").replace("{value}", f.format(trader.getWallet().getMoney())) );
 		
 		return true;
 	}
@@ -817,7 +760,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	private boolean setOwner(Player player, Trader trader, String owner) {
 		
 		trader.getConfig().setOwner(owner);
-		player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:owner").replace("{value}", owner) );
+		locale.sendMessage(player, "key-change", "key", "#owner", "value", owner);
+		//player.sendMessage( locale.getLocaleString("xxx-setting-changed", "setting:owner").replace("{value}", owner) );
 		
 		return true;
 	}
@@ -825,7 +769,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	//getting the traders owner
 	private boolean getOwner(Player player, Trader trader) {
 
-		player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner() ) );
+		locale.sendMessage(player, "key-value", "key", "#owner", "value", trader.getConfig().getOwner());
+		//player.sendMessage( locale.getLocaleString("xxx-setting-value", "setting:owner").replace("{value}", trader.getConfig().getOwner() ) );
 
 		
 		return true;
@@ -836,9 +781,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	{
 		String traderName = "";
 		String owner = player.getName();
-/*		String clanTag = "";
-		String townName = "";
-		String factionName = "";*/
 		
 		EntityType entityType = EntityType.PLAYER;
 		EcoNpcType traderType = getDefaultTraderType(player);
@@ -853,24 +795,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				owner = arg.substring(2);
 				walletType = WalletType.OWNER;
 			}
-		/*	else
-			if ( arg.startsWith("sc:") )
-			{
-				clanTag = arg.substring(3);
-				walletType = WalletType.SIMPLE_CLANS;
-			}
-			else
-			if ( arg.startsWith("town:") )
-			{
-				townName = arg.substring(5);
-				walletType = WalletType.TOWNY;
-			}
-			else
-			if ( arg.startsWith("f:") )
-			{
-				factionName = arg.substring(2);
-				walletType = WalletType.FACTIONS;
-			}*/
+		
 			else
 			//trader type set?
 			if ( arg.startsWith("t:") )
@@ -878,13 +803,15 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this trader type?
 				if ( !permsManager.has(player, "dtl.trader.types." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:trader") );
 					return true;
 				}
 				traderType = EcoNpcType.getTypeByName(arg.substring(2));
 				if ( traderType == null || traderType.isBanker() )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
 					return true;
 				}
 			}
@@ -895,7 +822,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				//do we have permissions to set this wallet type?
 				if ( !permsManager.has(player, "dtl.trader.wallets." + arg.substring(2) ) )
 				{
-					player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:wallet") );
 					return true;
 				}
 				walletType = WalletType.getTypeByName(arg.substring(2));
@@ -919,7 +847,8 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		
 		if ( walletType == null || traderType == null || entityType == null )
 		{
-			player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
+			locale.sendMessage(player, "error-nopermission");
+		//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:command") );
 			return true;
 		}
 		
@@ -936,82 +865,11 @@ public final class TraderCommandExecutor implements CommandExecutor {
 		npc.getTrait(TraderCharacterTrait.class).setType(traderType);
 		settings.getWallet().setType(walletType);
 		
-	/*	if ( walletType.equals(WalletType.SIMPLE_CLANS) )
-		{
-			Clan clan = CitizensTrader.getSimpleClans().getClanManager().getClan(clanTag);
-			if ( clan == null )
-			{
-				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-				return true;
-			}
-			settings.getWallet().setClan(clan);
-		}
-		if ( walletType.equals(WalletType.TOWNY) )
-		{
-
-			Town town = CitizensTrader.getTowny().getTownyUniverse().getTownsMap().get(townName);
-			if ( town == null )
-			{
-				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-				return true;
-			}
-			settings.getWallet().setTown(town);
-		}
-		if ( walletType.equals(WalletType.FACTIONS) )
-		{
-			Faction faction = Factions.i.getByTag(factionName);
-			if ( faction == null )
-			{
-				player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:account") );
-				return true;
-			}
-			settings.getWallet().setFaction(faction);
-		}*/
-		
+	
 		settings.setOwner(owner);
-		
-		player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:trader").replace("{name}", player.getName()) );
+
+		locale.sendMessage(player, "trader-created", "player", player.getName(), "trader", traderName);
+	//	player.sendMessage( locale.getLocaleString("xxx-created-xxx", "entity:player", "entity:trader").replace("{name}", player.getName()) );
 		return true;
 	}
-	
-	
-	//for saveing
-	/*
-	 * 
-buttons:
-  buy-tab: 
-    name: Buy tab
-    lore: 
-    - Click to see what items you can sell to the trader
-  sell-tab: 
-    name: Sell tab
-    lore: 
-    - Click to buy items from the trader
-  price-managing: 
-    name: Price managing
-    lore: 
-    - Manage prices for items
-  global-limit-managing:
-    name: Global limit managing
-    lore: 
-    - Manage global limits for items
-  player-limit-managing:
-    name: Player limit managing
-    lore: 
-    - Manage player limits for items
-  buy-limit-managing:
-    name: Buy limit managing
-    lore: 
-    - Manage how many items you want to buy
-    - when other players will use you trader
-  return-to-managing: 
-    name: Return
-    lore: 
-    - Returns to stock managing
-  return-to-stock: 
-    name: Return
-    lore: 
-    - Return to buy other items
-    */
-	 
 }

@@ -450,7 +450,7 @@ public class TraderStockPart implements InventoryHolder {
 			price = format.format(item.getPrice(i));
 		
 		List<String> lore = new ArrayList<String>();
-		for ( String line : itemsConfig.getPriceLore(stock) )
+		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
 			lore.add(line.replace("{price}", price).replace("{amount}", item.getLimitSystem().getStackAmount()));
 		
 		return lore;

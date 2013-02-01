@@ -61,12 +61,14 @@ public class PlayerTrader extends Trader {
 					
 					if ( !permissionsManager.has(player, "dtl.trader.options.sell") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
 					}
 					else
 					{
 						switchInventory(TraderStatus.SELL);	
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:sell") );
+					//	locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:sell") );
 					}
 						
 					
@@ -76,12 +78,13 @@ public class PlayerTrader extends Trader {
 				{
 					if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
+						locale.sendMessage(player, "error-nopermission");
+				//		player.sendMessage( localeManager.getLocaleString("lacks-permissions-xxx","object:tab") );
 					}
 					else
 					{
 						switchInventory(TraderStatus.BUY);	
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:buy") );
+					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-tab","transaction:buy") );
 					}	
 				}
 			} 
@@ -109,21 +112,25 @@ public class PlayerTrader extends Trader {
 						//checks
 						if ( !checkLimits() )
 						{
-							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
+							locale.sendMessage(player, "trader-transaction-failed-limit");
+						//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 						}
 						else
 						if ( !inventoryHasPlace(0) )
 						{
-							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+							locale.sendMessage(player, "trader-transaction-failed-inventory");
+						//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 						}
 						else
 						if ( !buyTransaction(getSelectedItem().getPrice()) )
 						{
-							player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+							locale.sendMessage(player, "trader-transaction-failed-money");
+						//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 						}
 						else
 						{
-							player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+							locale.sendMessage(player, "trader-transaction-success");
+						//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 
 
 							addSelectedToInventory(0);
@@ -142,13 +149,6 @@ public class PlayerTrader extends Trader {
 							this.messageOwner("bought", player.getName(), getSelectedItem(), 0);
 							
 						}
-					//	} 
-					//	else 
-					//	{
-					//		player.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
-					//		player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
-					//		setClickedSlot(slot);
-					//	}
 						
 					}
 					
@@ -167,22 +167,25 @@ public class PlayerTrader extends Trader {
 						
 					if ( !checkLimits(slot) )
 					{
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
+						locale.sendMessage(player, "trader-transaction-failed-limit");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 					}
 					else
 					if ( !inventoryHasPlace(slot) )
 					{
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
+						locale.sendMessage(player, "trader-transaction-failed-inventory");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 					}
 					else
 					if ( !buyTransaction(getSelectedItem().getPrice(slot)) ) 
 					{
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
+						locale.sendMessage(player, "trader-transaction-failed-money");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 					}
 					else
 					{
-						
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
+						locale.sendMessage(player, "trader-transaction-success");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
 						
 						//
 						addSelectedToInventory(slot);
@@ -202,23 +205,16 @@ public class PlayerTrader extends Trader {
 						this.messageOwner("bought", player.getName(), getSelectedItem(), slot);
 						
 					} 
-				//	}
-				///	else 
-				//	{
-				//		
-				//		player.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
-				//		player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
-				//		setClickedSlot(slot);
-				//	}
 				}
 			} 
 			else 
 			if ( equalsTraderStatus(TraderStatus.BUY) ) 
 			{
-				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() ) {
-					
-					player.sendMessage( localeManager.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
-					player.sendMessage( localeManager.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+				if ( selectItem(slot, TraderStatus.BUY).hasSelectedItem() )
+				{	
+				//	locale.sendMessage(player, "");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()) ) );
+				//	player.sendMessage( localeManager.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 				
 				}
 			}
@@ -232,22 +228,23 @@ public class PlayerTrader extends Trader {
 				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() ) 
 				{
 					
-				//	if ( getClickedSlot() == slot && !getInventoryClicked() )
-				//	{
 					double price = getPrice(player, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 					if ( !checkBuyLimits(scale) )
 					{
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
+						locale.sendMessage(player, "trader-transaction-failed-limit");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 					}
 					else
 					if ( !sellTransaction(price*scale,event.getCurrentItem()) )
 					{
-						player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
+						locale.sendMessage(player, "trader-transaction-failed-money");
+					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 					}
 					else
 					{
-						player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+						locale.sendMessage(player, "trader-transaction-success");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 
 						updateBuyLimits(scale);
@@ -265,13 +262,7 @@ public class PlayerTrader extends Trader {
 						this.messageOwner("sold", player.getName(), getSelectedItem(), 0);
 						
 					} 
-				//	}
-				//	else
-				//	{
-				//		player.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-				//		player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-				//		setClickedSlot(slot);
-				//	}
+
 				}
 			} 
 			else 
@@ -284,27 +275,30 @@ public class PlayerTrader extends Trader {
 			else 
 			if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() )
 			{
-			//	if ( getClickedSlot() == slot && !getInventoryClicked() )
-			//	{
+
 				double price = getPrice(player, "buy");
 				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount();
 				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
-					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
 				}
 				else
 				if ( !checkBuyLimits(scale) )
 				{
-					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
+					locale.sendMessage(player, "trader-transaction-failed-limit");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 				}
 				else
 				if ( !sellTransaction(price*scale,event.getCurrentItem()) )
 				{
-					player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
+					locale.sendMessage(player, "trader-transaction-failed-money");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 				}
 				else
 				{
-					player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
+					locale.sendMessage(player, "trader-transaction-success");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 					
 					updateBuyLimits(scale);
 					
@@ -321,20 +315,6 @@ public class PlayerTrader extends Trader {
 					this.messageOwner("sold", player.getName(), getSelectedItem(), 0);
 				
 				}
-			/*	} 
-				else 
-				{
-					
-					if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
-						 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-					{
-						player.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getSelectedItem().getPrice()*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-						player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-						
-						setClickedSlot(slot);
-					}
-					
-				}*/
 			}
 			setInventoryClicked(false);
 		}
@@ -381,14 +361,16 @@ public class PlayerTrader extends Trader {
 					getInventory().setItem(getInventory().getSize() - 3, ( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? itemsConfig.getItemManagement(4) : itemsConfig.getItemManagement(3) ) );//new ItemStack(Material.WOOL,1,(short)0,(byte)( getBasicManageModeByWool().equals(TraderStatus.MANAGE_SELL) ? 11 : 12 ) ));
 					
 					//send message
-					player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
+					locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
 				}
 				else
 				if ( isWool(event.getCurrentItem(), itemsConfig.getItemManagement(2)) )
 				{
 					if ( !permissionsManager.has(player, "dtl.trader.managing.price") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:price") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:price") );
 					}
 					else
 					{
@@ -402,7 +384,8 @@ public class PlayerTrader extends Trader {
 						
 
 						//send message
-						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
+						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-price");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
 					}
 				}
 				else
@@ -411,7 +394,8 @@ public class PlayerTrader extends Trader {
 				{
 					if ( !permissionsManager.has(player, "dtl.trader.managing.buy-limits") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
 					}
 					else
 					{
@@ -425,7 +409,8 @@ public class PlayerTrader extends Trader {
 						getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 						
 						//send message
-						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy-limit") );
+						locale.sendMessage(player, "trader-manage-toggle", "mode", "#buy-limit");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy-limit") );
 					
 					}
 				}
@@ -435,7 +420,8 @@ public class PlayerTrader extends Trader {
 				{
 					if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy") );
 					}
 					else
 					{
@@ -446,7 +432,8 @@ public class PlayerTrader extends Trader {
 					
 	
 						//send message
-						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy") );
+						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy") );
 						
 					}
 				}
@@ -455,7 +442,8 @@ public class PlayerTrader extends Trader {
 				{
 					if ( !permissionsManager.has(player, "dtl.trader.options.sell") )
 					{
-						player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:sell") );
+						locale.sendMessage(player, "error-nopermission");
+					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:sell") );
 					}
 					else
 					{
@@ -470,7 +458,8 @@ public class PlayerTrader extends Trader {
 					//	getInventory().setItem(getInventory().getSize() - 3, new ItemStack(Material.AIR));
 	
 						//send message
-						player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
+						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
+					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
 						
 					}
 				}
@@ -486,7 +475,8 @@ public class PlayerTrader extends Trader {
 					
 
 					//send message
-					player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "manage:stock", "entity:player") );
+					locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "manage:stock", "entity:player") );
 				}
 				
 				//cancel the event, so no1 can take up wools and end
@@ -539,8 +529,10 @@ public class PlayerTrader extends Trader {
 									selectItem(null);
 
 									//send message
-									player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
-									player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + leftAmount) );
+									locale.sendMessage(player, "trader-stock-item-remove");
+								//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
+									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(leftAmount));
+								//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + leftAmount) );
 								}
 							} 
 							else
@@ -553,7 +545,8 @@ public class PlayerTrader extends Trader {
 									setTraderStatus(TraderStatus.MANAGE_SELL_AMOUNT); 
 								}
 								else
-									player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:multiple-amounts") );
+									locale.sendMessage(player, "error-nopermission");
+							//		player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:multiple-amounts") );
 							}
 							
 						}
@@ -584,13 +577,16 @@ public class PlayerTrader extends Trader {
 									getInventory().setItem(clickedSlot, new ItemStack(0));
 
 									//send a remove message
-									player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
-									player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + stockedAmount) );
+									locale.sendMessage(player, "trader-stock-item-remove");
+									//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
+									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(stockedAmount));
+									//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + leftAmount) );
 								}
 								else
 								{
 									//send a item got amount message
-									player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + stockedAmount) );
+								//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + stockedAmount) );
+									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(stockedAmount));
 									
 									//reset the amount
 									getSelectedItem().getLimitSystem().setGlobalAmount(0);
@@ -623,7 +619,8 @@ public class PlayerTrader extends Trader {
 						{
 							if ( !permissionsManager.has(player, "dtl.trader.managing.stack-price") )
 							{
-								player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
+								locale.sendMessage(player, "error-nopermission");
+							//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
 								selectItem(null);
 								event.setCancelled(true);
 								return;
@@ -632,13 +629,15 @@ public class PlayerTrader extends Trader {
 							if ( getSelectedItem().hasStackPrice() ) 
 							{
 								getSelectedItem().setStackPrice(false);
-								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
+								locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#disabled");
+							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
 							} 
 							//change the price to a stack-price
 							else
 							{
 								getSelectedItem().setStackPrice(true);
-								player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
+								locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#disabled");
+							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 							}
 							
 							
@@ -655,53 +654,10 @@ public class PlayerTrader extends Trader {
 						return;
 					}
 					event.setCancelled(true);
-					player.sendMessage( localeManager.getLocaleString("invalid-action") );
+					locale.sendMessage(player, "trader-stock-invalid-action");
+				//	player.sendMessage( localeManager.getLocaleString("invalid-action") );
 					return;
 					
-//					//has a selected item, can change the position or throw away
-//					if ( hasSelectedItem() ) 
-//					{
-//						//switch the items selected
-//						
-//						StockItem stockItem = getSelectedItem();
-//						
-//						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-//						{
-//							getSelectedItem().setSlot(-2);
-//							
-//							/*TODO fix this bug and allow changing items
-//							ItemStack temp = event.getCursor();
-//							temp.setAmount(0);
-//							event.setCursor(temp.clone());
-//							temp = event.getCurrentItem();
-//							temp.setAmount(stockItem.getAmount());
-//							event.setCurrentItem(temp);
-//							*/
-//							
-//							player.sendMessage( localeManager.getLocaleString("invalid-action") );
-//							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
-//						}
-//						
-//
-//						stockItem.setSlot(clickedSlot);
-//						player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
-//						
-//						
-//					}
-//					//no item selected, select an item and change it's slot to -2 (in management)
-//					else
-//					{
-//						
-//						if ( selectItem(clickedSlot, getTraderStatus()).hasSelectedItem() )
-//						{
-//							getSelectedItem().setSlot(-2);		
-//						//	player.sendMessage( localeManager.getLocaleString("item-changing-slot") );						
-//							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
-//						}
-//						
-//						
-//					}
-//					return;
 				}
 				else 
 				if ( equalsTraderStatus(TraderStatus.MANAGE_PRICE) )
@@ -712,7 +668,8 @@ public class PlayerTrader extends Trader {
 						
 						//select the item to get the information from, and show the price
 						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
-							player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
+							locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+						//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 						
 						
 					} 
@@ -736,7 +693,8 @@ public class PlayerTrader extends Trader {
 							
 							
 							//show the new price
-							player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
+							locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+						//	player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
 							
 						}
@@ -762,7 +720,8 @@ public class PlayerTrader extends Trader {
 						//select item which limit will be shown up
 						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
-							player.sendMessage( localeManager.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+							locale.sendMessage(player, "key-value", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimitSystem().getGlobalLimit()));
+						//	player.sendMessage( localeManager.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
 						}
 						
 						
@@ -782,8 +741,9 @@ public class PlayerTrader extends Trader {
 							
 							NBTTagEditor.removeDescription(event.getCurrentItem());
 							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), null, player));
-							
-							player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:buy-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+
+							locale.sendMessage(player, "key-change", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimitSystem().getGlobalLimit()));
+							//player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:buy-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 						
 						}
 
@@ -817,8 +777,9 @@ public class PlayerTrader extends Trader {
 
 							getInventory().setItem(clickedSlot, clonedStack);
 							event.setCancelled(false);
-							
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
+
+							locale.sendMessage(player, "trader-stock-item-add");
+						//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 
 						}
 						else
@@ -838,7 +799,8 @@ public class PlayerTrader extends Trader {
 							else
 								event.getCurrentItem().setAmount(oldAmount+addAmount);
 
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
+							locale.sendMessage(player, "trader-stock-item-update");
+						//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 							
 						}
 						
@@ -865,12 +827,14 @@ public class PlayerTrader extends Trader {
 						//decrease the amount, or delete the item
 						if ( oldAmount - removeAmount <= 0 )
 						{
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
+							locale.sendMessage(player, "trader-stock-item-remove");
+						//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
 							event.setCurrentItem(new ItemStack(Material.AIR, 0));
 						}
 						else
 						{
-							player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
+							locale.sendMessage(player, "trader-stock-item-update");
+						//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 							event.getCurrentItem().setAmount(oldAmount-removeAmount);
 						}
 					}
@@ -928,7 +892,8 @@ public class PlayerTrader extends Trader {
 				{
 					
 					//message the player
-					player.sendMessage( localeManager.getLocaleString("item-in-stock") );
+					locale.sendMessage(player, "trader-player-item-invalid");
+				//	player.sendMessage( localeManager.getLocaleString("item-in-stock") );
 					
 					
 					//reset the selection and set the clicked inventory (false = bottom)
@@ -982,7 +947,8 @@ public class PlayerTrader extends Trader {
 					itemToAdd.setAmount(backUpAmount);
 					
 					//send message
-					player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
+					locale.sendMessage(player, "trader-stock-item-add");
+				//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 				}
 				
 				
@@ -1042,7 +1008,8 @@ public class PlayerTrader extends Trader {
 					limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
 
 					//send message
-					player.sendMessage( localeManager.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
+					locale.sendMessage(player, "trader-player-add-amount");
+				//	player.sendMessage( localeManager.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
 					
 					
 					//set the amount to 0 to push it but don't change the top items amount 
@@ -1060,7 +1027,8 @@ public class PlayerTrader extends Trader {
 				else
 				{
 					//that item isn't in the stock
-					player.sendMessage( localeManager.getLocaleString("item-not-in-stock") );
+				//	player.sendMessage( localeManager.getLocaleString("item-not-in-stock") );
+					locale.sendMessage(player, "trader-player-item-invalid");
 					
 				}
 				
@@ -1080,7 +1048,7 @@ public class PlayerTrader extends Trader {
 		
 		if ( player == null )
 			return;
-		player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
+	//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item-log", "entity:name", "transaction:"+action).replace("{name}", buyer).replace("{item}", item.getItemStack().getType().name().toLowerCase()).replace("{amount}", ""+item.getAmount(slot)) );
 		
 	}
 
@@ -1090,7 +1058,8 @@ public class PlayerTrader extends Trader {
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
 		{
-			player.sendMessage( localeManager.getLocaleString("lacks-permissions-creative") );
+			locale.sendMessage(player, "error-nopermission-creative");
+		//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-creative") );
 			return false;
 		}
 		
@@ -1102,12 +1071,14 @@ public class PlayerTrader extends Trader {
 			{
 				if ( !permissionsManager.has(player, "dtl.trader.options.manage") )
 				{
-					player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
 				if ( !trait.getConfig().getOwner().equals(player.getName()) )
 				{
-					player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
+					locale.sendMessage(player, "error-nopermission");
+				//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
 			}
@@ -1115,11 +1086,13 @@ public class PlayerTrader extends Trader {
 			if ( getTraderStatus().isManaging() )
 			{
 				switchInventory( getStartStatus(player) );
-				player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
+				locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
+				//player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				return true;
 			}	
-			
-			player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
+
+			locale.sendMessage(player, "managermode-enabled", "npc", npc.getFullName());
+			//player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
 			switchInventory(getManageStartStatus(player) );
 			return true;
 		}
