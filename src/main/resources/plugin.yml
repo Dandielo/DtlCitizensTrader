@@ -4,7 +4,7 @@ depend: [Citizens,Vault]
 soft-depend: [Denizen,dtlWallets]
 version: 2.4.2
 description: >
-             Citizens Character. 
+             Citizens Character trait. 
 commands: 
     trader:
       aliases: dtrader
