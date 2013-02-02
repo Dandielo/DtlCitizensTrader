@@ -35,7 +35,9 @@ public class TraderTags implements Listener {
 	
     private Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
     private Map<String, Pattern> playerChatPattern = new ConcurrentHashMap<String, Pattern>();
-    private Map<String, String> transactionFailed = new ConcurrentHashMap<String, String>();
+    
+    private Map<String, TransactionInfo> transactions = new ConcurrentHashMap<String, TransactionInfo>();
+    //private Map<String, String> transactionFailed = new ConcurrentHashMap<String, String>();
 	
     /** TraderTags
      * <trader.stock.sell.trigger>
@@ -46,9 +48,9 @@ public class TraderTags implements Listener {
      * <trader.owner>
      * <trader.wallet>
      * <trader.wallet.balance>
-     * <transaction.result>
      * <transaction.item>
      * <transaction.item.price>
+     * <transaction.item.amount>
      * <transaction.item.instock>
      * <transaction.failure>
      */
@@ -68,16 +70,16 @@ public class TraderTags implements Listener {
 
             playerChatHistory.put(event.getPlayer().getName(), history);
     }
-	
+	 
 	@EventHandler
 	public void transactionResult(TraderTransactionEvent e)
 	{
 		dNPC denizen = DenizenAPI.getDenizenNPC(e.getNPC());
-		Player p = e.getParticipant();
+		String player = e.getParticipant().getName();
 		
 		if ( e.getResult().succeeded() )
 		{
-			transactionFailed.put(p.getName(), "");
+			transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount()));
 			denizen.action("Transaction Success", e.getParticipant());
 		}
 		else
@@ -85,13 +87,13 @@ public class TraderTags implements Listener {
 			switch(e.getResult())
 			{
 			case FAIL_MONEY:
-				transactionFailed.put(p.getName(), "money");
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "money"));
 				break;
 			case FAIL_LIMIT:
-				transactionFailed.put(p.getName(), "limit");
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "limit"));
 				break;
 			case FAIL_SPACE:
-				transactionFailed.put(p.getName(), "inventory");
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "inventory"));
 				break;
 			default: break;
 			}
@@ -104,6 +106,7 @@ public class TraderTags implements Listener {
 	{
         Player p = e.getPlayer();
         if (p == null) return;
+        String player = p.getName();
 
         NPC npc = e.getNPC().getCitizen();
         
@@ -151,57 +154,38 @@ public class TraderTags implements Listener {
         else
         if ( name.equals("transaction") )
         {
-        	if ( tag.equals("item") )
-        	{
-        		
-        	}
         	if ( tag.equals("result") )
         	{
-        		
+        		if ( subtag.equals("price") )
+        		{
+        			e.setReplaced(new DecimalFormat("#.##").format(transactions.get(player).price));
+        		}
+        		else
+            	if ( subtag.equals("amount") )
+            	{
+            		e.setReplaced(String.valueOf(transactions.get(player).amount));
+            	}
+            	else
+                if ( subtag.equals("item") )
+            	{
+            		e.setReplaced(transactions.get(player).item);
+            	}
         	}
-        	if ( tag.equals("faliure") )
+        	if ( tag.equals("failure") )
         	{
-        		
+        		e.setReplaced(transactions.get(player).failure);
         	}
-        }
-        
-        /*
-        
-		if ( tag.equals("TRADER") )
-		{	
-			if ( subtag.equals("selling") )
-			{
-				if ( manager.isEconomyNpc(e.getNPC().getCitizen()) )
+        	if ( tag.equals("trigger") )
+        	{
+        		if ( playerChatHistory.containsKey(player) )
 				{
-			        Trader trader = new ServerTrader(e.getNPC().getCitizen().getTrait(TraderCharacterTrait.class), e.getNPC().getCitizen(), p);//(Trader) manager.getInteractionNpc(p.getName());
-			        
-			        String replaceString = "";
-			        List<StockItem> stock = trader.getStock().getStock(subtag);
-			        for ( StockItem item : stock )
-		        		replaceString += "|" + item.getItemStack().getType().name();
-			        
-			        String rep = replaceString.substring(1);
-			        replaceString = "REGEX:\\b(?i:" + rep + ")\\b";
-			        playerChatPattern.put(p.getName(), Pattern.compile("\\b(?i:" + rep + ")\\b"));
-			        
-			        e.setReplaced(replaceString);
-				}
-			}
-			if ( subtag.equals("item") )
-			{
-				if ( playerChatHistory.containsKey(p.getName()) )
-				{
-					String last = playerChatHistory.get(p.getName()).get(0);
-					Matcher m = playerChatPattern.get(p.getName()).matcher(last);
+					String last = playerChatHistory.get(player).get(0);
+					Matcher m = playerChatPattern.get(player).matcher(last);
 					if (m.find())
 						e.setReplaced(m.group());
 				}
-			}
-			if ( subtag.equals("failure") )
-			{
-				e.setReplaced(transactionFailed.get(p.getName()));
-			}
-		}*/
+        	}
+        }
 	}
 	
 	private String hint(Player p, Trader trader, String string) {
@@ -232,4 +216,34 @@ public class TraderTags implements Listener {
 		}
 	}
 	
+	static class TransactionInfo
+	{		
+		String item;
+		double price;
+		int amount;
+		int left;
+		
+		String failure;
+
+		TransactionInfo(String i, double p, int a)
+		{
+			this(i, p, a, 0);
+		}
+		TransactionInfo(String i, double p, int a, String f)
+		{
+			this(i, p, a, 0, f);
+		}
+		TransactionInfo(String i, double p, int a, int l)
+		{
+			this(i, p, a, l, "");
+		}
+		TransactionInfo(String i, double p, int a, int l, String f)
+		{
+			item = i;
+			price = p;
+			amount = a;
+			failure = f;
+			left = l;
+		}
+	}
 }

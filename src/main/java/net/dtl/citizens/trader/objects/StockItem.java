@@ -105,12 +105,6 @@ public class StockItem {
 							item.setItemMeta(meta);
 						}
 					}
-					if ( value.startsWith("l:") && !value.contains("/") && !value.contains(";") ) {
-					//	item.setDurability(Short.parseShort(value.substring(2)));
-					}
-					if ( value.startsWith("id:") && !value.contains("/") && !value.contains(";") ) {
-					//	item.setDurability(Short.parseShort(value.substring(3)));
-					}
 					
 					//use enchantments for comparison
 					if ( value.equals("ce") ) {
@@ -124,11 +118,11 @@ public class StockItem {
 				else
 				{
 					//stack price management
-					if ( value.equals("sp") ) { //&& !value.contains("/") && !value.contains(";") ) {
+					if ( value.equals("sp") ) { 
 						stackPrice = true;
 					}
 					//stack price management
-					if ( value.equals("pat") ) { //&& !value.contains("/") && !value.contains(";") ) {
+					if ( value.equals("pat") ) {
 						listenPattern = true;
 					}
 				}
@@ -155,7 +149,7 @@ public class StockItem {
 	
 	public String getName()
 	{
-		return name;
+		return name.isEmpty() ? item.getType().name() : name;
 	}
 
 	@Override
@@ -250,12 +244,6 @@ public class StockItem {
 		}
 		price -= p;
 	}
-	
-	/*public double getBuyPrice() {
-		if ( stackPrice )
-			return price/amounts.get(0);
-		return price;
-	}*/
 	
 	public static boolean hasDurability(ItemStack item)
 	{

@@ -8,8 +8,8 @@
   
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>LATEST</craftbukkit.version>
-		<citizens.version>2.0.7-SNAPSHOT</citizens.version>
+		<craftbukkit.version>1.4.7-R1.1-SNAPSHOT</craftbukkit.version>
+		<citizens.version>2.0.7-TEMP</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
 		<denizen.version>0.8-TEMP</denizen.version>
 		<wallets.version>1.0.0-SNAPSHOT</wallets.version>
@@ -27,12 +27,12 @@
 			<url>http://repo.citizensnpcs.com</url>
 		</repository>
 		<repository>
-			<id>thirdparty</id>
-			<url>http://93.181.141.191:8081/nexus/content/repositories/thirdparty/</url>
-		</repository>
-		<repository>
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>thirdparty</id>
+			<url>http://93.181.141.191:8081/nexus/content/repositories/thirdparty/</url>
 		</repository>
 	</repositories> 
 	
@@ -64,7 +64,7 @@
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>
 			<scope>provided</scope> 
-		</dependency>
+		</dependency> 
 		<dependency> 
 		    <groupId>net.dandielo</groupId>
 		    <artifactId>dtlWallets</artifactId>

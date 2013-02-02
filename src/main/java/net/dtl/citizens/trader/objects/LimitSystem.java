@@ -195,6 +195,10 @@ public class LimitSystem {
 		playerLimit.changeTimeout(t*1000);
 	}
 	
+	public int getGlobalAvailable()
+	{
+		return limit.getLimit() - limit.getAmount();
+	}
 	public int getGlobalLimit() {
 		return limit.getLimit();
 	}
