@@ -19,9 +19,14 @@ public class LocaleEntry {
 		this.newkey = newkey;
 	}
 	
+	public boolean hasNewkey()
+	{
+		return !newkey.isEmpty();
+	}
+	
 	public String newkey()
 	{
-		return newkey;
+		return newkey.isEmpty() ? key : newkey;
 	}
 	
 	public String key()

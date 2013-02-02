@@ -17,7 +17,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 public class LocaleManager {
 	// current locale version
-	public final static String pver = "1.0.0"; 
+	public final static String pver = "1.0.1"; 
 	
 	// cache
 	private Map<LocaleEntry, String> cache;

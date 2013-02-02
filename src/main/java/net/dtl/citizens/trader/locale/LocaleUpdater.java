@@ -53,12 +53,14 @@ public class LocaleUpdater {
 			String key = entry.getKey().key();
 			if ( cache.containsKey(entry.getKey()) )
 			{
+				loc.set(LocaleManager.buildPath("backup","messages", key), cache.get(entry.getKey()));
+				
 				cache.put(new LocaleEntry(entry.getKey().newkey(), LocaleManager.pver), entry.getValue());
 				
-				loc.set(LocaleManager.buildPath("backup","messages", key), cache.get(entry.getKey()));
-				cache.remove(entry.getKey());
+				if ( entry.getKey().hasNewkey() )
+					cache.remove(entry.getKey());
 				
-				loc.set(LocaleManager.buildPath("messages", entry.getKey().newkey()), entry.getValue());
+			//	loc.set(LocaleManager.buildPath("messages", entry.getKey().newkey()), entry.getValue());
 			}
 			else
 			{
@@ -71,12 +73,14 @@ public class LocaleUpdater {
 			String key = entry.getKey().key();
 			if ( keywords.containsKey(entry.getKey()) )
 			{
+				loc.set(LocaleManager.buildPath("backup","keywords", key.substring(1)), keywords.get(entry.getKey()));
+
 				keywords.put(new LocaleEntry("#" + entry.getKey().newkey(), LocaleManager.pver), entry.getValue());
 				
-				loc.set(LocaleManager.buildPath("backup","keywords", key.substring(1)), keywords.get(entry.getKey()));
-				keywords.remove(entry.getKey());
+				if ( entry.getKey().hasNewkey() )
+					cache.remove(entry.getKey());
 				
-				loc.set(LocaleManager.buildPath("keywords",entry.getKey().newkey()), entry.getValue());
+			//	loc.set(LocaleManager.buildPath("keywords",entry.getKey().newkey()), entry.getValue());
 			}
 			else
 			{
@@ -89,14 +93,17 @@ public class LocaleUpdater {
 			String key = entry.getKey().key();
 			if ( lores.containsKey(entry.getKey()) )
 			{
-				lores.put(new LocaleEntry(entry.getKey().newkey(), LocaleManager.pver), entry.getValue());
-				
 				loc.set(LocaleManager.buildPath("backup","lores", key, "name"), lores.get(entry.getKey()).name());
 				loc.set(LocaleManager.buildPath("backup","lores", key, "lore"), lores.get(entry.getKey()).lore());
-				lores.remove(entry.getKey());
+			
+				lores.put(new LocaleEntry(entry.getKey().newkey(), LocaleManager.pver), entry.getValue());
 				
-				loc.set(LocaleManager.buildPath("lores",entry.getKey().newkey(), "name"), entry.getValue().name());
-				loc.set(LocaleManager.buildPath("lores",entry.getKey().newkey(), "lore"), entry.getValue().lore());
+
+				if ( entry.getKey().hasNewkey() )
+					cache.remove(entry.getKey());
+				
+			//	loc.set(LocaleManager.buildPath("lores",entry.getKey().newkey(), "name"), entry.getValue().name());
+			//	loc.set(LocaleManager.buildPath("lores",entry.getKey().newkey(), "lore"), entry.getValue().lore());
 			}
 			else
 			{
@@ -105,6 +112,17 @@ public class LocaleUpdater {
 			}
 		}
 		
+		for ( Map.Entry<LocaleEntry, String> entry : cache.entrySet() )
+			loc.set(LocaleManager.buildPath("messages",entry.getKey().key()), entry.getValue());
+
+		for ( Map.Entry<LocaleEntry, String> entry : keywords.entrySet() )
+			loc.set(LocaleManager.buildPath("keywords",entry.getKey().key().substring(1)), entry.getValue());
+		
+		for ( Entry<LocaleEntry, ItemLocale> entry : lores.entrySet() )
+		{
+			loc.set(LocaleManager.buildPath("lores",entry.getKey().key(), "name"), entry.getValue().name());
+			loc.set(LocaleManager.buildPath("lores",entry.getKey().key(), "lore"), entry.getValue().lore());
+		}
 		//save the new config
 		try {
 			loc.save(file);

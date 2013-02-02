@@ -1,4 +1,4 @@
-ver: 1.0.0
+ver: 1.0.1
 messages:
   error-nopermission: ^6You dont have permissions to do this
   error-nopermission-creative: ^6You dont have permissions to do this while in ^3creative mode
@@ -72,7 +72,7 @@ lores:
     name: ^r^6Player limit management
     lore:
     - ^7Click to toggle player limit managing
-  manage-price: 
+  manage-buy-limit: 
     name: ^r^6Buy limit management
     lore:
     - ^7Allows to set amounts you 

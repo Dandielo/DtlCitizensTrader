@@ -2,4 +2,13 @@ messages:
   denizen-item-hint:
     message: '{item}: {price}'
 keywords: []
-lores: []
+lores: 
+  manage-price: 
+    name: ^r^6Price management
+    lore:
+    - ^7Click to toggle price managing
+  manage-buy-limit: 
+    name: ^r^6Buy limit management
+    lore:
+    - ^7Allows to set amounts you 
+    - ^7want to buy from players

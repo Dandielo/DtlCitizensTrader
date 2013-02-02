@@ -142,7 +142,6 @@ public class NpcEcoManager implements Listener {
 		
 		event.setCancelled(true);
 		locale.sendMessage((Player)event.getPlayer(), "error-managermode-enabled");
-		//((Player)event.getPlayer()).sendMessage(ChatColor.RED + "You can't open this in manager mode");
 	}
 	
 	
