@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
@@ -1097,6 +1098,9 @@ public class PlayerTrader extends Trader {
 			return true;
 		}
 
+		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
 		//DEscriptions for player items
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )

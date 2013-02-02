@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
@@ -44,7 +44,7 @@ public class TransactionTrigger extends AbstractDenizenTrigger implements Listen
     }
 
     @Override
-    public boolean parse(DenizenNPC npc, Player player, String script) {
+    public boolean parse(dNPC npc, Player player, String script) {
         if (script == null) return false;
 
         TraderTransactionEvent event = data.get(player.getName());

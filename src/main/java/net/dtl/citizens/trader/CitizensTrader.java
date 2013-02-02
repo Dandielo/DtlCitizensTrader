@@ -36,9 +36,6 @@ public class CitizensTrader extends JavaPlugin {
 	
 	//plugin instance
 	private static CitizensTrader instance;
-	/*private static SimpleClans clans;
-	private static Towny towny;
-	private static P factions;*/
 	private static Denizen denizen;
 	private static Wallets wallets;
 	

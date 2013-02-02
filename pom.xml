@@ -11,7 +11,7 @@
 		<craftbukkit.version>LATEST</craftbukkit.version>
 		<citizens.version>2.0.7-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
-		<denizen.version>0.8-PRERELEASE</denizen.version>
+		<denizen.version>0.8-PRERELEASE2</denizen.version>
 		<wallets.version>1.0.0-SNAPSHOT</wallets.version>
 				<build.number>Unknown</build.number>
 	</properties>
@@ -25,6 +25,10 @@
 		<repository>
 			<id>everything</id>
 			<url>http://repo.citizensnpcs.com</url>
+		</repository>
+		<repository>
+			<id>thirdparty</id>
+			<url>http://93.181.141.191:8081/nexus/content/repositories/thirdparty/</url>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
@@ -55,7 +59,7 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency> 
-		<dependency>
+		<dependency> 
 			<groupId>net.aufdemrand</groupId>
 			<artifactId>denizen</artifactId>
 			<version>${denizen.version}</version>

@@ -1,5 +1,6 @@
 package net.dtl.citizens.trader.denizen;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,9 @@ import java.util.regex.Pattern;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.events.ReplaceableTagEvent;
-import net.aufdemrand.denizen.npc.DenizenNPC;
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
+import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
@@ -35,20 +37,24 @@ public class TraderTags implements Listener {
     private Map<String, Pattern> playerChatPattern = new ConcurrentHashMap<String, Pattern>();
     private Map<String, String> transactionFailed = new ConcurrentHashMap<String, String>();
 	
+    /** TraderTags
+     * <trader.stock.sell.trigger>
+     * <trader.stock.sell.hint>
+     * <trader.stock.buy.trigger>
+     * <trader.stock.buy.hint>
+     * <trader.pattern>
+     * <trader.owner>
+     * <trader.wallet>
+     * <trader.wallet.balance>
+     * <transaction.result>
+     * <transaction.item>
+     * <transaction.item.price>
+     * <transaction.item.instock>
+     * <transaction.failure>
+     */
 	
 	public TraderTags() {
     }
-	
-	public static void main(String[] a)
-	{
-
-		Pattern p = Pattern.compile("\\b(?i:STONE|GRASS|DIRT)\\b");
-		Matcher m = p.matcher("what a strange stone it is");
-		m.find();
-		System.out.println(m.group());
-		
-		
-	}
 	
 	@EventHandler(priority = EventPriority.MONITOR)
     public void addMessage(AsyncPlayerChatEvent event) {
@@ -66,7 +72,7 @@ public class TraderTags implements Listener {
 	@EventHandler
 	public void transactionResult(TraderTransactionEvent e)
 	{
-		DenizenNPC denizen = DenizenAPI.getDenizenNPC(e.getNPC());
+		dNPC denizen = DenizenAPI.getDenizenNPC(e.getNPC());
 		Player p = e.getParticipant();
 		
 		if ( e.getResult().succeeded() )
@@ -98,9 +104,68 @@ public class TraderTags implements Listener {
 	{
         Player p = e.getPlayer();
         if (p == null) return;
+
+        NPC npc = e.getNPC().getCitizen();
         
-        String tag = e.getName().toUpperCase();
-        String subtag = e.getType().toLowerCase();
+        String name = e.getName().toLowerCase();
+        String tag = e.getType().toLowerCase();
+        String subtag = e.getSubType().toLowerCase();
+        
+        if ( name.equals("trader") )
+        {
+        	if ( !manager.isEconomyNpc(npc) )
+        		return;
+        	
+        	Trader trader = new ServerTrader(npc.getTrait(TraderCharacterTrait.class), npc, p);
+        	if ( tag.equals("pattern") )
+        	{
+        		 e.setReplaced(trader.getStock().getPattern().getName());
+        	}
+        	else
+        	if ( tag.equals("wallet") )
+        	{
+        		if ( subtag.equals("balance") )
+        			e.setReplaced(new DecimalFormat("#.##").format(trader.getConfig().getWallet().getMoney()));
+        		else 
+        			e.setReplaced(trader.getConfig().getWallet().getType().toString());
+        	}
+        	else
+        	if ( tag.equals("stock") )
+        	{
+        		if ( !subtag.contains(".") )
+        			return;
+        		String[] stock = subtag.split(".");
+        		
+        		if ( stock[1].equals("trigger") )
+        			e.setReplaced(this.regexTrigger(p, trader, stock[0]));
+        		else
+        		if ( stock[1].equals("hint") ) 
+        			e.setReplaced(this.hint(p, trader, stock[0]));
+        	}
+        	else
+        	if ( tag.equals("owner") );
+        	{
+        		e.setReplaced(trader.getConfig().getOwner());
+        	}
+        }
+        else
+        if ( name.equals("transaction") )
+        {
+        	if ( tag.equals("item") )
+        	{
+        		
+        	}
+        	if ( tag.equals("result") )
+        	{
+        		
+        	}
+        	if ( tag.equals("faliure") )
+        	{
+        		
+        	}
+        }
+        
+        /*
         
 		if ( tag.equals("TRADER") )
 		{	
@@ -136,7 +201,25 @@ public class TraderTags implements Listener {
 			{
 				e.setReplaced(transactionFailed.get(p.getName()));
 			}
-		}
+		}*/
+	}
+	
+	private String hint(Player p, Trader trader, String string) {
+		// TODO Auto-generated method stub
+		return "";
+	}
+
+	public String regexTrigger(Player p, Trader trader, String st)
+	{
+		String replaceString = "";
+        List<StockItem> stock = trader.getStock().getStock(st);
+        for ( StockItem item : stock )
+    		replaceString += "|" + item.getItemStack().getType().name();
+        
+        String rep = replaceString.substring(1);
+        replaceString = "REGEX:\\b(?i:" + rep + ")\\b";
+        playerChatPattern.put(p.getName(), Pattern.compile("\\b(?i:" + rep + ")\\b"));
+        return replaceString;
 	}
 	
 	public static void initializeDenizenTags(Denizen denizen)

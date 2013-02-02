@@ -26,7 +26,7 @@ import net.dtl.citizens.trader.types.Trader.TraderStatus;
 public class TransactionCommand extends AbstractDenizenCommand {
 
 	/** 
-	 * TRANSACTION ({SELL}|BUY|OPEN|CLOSE) [ITEM:#(:#)] (QTY:#) 
+	 * TRANSACTION ({SELL}|BUY) [ITEM:#(:#)] (QTY:#) 
 	 * 
 	 * 
 	 * Arguments: [] - Required, () - Optional 

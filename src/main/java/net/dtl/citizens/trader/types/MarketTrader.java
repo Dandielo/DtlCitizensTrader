@@ -1,5 +1,6 @@
 package net.dtl.citizens.trader.types;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.StockItem;
@@ -464,6 +466,9 @@ public class MarketTrader extends Trader {
 			return true;
 		}
 
+		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
+		Bukkit.getServer().getPluginManager().callEvent(event);
+		
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	

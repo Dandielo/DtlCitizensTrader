@@ -11,6 +11,9 @@ import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.events.TraderOpenEvent;
+import net.dtl.citizens.trader.events.TraderTransactionEvent;
+import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
@@ -23,6 +26,8 @@ import net.dtl.citizens.trader.types.PrivateBanker;
 import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
 import net.dtl.citizens.trader.types.Trader.TraderStatus;
+
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -125,7 +130,6 @@ public class NpcEcoManager implements Listener {
 		if ( economyNpc == null )
 			return;
 		
-		//TODO IMPORTANT, change this
 		if ( !economyNpc.locked() )
 			return;
 

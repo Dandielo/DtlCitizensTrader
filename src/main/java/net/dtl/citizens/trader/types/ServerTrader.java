@@ -14,6 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dtl.citizens.trader.locale.LocaleManager;
@@ -1019,9 +1020,16 @@ public class ServerTrader extends Trader {
 			return true;
 		}
 
+		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
+		Bukkit.getServer().getPluginManager().callEvent(event);
+
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	
+		
+		if ( event.isCancelled() )
+			return false;
+		//event.setCancelled(tevent.isCancelled());
 		
 		player.openInventory(getInventory());
 		return true;
