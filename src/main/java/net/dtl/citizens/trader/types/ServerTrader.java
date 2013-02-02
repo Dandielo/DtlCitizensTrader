@@ -1020,17 +1020,10 @@ public class ServerTrader extends Trader {
 			return true;
 		}
 
-		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
-		Bukkit.getServer().getPluginManager().callEvent(event);
-
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	
-		
-		if ( event.isCancelled() )
-			return false;
-		//event.setCancelled(tevent.isCancelled());
-		
+
 		player.openInventory(getInventory());
 		return true;
 	}

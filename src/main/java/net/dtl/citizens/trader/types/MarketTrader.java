@@ -466,9 +466,6 @@ public class MarketTrader extends Trader {
 			return true;
 		}
 
-		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
-		Bukkit.getServer().getPluginManager().callEvent(event);
-		
 		NBTTagEditor.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	

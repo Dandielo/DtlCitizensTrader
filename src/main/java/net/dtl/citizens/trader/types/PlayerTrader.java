@@ -1097,9 +1097,6 @@ public class PlayerTrader extends Trader {
 			switchInventory(getManageStartStatus(player) );
 			return true;
 		}
-
-		TraderOpenEvent event = new TraderOpenEvent(player, this, getNpc());
-		Bukkit.getServer().getPluginManager().callEvent(event);
 		
 		//DEscriptions for player items
 		NBTTagEditor.removeDescriptions(player.getInventory());
