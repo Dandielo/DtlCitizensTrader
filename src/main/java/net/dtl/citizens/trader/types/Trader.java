@@ -626,12 +626,12 @@ public abstract class Trader implements EconomyNpc {
 			return SELL;
 		}
 	}
-
 	
 	public double getPrice(Player player, String transaction)
 	{
 		return getPrice(player, transaction, 0);
 	}
+	
 	public double getPrice(Player player, String transaction, int slot)
 	{
 		if ( getStock().getPattern() != null )

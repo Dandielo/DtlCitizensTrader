@@ -10,6 +10,7 @@ import static net.dtl.citizens.trader.CitizensTrader.*;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -392,5 +393,16 @@ public class StockItem {
 		return false;
 	}
 
+	public double calcPrice(Player player, TransactionPattern pattern, String stock)
+	{
+		return calcPrice(player, pattern, stock, 0);
+	}
+	
+	public double calcPrice(Player player, TransactionPattern pattern, String stock, int slot)
+	{
+		if ( pattern != null )
+			return pattern.getItemPrice(player, this, stock, slot, 0.0);
+		return getPrice(slot);
+	}
 	
 }

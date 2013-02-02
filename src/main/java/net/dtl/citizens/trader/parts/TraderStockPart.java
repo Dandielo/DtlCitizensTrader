@@ -115,12 +115,12 @@ public class TraderStockPart implements InventoryHolder {
 	{
 		this.stock.get(stock).clear();
 	}
+	
 	public void clearStock()
 	{
 		clearStock("sell");
 		clearStock("buy");
 	}
-	
 	
 	public Inventory getInventory(String startingStock, Player player)
 	{
@@ -142,6 +142,7 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
+	
 	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type)
 	{
 		
@@ -188,9 +189,11 @@ public class TraderStockPart implements InventoryHolder {
 	public void addItem(String stock ,String data) {
 		this.stock.get(stock).add(new StockItem(data));
 	}
+	
 	public void addItem(String stock, StockItem stockItem) {
 		this.stock.get(stock).add(stockItem);
 	}
+	
 	public void removeItem(String stock, int slot) {
 		for ( StockItem item : this.stock.get(stock) )
 			if ( item.getSlot() == slot ) 
@@ -206,6 +209,7 @@ public class TraderStockPart implements InventoryHolder {
 				return item;
 		return null;
 	}
+	
 	public StockItem getItem(ItemStack itemStack, TraderStatus status, boolean dura, boolean amount) {
 		boolean equal = false;
 
@@ -292,6 +296,7 @@ public class TraderStockPart implements InventoryHolder {
 		}
 		inventory.setItem(stockSize - 1, itemsConfig.getItemManagement(7));
 	}
+	
 	public static void setManagerInventoryWith(Inventory inventory, StockItem item) {
 		int i = 0;
 		for ( Integer amount : item.getAmounts() ) 

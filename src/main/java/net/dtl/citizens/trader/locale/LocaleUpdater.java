@@ -27,16 +27,16 @@ public class LocaleUpdater {
 		ConfigurationSection section = configuration.getConfigurationSection(LocaleManager.buildPath("messages"));
 		if ( section != null )
 		for ( String key : section.getKeys(false) )
-			cache.put(new LocaleEntry(key, section.getString(LocaleManager.buildPath(key, "new")), ver), section.getString(LocaleManager.buildPath(key, "message")));
+			cache.put(new LocaleEntry(key, section.getString(LocaleManager.buildPath(key, "new"), ""), ver), section.getString(LocaleManager.buildPath(key, "message")));
 		section = configuration.getConfigurationSection(LocaleManager.buildPath("keywords"));
 		if ( section != null )
 		for ( String key : section.getKeys(false) )
-			keywords.put(new LocaleEntry("#" + key, section.getString(LocaleManager.buildPath(key, "new")), ver), section.getString(LocaleManager.buildPath(key, "keyword")));
+			keywords.put(new LocaleEntry("#" + key, section.getString(LocaleManager.buildPath(key, "new"), ""), ver), section.getString(LocaleManager.buildPath(key, "keyword")));
 		
 		section = configuration.getConfigurationSection(LocaleManager.buildPath("lores"));
 		if ( section != null )
 		for ( String key : section.getKeys(false) )
-			lores.put(new LocaleEntry(key, section.getString(LocaleManager.buildPath(key, "new")), ver), new ItemLocale(section.getString(LocaleManager.buildPath(key, "name")), section.getStringList(LocaleManager.buildPath(key, "lore"))));
+			lores.put(new LocaleEntry(key, section.getString(LocaleManager.buildPath(key, "new"), ""), ver), new ItemLocale(section.getString(LocaleManager.buildPath(key, "name")), section.getStringList(LocaleManager.buildPath(key, "lore"))));
 			
 	}
 
@@ -58,7 +58,7 @@ public class LocaleUpdater {
 				cache.remove(entry.getKey());
 				
 				loc.set(LocaleManager.buildPath("messages", entry.getKey().newkey()), entry.getValue());
-				}
+			}
 			else
 			{
 				loc.set(LocaleManager.buildPath("messages", key), entry.getValue());

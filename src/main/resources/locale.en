@@ -25,6 +25,7 @@ messages:
   banker-tab-select-item: ^6Select a new tab item
   banker-tab-select-item-success: ^6New item was set
   banker-tab-select-item-canceled: ^6Selecting was aborted
+  denizen-item-hint: '{item}: {price}'
 keywords:
   manage-global-limit: Global limit
   manage-player-limit: Player Limit

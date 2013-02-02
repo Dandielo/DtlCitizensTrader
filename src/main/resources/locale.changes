@@ -1,3 +1,5 @@
-messages: []
+messages: 
+  denizen-item-hint:
+    message: '{item}: {price}'
 keywords: []
 lores: []
