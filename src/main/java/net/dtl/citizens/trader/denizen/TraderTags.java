@@ -79,7 +79,7 @@ public class TraderTags implements Listener {
 		
 		if ( e.getResult().succeeded() )
 		{
-			transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount()));
+			transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getAmount(), e.getLeft()));
 			denizen.action("Transaction Success", e.getParticipant());
 		}
 		else
@@ -87,13 +87,13 @@ public class TraderTags implements Listener {
 			switch(e.getResult())
 			{
 			case FAIL_MONEY:
-				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "money"));
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getAmount(), e.getLeft(), "money"));
 				break;
 			case FAIL_LIMIT:
-				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "limit"));
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getAmount(), e.getLeft(), "limit"));
 				break;
 			case FAIL_SPACE:
-				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getItem().getAmount(), e.getItem().getLimitSystem().getGlobalAvailable(), "inventory"));
+				transactions.put(player, new TransactionInfo(e.getItem().getName(), e.getEndPrice(), e.getAmount(), e.getLeft(), "inventory"));
 				break;
 			default: break;
 			}

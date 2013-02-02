@@ -62,6 +62,8 @@ public class TraderTransactionEvent extends Event {
 	
 	//trader variables
 	private StockItem item;
+	private int amount;
+	private int left;
 	private double price;
 	private Trader trader;
 	private NPC npc;
@@ -75,6 +77,20 @@ public class TraderTransactionEvent extends Event {
 		this.npc = npc;
 		this.status = status;
 		this.item = item;
+		this.amount = item.getAmount();
+		this.left = item.getLimitSystem().getGlobalAvailable();
+		this.result = result;
+		this.player = (Player) humanEntity;
+	}
+	
+	public TraderTransactionEvent(Trader trader, NPC npc, HumanEntity humanEntity, TraderStatus status, StockItem item, double price, int amount, TransactionResult result)
+	{
+		this.trader = trader;
+		this.npc = npc;
+		this.status = status;
+		this.item = item;
+		this.amount = amount;
+		this.left = item.getLimitSystem().getGlobalAvailable();
 		this.result = result;
 		this.player = (Player) humanEntity;
 	}
@@ -112,6 +128,16 @@ public class TraderTransactionEvent extends Event {
 	public TransactionResult getResult()
 	{
 		return this.result;
+	}
+	
+	public int getAmount()
+	{
+		return amount;
+	}
+	
+	public int getLeft()
+	{
+		return left;
 	}
 /*	@Override
 	public boolean isCancelled() {

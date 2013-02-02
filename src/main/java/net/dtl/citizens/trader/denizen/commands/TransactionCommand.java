@@ -1,7 +1,5 @@
 package net.dtl.citizens.trader.denizen.commands;
 
-import java.text.DecimalFormat;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -102,7 +100,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			
 			if ( !trader.hasSelectedItem() )
 			{
-				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), Trader.toStockItem(item), -1.0, TransactionResult.FAIL_ITEM));
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), Trader.toStockItem(item), -1.0, qty, TransactionResult.FAIL_ITEM));
 				return;
 			}
 			
@@ -110,36 +108,31 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			
 			if ( !trader.getSelectedItem().getLimitSystem().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
 			{
-				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_LIMIT));
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_LIMIT));
 				locale.sendMessage(player, "trader-transaction-failed-limit");
-			//	player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 			}
 			else
 			if ( !trader.inventoryHasPlaceAmount(qty) )
 			{
-			//	player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
-				locale.sendMessage(player, "trader-transaction-failed-inventory");
-				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_SPACE));
+					locale.sendMessage(player, "trader-transaction-failed-inventory");
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_SPACE));
 			}
 			else
 			if ( !trader.buyTransaction(price) )
 			{
-				//player.sendMessage(locale.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
-				locale.sendMessage(player, "trader-transaction-failed-money");
-				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
+					locale.sendMessage(player, "trader-transaction-failed-money");
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_MONEY));
 			}
 			else
 			{ 
 				locale.sendMessage(player, "trader-transaction-success");
-				//TODO add debug mode
-				//player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + trader.getSelectedItem().getAmount() ).replace("{price}", new DecimalFormat("#.##").format(price) ) );
-
+			
 				trader.addAmountToInventory(qty);//.addSelectedToInventory(0);
 
 				trader.updateBuyLimits(qty);
 				
 				//call event Denizen Transaction Trigger
-				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, TransactionResult.SUCCESS_SELL));
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.SUCCESS_SELL));
 				
 				//logging
 				trader.log("buy", 
@@ -150,6 +143,51 @@ public class TransactionCommand extends AbstractDenizenCommand {
 				
 			}
 		}
+	/*	else
+		if ( action.equals("BUY") )
+		{
+			trader.selectItem(item, TraderStatus.BUY, StockItem.hasDurability(item), false);
+			
+			if ( !trader.hasSelectedItem() )
+			{
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), Trader.toStockItem(item), -1.0, qty, TransactionResult.FAIL_ITEM));
+				return;
+			}
+			
+			double price = trader.getPrice(player, "sell")*qty;
+			
+			if ( !trader.getSelectedItem().getLimitSystem().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
+			{
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_LIMIT));
+				locale.sendMessage(player, "trader-transaction-failed-limit");
+			}
+			else
+			if ( !trader.sellTransaction(price) )
+			{
+				locale.sendMessage(player, "trader-transaction-failed-money");
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_MONEY));
+			}
+			else
+			{ 
+				locale.sendMessage(player, "trader-transaction-success");
+			
+				//TODO Inventory removement
+			//	trader.removeFromInventory(item);
+				
+				trader.updateBuyLimits(qty);
+				
+				//call event Denizen Transaction Trigger
+				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.SUCCESS_SELL));
+				
+				//logging
+				trader.log("buy", 
+					trader.getSelectedItem().getItemStack().getTypeId(),
+					trader.getSelectedItem().getItemStack().getData().getData(), 
+					trader.getSelectedItem().getAmount()*qty, 
+					price );
+				
+			}
+		}*/
 	}	
 
 }

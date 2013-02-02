@@ -266,23 +266,6 @@ public abstract class Trader implements EconomyNpc {
 			is.setAmount(amountToAdd);
 			
 			setItemPriceLore(is);
-		/*	NBTTagEditor.removeDescription(is);
-			
-			StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
-			
-			if ( it != null )
-			{
-				int scale = is.getAmount() / it.getAmount();
-				
-				DecimalFormat f = new DecimalFormat("#.##");
-				
-				List<String> lore = new ArrayList<String>(); ;
-				for ( String l : itemsConfig.getPriceLore("pbuy") )
-					lore.add(l.replace("{unit}", f.format(getPrice(player, "buy"))+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
-				
-				if ( scale > 0 )
-					NBTTagEditor.addDescription(is, lore);	
-			}*/
 			
 			//set the item info the inv
 			inventory.setItem(inventory.firstEmpty(), is);
@@ -314,7 +297,8 @@ public abstract class Trader implements EconomyNpc {
 		}
 	}
 	
-	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event) {
+	public final boolean removeFromInventory(ItemStack item, InventoryClickEvent event)
+	{
 		if ( item.getAmount() != selectedItem.getAmount() ) 
 		{
 			if ( item.getAmount() % selectedItem.getAmount() == 0 ) 
@@ -325,6 +309,26 @@ public abstract class Trader implements EconomyNpc {
 		else
 		{
 			event.setCurrentItem(new ItemStack(Material.AIR));
+		}
+		return false;
+	}
+	
+	public final boolean removeFromInventory(Inventory inv) 
+	{
+		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() )
+		{
+		
+	/*	if ( item.getAmount() != selectedItem.getAmount() ) 
+		{
+			if ( item.getAmount() % selectedItem.getAmount() == 0 ) 
+				event.setCurrentItem(new ItemStack(Material.AIR));
+			else 
+				item.setAmount( item.getAmount() % selectedItem.getAmount() );
+		}
+		else
+		{
+			event.setCurrentItem(new ItemStack(Material.AIR));
+		}*/
 		}
 		return false;
 	}
