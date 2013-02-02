@@ -15,6 +15,16 @@ messages:
   error-argument-invalid: '^6Invalid rgument is supplied: ^3{argument}'
   plugin-reload: ^6Successfuly reloaded ^3dtlTraders
   trader-transaction-success: ^3You bought/sold an item
+  trader-transaction-failed-limit: ^6Limit for that item has been reached
+  trader-transaction-failed-inventory: ^6You dont got enough place in your inventory
+  trader-transaction-failed-money: ^6Someone does not have enough money
+  banker-tab-switch: ^6Switched to ^3{tab}
+  banker-deposit-success: ^6Item deposited
+  banker-withdraw-success: ^6Item withdrawed 
+  banker-tab-buy-success: ^6Bought a new tab
+  banker-tab-select-item: ^6Select a new tab item
+  banker-tab-select-item-success: ^6New item was set
+  banker-tab-select-item-canceled: ^6Selecting was aborted
 keywords:
   manage-global-limit: Global limit
   manage-player-limit: Player Limit
@@ -25,8 +35,9 @@ keywords:
   owner: Owner
   wallet: Wallet
   stack-price: Stack price
-  enabled: enabled
-  disabled: disabled
+  enabled: Enabled
+  disabled: Disabled
+  tab-price: Tab price
 lores:
   player-inventory:
     lore:
@@ -40,3 +51,34 @@ lores:
   trader-inventory-buy:
     lore:
     - '^7Price: ^6{price}'
+  sell-tab:
+    name: ^r^6Sell stock
+    lore:
+    - ^7Click to switch to buy stock
+  buy-tab:
+    name: ^r^6Buy stock
+    lore:
+    - ^7Click to switch to sell stock
+  manage-price: 
+    name: ^r^6Price management
+    lore:
+    - ^7Click to toggle price managing
+  manage-global-limit: 
+    name: ^r^6Global limit management
+    lore:
+    - ^7Click to toggle global limit managing
+  manage-player-limit: 
+    name: ^r^6Player limit management
+    lore:
+    - ^7Click to toggle player limit managing
+  manage-price: 
+    name: ^r^6Buy limit management
+    lore:
+    - ^7Allows to set amounts you 
+    - ^7want to buy from players
+  return: 
+    name: ^r^6Return
+    lore:
+    - ^7Return to stock management
+  amounts-return: 
+    name: 'Back to stock'

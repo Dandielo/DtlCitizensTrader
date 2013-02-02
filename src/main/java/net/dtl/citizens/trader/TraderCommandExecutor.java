@@ -112,9 +112,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 				{
 					locale.sendMessage(player, "plugin-reload");
 					//sender.sendMessage( locale.getLocaleString("reload-config") );
+					CitizensTrader.getLocaleManager().load();
 					CitizensTrader.getInstance().getItemConfig().reloadConfig();
 					CitizensTrader.getInstance().reloadConfig();
-					CitizensTrader.getLocaleManager().load();
 					
 					return true;
 				}

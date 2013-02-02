@@ -8,10 +8,10 @@ trader:
     file: 'patterns.yml'
     default: ''
   inventory-navigation: 
-    sell-tab:
-      item: '35:5'
-    buy-tab: 
+    sell-tab: 
       item: '35:3'
+    buy-tab: 
+      item: '35:5'
     manage-price: 
       item: '35:15'
     manage-buy-limit: 
