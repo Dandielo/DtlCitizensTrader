@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
 
@@ -21,6 +22,7 @@ public class TraderClickTrigger extends AbstractDenizenTrigger implements Listen
         // Check if trigger is enabled.
         if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
 
+        event.setCancelled(true);
         // If engaged or not cool, calls On Unavailable, if cool, calls On Click
         // If available (not engaged, and cool) sets cool down and returns true. 
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
@@ -35,7 +37,7 @@ public class TraderClickTrigger extends AbstractDenizenTrigger implements Listen
 
 	@Override
     public void onEnable() {
-        denizen.getServer().getPluginManager().registerEvents(this, denizen);
+		CitizensTrader.getInstance().getServer().getPluginManager().registerEvents(this, CitizensTrader.getInstance());
     }
 
 }
