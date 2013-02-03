@@ -150,9 +150,14 @@ public class StockItem {
 	
 	public String getName()
 	{
-		return name.isEmpty() ? item.getType().name() : name;
+		return name;
 	}
 
+	public String name()
+	{
+		return name.isEmpty() ? item.getType().name() : name;
+	}
+	
 	@Override
 	public String toString() {
 		

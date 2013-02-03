@@ -201,7 +201,7 @@ public class TraderTags implements Listener {
         for ( StockItem item : stock )
         {
         	String price = new DecimalFormat("#.##").format(item.calcPrice(p, trader.getStock().getPattern(), st));
-        	hint += " | " + hintItem.replaceAll("\\{price\\}", price).replaceAll("\\{name\\}", item.getName());
+        	hint += " | " + hintItem.replaceAll("\\{price\\}", price).replaceAll("\\{name\\}", item.name());
         }
 		return hint.substring(1);
 	}
@@ -211,7 +211,7 @@ public class TraderTags implements Listener {
 		String replaceString = "";
         List<StockItem> stock = trader.getStock().getStock(st);
         for ( StockItem item : stock )
-    		replaceString += "|" + item.getName();//.getItemStack().getType().name();
+    		replaceString += "|" + item.name();//.getItemStack().getType().name();
         
         String rep = replaceString.substring(1);
         replaceString = "REGEX:\\b(?i:" + rep + ")\\b";
