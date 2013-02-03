@@ -4,6 +4,7 @@ import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.NpcEcoManager;
+import net.dtl.citizens.trader.denizen.commands.TraderCommand;
 import net.dtl.citizens.trader.denizen.commands.TraderCreateCommand;
 import net.dtl.citizens.trader.denizen.commands.TransactionCommand;
 
@@ -25,6 +26,7 @@ abstract public class AbstractDenizenCommand extends AbstractCommand {
 			
 			new TransactionCommand();
 			new TraderCreateCommand();
+			new TraderCommand();
 
 		}
 	}
