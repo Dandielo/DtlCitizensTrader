@@ -1,7 +1,13 @@
 messages: 
   denizen-item-hint:
     message: '{item}: {price}'
-keywords: []
+  trader-transaction-success: 
+    message: ^6You {action} ^3{amount} ^6for ^3{price}
+keywords:
+  bought:
+    keyword: Bought
+  sold: 
+    keyword: Sold
 lores: 
   manage-price: 
     name: ^r^6Price management

@@ -130,7 +130,7 @@ public class ServerTrader extends Trader {
 						else
 						{ 
 							//TODO add debug mode
-							locale.sendMessage(player, "trader-transaction-success");
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 							//player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(price) ) );
 
 							addSelectedToInventory(0);
@@ -192,7 +192,7 @@ public class ServerTrader extends Trader {
 						//send message
 						//TODO add debug mode
 					//	player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						
 						addSelectedToInventory(slot);
 						
@@ -264,7 +264,7 @@ public class ServerTrader extends Trader {
 					else
 					{
 					//	player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						//TODO
 						updateBuyLimits(scale);
 
@@ -330,7 +330,7 @@ public class ServerTrader extends Trader {
 				else
 				{
 					//player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
-					locale.sendMessage(player, "trader-transaction-success");
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 					
 					//limits update
 					updateBuyLimits(scale);

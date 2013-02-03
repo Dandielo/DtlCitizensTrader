@@ -1,5 +1,7 @@
 package net.dtl.citizens.trader.types;
 
+import java.text.DecimalFormat;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -30,6 +32,7 @@ public class MarketTrader extends Trader {
 	@Override
 	public void simpleMode(InventoryClickEvent event) 
 	{
+		DecimalFormat f = new DecimalFormat("#.##");
 		
 	//	Player p = (Player) event.getWhoClicked();
 		int slot = event.getSlot();
@@ -129,7 +132,7 @@ public class MarketTrader extends Trader {
 						}
 						else
 						{
-							locale.sendMessage(player, "trader-transaction-success");
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						
 
 							addSelectedToInventory(0);
@@ -180,7 +183,7 @@ public class MarketTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						
 						addSelectedToInventory(slot);
 
@@ -226,7 +229,7 @@ public class MarketTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 					
 
 						removeFromInventory(event.getCurrentItem(),event);
@@ -272,7 +275,7 @@ public class MarketTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success");
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 				
 					updateBuyLimits(scale);
 					removeFromInventory(event.getCurrentItem(),event);

@@ -108,9 +108,8 @@ public class PlayerTrader extends Trader {
 					} 
 					else
 					{
-					//	if ( getClickedSlot() == slot )
-					//	{
-						//checks
+
+						double price = getSelectedItem().getPrice();
 						if ( !checkLimits() )
 						{
 							locale.sendMessage(player, "trader-transaction-failed-limit");
@@ -123,14 +122,14 @@ public class PlayerTrader extends Trader {
 						//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 						}
 						else
-						if ( !buyTransaction(getSelectedItem().getPrice()) )
+						if ( !buyTransaction(price) )
 						{
 							locale.sendMessage(player, "trader-transaction-failed-money");
 						//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 						}
 						else
 						{
-							locale.sendMessage(player, "trader-transaction-success");
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 
 
@@ -144,7 +143,7 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().getItemStack().getTypeId(),
 								getSelectedItem().getItemStack().getData().getData(), 
 								getSelectedItem().getAmount(), 
-								getSelectedItem().getPrice() );
+								price );
 							
 							//sending a message to the traders owner
 							this.messageOwner("bought", player.getName(), getSelectedItem(), 0);
@@ -165,7 +164,7 @@ public class PlayerTrader extends Trader {
 					
 				//	if ( getClickedSlot() == slot ) 
 				//	{ 
-						
+					double price = getSelectedItem().getPrice(slot);
 					if ( !checkLimits(slot) )
 					{
 						locale.sendMessage(player, "trader-transaction-failed-limit");
@@ -178,14 +177,14 @@ public class PlayerTrader extends Trader {
 					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 					}
 					else
-					if ( !buyTransaction(getSelectedItem().getPrice(slot)) ) 
+					if ( !buyTransaction(price) ) 
 					{
 						locale.sendMessage(player, "trader-transaction-failed-money");
 					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(getSelectedItem().getPrice(slot)) ) );
 						
 						//
@@ -200,7 +199,7 @@ public class PlayerTrader extends Trader {
 							getSelectedItem().getItemStack().getTypeId(),
 							getSelectedItem().getItemStack().getData().getData(), 
 							getSelectedItem().getAmount(slot), 
-							getSelectedItem().getPrice(slot) );
+							price );
 						
 						//sending a message to the traders owner
 						this.messageOwner("bought", player.getName(), getSelectedItem(), slot);
@@ -244,7 +243,7 @@ public class PlayerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success");
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 					//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 
 
@@ -298,7 +297,7 @@ public class PlayerTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success");
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 				//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 					
 					updateBuyLimits(scale);
