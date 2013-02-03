@@ -273,12 +273,16 @@ public class NpcEcoManager implements Listener {
 	
 	public HashSet<String> tempOpening = new HashSet<String>();
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
-		System.out.print("Click 1");
+		
+
 		final Player player = event.getClicker();
+		
+		if ( event.isCancelled() )
+			return;
 
 		if ( tempOpening.contains(player.getName()) )
 			return;
@@ -328,8 +332,8 @@ public class NpcEcoManager implements Listener {
 					}
 					else
 					{
-						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
-
+						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
+						
 						EconomyNpc newNpc = new ServerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
@@ -370,7 +374,7 @@ public class NpcEcoManager implements Listener {
 					}
 					else
 					{
-						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
 						EconomyNpc newNpc = new PlayerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
@@ -411,7 +415,7 @@ public class NpcEcoManager implements Listener {
 					}
 					else
 					{
-						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
+						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
 						EconomyNpc newNpc = new MarketTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));

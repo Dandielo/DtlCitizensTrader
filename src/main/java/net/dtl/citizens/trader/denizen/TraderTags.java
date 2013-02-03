@@ -170,6 +170,11 @@ public class TraderTags implements Listener {
             	{
             		e.setReplaced(transactions.get(player).item);
             	}
+            	else
+                if ( subtag.equals("instock") )
+            	{
+            		e.setReplaced(String.valueOf(transactions.get(player).left));
+            	}
         	}
         	if ( tag.equals("failure") )
         	{
