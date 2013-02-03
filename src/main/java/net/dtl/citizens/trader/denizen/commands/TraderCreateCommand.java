@@ -33,32 +33,6 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 	 * 
 	 * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
 	 * 
-	 * <ol><tt>[START|STOP]</tt><br> 
-	 *         The AnimationAction. Starts or stops the specified 'ANIMATION script'.</ol>
-	 * 
-	 * <ol><tt>[SCRIPT:animation_script]</tt><br> 
-	 *         The animation script to use. See below for format.</ol>
-	 * 
-	 * <ol><tt>[REPEATS:#]</tt><br> 
-	 *         Repeats of the animation, in "times". To be used with 'START'. After
-	 *         is has repated given times, this animation will automatically 'STOP'.</ol>
-	 * 
-	 * <p>
-	 * Note: Animations used with Denizen go into /plugins/Denizen/scripts/, along with your
-	 * other scripts. To use an animation in the root dtlAnimation folder, use EXECUTE commands. 
-	 * </p>
-	 * 
-	 * <br><b>Example Usage:</b><br>
-	 * <ol><tt>
-	 *  - ANIMATION START SCRIPT:pendulum_swing<br>
-	 *  - ANIMATION START SCRIPT:windmill_spin REPEATS:3<br>
-	 * </ol></tt>
-	 * 
-	 *
-	 * <p>
-	 * Note: See dtlAnimations documentation for more information. 
-	 * </p>
-	 * 
 	 * @author Dandielo
 	 *
 	 */

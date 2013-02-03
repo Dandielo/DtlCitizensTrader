@@ -32,6 +32,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -272,11 +273,11 @@ public class NpcEcoManager implements Listener {
 	
 	public HashSet<String> tempOpening = new HashSet<String>();
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGH)
 	public void onNPCRightCLick(NPCRightClickEvent event) {		
 		if ( !isEconomyNpc(event.getNPC()) )
 			return;
-		
+		System.out.print("Click 1");
 		final Player player = event.getClicker();
 
 		if ( tempOpening.contains(player.getName()) )
