@@ -9,4 +9,5 @@ public @interface Command {
 	String syntax() default "";
 	String desc() default "";
 	String perm() default "";
+	boolean npc() default true;
 }

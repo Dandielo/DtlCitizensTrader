@@ -10,8 +10,7 @@ import java.util.regex.Pattern;
 
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.commands.TradersExecutor;
-import net.dtl.citizens.trader.types.Banker;
-import net.dtl.citizens.trader.types.Trader;
+import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.types.tNPC;
 
 import org.bukkit.ChatColor;
@@ -19,6 +18,7 @@ import org.bukkit.command.CommandSender;
 
 public class CommandManager {
 	private static CitizensTrader plugin = CitizensTrader.getInstance();
+	private static LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	private TradersExecutor executor;
 	
@@ -62,29 +62,25 @@ public class CommandManager {
 				CitizensTrader.info("Added new command method");
 				CommandSyntax syntax = new CommandSyntax(annotation.name(), annotation.syntax());
 				
-				commands.put(syntax, new CommandBinding(clazz, method, syntax, annotation.perm()));
+				commands.put(syntax, new CommandBinding(clazz, method, syntax, annotation));
 			}
 		}
 	}
 	
+	//TODO Message
 	public boolean execute(String name, CommandSender sender, tNPC tNPC, String[] args)
 	{
 		for ( Map.Entry<CommandSyntax, CommandBinding> command : commands.entrySet() )
 			if ( new CommandSyntax(name, args).equals(command.getKey()) )
 			{
-				if ( name.equals("trader") && tNPC instanceof Trader )
-					return command.getValue().executeAsTrader(sender, tNPC, args);
-				if ( name.equals("banker") && tNPC instanceof Banker )
-					return command.getValue().executeAsBanker(sender, tNPC, args);
+				if ( command.getValue().requiresNpc() && tNPC == null )
+				{
+					locale.sendMessage(sender, "error-npc-not-selected");
+					return true;
+				}
+				else
+					return command.getValue().execute(sender, tNPC, args);
 			}
-		return false;
-	}
-
-	public boolean execute(String name, CommandSender sender, String[] args)
-	{
-		for ( Map.Entry<CommandSyntax, CommandBinding> command : commands.entrySet() )
-			if ( new CommandSyntax(name, args).equals(command.getKey()) )
-				return command.getValue().execute(sender, args);
 		return false;
 	}
 	
@@ -102,7 +98,7 @@ public class CommandManager {
 			this.name = name;
 			originalSyntax = name + " " + toString(args);
 		}
-		
+
 		public CommandSyntax(String name, String args) 
 		{
 			this.name = name;
@@ -173,76 +169,38 @@ public class CommandManager {
 		private CommandSyntax syntax;
 		private Class<?> clazz;
 		private String perm;
+		private boolean req;
 		
-		public CommandBinding(Class<?> clazz, Method method, CommandSyntax syntax, String perm) 
+		public CommandBinding(Class<?> clazz, Method method, CommandSyntax syntax, Command cmd) 
 		{
 			this.clazz = clazz;
 			this.method = method;
 			this.syntax = syntax;
-			this.perm = perm;
+			this.perm = cmd.perm();
+			this.req = cmd.npc(); 
 		}
 		
-		public Boolean executeAsTrader(CommandSender sender, tNPC tNPC, String[] args)
+		public boolean requiresNpc() {
+			return req;
+		}
+		
+		public Boolean execute(CommandSender sender, tNPC tNPC, String[] args)
 		{
 			if ( !CitizensTrader.getPermissionsManager().has(sender, perm) )
 			{
 				sender.sendMessage(ChatColor.RED + "You don't have permissions to use this command");
-				return true;
 			}
 			try 
 			{
-				Object result = method.invoke(objects.get(clazz), plugin, sender, (Trader) tNPC, syntax.commandArgs(args));
+				Object result = method.invoke(objects.get(clazz), plugin, sender, tNPC, syntax.commandArgs(args));
 				if ( result instanceof Boolean )
 					return (Boolean) result;
-				return false;
 			}
 			catch (Exception e)
 			{
 				e.printStackTrace();
 			}
-			return false;
-		}
-		
-		public Boolean executeAsBanker(CommandSender sender, tNPC tNPC, String[] args)
-		{
-			if ( !CitizensTrader.getPermissionsManager().has(sender, perm) )
-			{
-				sender.sendMessage(ChatColor.RED + "You don't have permissions to use this command");
-				return true;
-			}
-			try 
-			{
-				Object result = method.invoke(objects.get(clazz), plugin, sender, (Banker) tNPC, syntax.commandArgs(args));
-				if ( result instanceof Boolean )
-					return (Boolean) result;
-				return false;
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			return false;
-		}
-		
-		public Boolean execute(CommandSender sender, String[] args)
-		{
-			if ( !CitizensTrader.getPermissionsManager().has(sender, perm) )
-			{
-				sender.sendMessage(ChatColor.RED + "You don't have permissions to use this command");
-				return true;
-			}
-			try 
-			{
-				Object result = method.invoke(objects.get(clazz), plugin, sender, null, syntax.commandArgs(args));
-				if ( result instanceof Boolean )
-					return (Boolean) result;
-				return false;
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			return false;
+			return true;
 		}
 	}
 	

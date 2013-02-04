@@ -16,9 +16,7 @@ public class Wallet {
 	
 	//The associated plugin accounts
 	private static Economy economy;
-	/*private Clan clan = null; 
-	private Town town = null;
-	private Faction faction = null;*/
+
 	private String bank = "";
 	
 	//for private money
@@ -46,69 +44,6 @@ public class Wallet {
 		return money;
 	}
 	
-	//Towny
-	/*public void setTown(Town ntown)
-	{
-		town = ntown;
-	}
-	public String getTown()
-	{
-		if ( town == null )
-			return "";
-		return town.getName();
-	}
-	private void townyDeposit(double m)
-	{
-		try
-		{
-			double bankcap = TownySettings.getTownBankCap();
-			if (bankcap > 0) 
-				if (m + town.getHoldingBalance() <= bankcap)
-					town.setBalance(town.getHoldingBalance()+m, "Trader income");
-		} 
-		catch (Exception e) 
-		{
-			e.printStackTrace();
-		}
-	}
-	private boolean townyWithdraw(double m)
-	{
-		try 
-		{
-			if ( town.getHoldingBalance() >= m )
-				town.setBalance(town.getHoldingBalance()-m);
-			return town.getHoldingBalance() >= m;
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-		return false;
-	}
-	
-	//SimpleClans
-	public void setClan(Clan nClan) {
-		clan = nClan;
-	}
-	public String getClan()
-	{
-		if ( clan == null )
-			return "";
-		return clan.getTag();
-	}
-	
-	//Factions
-	public void setFaction(Faction nFaction)
-	{
-		faction = nFaction;
-	}
-	public String getFaction()
-	{
-		if ( faction == null )
-			return "";
-		return faction.getTag();
-	}
-	*/
 	//Bank
 	public boolean setBank(String player, String bankName)
 	{
@@ -143,14 +78,6 @@ public class Wallet {
 			case NPC: 
 				money += m;
 				break;
-		/*	case SIMPLE_CLANS: 
-				clan.setBalance(clan.getBalance()+m); 
-				break;
-			case FACTIONS: 
-				Econ.deposit(faction.getAccountId(), m); 
-				break;
-			case TOWNY: 
-				townyDeposit(m);*/
 			default:
 				break;
 		}
@@ -168,23 +95,9 @@ public class Wallet {
 				if ( money >= m ) 
 					money -= m; 
 				return money >= m;
-	/*		case FACTIONS:
-				return Econ.withdraw(faction.getAccountId(), m);
-			case SIMPLE_CLANS:
-				if ( clan.getBalance() >= m ) 
-					clan.setBalance(clan.getBalance()-m);
-				return clan.getBalance() >= m;
-			case TOWNY:
-				return townyWithdraw(m);*/
 			default:
 				return true;
 		}
-	}
-
-	//Deprecated functions
-	@Deprecated
-	public void setEconomy(Economy e) {
-		//economy = e;
 	}
 	
 	public enum WalletType

@@ -75,12 +75,15 @@ public class LocaleUpdater {
 			{
 				loc.set(LocaleManager.buildPath("backup","keywords", key.substring(1)), keywords.get(entry.getKey()));
 
-				keywords.put(new LocaleEntry("#" + entry.getKey().newkey(), LocaleManager.pver), entry.getValue());
+				String n = entry.getKey().newkey();
+				if ( n.startsWith("#") )
+					n = n.substring(1);
+					
+				keywords.put(new LocaleEntry("#" + n, LocaleManager.pver), entry.getValue());
 				
 				if ( entry.getKey().hasNewkey() )
 					cache.remove(entry.getKey());
 				
-			//	loc.set(LocaleManager.buildPath("keywords",entry.getKey().newkey()), entry.getValue());
 			}
 			else
 			{

@@ -7,6 +7,7 @@ import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.CommandManager;
 import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.types.tNPC;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -30,16 +31,8 @@ public class TradersExecutor implements CommandExecutor {
 		
 		if ( sender instanceof Player )
 		{
-			NPC npc = citizens.getNPCSelector().getSelected(sender);
-			if ( npc != null && npc.hasTrait(TraderCharacterTrait.class) )
-			{
-				return cManager.execute(name, sender, traders.tNPC(sender), args);
-			}
-			else
-			{
-				return cManager.execute(name, sender, args);
-			}
-			
+			tNPC npc = traders.tNPC(sender);
+			return cManager.execute(name, sender, npc, args);
 		}
 		return true;
 	}

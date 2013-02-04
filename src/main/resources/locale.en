@@ -1,4 +1,4 @@
-ver: 1.0.1
+ver: 1.0.3
 messages:
   error-nopermission: ^6You dont have permissions to do this
   error-nopermission-creative: ^6You dont have permissions to do this while in ^3creative mode
@@ -12,12 +12,19 @@ messages:
   key-change: '^6Changed {key}: ^3{value}'
   key-value: '^6{key}: ^3{value}'
   error-argument-missing: ^6Argument is missing
-  error-argument-invalid: '^6Invalid rgument is supplied: ^3{argument}'
+  error-argument-invalid: '^6Invalid argument was supplied: ^3{argument}'
+  error-npc-not-selected: '^6You did not selected any trader'
   plugin-reload: ^6Successfuly reloaded ^3dtlTraders
   trader-transaction-success: ^3You bought/sold an item
   trader-transaction-failed-limit: ^6Limit for that item has been reached
   trader-transaction-failed-inventory: ^6You dont got enough place in your inventory
   trader-transaction-failed-money: ^6Someone does not have enough money
+  wallet-balance: '^6Wallet balance: ^3{amount}'
+  wallet-deposit: ^6Deposited ^3{amount} 
+  wallet-deposit-fail: 'You dont have enought money' 
+  wallet-withdraw: ^6Withdrawed ^3{amount} 
+  wallet-withdraw-fail: '^6Is there enough money to withdraw from this wallet?' 
+  wallet-invalid: ^6You can not use this command on this wallet type
   banker-tab-switch: ^6Switched to ^3{tab}
   banker-deposit-success: ^6Item deposited
   banker-withdraw-success: ^6Item withdrawed 
@@ -26,6 +33,7 @@ messages:
   banker-tab-select-item-success: ^6New item was set
   banker-tab-select-item-canceled: ^6Selecting was aborted
   denizen-item-hint: '{item}: {price}'
+  plugin-command-message: '^6== dtlTraders ^3{version} ^6=='
 keywords:
   manage-global-limit: Global limit
   manage-player-limit: Player Limit
