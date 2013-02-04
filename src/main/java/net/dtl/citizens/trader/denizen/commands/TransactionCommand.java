@@ -57,6 +57,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		for (String arg : scriptEntry.getArguments())
 		{
             if (aH.matchesItem(arg)) {
+
             	item = aH.getItemFrom(arg);
 				dB.echoDebug("...set ITEM: '%s'", item.getType().name());
                 continue;
@@ -76,7 +77,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 
 		// Check for null fields from 'required' arguments
 		if ( item == null ) 
-			throw new InvalidArgumentsException("Must specify a valid 'Animation SCRIPT'.");
+			throw new InvalidArgumentsException("Must specify a valid 'Item'.");
 		
 		scriptEntry.addObject("item", item);
 		scriptEntry.addObject("trader", trader);
@@ -91,6 +92,8 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		String action = (String) scriptEntry.getObject("action");
 		Trader trader = (Trader) scriptEntry.getObject("trader");
 		ItemStack item = (ItemStack) scriptEntry.getObject("item");
+		if ( item == null ) return;
+		
 		int qty = (Integer) scriptEntry.getObject("qty");
 		Player player = scriptEntry.getPlayer();
 		
@@ -125,8 +128,8 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			}
 			else
 			{ 
-				locale.sendMessage(player, "trader-transaction-success");
-			
+			//	locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+				
 				trader.addAmountToInventory(qty);//.addSelectedToInventory(0);
 
 				trader.updateBuyLimits(qty);

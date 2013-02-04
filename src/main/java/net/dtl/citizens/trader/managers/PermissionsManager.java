@@ -1,13 +1,7 @@
 package net.dtl.citizens.trader.managers;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import net.dtl.citizens.trader.CitizensTrader;
-/*
-import de.bananaco.bpermissions.imp.Permissions;
-
-import ru.tehkode.permissions.bukkit.PermissionsEx;
-*/
-//import net.dtl.permissions.bukkit.DtlPermissions;
 import net.milkbowl.vault.permission.Permission;
 
 public class PermissionsManager {
@@ -27,9 +21,9 @@ public class PermissionsManager {
         return (permission != null);
     }
 	
-	public boolean has(final Player player, final String permission)
+	public boolean has(final CommandSender sender, final String permission)
 	{
-		return this.permission.has(player, permission);
+		return this.permission.has(sender, permission);
 	}
 	
 	

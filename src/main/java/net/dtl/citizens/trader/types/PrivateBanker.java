@@ -8,6 +8,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.parts.BankerPart;
 
@@ -397,6 +398,11 @@ public class PrivateBanker extends Banker {
 		player.openInventory(getInventory());
 		return true;
 		
+	}
+
+	@Override
+	public EcoNpcType getType() {
+		return EcoNpcType.PRIVATE_BANKER;
 	}
 
 }

@@ -20,7 +20,7 @@ import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.BankerPart;
 
-abstract public class Banker implements EconomyNpc {
+abstract public class Banker implements tNPC {
 	
 	public enum BankStatus {
 		TAB, REMOTE_TAB, SETTINGS, SETTING_TAB;

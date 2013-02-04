@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.milkbowl.vault.economy.Economy;
@@ -218,6 +219,12 @@ public class MoneyBanker extends Banker {
 		
 		player.openInventory(getInventory());
 		return true;
+	}
+
+
+	@Override
+	public EcoNpcType getType() {
+		return EcoNpcType.MONEY_BANKER;
 	}
 	
 	

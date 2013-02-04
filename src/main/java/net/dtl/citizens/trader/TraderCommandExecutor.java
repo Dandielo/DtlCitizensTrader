@@ -13,7 +13,7 @@ import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
-import net.dtl.citizens.trader.types.EconomyNpc;
+import net.dtl.citizens.trader.types.tNPC;
 import net.dtl.citizens.trader.types.Trader;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 //import net.sacredlabyrinth.phaed.simpleclans.Clan;
@@ -56,7 +56,7 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			Player player = (Player) sender;
 
 			//get the selected NPC
-			EconomyNpc economyNpc = traderManager.getInteractionNpc(player.getName());
+			tNPC economyNpc = traderManager.getInteractionNpc(player.getName());
 			
 			if ( args.length < 1 )
 			{

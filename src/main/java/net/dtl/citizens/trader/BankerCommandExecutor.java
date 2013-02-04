@@ -5,7 +5,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.managers.PermissionsManager;
-import net.dtl.citizens.trader.types.EconomyNpc;
+import net.dtl.citizens.trader.types.tNPC;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -34,7 +34,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		}
 		
 		Player player = (Player) sender;
-		EconomyNpc banker = npcManager.getInteractionNpc(player.getName());
+		tNPC banker = npcManager.getInteractionNpc(player.getName());
 		
 		
 		if ( banker != null )

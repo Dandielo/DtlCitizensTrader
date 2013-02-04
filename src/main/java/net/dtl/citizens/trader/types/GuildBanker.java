@@ -5,6 +5,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.parts.BankerPart;
 
 public class GuildBanker extends Banker {
@@ -43,6 +44,12 @@ public class GuildBanker extends Banker {
 		return false;
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public EcoNpcType getType() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

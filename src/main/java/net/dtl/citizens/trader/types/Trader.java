@@ -34,7 +34,7 @@ import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
 
-public abstract class Trader implements EconomyNpc {
+public abstract class Trader implements tNPC {
 	
 	//Managers
 	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
@@ -568,8 +568,6 @@ public abstract class Trader implements EconomyNpc {
 			return TraderStatus.MANAGE_BUY;
 		return null;
 	}
-	
-	public abstract EcoNpcType getType();
 	
 	//loging function
 	public void log(String action, int id, byte data, int amount, double price) 

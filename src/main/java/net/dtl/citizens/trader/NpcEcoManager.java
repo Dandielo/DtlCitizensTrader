@@ -18,7 +18,7 @@ import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.types.Banker;
-import net.dtl.citizens.trader.types.EconomyNpc;
+import net.dtl.citizens.trader.types.tNPC;
 import net.dtl.citizens.trader.types.MarketTrader;
 import net.dtl.citizens.trader.types.MoneyBanker;
 import net.dtl.citizens.trader.types.PlayerTrader;
@@ -30,6 +30,7 @@ import net.dtl.citizens.trader.types.Trader.TraderStatus;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -51,16 +52,23 @@ public class NpcEcoManager implements Listener {
 	private Timer timer;
 	
 	//EconomyNpc
-	private HashMap<String,EconomyNpc> playerInteraction;
+	private HashMap<String,tNPC> playerInteraction;
 	private List<NPC> isEconomyNpc;
 	
 	public NpcEcoManager() 
 	{
 		//initialize playerInteraction
-		playerInteraction = new HashMap<String, EconomyNpc>();
+		playerInteraction = new HashMap<String, tNPC>();
 		//initialize the economyNpcList
 		isEconomyNpc = new ArrayList<NPC>();
 		initTimer();
+	}
+	
+	public tNPC tNPC(CommandSender sender)
+	{
+		if ( sender instanceof Player )
+			return playerInteraction.get(sender.getName());
+		return null;
 	}
 	
 	public void end() {
@@ -92,7 +100,7 @@ public class NpcEcoManager implements Listener {
 		return traders;
 	}
 	
-	public EconomyNpc getServerTraderByName(String name, Player player)
+	public tNPC getServerTraderByName(String name, Player player)
 	{
 		for ( NPC npc : isEconomyNpc )
 		{
@@ -102,13 +110,13 @@ public class NpcEcoManager implements Listener {
 		return null;
 	}
 	//Interaction
-	public EconomyNpc getInteractionNpc(String player) {
+	public tNPC getInteractionNpc(String player) {
 		if ( playerInteraction.containsKey(player) )
 			return playerInteraction.get(player);
 		return null;
 	}
 	//Interaction
-	public void addInteractionNpc(String player, EconomyNpc npc) {
+	public void addInteractionNpc(String player, tNPC npc) {
 		playerInteraction.put(player, npc);
 	}
 	//Interaction
@@ -126,7 +134,7 @@ public class NpcEcoManager implements Listener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event)
 	{
-		EconomyNpc economyNpc = playerInteraction.get(event.getPlayer().getName());
+		tNPC economyNpc = playerInteraction.get(event.getPlayer().getName());
 		
 		if ( economyNpc == null )
 			return;
@@ -168,7 +176,7 @@ public class NpcEcoManager implements Listener {
 			return;
 		
 		//Get the economy npc
-		EconomyNpc economyNpc = playerInteraction.get(p.getName());
+		tNPC economyNpc = playerInteraction.get(p.getName());
 		
 		if ( economyNpc == null )
 			return;
@@ -197,7 +205,7 @@ public class NpcEcoManager implements Listener {
 		final Player player = (Player) event.getPlayer();
 		
 		
-		EconomyNpc economyNpc = playerInteraction.get(player.getName());
+		tNPC economyNpc = playerInteraction.get(player.getName());
 		//System.out.print(event.getPlayer().getInventory().getSize());
 		
 		if ( economyNpc == null )
@@ -242,7 +250,7 @@ public class NpcEcoManager implements Listener {
 		Player player = (Player) event.getPlayer();
 		
 		//get the trader we are trading with
-		EconomyNpc economyNpc = playerInteraction.get(player.getName());
+		tNPC economyNpc = playerInteraction.get(player.getName());
 		
 		
 		if ( economyNpc == null )
@@ -304,7 +312,7 @@ public class NpcEcoManager implements Listener {
 		NPC npc = event.getNPC();
 		
 		//EconomyNpc
-		EconomyNpc economyNpc = playerInteraction.get(playerName);
+		tNPC economyNpc = playerInteraction.get(playerName);
 
 
 		//trader character
@@ -334,7 +342,7 @@ public class NpcEcoManager implements Listener {
 					{
 						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
-						EconomyNpc newNpc = new ServerTrader(characterTrait, npc, player);
+						tNPC newNpc = new ServerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -345,7 +353,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new ServerTrader(characterTrait, npc, player);
+					tNPC newNpc = new ServerTrader(characterTrait, npc, player);
 					playerInteraction.put(playerName, newNpc);
 					
 					if ( !newNpc.onRightClick(player, characterTrait, npc) )
@@ -376,7 +384,7 @@ public class NpcEcoManager implements Listener {
 					{
 						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
-						EconomyNpc newNpc = new PlayerTrader(characterTrait, npc, player);
+						tNPC newNpc = new PlayerTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -386,7 +394,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new PlayerTrader(characterTrait, npc, player);
+					tNPC newNpc = new PlayerTrader(characterTrait, npc, player);
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
@@ -417,7 +425,7 @@ public class NpcEcoManager implements Listener {
 					{
 						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
-						EconomyNpc newNpc = new MarketTrader(characterTrait, npc, player);
+						tNPC newNpc = new MarketTrader(characterTrait, npc, player);
 						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
@@ -427,7 +435,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new MarketTrader(characterTrait, npc, player);
+					tNPC newNpc = new MarketTrader(characterTrait, npc, player);
 					((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 					playerInteraction.put(playerName, newNpc);
 					
@@ -451,7 +459,7 @@ public class NpcEcoManager implements Listener {
 					
 					player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 					
-					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
+					tNPC newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 					playerInteraction.put(playerName, newNpc);
 				//	player.sendMessage( locale.getLocaleString("bank-deposit-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getDepositFee())) );
 				//	player.sendMessage( locale.getLocaleString("bank-withdraw-fee").replace("{fee}", new DecimalFormat("#.##").format(banker.getWithdrawFee())) );
@@ -469,7 +477,7 @@ public class NpcEcoManager implements Listener {
 						return;
 					}
 					
-					EconomyNpc newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
+					tNPC newNpc = new PrivateBanker(npc, characterTrait.getBankTrait(), playerName);
 					
 					playerInteraction.put(playerName, newNpc);
 					newNpc.onRightClick(player, characterTrait, npc);
@@ -491,7 +499,7 @@ public class NpcEcoManager implements Listener {
 					{
 						player.sendMessage(ChatColor.AQUA + economyNpc.getNpc().getFullName() + ChatColor.RED + " exited the manager mode");
 						
-						EconomyNpc newNpc = new MoneyBanker(npc, characterTrait, playerName);
+						tNPC newNpc = new MoneyBanker(npc, characterTrait, playerName);
 						playerInteraction.put(playerName, newNpc);
 						
 						newNpc.onRightClick(player, characterTrait, npc);
@@ -500,7 +508,7 @@ public class NpcEcoManager implements Listener {
 				}
 				else
 				{
-					EconomyNpc newNpc = new MoneyBanker(npc, characterTrait, playerName);
+					tNPC newNpc = new MoneyBanker(npc, characterTrait, playerName);
 					playerInteraction.put(playerName, newNpc);
 					
 					newNpc.onRightClick(player, characterTrait, npc);

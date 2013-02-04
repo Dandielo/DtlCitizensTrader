@@ -9,6 +9,8 @@ import net.dandielo.citizens.wallets.Wallets;
 import net.dtl.citizens.trader.cititrader.ShopTrait;
 import net.dtl.citizens.trader.cititrader.StockroomTrait;
 import net.dtl.citizens.trader.cititrader.WalletTrait;
+import net.dtl.citizens.trader.commands.core.BankerCommands;
+import net.dtl.citizens.trader.commands.core.TraderCommands;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
 import net.dtl.citizens.trader.denizen.TraderTags;
@@ -40,6 +42,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static Wallets wallets;
 	
 	//CitizensTrader Managers
+	private static CommandManager commandManager;
 	private static PermissionsManager permsManager;
 	private static BackendManager backendManager;
 	private static NpcEcoManager npcEcoManager;
@@ -146,12 +149,13 @@ public class CitizensTrader extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(npcEcoManager, this);
 		
 		//register command executor
-		getCommand("trader").setExecutor(new TraderCommandExecutor());
-		getCommand("banker").setExecutor(new BankerCommandExecutor());
+		commandManager = new CommandManager();
+		commandManager.registerCommands(TraderCommands.class);
+		commandManager.registerCommands(BankerCommands.class);
 		
 		//Denizen commands
 		initializeDenizens();
-		
+	
 		//plugin enabled
 		info("v" + pdfFile.getVersion() + " enabled.");
 

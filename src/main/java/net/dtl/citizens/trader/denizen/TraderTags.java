@@ -18,6 +18,7 @@ import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.objects.StockItem;
+import net.dtl.citizens.trader.objects.TransactionPattern;
 import net.dtl.citizens.trader.types.ServerTrader;
 import net.dtl.citizens.trader.types.Trader;
 
@@ -40,10 +41,10 @@ public class TraderTags implements Listener {
     //private Map<String, String> transactionFailed = new ConcurrentHashMap<String, String>();
 	
     /** TraderTags
-     * <trader.stock.sell.trigger>
-     * <trader.stock.sell.hint>
-     * <trader.stock.buy.trigger>
-     * <trader.stock.buy.hint>
+     * <trader.stock.sell/trigger>
+     * <trader.stock.sell/hint>
+     * <trader.stock.buy/trigger>
+     * <trader.stock.buy/hint>
      * <trader.pattern>
      * <trader.owner>
      * <trader.wallet>
@@ -108,11 +109,12 @@ public class TraderTags implements Listener {
         if (p == null) return;
         String player = p.getName();
 
+        if ( e.getNPC() == null ) return;
         NPC npc = e.getNPC().getCitizen();
         
         String name = e.getName().toLowerCase();
         String tag = e.getType().toLowerCase();
-        String subtag = e.getSubType().toLowerCase();
+        String subtag = e.getSubType() == null ? "" : e.getSubType().toLowerCase();
         
         if ( name.equals("trader") )
         {
@@ -122,7 +124,8 @@ public class TraderTags implements Listener {
         	Trader trader = new ServerTrader(npc.getTrait(TraderCharacterTrait.class), npc, p);
         	if ( tag.equals("pattern") )
         	{
-        		 e.setReplaced(trader.getStock().getPattern().getName());
+        		TransactionPattern pat = trader.getStock().getPattern();
+        		 e.setReplaced(pat == null ? "none" : pat.getName());
         	}
         	else
         	if ( tag.equals("wallet") )
@@ -135,10 +138,10 @@ public class TraderTags implements Listener {
         	else
         	if ( tag.equals("stock") )
         	{
-        		if ( !subtag.contains(".") )
+        		if ( !subtag.contains("-") )
         			return;
-        		String[] stock = subtag.split(".");
-        		
+        		String[] stock = subtag.split("-", 2);
+
         		if ( stock[1].equals("trigger") )
         			e.setReplaced(regexTrigger(p, trader, stock[0]));
         		else
@@ -146,7 +149,7 @@ public class TraderTags implements Listener {
         			e.setReplaced(hint(p, trader, stock[0]));
         	}
         	else
-        	if ( tag.equals("owner") );
+        	if ( tag.equals("owner") )
         	{
         		e.setReplaced(trader.getConfig().getOwner());
         	}
@@ -185,9 +188,10 @@ public class TraderTags implements Listener {
         		if ( playerChatHistory.containsKey(player) )
 				{
 					String last = playerChatHistory.get(player).get(0);
+
 					Matcher m = playerChatPattern.get(player).matcher(last);
 					if (m.find())
-						e.setReplaced(m.group());
+						e.setReplaced(m.group().toUpperCase());
 				}
         	}
         }
@@ -203,7 +207,7 @@ public class TraderTags implements Listener {
         	String price = new DecimalFormat("#.##").format(item.calcPrice(p, trader.getStock().getPattern(), st));
         	hint += " | " + hintItem.replaceAll("\\{price\\}", price).replaceAll("\\{name\\}", item.name());
         }
-		return hint.substring(1);
+		return hint.isEmpty() ? "empty stock" : hint.substring(3);
 	}
 
 	public String regexTrigger(Player p, Trader trader, String st)
@@ -211,7 +215,9 @@ public class TraderTags implements Listener {
 		String replaceString = "";
         List<StockItem> stock = trader.getStock().getStock(st);
         for ( StockItem item : stock )
-    		replaceString += "|" + item.name();//.getItemStack().getType().name();
+    		replaceString += "|" + item.name();
+        
+        if ( replaceString.isEmpty() ) return "REGEX:";
         
         String rep = replaceString.substring(1);
         replaceString = "REGEX:\\b(?i:" + rep + ")\\b";
