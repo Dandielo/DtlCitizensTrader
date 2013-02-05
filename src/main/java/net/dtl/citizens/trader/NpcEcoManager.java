@@ -100,12 +100,18 @@ public class NpcEcoManager implements Listener {
 		return traders;
 	}
 	
-	public tNPC getServerTraderByName(String name, Player player)
+	public Trader traderByName(String name, Player player)
 	{
 		for ( NPC npc : isEconomyNpc )
 		{
+			TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
 			if ( npc.getName().equals(name) )
-				return new ServerTrader(npc.getTrait(TraderCharacterTrait.class), npc, player);
+				if ( trait.getType().equals(EcoNpcType.SERVER_TRADER) )
+					return new ServerTrader(trait, npc, player);
+				else if ( trait.getType().equals(EcoNpcType.MARKET_TRADER) )
+					return new MarketTrader(trait, npc, player);
+				else if ( trait.getType().equals(EcoNpcType.PLAYER_TRADER) )
+					return new PlayerTrader(trait, npc, player);
 		}
 		return null;
 	}

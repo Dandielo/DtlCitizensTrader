@@ -11,11 +11,13 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.NpcEcoManager;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
+import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
@@ -26,20 +28,50 @@ public class TraderCommands {
 	
 	private static LocaleManager locale = CitizensTrader.getLocaleManager();
 	
-	//TODO create commands
+	//TODO management commands
 	@Command(
 	name = "trader",
 	syntax = "create {array}",
 	perm = "dtl.trader.commands.create",
 	npc = false)
-	public void traderCreate(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	public void traderCreate(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
 		String name = args.get("free");
 		String owner = args.get("o");
 		
-		EcoNpcType type = EcoNpcType.getTypeByName(args.get("t"));
-		WalletType wallet = WalletType.getTypeByName(args.get("w"));
-		EntityType entity = EntityType.fromName(args.get("e"));
+		EcoNpcType type = EcoNpcType.getTypeByName(args.get("t") == null ? "server" : args.get("t"));
+		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
+		EntityType entity = EntityType.fromName(args.get("e") == null ? "player" : args.get("e"));
+		
+		if ( name == null )
+		{
+			locale.sendMessage(sender, "error-argument-missing");
+			return;
+		}
+		
+		if ( wallet == null )
+			wallet = WalletType.NPC;
+		if ( type == null )
+			type = EcoNpcType.SERVER_TRADER;
+		if ( entity == null )
+			entity = EntityType.PLAYER;
+		
+		// Create and spawn the npc
+		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entity, name);
+		npc.addTrait(TraderCharacterTrait.class);
+		npc.spawn(sender.getLocation());
+		npc.addTrait(MobType.class);
+		npc.getTrait(MobType.class).setType(entity);
+		
+		// Add basic settings
+		npc.getTrait(TraderCharacterTrait.class).setType(type);
+		npc.getTrait(TraderCharacterTrait.class).implementTrader();
+
+		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		settings.setOwner(owner == null ? "no owner" : owner);
+		settings.getWallet().setType(wallet);
+		
+		locale.sendMessage(sender, "trader-created", "player", sender.getName(), "trader", name);
 	}
 	
 	@Command(
@@ -47,7 +79,7 @@ public class TraderCommands {
 	syntax = "hire {array}",
 	perm = "dtl.trader.commands.hire",
 	npc = false)
-	public void traderPlayerCreate(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
+	public void traderHire(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
 		String name = args.get("free");
 		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
@@ -75,6 +107,59 @@ public class TraderCommands {
 		
 		locale.sendMessage(sender, "trader-created", "player", sender.getName(), "trader", name);
 	}
+	
+	@Command(
+	name = "trader",
+	syntax = "manage {array}",
+	perm = "dtl.trader.commands.manage",
+	npc = false)
+	public void traderManage(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
+	{
+		NpcEcoManager man = CitizensTrader.getNpcEcoManager();
+		
+		String name = args.get("free");
+
+		if ( name == null )
+		{
+			if ( trader != null )
+			{
+				locale.sendMessage(sender, "managermode-disabled", "npc", trader.getNpc().getName());
+				man.removeInteractionNpc(sender.getName());
+			}
+			return;
+		}
+		else
+		{
+			String player = sender.getName();
+			
+			if ( trader != null )
+			{
+				locale.sendMessage(sender, "managermode-disabled", "npc", trader.getNpc().getName());
+				man.removeInteractionNpc(player);
+			}
+				
+			trader = man.traderByName(name, sender);
+			man.addInteractionNpc(player, trader);
+			
+			locale.sendMessage(sender, "managermode-enabled", "npc", man.getInteractionNpc(player).getNpc().getName());
+		}
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "open",
+	perm = "dtl.trader.commands.open")
+	public void traderOpen(CitizensTrader plugin, Player player, Trader trader, Map<String, String> args)
+	{
+		NBTTagEditor.removeDescriptions(player.getInventory());
+		if ( !trader.getTraderStatus().isManaging() )
+			trader.loadDescriptions(player, player.getInventory());	
+		
+		player.openInventory(trader.getInventory());
+	}
+	
+	//TODO Log commands
+	
 	
 	//TODO Config commands
 	@Command(

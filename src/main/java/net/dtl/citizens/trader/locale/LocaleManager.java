@@ -114,6 +114,11 @@ public class LocaleManager {
 	
 	public void load()
 	{
+		load(true);
+	}
+	
+	public void load(boolean update)
+	{
 		locale = new YamlConfiguration();
 		locale.options().pathSeparator(PATH_SEPARATOR);
 				
@@ -140,10 +145,10 @@ public class LocaleManager {
 			for ( String key : section.getKeys(false) )
 				lores.put(new LocaleEntry(key, ver), new ItemLocale(section.getString(buildPath(key, "name")), section.getStringList(buildPath(key, "lore"))));
 			
-			if ( ver == null || !ver.equals(pver) )
+			if ( ( ver == null || !ver.equals(pver) ) && update )
 			{
 				locale = updater.update(cache, lores, keywords, file);
-				load();
+				load(false);
 			}
 			
 		} 

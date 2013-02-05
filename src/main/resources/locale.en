@@ -11,7 +11,7 @@ messages:
   managermode-disabled: ^6Manager mode disabled for ^3{npc}
   key-change: '^6Changed {key}: ^3{value}'
   key-value: '^6{key}: ^3{value}'
-  error-argument-missing: ^6Argument is missing
+  error-argument-missing: '^6Argument is missing: {argument}'
   error-argument-invalid: '^6Invalid argument was supplied: ^3{argument}'
   error-npc-not-selected: '^6You did not selected any trader'
   plugin-reload: ^6Successfuly reloaded ^3dtlTraders

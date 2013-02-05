@@ -135,16 +135,16 @@ public final class TraderCommandExecutor implements CommandExecutor {
 					for ( int i = 1 ; i < args.length ; ++i )
 						name += args[i];
 					
-					Trader trader = (Trader) traderManager.getServerTraderByName(name, player);
+				//	Trader trader = (Trader) traderManager.getServerTraderByName(name, player);
 					
-					if ( trader == null )
+		//			if ( trader == null )
 					{
 						locale.sendMessage(player, "error-argument-invalid", "argument", name);
 						//player.sendMessage( locale.getLocaleString("xxx-argument-invalid", "argument:name") );
 						return true;
 					}
-					traderManager.addInteractionNpc(player.getName(), trader);
-					return traderManage(player, trader);
+				//	traderManager.addInteractionNpc(player.getName(), trader);
+			//		return traderManage(player, trader);
 				}
 				
 				
