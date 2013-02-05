@@ -4,8 +4,12 @@ import java.text.DecimalFormat;
 import java.util.Map;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 
+import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
@@ -14,6 +18,7 @@ import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
+import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 import net.dtl.citizens.trader.types.Trader;
 
@@ -21,7 +26,57 @@ public class TraderCommands {
 	
 	private static LocaleManager locale = CitizensTrader.getLocaleManager();
 	
-	//Config commands
+	//TODO create commands
+	@Command(
+	name = "trader",
+	syntax = "create {array}",
+	perm = "dtl.trader.commands.create",
+	npc = false)
+	public void traderCreate(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{
+		String name = args.get("free");
+		String owner = args.get("o");
+		
+		EcoNpcType type = EcoNpcType.getTypeByName(args.get("t"));
+		WalletType wallet = WalletType.getTypeByName(args.get("w"));
+		EntityType entity = EntityType.fromName(args.get("e"));
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "hire {array}",
+	perm = "dtl.trader.commands.hire",
+	npc = false)
+	public void traderPlayerCreate(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
+	{
+		String name = args.get("free");
+		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
+
+		if ( name == null )
+		{
+			locale.sendMessage(sender, "error-argument-missing");
+			return;
+		}
+		if ( wallet == null )
+			wallet = WalletType.NPC;
+		
+		// Create and spawn the npc
+		NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
+		npc.addTrait(TraderCharacterTrait.class);
+		npc.spawn(sender.getLocation());
+		
+		// Add basic settings
+		npc.getTrait(TraderCharacterTrait.class).setType(EcoNpcType.PLAYER_TRADER);
+		npc.getTrait(TraderCharacterTrait.class).implementTrader();
+
+		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		settings.setOwner(sender.getName());
+		settings.getWallet().setType(wallet);
+		
+		locale.sendMessage(sender, "trader-created", "player", sender.getName(), "trader", name);
+	}
+	
+	//TODO Config commands
 	@Command(
 	name = "trader",
 	syntax = "owner",

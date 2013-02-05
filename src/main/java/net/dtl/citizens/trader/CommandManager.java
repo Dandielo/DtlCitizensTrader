@@ -86,13 +86,13 @@ public class CommandManager {
 	
 	private static class CommandSyntax
 	{
-		private static final Pattern commandPattern = Pattern.compile("(<([^<>]*)>)|([ ]*\\(([^\\(\\)]*)\\))");
+		private static final Pattern commandPattern = Pattern.compile("(<([^<>]*)>)|([ ]*\\(([^\\(\\)]*)\\))|([ ]*\\{([^\\{\\}]*)\\})");
 		
 		private List<String> argumentNames = new ArrayList<String>();
 		private String name;
 		private String originalSyntax;
 		private Pattern syntax;
-		
+				
 		public CommandSyntax(String name, String[] args) 
 		{
 			this.name = name;
@@ -118,8 +118,32 @@ public class CommandManager {
 					argumentNames.add(matcher.group(4));
 					syntax = syntax.replace(matcher.group(3), "( [\\S]*){0,1}");
 				}
+				if ( matcher.group(5) != null )
+				{
+					argumentNames.add(matcher.group(6));
+					syntax = syntax.replace(matcher.group(5), "( [\\S\\s]*){0,}");
+				}
 			}
 			this.syntax = Pattern.compile(syntax);
+		}
+		
+		public Map<String, String> listArgs(String group)
+		{
+			Map<String, String> map = new HashMap<String, String>();
+			
+			String[] args = group.split(" ");
+			
+			String free = "";
+			for ( String arg : args )
+				if ( arg.contains(":") )
+					map.put(arg.split(":")[0], arg.split(":")[1]);
+				else
+					free += " " + arg;
+			
+			if ( !free.isEmpty() )
+				map.put("free", free.trim());
+			
+			return map;
 		}
 		
 		public Map<String, String> commandArgs(String[] args)
@@ -131,8 +155,11 @@ public class CommandManager {
 			matcher.find();
 			for ( int i = 0 ; i < max ; ++i )
 				if ( matcher.group(i+1) != null && !matcher.group(i+1).trim().isEmpty() )
-					map.put(argumentNames.get(i), matcher.group(i+1).trim());
-				
+					if ( argumentNames.get(i).equals("array") )
+						map.putAll(listArgs(matcher.group(i+1).trim()));
+					else
+						map.put(argumentNames.get(i), matcher.group(i+1).trim());
+			
 			return map;
 		}
 		
