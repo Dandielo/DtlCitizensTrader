@@ -164,6 +164,46 @@ public class TraderCommands {
 	//TODO Config commands
 	@Command(
 	name = "trader",
+	syntax = "reset <target> (stock)",
+	perm = "dtl.trader.commands.owner")
+	public void tradeReset(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{		
+		String target = args.get("target");
+		
+		if ( !target.equals("prices") && !target.equals("stock") )
+		{
+			locale.sendMessage(sender, "error-argument-invalid", "argument", target);
+			return;
+		}
+		
+		if ( args.containsKey("stock") )
+		{
+			String stock = args.get("stock");
+			if ( stock.equals("sell") )
+			{
+				npc.getStock().reset(stock, target);
+				
+				locale.sendMessage(sender, "trader-stock-cleared", "stock", "#sell-stock");
+			}
+			else
+			if ( stock.equals("buy") )
+			{
+				npc.getStock().reset(stock, target);
+
+				locale.sendMessage(sender, "trader-stock-cleared", "stock", "#buy-stock");
+			}
+			else
+				locale.sendMessage(sender, "error-argument-invalid", "argument", stock);
+		}
+
+		npc.getStock().reset(null, target);
+		
+		locale.sendMessage(sender, "trader-stock-cleared", "stock", "#sell-stock");
+		locale.sendMessage(sender, "trader-stock-cleared", "stock", "#buy-stock");
+	}
+	
+	@Command(
+	name = "trader",
 	syntax = "owner",
 	perm = "dtl.trader.commands.owner")
 	public void tradeOwner(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
@@ -235,10 +275,10 @@ public class TraderCommands {
 			tradePatternReload(plugin, sender, npc, args);
 			
 			if ( post.equals("clear") )
-				stock.clearStock();
+				stock.reset(null, "stock");
 				
 			if ( post.equals("reset") )
-				stock.resetPrices();
+				stock.reset(null, "prices");
 
 			locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
 		}

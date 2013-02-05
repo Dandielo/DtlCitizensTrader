@@ -981,7 +981,6 @@ public class ServerTrader extends Trader {
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
 		{
-		//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-creative") );
 			locale.sendMessage(player, "error-nopermission-creative");
 			return false;
 		}
@@ -994,13 +993,11 @@ public class ServerTrader extends Trader {
 				if ( !permissionsManager.has(player, "dtl.trader.options.manage") )
 				{
 					locale.sendMessage(player, "error-nopermission");
-				//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
 				if ( !trait.getConfig().getOwner().equals(player.getName()) )
 				{
 					locale.sendMessage(player, "error-nopermission");
-				//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "manage:{entity}", "entity:trader") );
 					return false;
 				}
 			}
@@ -1009,13 +1006,11 @@ public class ServerTrader extends Trader {
 			{
 				switchInventory( getStartStatus(player) );
 				locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
-		//		player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " exited the manager mode");
 				return true;
 			}	
 
 			locale.sendMessage(player, "managermode-enabled", "npc", npc.getFullName());
-		//	player.sendMessage(ChatColor.AQUA + npc.getFullName() + ChatColor.RED + " entered the manager mode!");
-
+	
 			switchInventory( getManageStartStatus(player) );
 			return true;
 		}

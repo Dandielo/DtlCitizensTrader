@@ -111,17 +111,6 @@ public class TraderStockPart implements InventoryHolder {
 		
 	}
 	
-	public void clearStock(String stock)
-	{
-		this.stock.get(stock).clear();
-	}
-	
-	public void clearStock()
-	{
-		clearStock("sell");
-		clearStock("buy");
-	}
-	
 	public Inventory getInventory(String startingStock, Player player)
 	{
 		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
@@ -513,16 +502,42 @@ public class TraderStockPart implements InventoryHolder {
 			si.getAmounts().remove(si.getAmounts().size()-1);
 	}
 
-	public void resetPrices() {
-		for ( StockItem item : stock.get("sell") )
+	public void reset(String st, String target)
+	{
+		if ( target.equals("prices") )
 		{
-			item.setRawPrice(0.0);
-			item.setPatternListening(true);
+			if ( st == null )
+			{
+				for ( StockItem item : stock.get("sell") )
+				{
+					item.setRawPrice(0.0);
+					item.setPatternListening(true);
+				}
+				for ( StockItem item : stock.get("buy") )
+				{
+					item.setRawPrice(0.0);
+					item.setPatternListening(true);
+				}
+			}
+			else
+				for ( StockItem item : stock.get(st) )
+				{
+					item.setRawPrice(0.0);
+					item.setPatternListening(true);
+				}
 		}
-		for ( StockItem item : stock.get("buy") )
+		else
+		if ( target.equals("stock") )
 		{
-			item.setRawPrice(0.0);
-			item.setPatternListening(true);
+			if ( st == null )
+			{
+				stock.get(st).clear();
+				stock.get(st).clear();
+			}
+			else
+			{
+				stock.get(stock).clear();
+			}
 		}
 	}
 }
