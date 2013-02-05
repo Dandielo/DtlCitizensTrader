@@ -27,6 +27,10 @@ messages:
     message: ^6This pattern already exists {pattern}
   error-command-invalid: 
     message: '^6This command is invalid'
+  banker-created: 
+    message: '^6You created a new banker: {banker}'
+  trader-created:
+    message: '^6You created a new trader: {trader}'
 keywords: 
   bought:
     keyword: Bought
@@ -36,10 +40,19 @@ keywords:
     keyword: Type
   server-trader:
     keyword: Server Trader
+    new: trader-server
   player-trader:
     keyword: Player Trader
+    new: trader-player
   market-trader:
     keyword: Market Trader
+    new: trader-market
+  banker-type: 
+    keyword: Banker type
+  banker-private: 
+    keyword: Private Banker
+  banker-money:
+    keyword: Money Banker
 lores: 
   manage-price: 
     name: ^r^6Price management

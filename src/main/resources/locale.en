@@ -1,25 +1,25 @@
 ver: 1.0.5
 messages:
+  plugin-reload: ^6Successfuly reloaded ^3dtlTraders
+  plugin-command-message: '^6== dtlTraders ^3{version} ^6=='
   error-nopermission: ^6You dont have permissions to do this
   error-nopermission-creative: ^6You dont have permissions to do this while in ^3creative mode
-  trader-manage-toggle: ^6Toggled ^3{mode} ^6management
-  trader-stock-item-select: ^6Item selected
-  trader-stock-item-add: ^6Item added
-  trader-stock-item-update: ^6Item updated
-  trader-stock-item-remove: ^6Item removed
-  managermode-enabled: ^6Manager mode enabled for ^3{npc}
-  managermode-disabled: ^6Manager mode disabled for ^3{npc}
-  key-change: '^6Changed {key}: ^3{value}'
-  key-value: '^6{key}: ^3{value}'
   error-command-invalid: '^6This command is invalid'
   error-argument-missing: '^6Argument is missing: {argument}'
   error-argument-invalid: '^6Invalid argument was supplied: ^3{argument}'
   error-npc-not-selected: '^6You did not selected any trader'
-  plugin-reload: ^6Successfuly reloaded ^3dtlTraders
+  trader-manage-toggle: ^6Toggled ^3{mode} ^6management
+  trader-created: '^6You created a new trader: {trader}'
+  trader-stock-item-select: ^6Item selected
+  trader-stock-item-add: ^6Item added
+  trader-stock-item-update: ^6Item updated
+  trader-stock-item-remove: ^6Item removed
   trader-transaction-success: ^3You bought/sold an item
   trader-transaction-failed-limit: ^6Limit for that item has been reached
   trader-transaction-failed-inventory: ^6You dont got enough place in your inventory
   trader-transaction-failed-money: ^6Someone does not have enough money
+  managermode-enabled: ^6Manager mode enabled for ^3{npc}
+  managermode-disabled: ^6Manager mode disabled for ^3{npc}
   wallet-balance: '^6Wallet balance: ^3{amount}'
   wallet-deposit: ^6Deposited ^3{amount} 
   wallet-deposit-fail: 'You dont have enought money' 
@@ -28,6 +28,7 @@ messages:
   wallet-invalid: ^6You can not use this command on this wallet type
   pattern-save-success: ^6Successfuly created ^3{pattern} ^6pattern
   pattern-save-fail-exists: ^6This pattern already exists ^3{pattern}
+  banker-created: '^6You created a new banker: {banker}'
   banker-tab-switch: ^6Switched to ^3{tab}
   banker-deposit-success: ^6Item deposited
   banker-withdraw-success: ^6Item withdrawed 
@@ -36,20 +37,27 @@ messages:
   banker-tab-select-item-success: ^6New item was set
   banker-tab-select-item-canceled: ^6Selecting was aborted
   denizen-item-hint: '{item}: {price}'
-  plugin-command-message: '^6== dtlTraders ^3{version} ^6=='
+  key-change: '^6Changed {key}: ^3{value}'
+  key-value: '^6{key}: ^3{value}'
 keywords:
   manage-global-limit: Global limit
   manage-player-limit: Player Limit
   manage-stock: Stock
   manage-price: Price
   price: Price
-  trader-type: Trader type
   owner: Owner
   wallet: Wallet
   stack-price: Stack price
   enabled: Enabled
   disabled: Disabled
   tab-price: Tab price
+  trader-type: Trader type
+  trader-server: Server Trader
+  trader-player: Player Trader
+  trader-market: Market Trader
+  banker-type: Banker type
+  banker-private: Private Banker
+  banker-money: Money Banker
 lores:
   player-inventory:
     lore:
