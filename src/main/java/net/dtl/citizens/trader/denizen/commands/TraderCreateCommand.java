@@ -83,7 +83,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 				continue;
 				// matches the same values as the AnimationAction enum
 			} else if (aH.matchesArg("SERVER, PLAYER, MARKET", arg)) {
-				type = EType.getTypeByName(aH.getStringFrom(arg).toLowerCase());
+				type = EType.fromName(aH.getStringFrom(arg).toLowerCase());
 				dB.echoDebug("...set TraderType: '%s'", type.toString());
 				continue;
 				// Unknown argument should be caught to avoid unwanted behavior.

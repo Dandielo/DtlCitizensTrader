@@ -42,7 +42,7 @@ public class TraderCommands {
 		String name = args.get("free");
 		String owner = args.get("o");
 		
-		EType type = EType.getTypeByName(args.get("t") == null ? "server" : args.get("t"));
+		EType type = EType.fromName(args.get("t") == null ? "server" : args.get("t"));
 		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
 		EntityType entity = EntityType.fromName(args.get("e") == null ? "player" : args.get("e"));
 		

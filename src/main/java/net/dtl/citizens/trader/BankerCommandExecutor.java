@@ -325,7 +325,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;
 				}
-				bankerType = EType.getTypeByName(arg.substring(2));
+				bankerType = EType.fromName(arg.substring(2));
 				if ( bankerType == null || bankerType.isTrader() )
 				{
 				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );

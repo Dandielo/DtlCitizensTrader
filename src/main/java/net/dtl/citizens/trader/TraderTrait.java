@@ -72,7 +72,7 @@ public class TraderTrait extends Trait {
 		
 		if ( type.equals("trader") )
 		{
-			this.type = EType.getTypeByName( data.getString("trader") );
+			this.type = EType.fromName( data.getString("trader") );
 			
 			if ( config == null )
 			{
@@ -95,7 +95,7 @@ public class TraderTrait extends Trait {
 		else
 		if ( type.equals("banker") )
 		{
-			this.type = EType.getTypeByName( data.getString("banker") );
+			this.type = EType.fromName( data.getString("banker") );
 			
 			if ( banker == null )
 				banker = new BankerPart();
@@ -109,7 +109,7 @@ public class TraderTrait extends Trait {
 		//old version loading
 		else
 		{
-			this.type = EType.getTypeByName( data.getString("trader-type", data.getString("type")) );
+			this.type = EType.fromName( data.getString("trader-type", data.getString("type")) );
 			
 			if ( config == null )
 			{
@@ -167,12 +167,12 @@ public class TraderTrait extends Trait {
 			return false;
 		}
 		
-		public static EType getTypeByName(String n) {
-			if ( n.equalsIgnoreCase("server") ) 
+		public static EType fromName(String n) {
+			if ( n.equalsIgnoreCase("server") || n.equalsIgnoreCase("s") ) 
 				return EType.SERVER_TRADER;
-			else if ( n.equalsIgnoreCase("player") )
+			else if ( n.equalsIgnoreCase("player") || n.equalsIgnoreCase("p") )
 				return EType.PLAYER_TRADER;
-			else if ( n.equalsIgnoreCase("market") )
+			else if ( n.equalsIgnoreCase("market") || n.equalsIgnoreCase("m") )
 				return EType.MARKET_TRADER;
 			else if ( n.equalsIgnoreCase("private") )
 				return EType.PRIVATE_BANKER;
