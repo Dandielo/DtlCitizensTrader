@@ -201,10 +201,8 @@ public class TraderTrait extends Trait {
 		}
 	}
 
-	//TODO CHANGE THIS!
 	public BankerPart getBankTrait() {
 		return banker;
 	}
-	
 	
 }

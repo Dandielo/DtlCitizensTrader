@@ -3,7 +3,6 @@ package net.dtl.citizens.trader.commands.core;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.LogManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -18,7 +17,7 @@ import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.locale.LocaleManager;
-import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.LogManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.Wallet;
@@ -169,7 +168,7 @@ public class TraderCommands {
 	npc = false)
 	public void log(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
-		LoggingManager log = CitizensTrader.getLoggingManager();
+		LogManager log = CitizensTrader.getLoggingManager();
 		
 		if ( args.get("task").equals("show") )
 		{

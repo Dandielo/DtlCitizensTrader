@@ -24,7 +24,7 @@ import net.dtl.citizens.trader.ItemsConfig;
 import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.locale.LocaleManager;
-import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.LogManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
@@ -38,7 +38,7 @@ public abstract class Trader implements tNPC {
 	
 	//Managers
 	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
-	protected static LoggingManager loggingManager = CitizensTrader.getLoggingManager();
+	protected static LogManager loggingManager = CitizensTrader.getLoggingManager();
 	protected static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
 	protected LocaleManager locale = CitizensTrader.getLocaleManager();
 	
@@ -309,26 +309,6 @@ public abstract class Trader implements tNPC {
 		else
 		{
 			event.setCurrentItem(new ItemStack(Material.AIR));
-		}
-		return false;
-	}
-	
-	public final boolean removeFromInventory(Inventory inv) 
-	{
-		for ( ItemStack item : inventory.all(selectedItem.getItemStack().getType()).values() )
-		{
-		
-	/*	if ( item.getAmount() != selectedItem.getAmount() ) 
-		{
-			if ( item.getAmount() % selectedItem.getAmount() == 0 ) 
-				event.setCurrentItem(new ItemStack(Material.AIR));
-			else 
-				item.setAmount( item.getAmount() % selectedItem.getAmount() );
-		}
-		else
-		{
-			event.setCurrentItem(new ItemStack(Material.AIR));
-		}*/
 		}
 		return false;
 	}

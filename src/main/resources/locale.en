@@ -1,4 +1,4 @@
-ver: 1.0.4
+ver: 1.0.5
 messages:
   error-nopermission: ^6You dont have permissions to do this
   error-nopermission-creative: ^6You dont have permissions to do this while in ^3creative mode

@@ -17,7 +17,7 @@ import net.dtl.citizens.trader.denizen.TraderTags;
 import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.BackendManager;
 import net.dtl.citizens.trader.managers.BankAccountsManager;
-import net.dtl.citizens.trader.managers.LoggingManager;
+import net.dtl.citizens.trader.managers.LogManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.milkbowl.vault.economy.Economy;
@@ -47,7 +47,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static BackendManager backendManager;
 	private static NpcManager npcEcoManager;
 	private static LocaleManager localeManager;
-	private static LoggingManager logManager;
+	private static LogManager logManager;
 	private static PatternsManager patternsManager;
 	private static BankAccountsManager accountsManager;
 	
@@ -97,7 +97,7 @@ public class CitizensTrader extends JavaPlugin {
 		patternsManager = new PatternsManager();
 		
 		npcEcoManager = new NpcManager();
-		logManager = new LoggingManager();
+		logManager = new LogManager();
 		
 		accountsManager = new BankAccountsManager();
 		accountsManager.loadAccounts();
@@ -212,7 +212,7 @@ public class CitizensTrader extends JavaPlugin {
 		return localeManager;
 	}
 	
-	public static LoggingManager getLoggingManager()
+	public static LogManager getLoggingManager()
 	{
 		return logManager;
 	}

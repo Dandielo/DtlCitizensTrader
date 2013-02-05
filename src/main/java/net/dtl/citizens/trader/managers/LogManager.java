@@ -18,7 +18,7 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class LoggingManager {
+public class LogManager {
 	//config file separator
 	private final static char PATH_SEPARATOR = '/';
 	
@@ -32,7 +32,7 @@ public class LoggingManager {
 	protected boolean playerLoggingEnabled; 
 	
 	//constructor
-	public LoggingManager()
+	public LogManager()
 	{	
 		this.initializePlayerLogs();
 		this.initializeGeneralLogg();
