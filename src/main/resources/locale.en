@@ -25,6 +25,8 @@ messages:
   wallet-withdraw: ^6Withdrawed ^3{amount} 
   wallet-withdraw-fail: '^6Is there enough money to withdraw from this wallet?' 
   wallet-invalid: ^6You can not use this command on this wallet type
+  pattern-save-success: ^6Successfuly created ^3{pattern} ^6pattern
+  pattern-save-fail-exists: ^6This pattern already exists ^3{pattern}
   banker-tab-switch: ^6Switched to ^3{tab}
   banker-deposit-success: ^6Item deposited
   banker-withdraw-success: ^6Item withdrawed 

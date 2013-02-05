@@ -361,9 +361,9 @@ public final class TraderCommandExecutor implements CommandExecutor {
 	{
 		CitizensTrader.getPatternsManager().reload();
 		
-		for ( NPC npc : TraderCommandExecutor.traderManager.getAllServerTraders() )
+	//	for ( NPC npc : TraderCommandExecutor.traderManager.getAllServerTraders() )
 		{
-			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
+	//		npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
 		}
 		
 		return true;
@@ -412,7 +412,6 @@ public final class TraderCommandExecutor implements CommandExecutor {
 			String target = args.length > 3 ? args[3] : "all";
 			String post = args.length > 3 ? args[4] : "";
 			
-			trader.getStock().getStock("sell");
 			patternsManager.setFromList(args[2], 
 										trader.getStock().getStock("sell"), 
 										trader.getStock().getStock("buy"), 

@@ -89,12 +89,12 @@ public class NpcEcoManager implements Listener {
 		return this.isEconomyNpc.contains(npc);
 	}
 	
-	public List<NPC> getAllServerTraders()
+	public List<NPC> getTraders(EcoNpcType type)
 	{
-		List<NPC> traders=  new ArrayList<NPC>();
+		List<NPC> traders =  new ArrayList<NPC>();
 		for ( NPC npc : isEconomyNpc )
 		{
-			if ( npc.getTrait(TraderCharacterTrait.class).getType().equals(EcoNpcType.SERVER_TRADER) )
+			if ( npc.getTrait(TraderCharacterTrait.class).getType().equals(type) )
 				traders.add(npc);
 		}
 		return traders;

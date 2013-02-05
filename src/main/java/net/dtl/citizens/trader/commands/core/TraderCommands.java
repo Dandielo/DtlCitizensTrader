@@ -5,11 +5,16 @@ import java.util.Map;
 
 import org.bukkit.command.CommandSender;
 
+import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
+import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.locale.LocaleManager;
+import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
+import net.dtl.citizens.trader.parts.TraderStockPart;
 import net.dtl.citizens.trader.types.Trader;
 
 public class TraderCommands {
@@ -36,14 +41,110 @@ public class TraderCommands {
 		locale.sendMessage(sender, "key-change", "key", "#owner", "value", args.get("player"));
 	}
 	
-	//Wallet commands
+	//TODO pattern commands
+	@Command(
+	name = "trader",
+	syntax = "pattern",
+	perm = "dtl.trader.commands.pattern")
+	public void tradePattern(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{
+		if ( npc.getStock().getPattern() != null )
+			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
+		else
+			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", "#disabled");
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "pattern <action> <pattern> (arg) (post)",
+	perm = "dtl.trader.commands.pattern")
+	public void tradePatternSet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{
+		PatternsManager man = CitizensTrader.getPatternsManager();
+		
+		String action = args.get("action");
+		String pattern = args.get("pattern");
+
+		if ( action.equals("set") )
+		{
+			if ( !npc.getStock().setPattern(pattern) )
+				locale.sendMessage(sender, "error-argument-invalid", "argument", pattern);
+			else
+				locale.sendMessage(sender, "key-change", "key", "#pattern", "value", pattern);
+		}
+		else
+		if ( action.equals("save") )
+		{
+			if ( man.getPattern(pattern) != null )
+			{
+				locale.sendMessage(sender, "pattern-save-fail-exists", "pattern", pattern);
+				return;
+			}
+			
+			String arg = args.get("arg") == null ? "all" : args.get("arg");
+			String post = args.get("post") == null ? "" : args.get("post");
+			
+			TraderStockPart stock = npc.getStock();
+			
+			man.setFromList(pattern, 
+					stock.getStock("sell"), 
+					stock.getStock("buy"), 
+					arg);
+			
+			// reload patterns
+			tradePatternReload(plugin, sender, npc, args);
+			
+			if ( post.equals("clear") )
+				stock.clearStock();
+				
+			if ( post.equals("reset") )
+				stock.resetPrices();
+
+			locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
+		}
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "pattern remove",
+	perm = "dtl.trader.commands.pattern")
+	public void tradePatternRemove(CitizensTrader plugin, CommandSender sender, Trader trader, Map<String, String> args)
+	{
+		trader.getStock().removePattern();
+		locale.sendMessage(sender, "key-change", "key", "#pattern", "value", "#disabled");
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "pattern reload",
+	perm = "dtl.trader.commands.pattern",
+	npc = false)
+	public void tradePatternReload(CitizensTrader plugin, CommandSender sender, Trader trader, Map<String, String> args)
+	{
+		// reload patterns
+		CitizensTrader.getPatternsManager().reload();
+		
+		// reload server traders
+		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EcoNpcType.SERVER_TRADER) )
+		{
+			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
+		}
+		
+		// reload market traders
+		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EcoNpcType.MARKET_TRADER) )
+		{
+			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
+		}
+	}
+	
+	//TODO Wallet commands
 	private static DecimalFormat format = new DecimalFormat("#.##");
 	
 	@Command(
 	name = "trader",
 	syntax = "wallet",
 	perm = "dtl.trader.commands.wallet")
-	public void tradeWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	public void traderWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		locale.sendMessage(sender, "key-value", "key", "#wallet", "value", npc.getWallet().getType().toString());
 	}
@@ -51,8 +152,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet set <wallet>",
-	perm = "dtl.trader.commands.wallet.set")
-	public void tradeSetWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	perm = "dtl.trader.commands.wallet")
+	public void traderSetWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		WalletType type = WalletType.getTypeByName(args.get("wallet"));
 		if ( type == null )
@@ -68,8 +169,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet deposit <amount>",
-	perm = "dtl.trader.commands.wallet.balance")
-	public void tradeWalletDeposit(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	perm = "dtl.trader.commands.wallet")
+	public void traderWalletDeposit(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		Wallet wallet = npc.getWallet();
 		double amount = Double.parseDouble(args.get("amount"));
@@ -87,8 +188,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet withdraw <amount>",
-	perm = "dtl.trader.commands.wallet.deposit")
-	public void tradeSetWalletWithdraw(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	perm = "dtl.trader.commands.wallet")
+	public void traderWalletWithdraw(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		Wallet wallet = npc.getWallet();
 		double amount = Double.parseDouble(args.get("amount"));
@@ -106,8 +207,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet balance",
-	perm = "dtl.trader.commands.wallet.withdraw")
-	public void tradeWalletBalance(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	perm = "dtl.trader.commands.wallet")
+	public void traderWalletBalance(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		Wallet wallet = npc.getWallet();
 		if ( !wallet.getType().equals(WalletType.NPC) )

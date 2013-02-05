@@ -21,6 +21,10 @@ messages:
     message: '^6Is there enough money to withdraw from this wallet?' 
   wallet-invalid: 
     message: ^6You can not use this command on this wallet type
+  pattern-save-success: 
+    message: ^6Successfuly created ^3{pattern} ^6pattern
+  pattern-save-fail-exists: 
+    message: ^6This pattern already exists {pattern}
 keywords:
   bought:
     keyword: Bought
