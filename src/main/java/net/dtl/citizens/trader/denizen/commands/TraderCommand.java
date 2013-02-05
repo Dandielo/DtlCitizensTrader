@@ -11,8 +11,8 @@ import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.types.MarketTrader;
@@ -66,12 +66,12 @@ public class TraderCommand extends AbstractDenizenCommand {
 	{
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		
-		if ( npc.hasTrait(TraderCharacterTrait.class) )
+		if ( npc.hasTrait(TraderTrait.class) )
 			return;
 		
 		if ( scriptEntry.getObject("action").equals("open") )
 		{
-			TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
+			TraderTrait trait = npc.getTrait(TraderTrait.class);
 			Trader trader = null;
 			Player player = scriptEntry.getPlayer();
 			

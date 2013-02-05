@@ -1,7 +1,7 @@
 package net.dtl.citizens.trader.events;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.types.Trader;
 
 import org.bukkit.entity.Player;
@@ -40,7 +40,7 @@ public class TraderOpenEvent extends Event implements Cancellable {
 	private Trader trader;
 	private NPC npc;
 	
-	private EcoNpcType type;
+	private EType type;
 
 	public Player getPlayer()
 	{
@@ -57,7 +57,7 @@ public class TraderOpenEvent extends Event implements Cancellable {
 		return npc;
 	}
 	
-	public EcoNpcType getTraderType()
+	public EType getTraderType()
 	{
 		return type;
 	}

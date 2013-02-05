@@ -15,8 +15,8 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.objects.Wallet.WalletType;
 
@@ -45,7 +45,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 	@Override
 	public void parseArgs(ScriptEntry scriptEntry) throws InvalidArgumentsException {
 		// Initialize fields used
-		EcoNpcType type = EcoNpcType.SERVER_TRADER;
+		EType type = EType.SERVER_TRADER;
 		EntityType entity = EntityType.PLAYER;
 		String name = null;
 		String pattern = CitizensTrader.getInstance().getConfig().getString("trader.patterns.default", "");
@@ -83,7 +83,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 				continue;
 				// matches the same values as the AnimationAction enum
 			} else if (aH.matchesArg("SERVER, PLAYER, MARKET", arg)) {
-				type = EcoNpcType.getTypeByName(aH.getStringFrom(arg).toLowerCase());
+				type = EType.getTypeByName(aH.getStringFrom(arg).toLowerCase());
 				dB.echoDebug("...set TraderType: '%s'", type.toString());
 				continue;
 				// Unknown argument should be caught to avoid unwanted behavior.
@@ -116,15 +116,15 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 		EntityType entity = (EntityType) scriptEntry.getObject("entity");
 		//creating the npc
 		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entity, (String) scriptEntry.getObject("name"));
-		npc.addTrait(TraderCharacterTrait.class);
+		npc.addTrait(TraderTrait.class);
 		npc.addTrait(MobType.class);
 		npc.getTrait(MobType.class).setType(entity);
 		npc.spawn((Location) scriptEntry.getObject("location"));
 		npc.getTrait(Owner.class).setOwner((String) scriptEntry.getObject("owner"));
 		
-		TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
+		TraderTrait trait = npc.getTrait(TraderTrait.class);
 		trait.implementTrader();
-		trait.setType((EcoNpcType) scriptEntry.getObject("type"));
+		trait.setType((EType) scriptEntry.getObject("type"));
 		trait.getStock().setPattern((String) scriptEntry.getObject("pattern"));
 		trait.getConfig().getWallet().setType((WalletType) scriptEntry.getObject("wallet"));
 		trait.getConfig().setOwner((String) scriptEntry.getObject("owner"));

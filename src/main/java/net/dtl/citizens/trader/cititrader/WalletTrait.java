@@ -4,12 +4,12 @@ import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.trait.trait.Owner;
 import net.citizensnpcs.api.util.DataKey;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.objects.Wallet;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 
 public class WalletTrait extends Trait {
-	private TraderCharacterTrait trait;
+	private TraderTrait trait;
 	
 	public WalletTrait() {
 		super("wallet");
@@ -31,9 +31,9 @@ public class WalletTrait extends Trait {
 	@Override
 	public void onAttach()
 	{
-		if ( !npc.hasTrait(TraderCharacterTrait.class) )
-			npc.addTrait(TraderCharacterTrait.class);
-		trait = npc.getTrait(TraderCharacterTrait.class);
+		if ( !npc.hasTrait(TraderTrait.class) )
+			npc.addTrait(TraderTrait.class);
+		trait = npc.getTrait(TraderTrait.class);
 	}
 	
 	@Override

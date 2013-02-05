@@ -11,8 +11,8 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
@@ -21,7 +21,7 @@ import net.dtl.citizens.trader.parts.TraderStockPart;
 
 public class PlayerTrader extends Trader {
 
-	public PlayerTrader(TraderCharacterTrait trait, NPC npc, Player player) {
+	public PlayerTrader(TraderTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
 	}
 
@@ -1053,7 +1053,7 @@ public class PlayerTrader extends Trader {
 	}
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) {
 		
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
@@ -1107,8 +1107,8 @@ public class PlayerTrader extends Trader {
 	}
 
 	@Override
-	public EcoNpcType getType() {
-		return EcoNpcType.PLAYER_TRADER;
+	public EType getType() {
+		return EType.PLAYER_TRADER;
 	}
 
 

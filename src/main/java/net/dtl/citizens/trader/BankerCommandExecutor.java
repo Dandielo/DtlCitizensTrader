@@ -3,7 +3,7 @@ package net.dtl.citizens.trader;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.managers.PermissionsManager;
 import net.dtl.citizens.trader.types.tNPC;
 
@@ -17,7 +17,7 @@ import org.bukkit.entity.Player;
 public class BankerCommandExecutor implements CommandExecutor {
 
 	//plugin instance
-	private static NpcEcoManager npcManager = CitizensTrader.getNpcEcoManager();
+	private static NpcManager npcManager = CitizensTrader.getNpcEcoManager();
 	private static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
 
 	//constructor
@@ -310,7 +310,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 		String traderName = "";
 		
 		EntityType entityType = EntityType.PLAYER;
-		EcoNpcType bankerType = EcoNpcType.PRIVATE_BANKER;
+		EType bankerType = EType.PRIVATE_BANKER;
 		
 		
 		//lets fetch the argument list
@@ -325,7 +325,7 @@ public class BankerCommandExecutor implements CommandExecutor {
 				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:banker") );
 					return true;
 				}
-				bankerType = EcoNpcType.getTypeByName(arg.substring(2));
+				bankerType = EType.getTypeByName(arg.substring(2));
 				if ( bankerType == null || bankerType.isTrader() )
 				{
 				//	player.sendMessage( locale.getLocaleString("lacks-permissions-xxx", "object:type") );
@@ -357,13 +357,13 @@ public class BankerCommandExecutor implements CommandExecutor {
 		
 		//creating the npc
 		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entityType, traderName);
-		npc.addTrait(TraderCharacterTrait.class);
+		npc.addTrait(TraderTrait.class);
 		npc.addTrait(MobType.class);
 		npc.getTrait(MobType.class).setType(entityType);
 		npc.spawn(player.getLocation());
 		
 		//change the trader settings
-		TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
+		TraderTrait trait = npc.getTrait(TraderTrait.class);
 		trait.setType(bankerType);
 		trait.implementBanker();
 		

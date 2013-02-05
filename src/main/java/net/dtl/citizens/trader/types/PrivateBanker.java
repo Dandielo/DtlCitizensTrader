@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.objects.BankItem;
 import net.dtl.citizens.trader.parts.BankerPart;
 
@@ -378,7 +378,7 @@ public class PrivateBanker extends Banker {
 
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) {
 		
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissions.has(player, "dtl.banker.bypass.creative") )
@@ -401,8 +401,8 @@ public class PrivateBanker extends Banker {
 	}
 
 	@Override
-	public EcoNpcType getType() {
-		return EcoNpcType.PRIVATE_BANKER;
+	public EType getType() {
+		return EType.PRIVATE_BANKER;
 	}
 
 }

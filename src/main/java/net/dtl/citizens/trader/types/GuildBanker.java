@@ -4,8 +4,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.parts.BankerPart;
 
 public class GuildBanker extends Banker {
@@ -40,14 +40,14 @@ public class GuildBanker extends Banker {
 	}
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) {
 		return false;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public EcoNpcType getType() {
+	public EType getType() {
 		// TODO Auto-generated method stub
 		return null;
 	}

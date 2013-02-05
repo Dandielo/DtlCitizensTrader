@@ -12,8 +12,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.objects.LimitSystem;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
@@ -24,7 +24,7 @@ public class MarketTrader extends Trader {
 
 	//private TransactionPattern pattern;
 	
-	public MarketTrader(TraderCharacterTrait trait, NPC npc, Player player) {
+	public MarketTrader(TraderTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
 		//pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
@@ -425,7 +425,7 @@ public class MarketTrader extends Trader {
 	
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) {
 		
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
@@ -488,7 +488,7 @@ public class MarketTrader extends Trader {
 	}
 
 	@Override
-	public EcoNpcType getType() {
-		return EcoNpcType.MARKET_TRADER;
+	public EType getType() {
+		return EType.MARKET_TRADER;
 	}
 }

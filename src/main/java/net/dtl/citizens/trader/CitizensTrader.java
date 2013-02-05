@@ -45,7 +45,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static CommandManager commandManager;
 	private static PermissionsManager permsManager;
 	private static BackendManager backendManager;
-	private static NpcEcoManager npcEcoManager;
+	private static NpcManager npcEcoManager;
 	private static LocaleManager localeManager;
 	private static LoggingManager logManager;
 	private static PatternsManager patternsManager;
@@ -96,7 +96,7 @@ public class CitizensTrader extends JavaPlugin {
 		info("loading patterns");
 		patternsManager = new PatternsManager();
 		
-		npcEcoManager = new NpcEcoManager();
+		npcEcoManager = new NpcManager();
 		logManager = new LoggingManager();
 		
 		accountsManager = new BankAccountsManager();
@@ -132,7 +132,7 @@ public class CitizensTrader extends JavaPlugin {
         initializeSoftDependPlugins();
         
         //register the DtlTraderTrait
-		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderCharacterTrait.class).withName("trader"));
+		CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(TraderTrait.class).withName("trader"));
 		
 		//register CItiTrader "compatibility" trait
 		if ( getConfig().getBoolean("trader.cititrader.convert") )
@@ -222,7 +222,7 @@ public class CitizensTrader extends JavaPlugin {
 		return backendManager;
 	}
 	
-	public static NpcEcoManager getNpcEcoManager()
+	public static NpcManager getNpcEcoManager()
 	{
 		return npcEcoManager;
 	}

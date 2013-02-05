@@ -8,15 +8,15 @@ import net.dtl.citizens.trader.parts.BankerPart;
 import net.dtl.citizens.trader.parts.TraderConfigPart;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 
-public class TraderCharacterTrait extends Trait {
-	private EcoNpcType type = EcoNpcType.SERVER_TRADER;
+public class TraderTrait extends Trait {
+	private EType type = EType.SERVER_TRADER;
 	private String defPattern;
 	
 	private TraderConfigPart config;
 	private TraderStockPart stock;
 	private BankerPart banker;
 
-	public TraderCharacterTrait() {
+	public TraderTrait() {
 		super("trader");
 	}
 	
@@ -28,7 +28,7 @@ public class TraderCharacterTrait extends Trait {
 	@Override
 	public void onAttach()
 	{
-		type = EcoNpcType.SERVER_TRADER;
+		type = EType.SERVER_TRADER;
 		implementTrader();
 		
 		if ( CitizensTrader.dtlWalletsEnabled() )
@@ -57,11 +57,11 @@ public class TraderCharacterTrait extends Trait {
 	}
 	
 	//The EcoNpc's type
-	public EcoNpcType getType()
+	public EType getType()
 	{
 		return type;
 	}
-	public void setType(EcoNpcType type)
+	public void setType(EType type)
 	{
 		this.type = type;
 	}
@@ -72,7 +72,7 @@ public class TraderCharacterTrait extends Trait {
 		
 		if ( type.equals("trader") )
 		{
-			this.type = EcoNpcType.getTypeByName( data.getString("trader") );
+			this.type = EType.getTypeByName( data.getString("trader") );
 			
 			if ( config == null )
 			{
@@ -86,16 +86,16 @@ public class TraderCharacterTrait extends Trait {
 			if ( CitizensTrader.dtlWalletsEnabled() )
 				config.loadDtlWallet(npc);
 			
-			if ( this.type.equals(EcoNpcType.SERVER_TRADER) && !defPattern.isEmpty() )
+			if ( this.type.equals(EType.SERVER_TRADER) && !defPattern.isEmpty() )
 				stock.setPattern(defPattern);
 			
-			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
+			if ( this.type.equals(EType.MARKET_TRADER) )
 				stock.linkItems();
 		}
 		else
 		if ( type.equals("banker") )
 		{
-			this.type = EcoNpcType.getTypeByName( data.getString("banker") );
+			this.type = EType.getTypeByName( data.getString("banker") );
 			
 			if ( banker == null )
 				banker = new BankerPart();
@@ -109,7 +109,7 @@ public class TraderCharacterTrait extends Trait {
 		//old version loading
 		else
 		{
-			this.type = EcoNpcType.getTypeByName( data.getString("trader-type", data.getString("type")) );
+			this.type = EType.getTypeByName( data.getString("trader-type", data.getString("type")) );
 			
 			if ( config == null )
 			{
@@ -120,7 +120,7 @@ public class TraderCharacterTrait extends Trait {
 			config.load(data);
 			stock.load(data);
 			
-			if ( this.type.equals(EcoNpcType.MARKET_TRADER) )
+			if ( this.type.equals(EType.MARKET_TRADER) )
 				stock.linkItems();
 		}
 	}
@@ -148,7 +148,7 @@ public class TraderCharacterTrait extends Trait {
 	}
 	
 	
-	public enum EcoNpcType {
+	public enum EType {
 		PLAYER_TRADER, SERVER_TRADER, MARKET_TRADER, PRIVATE_BANKER, MONEY_BANKER;
 		
 		public boolean isTrader()
@@ -167,17 +167,17 @@ public class TraderCharacterTrait extends Trait {
 			return false;
 		}
 		
-		public static EcoNpcType getTypeByName(String n) {
+		public static EType getTypeByName(String n) {
 			if ( n.equalsIgnoreCase("server") ) 
-				return EcoNpcType.SERVER_TRADER;
+				return EType.SERVER_TRADER;
 			else if ( n.equalsIgnoreCase("player") )
-				return EcoNpcType.PLAYER_TRADER;
+				return EType.PLAYER_TRADER;
 			else if ( n.equalsIgnoreCase("market") )
-				return EcoNpcType.MARKET_TRADER;
+				return EType.MARKET_TRADER;
 			else if ( n.equalsIgnoreCase("private") )
-				return EcoNpcType.PRIVATE_BANKER;
+				return EType.PRIVATE_BANKER;
 			else if ( n.equalsIgnoreCase("money") )
-				return EcoNpcType.MONEY_BANKER;
+				return EType.MONEY_BANKER;
 			return null;
 		}
 		

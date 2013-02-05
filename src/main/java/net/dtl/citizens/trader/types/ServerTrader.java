@@ -12,8 +12,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
@@ -28,7 +28,7 @@ public class ServerTrader extends Trader {
 	private TransactionPattern pattern = getStock().getPattern();
 	private LocaleManager locale = CitizensTrader.getLocaleManager();
 	
-	public ServerTrader(TraderCharacterTrait trait, NPC npc, Player player) {
+	public ServerTrader(TraderTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
 	//	pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
@@ -976,7 +976,7 @@ public class ServerTrader extends Trader {
 	}
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) 
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) 
 	{
 		if ( player.getGameMode().equals(GameMode.CREATIVE) 
 				&& !permissionsManager.has(player, "dtl.trader.bypass.creative") )
@@ -1024,8 +1024,8 @@ public class ServerTrader extends Trader {
 	}
 
 	@Override
-	public EcoNpcType getType() {
-		return EcoNpcType.SERVER_TRADER;
+	public EType getType() {
+		return EType.SERVER_TRADER;
 	}
 	
 }

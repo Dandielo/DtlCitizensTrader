@@ -11,8 +11,8 @@ import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.PlayerBankAccount;
 import net.milkbowl.vault.economy.Economy;
@@ -25,7 +25,7 @@ public class MoneyBanker extends Banker {
 	private static double itemValue; 
 	private String player;
 	
-	public MoneyBanker(NPC traderNpc, TraderCharacterTrait trait, String p) { 
+	public MoneyBanker(NPC traderNpc, TraderTrait trait, String p) { 
 		super(traderNpc, trait.getBankTrait(), p);
 
 		account = new PlayerBankAccount(player);
@@ -208,7 +208,7 @@ public class MoneyBanker extends Banker {
 	}
 
 	@Override
-	public boolean onRightClick(Player player, TraderCharacterTrait trait, NPC npc) {
+	public boolean onRightClick(Player player, TraderTrait trait, NPC npc) {
 		
 		/*TODO add descriptions to player items be aware!
 		 * 
@@ -223,8 +223,8 @@ public class MoneyBanker extends Banker {
 
 
 	@Override
-	public EcoNpcType getType() {
-		return EcoNpcType.MONEY_BANKER;
+	public EType getType() {
+		return EType.MONEY_BANKER;
 	}
 	
 	

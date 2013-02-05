@@ -7,8 +7,8 @@ import org.bukkit.event.Listener;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.NpcEcoManager;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.NpcManager;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenTrigger;
 
 public class TraderClickTrigger extends AbstractDenizenTrigger implements Listener {
@@ -19,7 +19,7 @@ public class TraderClickTrigger extends AbstractDenizenTrigger implements Listen
         // Check if NPC has triggers.
         if (!event.getNPC().hasTrait(TriggerTrait.class)) return;
         // Check if NPC is trader 
-        if (!event.getNPC().hasTrait(TraderCharacterTrait.class)) return;
+        if (!event.getNPC().hasTrait(TraderTrait.class)) return;
         // Check if trigger is enabled.
         if (!event.getNPC().getTrait(TriggerTrait.class).isEnabled(name)) return;
 

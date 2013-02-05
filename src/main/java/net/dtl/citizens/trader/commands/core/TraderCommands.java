@@ -13,9 +13,9 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.NpcEcoManager;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.NpcManager;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
@@ -42,7 +42,7 @@ public class TraderCommands {
 		String name = args.get("free");
 		String owner = args.get("o");
 		
-		EcoNpcType type = EcoNpcType.getTypeByName(args.get("t") == null ? "server" : args.get("t"));
+		EType type = EType.getTypeByName(args.get("t") == null ? "server" : args.get("t"));
 		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
 		EntityType entity = EntityType.fromName(args.get("e") == null ? "player" : args.get("e"));
 		
@@ -55,22 +55,22 @@ public class TraderCommands {
 		if ( wallet == null )
 			wallet = WalletType.NPC;
 		if ( type == null )
-			type = EcoNpcType.SERVER_TRADER;
+			type = EType.SERVER_TRADER;
 		if ( entity == null )
 			entity = EntityType.PLAYER;
 		
 		// Create and spawn the npc
 		NPC npc = CitizensAPI.getNPCRegistry().createNPC(entity, name);
-		npc.addTrait(TraderCharacterTrait.class);
+		npc.addTrait(TraderTrait.class);
 		npc.spawn(sender.getLocation());
 		npc.addTrait(MobType.class);
 		npc.getTrait(MobType.class).setType(entity);
 		
 		// Add basic settings
-		npc.getTrait(TraderCharacterTrait.class).setType(type);
-		npc.getTrait(TraderCharacterTrait.class).implementTrader();
+		npc.getTrait(TraderTrait.class).setType(type);
+		npc.getTrait(TraderTrait.class).implementTrader();
 
-		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		TraderConfigPart settings = npc.getTrait(TraderTrait.class).getConfig();
 		settings.setOwner(owner == null ? "no owner" : owner);
 		settings.getWallet().setType(wallet);
 		
@@ -97,14 +97,14 @@ public class TraderCommands {
 		
 		// Create and spawn the npc
 		NPC npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, name);
-		npc.addTrait(TraderCharacterTrait.class);
+		npc.addTrait(TraderTrait.class);
 		npc.spawn(sender.getLocation());
 		
 		// Add basic settings
-		npc.getTrait(TraderCharacterTrait.class).setType(EcoNpcType.PLAYER_TRADER);
-		npc.getTrait(TraderCharacterTrait.class).implementTrader();
+		npc.getTrait(TraderTrait.class).setType(EType.PLAYER_TRADER);
+		npc.getTrait(TraderTrait.class).implementTrader();
 
-		TraderConfigPart settings = npc.getTrait(TraderCharacterTrait.class).getConfig();
+		TraderConfigPart settings = npc.getTrait(TraderTrait.class).getConfig();
 		settings.setOwner(sender.getName());
 		settings.getWallet().setType(wallet);
 		
@@ -118,7 +118,7 @@ public class TraderCommands {
 	npc = false)
 	public void traderManage(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
-		NpcEcoManager man = CitizensTrader.getNpcEcoManager();
+		NpcManager man = CitizensTrader.getNpcEcoManager();
 		
 		String name = args.get("free");
 
@@ -332,15 +332,15 @@ public class TraderCommands {
 		CitizensTrader.getPatternsManager().reload();
 		
 		// reload server traders
-		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EcoNpcType.SERVER_TRADER) )
+		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.SERVER_TRADER) )
 		{
-			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
+			npc.getTrait(TraderTrait.class).getStock().reloadStock();
 		}
 		
 		// reload market traders
-		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EcoNpcType.MARKET_TRADER) )
+		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.MARKET_TRADER) )
 		{
-			npc.getTrait(TraderCharacterTrait.class).getStock().reloadStock();
+			npc.getTrait(TraderTrait.class).getStock().reloadStock();
 		}
 	}
 	

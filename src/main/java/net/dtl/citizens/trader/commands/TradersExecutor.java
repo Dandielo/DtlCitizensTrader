@@ -5,8 +5,8 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.CommandManager;
-import net.dtl.citizens.trader.NpcEcoManager;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.NpcManager;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.types.tNPC;
 
 import org.bukkit.command.Command;
@@ -24,7 +24,7 @@ public class TradersExecutor implements CommandExecutor {
 		citizens = (Citizens) CitizensAPI.getPlugin();
 	}
 	
-	private static NpcEcoManager traders = CitizensTrader.getNpcEcoManager();
+	private static NpcManager traders = CitizensTrader.getNpcEcoManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {

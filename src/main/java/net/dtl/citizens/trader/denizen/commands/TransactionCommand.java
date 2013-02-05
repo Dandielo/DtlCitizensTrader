@@ -12,7 +12,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
@@ -51,7 +51,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		String action = "SELL";
 		int qty = 1;
 		
-		trader = new ServerTrader(scriptEntry.getNPC().getCitizen().getTrait(TraderCharacterTrait.class), scriptEntry.getNPC().getCitizen(), scriptEntry.getPlayer());
+		trader = new ServerTrader(scriptEntry.getNPC().getCitizen().getTrait(TraderTrait.class), scriptEntry.getNPC().getCitizen(), scriptEntry.getPlayer());
 		CitizensTrader.getNpcEcoManager().addInteractionNpc(scriptEntry.getPlayer().getName(), trader);
 
 		for (String arg : scriptEntry.getArguments())

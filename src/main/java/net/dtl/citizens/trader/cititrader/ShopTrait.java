@@ -6,13 +6,13 @@ import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
 import net.citizensnpcs.api.util.ItemStorage;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.parts.TraderStockPart;
 import net.dtl.citizens.trader.types.Trader;
 
 public class ShopTrait extends Trait {
-	private TraderCharacterTrait trait;
+	private TraderTrait trait;
 
 	public ShopTrait() {
 		super("shop"); 
@@ -21,9 +21,9 @@ public class ShopTrait extends Trait {
 	@Override
 	public void onAttach()
 	{
-		if ( !npc.hasTrait(TraderCharacterTrait.class) )
-			npc.addTrait(TraderCharacterTrait.class);
-		trait = npc.getTrait(TraderCharacterTrait.class);
+		if ( !npc.hasTrait(TraderTrait.class) )
+			npc.addTrait(TraderTrait.class);
+		trait = npc.getTrait(TraderTrait.class);
 	}
 	
 	@Override

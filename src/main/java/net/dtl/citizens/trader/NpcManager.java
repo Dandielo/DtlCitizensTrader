@@ -10,7 +10,7 @@ import java.util.TimerTask;
 import net.citizensnpcs.api.event.NPCDespawnEvent;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.citizensnpcs.api.npc.NPC;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.events.TraderOpenEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.events.TraderTransactionEvent.TransactionResult;
@@ -42,7 +42,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 
-public class NpcEcoManager implements Listener {
+public class NpcManager implements Listener {
 	//trader configs
 	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
 	
@@ -55,7 +55,7 @@ public class NpcEcoManager implements Listener {
 	private HashMap<String,tNPC> playerInteraction;
 	private List<NPC> isEconomyNpc;
 	
-	public NpcEcoManager() 
+	public NpcManager() 
 	{
 		//initialize playerInteraction
 		playerInteraction = new HashMap<String, tNPC>();
@@ -89,12 +89,12 @@ public class NpcEcoManager implements Listener {
 		return this.isEconomyNpc.contains(npc);
 	}
 	
-	public List<NPC> getTraders(EcoNpcType type)
+	public List<NPC> getTraders(EType type)
 	{
 		List<NPC> traders =  new ArrayList<NPC>();
 		for ( NPC npc : isEconomyNpc )
 		{
-			if ( npc.getTrait(TraderCharacterTrait.class).getType().equals(type) )
+			if ( npc.getTrait(TraderTrait.class).getType().equals(type) )
 				traders.add(npc);
 		}
 		return traders;
@@ -104,13 +104,13 @@ public class NpcEcoManager implements Listener {
 	{
 		for ( NPC npc : isEconomyNpc )
 		{
-			TraderCharacterTrait trait = npc.getTrait(TraderCharacterTrait.class);
+			TraderTrait trait = npc.getTrait(TraderTrait.class);
 			if ( npc.getName().equals(name) )
-				if ( trait.getType().equals(EcoNpcType.SERVER_TRADER) )
+				if ( trait.getType().equals(EType.SERVER_TRADER) )
 					return new ServerTrader(trait, npc, player);
-				else if ( trait.getType().equals(EcoNpcType.MARKET_TRADER) )
+				else if ( trait.getType().equals(EType.MARKET_TRADER) )
 					return new MarketTrader(trait, npc, player);
-				else if ( trait.getType().equals(EcoNpcType.PLAYER_TRADER) )
+				else if ( trait.getType().equals(EType.PLAYER_TRADER) )
 					return new PlayerTrader(trait, npc, player);
 		}
 		return null;
@@ -322,7 +322,7 @@ public class NpcEcoManager implements Listener {
 
 
 		//trader character
-		TraderCharacterTrait characterTrait = npc.getTrait(TraderCharacterTrait.class);
+		TraderTrait characterTrait = npc.getTrait(TraderTrait.class);
 		
 		switch( characterTrait.getType() )
 		{

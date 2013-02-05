@@ -21,8 +21,8 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.ItemsConfig;
-import net.dtl.citizens.trader.TraderCharacterTrait;
-import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
+import net.dtl.citizens.trader.TraderTrait;
+import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.locale.LocaleManager;
 import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
@@ -61,7 +61,7 @@ public abstract class Trader implements tNPC {
 //	private Integer lastSlot = -1;
 
 
-	public Trader(TraderCharacterTrait trait, NPC npc, Player player) {
+	public Trader(TraderTrait trait, NPC npc, Player player) {
 		
 		// Initialize the trader
 		traderStock = trait.getStock();

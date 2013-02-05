@@ -14,8 +14,8 @@ import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
-import net.dtl.citizens.trader.NpcEcoManager;
-import net.dtl.citizens.trader.TraderCharacterTrait;
+import net.dtl.citizens.trader.NpcManager;
+import net.dtl.citizens.trader.TraderTrait;
 import net.dtl.citizens.trader.events.TraderTransactionEvent;
 import net.dtl.citizens.trader.objects.StockItem;
 import net.dtl.citizens.trader.objects.TransactionPattern;
@@ -31,7 +31,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class TraderTags implements Listener {
 	
-	private static NpcEcoManager manager = CitizensTrader.getNpcEcoManager();
+	private static NpcManager manager = CitizensTrader.getNpcEcoManager();
 	private static TraderTags tTags;
 	
     private Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
@@ -121,7 +121,7 @@ public class TraderTags implements Listener {
         	if ( !manager.isEconomyNpc(npc) )
         		return;
         	
-        	Trader trader = new ServerTrader(npc.getTrait(TraderCharacterTrait.class), npc, p);
+        	Trader trader = new ServerTrader(npc.getTrait(TraderTrait.class), npc, p);
         	if ( tag.equals("pattern") )
         	{
         		TransactionPattern pat = trader.getStock().getPattern();
