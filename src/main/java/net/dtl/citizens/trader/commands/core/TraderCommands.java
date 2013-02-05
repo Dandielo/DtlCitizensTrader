@@ -1,7 +1,9 @@
 package net.dtl.citizens.trader.commands.core;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.LogManager;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
@@ -16,6 +18,7 @@ import net.dtl.citizens.trader.TraderCharacterTrait;
 import net.dtl.citizens.trader.TraderCharacterTrait.EcoNpcType;
 import net.dtl.citizens.trader.commands.Command;
 import net.dtl.citizens.trader.locale.LocaleManager;
+import net.dtl.citizens.trader.managers.LoggingManager;
 import net.dtl.citizens.trader.managers.PatternsManager;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.objects.Wallet;
@@ -159,6 +162,30 @@ public class TraderCommands {
 	}
 	
 	//TODO Log commands
+	@Command(
+	name = "trader",
+	syntax = "log <task>",
+	perm = "dtl.trader.commands.log",
+	npc = false)
+	public void log(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{
+		LoggingManager log = CitizensTrader.getLoggingManager();
+		
+		if ( args.get("task").equals("show") )
+		{
+			List<String> logs = log.getPlayerLogs(sender.getName(), npc == null ? "" : npc.getNpc().getName());
+			
+			if ( logs == null )	return;
+			
+			for ( String entry : logs )
+				sender.sendMessage(entry);
+		}
+		if ( args.get("task").equals("clear") )
+		{
+			log.clearPlayerLogs(sender.getName(), npc == null ? "" : npc.getNpc().getName());
+			locale.sendMessage(sender, "trader-log-cleared");
+		}
+	}
 	
 	
 	//TODO Config commands
