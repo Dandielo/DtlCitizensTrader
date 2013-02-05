@@ -67,7 +67,6 @@ public class CommandManager {
 		}
 	}
 	
-	//TODO Message
 	public boolean execute(String name, CommandSender sender, tNPC tNPC, String[] args)
 	{
 		for ( Map.Entry<CommandSyntax, CommandBinding> command : commands.entrySet() )
@@ -81,7 +80,8 @@ public class CommandManager {
 				else
 					return command.getValue().execute(sender, tNPC, args);
 			}
-		return false;
+		locale.sendMessage(sender, "error-command-invalid");
+		return true;
 	}
 	
 	private static class CommandSyntax

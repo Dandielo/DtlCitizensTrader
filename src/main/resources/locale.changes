@@ -25,6 +25,8 @@ messages:
     message: ^6Successfuly created ^3{pattern} ^6pattern
   pattern-save-fail-exists: 
     message: ^6This pattern already exists {pattern}
+  error-command-invalid: 
+    message: '^6This command is invalid'
 keywords: 
   bought:
     keyword: Bought
