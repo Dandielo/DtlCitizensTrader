@@ -1,6 +1,5 @@
 package net.dtl.citizens.trader.denizen.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import net.aufdemrand.denizen.exceptions.CommandExecutionException;
@@ -12,7 +11,6 @@ import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
 import net.dtl.citizens.trader.CitizensTrader;
 import net.dtl.citizens.trader.TraderTrait;
-import net.dtl.citizens.trader.TraderTrait.EType;
 import net.dtl.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dtl.citizens.trader.objects.NBTTagEditor;
 import net.dtl.citizens.trader.types.MarketTrader;
@@ -27,7 +25,9 @@ public class TraderCommand extends AbstractDenizenCommand {
 	 * 
 	 * 
 	 * <br><b>dScript Usage:</b><br>
-	 * <pre>TRADER ({OPEN}|close)</pre>
+	 * <pre>TRADER ({OPEN}|CLOSE|PATTERN|WALLET) (ACTION:action) (PATTERN:pattern_name)</pre>
+	 * 
+	 * SET/REMOVE/OPEN/CLOSE/DEPOSIT/WITHDRAW
 	 * 
 	 * <ol><tt>Arguments: [] - Required, () - Optional, {} - Default</ol></tt>
 	 * 
@@ -48,7 +48,7 @@ public class TraderCommand extends AbstractDenizenCommand {
 
 		// Iterate through arguments
 		for (String arg : scriptEntry.getArguments()) {
-			if (aH.matchesArg("OPEN, CLOSE", arg)) {
+			if (aH.matchesArg("OPEN, CLOSE, PATTERN", arg)) {
 				action = aH.getStringFrom(arg).toLowerCase();
 				dB.echoDebug("...set Action: '%s'", action);
 				continue;
