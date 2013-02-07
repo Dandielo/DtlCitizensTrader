@@ -9,6 +9,7 @@ import net.dandielo.citizens.trader.cititrader.ShopTrait;
 import net.dandielo.citizens.trader.cititrader.StockroomTrait;
 import net.dandielo.citizens.trader.cititrader.WalletTrait;
 import net.dandielo.citizens.trader.commands.core.BankerCommands;
+import net.dandielo.citizens.trader.commands.core.GeneralCommands;
 import net.dandielo.citizens.trader.commands.core.TraderCommands;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenTrigger;
@@ -150,6 +151,7 @@ public class CitizensTrader extends JavaPlugin {
 		
 		//register command executor
 		commandManager = new CommandManager();
+		commandManager.registerCommands(GeneralCommands.class);
 		commandManager.registerCommands(TraderCommands.class);
 		commandManager.registerCommands(BankerCommands.class);
 		

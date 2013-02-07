@@ -1,5 +1,5 @@
 name: DtlCitizensTrader
-main: net.dtl.citizens.trader.CitizensTrader
+main: net.dandielo.citizens.trader.CitizensTrader
 depend: [Citizens,Vault]
 soft-depend: [Denizen,dtlWallets]
 version: 2.4.2

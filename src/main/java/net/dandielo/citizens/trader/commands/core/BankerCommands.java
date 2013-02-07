@@ -27,7 +27,7 @@ public class BankerCommands {
 	{
 		String name = args.get("free");
 		
-		EType type = EType.fromName(args.get("t") == null ? "server" : args.get("t"));
+		EType type = EType.fromName(args.get("t") == null ? "private" : args.get("t"));
 		EntityType entity = EntityType.fromName(args.get("e") == null ? "player" : args.get("e"));
 		
 		if ( name == null )
