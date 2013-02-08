@@ -8,6 +8,7 @@ public @interface Command {
 	String name();
 	String syntax() default "";
 	String desc() default "";
+	String usage() default "";
 	String perm() default "";
 	boolean npc() default true;
 }

@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 import net.dandielo.citizens.trader.commands.Command;
 import net.dandielo.citizens.trader.commands.TradersExecutor;
+import net.dandielo.citizens.trader.commands.core.GeneralCommands;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.types.tNPC;
 
@@ -59,7 +60,9 @@ public class CommandManager {
 			
 			if ( annotation != null )
 			{
-				CitizensTrader.info("Added new command method");
+				GeneralCommands.registerCommandInfo(annotation.name(), annotation);
+				
+			//	CitizensTrader.info("Added new command method");
 				CommandSyntax syntax = new CommandSyntax(annotation.name(), annotation.syntax());
 				
 				commands.put(syntax, new CommandBinding(clazz, method, syntax, annotation));
@@ -156,7 +159,7 @@ public class CommandManager {
 			matcher.find();
 			for ( int i = 0 ; i < max ; ++i )
 				if ( matcher.group(i+1) != null && !matcher.group(i+1).trim().isEmpty() )
-					if ( argumentNames.get(i).equals("array") )
+					if ( argumentNames.get(i).equals("args") )
 						map.putAll(listArgs(matcher.group(i+1).trim()));
 					else
 						map.put(argumentNames.get(i), matcher.group(i+1).trim());

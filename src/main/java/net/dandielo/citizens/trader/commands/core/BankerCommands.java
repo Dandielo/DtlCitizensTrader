@@ -20,7 +20,7 @@ public class BankerCommands {
 	
 	@Command(
 	name = "banker",
-	syntax = "create {array}",
+	syntax = "create {args}",
 	perm = "dtl.banker.commands.create",
 	npc = false)
 	public void traderCreate(CitizensTrader plugin, Player sender, Banker trader, Map<String, String> args)

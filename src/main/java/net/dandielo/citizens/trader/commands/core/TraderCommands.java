@@ -33,7 +33,7 @@ public class TraderCommands {
 	//TODO management commands
 	@Command(
 	name = "trader",
-	syntax = "create {array}",
+	syntax = "create {args}",
 	perm = "dtl.trader.commands.create",
 	npc = false)
 	public void traderCreate(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
@@ -78,7 +78,7 @@ public class TraderCommands {
 	
 	@Command(
 	name = "trader",
-	syntax = "hire {array}",
+	syntax = "hire {args}",
 	perm = "dtl.trader.commands.hire",
 	npc = false)
 	public void traderHire(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
@@ -112,7 +112,7 @@ public class TraderCommands {
 	
 	@Command(
 	name = "trader",
-	syntax = "manage {array}",
+	syntax = "manage {args}",
 	perm = "dtl.trader.commands.manage",
 	npc = false)
 	public void traderManage(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
@@ -262,52 +262,54 @@ public class TraderCommands {
 	
 	@Command(
 	name = "trader",
-	syntax = "pattern <action> <pattern> (arg) (post)",
+	syntax = "pattern set <pattern>",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePatternSet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
-		PatternsManager man = CitizensTrader.getPatternsManager();
-		
-		String action = args.get("action");
 		String pattern = args.get("pattern");
 
-		if ( action.equals("set") )
-		{
-			if ( !npc.getStock().setPattern(pattern) )
-				locale.sendMessage(sender, "error-argument-invalid", "argument", pattern);
-			else
-				locale.sendMessage(sender, "key-change", "key", "#pattern", "value", pattern);
-		}
+		if ( !npc.getStock().setPattern(pattern) )
+			locale.sendMessage(sender, "error-argument-invalid", "argument", pattern);
 		else
-		if ( action.equals("save") )
-		{
-			if ( man.getPattern(pattern) != null )
-			{
-				locale.sendMessage(sender, "pattern-save-fail-exists", "pattern", pattern);
-				return;
-			}
-			
-			String arg = args.get("arg") == null ? "all" : args.get("arg");
-			String post = args.get("post") == null ? "" : args.get("post");
-			
-			TraderStockPart stock = npc.getStock();
-			
-			man.setFromList(pattern, 
-					stock.getStock("sell"), 
-					stock.getStock("buy"), 
-					arg);
-			
-			// reload patterns
-			tradePatternReload(plugin, sender, npc, args);
-			
-			if ( post.equals("clear") )
-				stock.reset(null, "stock");
-				
-			if ( post.equals("reset") )
-				stock.reset(null, "prices");
+			locale.sendMessage(sender, "key-change", "key", "#pattern", "value", pattern);
+	}
+	
+	@Command(
+	name = "trader",
+	syntax = "pattern save <pattern> (arg) (post)",
+	perm = "dtl.trader.commands.pattern")
+	public void tradePatternSave(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	{
+		PatternsManager man = CitizensTrader.getPatternsManager();
+		
+		String pattern = args.get("pattern");
 
-			locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
+		if ( man.getPattern(pattern) != null )
+		{
+			locale.sendMessage(sender, "pattern-save-fail-exists", "pattern", pattern);
+			return;
 		}
+		
+		String arg = args.get("arg") == null ? "all" : args.get("arg");
+		String post = args.get("post") == null ? "" : args.get("post");
+		
+		TraderStockPart stock = npc.getStock();
+		
+		man.setFromList(pattern, 
+				stock.getStock("sell"), 
+				stock.getStock("buy"), 
+				arg);
+		
+		// reload patterns
+		tradePatternReload(plugin, sender, npc, args);
+		
+		if ( post.equals("clear") )
+			stock.reset(null, "stock");
+			
+		if ( post.equals("reset") )
+			stock.reset(null, "prices");
+
+		locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
 	}
 	
 	@Command(
