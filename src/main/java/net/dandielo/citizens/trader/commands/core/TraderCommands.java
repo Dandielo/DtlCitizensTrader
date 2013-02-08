@@ -87,6 +87,12 @@ public class TraderCommands {
 	npc = false)
 	public void traderHire(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
+		if ( !TraderTrait.addTrader(sender.getName()) )
+		{
+			locale.sendMessage(sender, "trader-hire-limit");
+			return;
+		}
+		
 		String name = args.get("free");
 		WalletType wallet = WalletType.getTypeByName(args.get("w") == null ? "npc" : args.get("w"));
 

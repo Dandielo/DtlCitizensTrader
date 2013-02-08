@@ -1,6 +1,9 @@
 package net.dandielo.citizens.trader;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.api.util.DataKey;
@@ -9,6 +12,27 @@ import net.dandielo.citizens.trader.parts.TraderConfigPart;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
 
 public class TraderTrait extends Trait {
+	//player trader manager
+	private static int limit = CitizensTrader.getInstance().getConfig().getInt("trader.player-limits", 1);
+	private static Map<String, Integer> limits = new HashMap<String, Integer>();
+	
+	public static boolean addTrader(String player)
+	{
+		if ( limits.get(player) != null && limits.get(player) >= limit )
+			return false;
+		limits.put(player, ( limits.get(player) == null ? 1 : limits.get(player) + 1 ));
+		return true;
+	}
+	
+	public static void removeTrader(String player)
+	{
+		if ( limits.get(player) != null && limits.get(player) > 0 )
+		{
+			limits.put(player, limits.get(player) - 1);
+		}
+	}
+	
+	//Trader trait
 	private EType type = EType.SERVER_TRADER;
 	private String defPattern;
 	
@@ -23,6 +47,11 @@ public class TraderTrait extends Trait {
 	@Override
 	public void onSpawn() {
 		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+	}
+	
+	@Override
+	public void onRemove() {
+		removeTrader(config.getOwner());
 	}
 	
 	@Override
@@ -82,6 +111,8 @@ public class TraderTrait extends Trait {
 			
 			config.load(data);
 			stock.load(data);
+			
+			addTrader(config.getOwner());
 			
 			if ( CitizensTrader.dtlWalletsEnabled() )
 				config.loadDtlWallet(npc);

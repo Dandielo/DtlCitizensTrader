@@ -75,7 +75,6 @@ public class CommandManager {
 		for ( Map.Entry<CommandSyntax, CommandBinding> command : commands.entrySet() )
 			if ( new CommandSyntax(name, args).equals(command.getKey()) )
 			{
-				System.out.print("Check");
 				if ( command.getValue().requiresNpc() && tNPC == null )
 				{
 					locale.sendMessage(sender, "error-npc-not-selected");
@@ -178,7 +177,6 @@ public class CommandManager {
 		{
 			if ( !(o instanceof CommandSyntax) )
 				return false;
-			System.out.print(((CommandSyntax)o).syntax.pattern() + " | " + originalSyntax + " = " + Pattern.matches(((CommandSyntax)o).syntax.pattern(), originalSyntax));
 			return Pattern.matches(((CommandSyntax)o).syntax.pattern(), originalSyntax);
 		}
 		

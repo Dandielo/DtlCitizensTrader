@@ -31,6 +31,8 @@ messages:
     message: '^6You created a new banker: {banker}'
   trader-created:
     message: '^6You created a new trader: {trader}'
+  trader-hire-limit: 
+    message: '^6You cannot hire more traders'
 keywords: 
   bought:
     keyword: Bought

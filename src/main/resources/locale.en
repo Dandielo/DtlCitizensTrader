@@ -1,4 +1,4 @@
-ver: 1.0.5
+ver: 1.0.6
 messages:
   plugin-reload: ^6Successfuly reloaded ^3dtlTraders
   plugin-command-message: '^6== dtlTraders ^3{version} ^6=='
@@ -10,6 +10,7 @@ messages:
   error-npc-not-selected: '^6You did not selected any trader'
   trader-manage-toggle: ^6Toggled ^3{mode} ^6management
   trader-created: '^6You created a new trader: {trader}'
+  trader-hire-limit: '^6You cannot hire more traders'
   trader-stock-item-select: ^6Item selected
   trader-stock-item-add: ^6Item added
   trader-stock-item-update: ^6Item updated
