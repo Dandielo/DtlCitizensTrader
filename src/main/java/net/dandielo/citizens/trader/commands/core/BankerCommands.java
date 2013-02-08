@@ -22,6 +22,8 @@ public class BankerCommands {
 	name = "banker",
 	syntax = "create {args}",
 	perm = "dtl.banker.commands.create",
+	desc = "creates a new banker with the given arguments | 'e:', 't:'",
+	usage = "- /banker create Banker Name e:zombie t:private",
 	npc = false)
 	public void traderCreate(CitizensTrader plugin, Player sender, Banker trader, Map<String, String> args)
 	{

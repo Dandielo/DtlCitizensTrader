@@ -35,6 +35,8 @@ public class TraderCommands {
 	name = "trader",
 	syntax = "create {args}",
 	perm = "dtl.trader.commands.create",
+	desc = "creates a new trader with the given arguments | 'e:', 't:', 'w:'",
+	usage = "- /trader create Wool trader e:sheep t:market w:npc",
 	npc = false)
 	public void traderCreate(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
@@ -80,6 +82,8 @@ public class TraderCommands {
 	name = "trader",
 	syntax = "hire {args}",
 	perm = "dtl.trader.commands.hire",
+	desc = "creates a new player trader ready for use | for players",
+	usage = "- /trader hire My Trader",
 	npc = false)
 	public void traderHire(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
@@ -113,6 +117,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "manage {args}",
+	desc = "toggle manager mode for a trader",
+	usage = "- /trader manage Wool trader",
 	perm = "dtl.trader.commands.manage",
 	npc = false)
 	public void traderManage(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
@@ -150,6 +156,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "open",
+	desc = "opens the managed traders stock form any place",
 	perm = "dtl.trader.commands.open")
 	public void traderOpen(CitizensTrader plugin, Player player, Trader trader, Map<String, String> args)
 	{
@@ -164,6 +171,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "log <task>",
+	desc = "shows or clears the log for the selected trader or for all traders if no one is selected",
+	usage = "- /trader log show",
 	perm = "dtl.trader.commands.log",
 	npc = false)
 	public void log(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
@@ -191,6 +200,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "reset <target> (stock)",
+	desc = "clears the stock or resets prices, given stock or both if 'stock' argument is empty",
+	usage = "- /trader reset buy",
 	perm = "dtl.trader.commands.owner")
 	public void tradeReset(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{		
@@ -231,6 +242,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "owner",
+	desc = "shows the traders owner, it's not same as the Npc owner",
 	perm = "dtl.trader.commands.owner")
 	public void tradeOwner(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -240,6 +252,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "owner set <player>",
+	desc = "changes the traders owner",
+	usage = "- /trader owner set dandielo",
 	perm = "dtl.trader.commands.owner.set")
 	public void tradeSetOwner(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -251,6 +265,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "pattern",
+	desc = "shows the pattern set for the selected trader or 'disabled' otherwise",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePattern(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -263,6 +278,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "pattern set <pattern>",
+	desc = "sets a new pattern for a trader",
+	usage = "- /trader pattern set global_prices",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePatternSet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -277,6 +294,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "pattern save <pattern> (arg) (post)",
+	desc = "saves/creates a new pattern using the selected traders stock (stock/prices/all) | you can clear/reset the stock after it's saved",
+	usage = "- /trader pattern save stock clear",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePatternSave(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -315,6 +334,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "pattern remove",
+	desc = "removes pattern from a trader",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePatternRemove(CitizensTrader plugin, CommandSender sender, Trader trader, Map<String, String> args)
 	{
@@ -325,6 +345,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "pattern reload",
+	desc = "reloads all patterns and trader stocks",
 	perm = "dtl.trader.commands.pattern",
 	npc = false)
 	public void tradePatternReload(CitizensTrader plugin, CommandSender sender, Trader trader, Map<String, String> args)
@@ -345,12 +366,12 @@ public class TraderCommands {
 		}
 	}
 	
-	//TODO Wallet commands
 	private static DecimalFormat format = new DecimalFormat("#.##");
 	
 	@Command(
 	name = "trader",
 	syntax = "wallet",
+	desc = "shows the current wallet type",
 	perm = "dtl.trader.commands.wallet")
 	public void traderWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -360,6 +381,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet set <wallet>",
+	desc = "sets a new wallet type",
+	usage = "- /trader wallet set player",
 	perm = "dtl.trader.commands.wallet")
 	public void traderSetWallet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -377,6 +400,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet deposit <amount>",
+	desc = "deposits money to the 'npc' wallet",
+	usage = "- /trader wallet deopsit 10",
 	perm = "dtl.trader.commands.wallet")
 	public void traderWalletDeposit(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -396,6 +421,8 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet withdraw <amount>",
+	desc = "withdraws money from the 'npc' wallet",
+	usage = "- /trader wallet withdraw 10",
 	perm = "dtl.trader.commands.wallet")
 	public void traderWalletWithdraw(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -415,6 +442,7 @@ public class TraderCommands {
 	@Command(
 	name = "trader",
 	syntax = "wallet balance",
+	desc = "shows the 'npc' wallet balance",
 	perm = "dtl.trader.commands.wallet")
 	public void traderWalletBalance(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{

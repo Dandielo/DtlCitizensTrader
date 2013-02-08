@@ -23,6 +23,7 @@ public class GeneralCommands {
 	name = "trader",
 	syntax = "",
 	perm = "dtl.trader.commands",
+	desc = "shows the current selected traders information",
 	npc = false)
 	public void trader(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -47,6 +48,7 @@ public class GeneralCommands {
 	name = "trader",
 	syntax = "reload",
 	perm = "dtl.trader.commands.reload",
+	desc = "reloads the locale and the config file",
 	npc = false)
 	public void traderReload(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -57,23 +59,12 @@ public class GeneralCommands {
 		//reload the item config file
 		plugin.getItemConfig().reloadConfig();
 	}
-
-	//TODO help command
-/*	@Command(
-	name = "trader",
-	syntax = "help",
-	perm = "dtl.trader.commands.help",
-	npc = false)
-	public void traderHelp(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
-	{
-		locale.sendMessage(sender, "plugin-command-message", "version", plugin.getDescription().getVersion());
-	}*/
 	
-	//TODO Banker commands
 	@Command(
 	name = "banker",
 	syntax = "",
 	perm = "dtl.banker.commands",
+	desc = "shows the current selected bankers information",
 	npc = false)
 	public void banker(CitizensTrader plugin, CommandSender sender, Banker npc, Map<String, String> args)
 	{
@@ -92,6 +83,7 @@ public class GeneralCommands {
 	name = "banker",
 	syntax = "reload",
 	perm = "dtl.banker.commands.reload",
+	desc = "reloads the locale and the config file",
 	npc = false)
 	public void bankerReload(CitizensTrader plugin, CommandSender sender, Banker npc, Map<String, String> args)
 	{
@@ -107,6 +99,8 @@ public class GeneralCommands {
 	@Command(
 	name = "banker",
 	syntax = "help (page)",
+	desc = "allows to get information about all banker commands",
+	perm = "dtl.banker.commands.help",
 	npc = false)
 	public void bankerHelp(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
 	{
@@ -169,6 +163,8 @@ public class GeneralCommands {
 	@Command(
 	name = "trader",
 	syntax = "help (page)",
+	desc = "allows to get information about all trader commands",
+	perm = "dtl.trader.commands.help",
 	npc = false)
 	public void traderHelp(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
 	{
