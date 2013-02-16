@@ -1,14 +1,87 @@
-package net.dandielo.citizens.trader.objects;
+package net.dandielo.citizens.trader.limits;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
-/**
- * New LimitClass (the old one will be removed after this one is complete)
- * 
- */
-public class LimitSystem {
-	private final StockItem thisItem;
+import net.dandielo.citizens.trader.objects.StockItem;
+
+public class Limits {
+	private final StockItem item;
+
+	private Map<String, Limit> limits = new HashMap<String, Limit>();
+
+	public Limits(StockItem item)
+	{
+		this.item = item;
+	}
+	
+	public StockItem getItem()
+	{
+		return item;
+	}
+	
+	public Limit getLimit(String limit)
+	{
+		return limits.get(limit);
+	}
+	
+	public void setLimit(String limit, Limit value)
+	{
+		limits.put(limit, value);
+	}
+	
+	public static class Limit
+	{
+		private int limit;
+		
+		private int timeout;
+		private Date date; 
+
+		private boolean useTime;
+		
+		public Limit(int limit, int timeout)
+		{
+			useTime = false;
+			this.limit = limit;
+			this.timeout = timeout;
+		}
+		
+		public Limit(int limit, Date date, int days)
+		{
+			useTime = true;
+			this.limit = limit;
+			this.date = date;
+			this.timeout = days;
+		}
+		
+		public int getLimit()
+		{
+			return limit;
+		}
+		
+		public int getTimeout()
+		{
+			return timeout;
+		}
+		
+		public Date getDate()
+		{
+			return date;
+		}
+		
+		public int getDays()
+		{
+			return timeout;
+		}
+		
+		public boolean usesTime()
+		{
+			return useTime;
+		}
+	}
+	
+	/*private final StockItem thisItem;
 	private StockItem linked;
 
 	//global limit for server traders, or amount saving for player traders
@@ -19,7 +92,7 @@ public class LimitSystem {
 	//players with a ongoing timeout (need to add a gile to save this)
 	private HashMap<String,Integer> players;
 	
-	public LimitSystem(StockItem item) {
+	public Limits(StockItem item) {
 		thisItem = item;
 		linked = null;
 		
@@ -171,9 +244,6 @@ public class LimitSystem {
 		return limit.limit < 0 ? "unlimited" : String.valueOf(limit.getAvaiableAmount());
 	}
 	
-	/* *
-	 * global limit
-	 */
 	public void setGlobalAmount(int amount) {
 		limit.setAmount(amount);
 	}
@@ -222,27 +292,15 @@ public class LimitSystem {
 	public int getUnusedLimit() {
 		return limit.getLimit() - limit.getAmount();
 	}
-	/* *
-	 * The Limit information of an item
-	 * 
-	 */
+
 	public class Limit {
-		/* *
-		 * Limit Variables
-		 */
+
 		private int limit = -1;
 		private int amount;
 		
-		/* *
-		 * TimeOut variables
-		 */
 		private Date timer = new Date();
 		private long timeout = 0;
 		
-		/* *
-		 * Constructors
-		 * 
-		 */
 		public Limit() {
 			this(0);
 		}
@@ -250,10 +308,6 @@ public class LimitSystem {
 			amount = a;
 		}
 		
-		/* *
-		 * Limit management functions
-		 * 
-		 */
 		public boolean hasLimit() {
 			return limit > -1;
 		}
@@ -305,10 +359,6 @@ public class LimitSystem {
 			return a >= limit;
 		}
 		
-		/* *
-		 * TimeOut management functions
-		 * 
-		 */
 		public long getTimeout() {
 			return timeout;
 		}
@@ -350,13 +400,6 @@ public class LimitSystem {
 			resetAmount();
 			resetTimer();
 		}
-	}
-	
-	
-	/* *
-	 * does the limit applies to the player or to the item
-	 * 
-	 */
-	
+	}*/
 	
 }

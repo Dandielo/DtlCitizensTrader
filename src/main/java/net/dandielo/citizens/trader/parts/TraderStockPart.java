@@ -5,14 +5,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import net.citizensnpcs.api.util.DataKey;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.ItemsConfig;
-import net.dandielo.citizens.trader.managers.PatternsManager;
+import net.dandielo.citizens.trader.managers.PermissionsManager;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
-import net.dandielo.citizens.trader.objects.TransactionPattern;
+import net.dandielo.citizens.trader.patterns.PatternsManager;
+import net.dandielo.citizens.trader.patterns.TPattern;
 import net.dandielo.citizens.trader.types.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
@@ -26,14 +29,26 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TraderStockPart implements InventoryHolder {
+	PermissionsManager perms = CitizensTrader.getPermissionsManager();
+	
+	// allow to set different stocks for different players 
+	private static Map<String, Map<String, List<StockItem>>> playerStocks = new HashMap<String, Map<String, List<StockItem>>>();
+	
+	public static Map<String, List<StockItem>> getPlayerStock(String player) {
+		return playerStocks.get(player);
+	}
+	
+	// patterns
 	private static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
+	
+	// config
 	private static ItemsConfig itemsConfig = CitizensTrader.getInstance().getItemConfig(); 
 	
 	public TraderStockPart(String name)
 	{
 		this(54, name);
-		pattern = null;
 	}
+	
 	private TraderStockPart(int size, String name)
 	{
 		this.name = name;
@@ -46,30 +61,48 @@ public class TraderStockPart implements InventoryHolder {
         stock.put("buy", new ArrayList<StockItem>());
     }
 	
+	// general stock configuration
+	private Map<Integer, TPattern> patterns = new TreeMap<Integer, TPattern>();
 	private int stockSize;
 	private String name;
-	private TransactionPattern pattern;
 	
-	private Map<String,List<StockItem>> stock;
+	private Map<String, List<StockItem>> stock;
 	
 	//set/get the pattern
-	public TransactionPattern getPattern()
+	public Map<Integer, TPattern> getPatterns()
 	{
-		return pattern;
+		return patterns;
 	}
-	public boolean setPattern(String pattern)
+	
+	public TPattern getPattern(String pattern)
+	{
+		TPattern p = null;
+		for ( TPattern pat : patterns.values() )
+			if ( pat.getName().equals(pattern) )
+				p = pat;
+		return p;
+	}
+	
+	public boolean addPattern(String pattern, int priority)
 	{
 		if ( patternsManager.getPattern(pattern) == null )
 			return false;
 		
-		this.pattern = patternsManager.getPattern(pattern);
-		this.reloadStock();
+		patterns.put(priority, patternsManager.getPattern(pattern));
+	//	reloadStock();
 		return true;
 	}
-	public void removePattern()
-	{
-		pattern = null;
-		reloadStock();
+	
+	public void removePattern(String pattern)
+	{	
+		patterns.remove(patternsManager.getPattern(pattern));
+	//	reloadStock();
+	}
+	
+	public void removeAllPatterns()
+	{	
+		patterns.clear();
+	//	reloadStock();
 	}
 	
 	public List<StockItem> getStock(String stock)
@@ -77,6 +110,39 @@ public class TraderStockPart implements InventoryHolder {
 		return this.stock.get(stock);
 	}
 	
+	public TraderStockPart createStockFor(Player p)
+	{
+		TraderStockPart pstock = new TraderStockPart(stockSize, name);
+		
+		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
+		{
+			TPattern pat = pattern.getValue();
+			if ( pat.getType().equals("item") && perms.has(p, pat.getName()) )
+			{
+				pstock.stock.get("sell").addAll( pat.getStockItems("sell") );
+				pstock.stock.get("buy").addAll( pat.getStockItems("buy") );
+			}
+			else
+			if ( pat.equals("price") )
+			{
+				pstock.patterns.put(pattern.getKey(), pat);
+			}
+		}
+
+		
+		for ( StockItem item : stock.get("sell") ) {
+			pstock.stock.get("sell").remove(item);
+			pstock.stock.get("sell").add(item);
+		}
+
+		for ( StockItem item : stock.get("buy") ) {
+			pstock.stock.get("buy").remove(item);
+			pstock.stock.get("buy").add(item);
+		}
+		
+		return pstock;
+	}
+	/*
 	public void reloadStock()
 	{
 		List<StockItem> oldSellStock = new ArrayList<StockItem>();
@@ -109,8 +175,8 @@ public class TraderStockPart implements InventoryHolder {
 			stock.get("buy").add(item);
 		}
 		
-	}
-	
+	}*/
+	/*
 	public Inventory getInventory(String startingStock, Player player)
 	{
 		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
@@ -131,6 +197,7 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
+	/*
 	
 	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type)
 	{
@@ -173,7 +240,7 @@ public class TraderStockPart implements InventoryHolder {
 		} 
 		
 		return inventory;
-	}
+	}*/
 
 	public void addItem(String stock ,String data) {
 		this.stock.get(stock).add(new StockItem(data));
@@ -273,11 +340,10 @@ public class TraderStockPart implements InventoryHolder {
 	
 	public void setInventoryWith(Inventory inventory, StockItem item, Player player) {
 		int i = 0;
+
 		for ( Integer amount : item.getAmounts() ) 
 		{
-			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", pattern, player));
-		//	chk.addEnchantments(item.getItemStack().getEnchantments());
-			
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", patterns, player));
 			
 			chk.setAmount(amount);
 			if ( item.getLimitSystem().checkLimit("", i) )
@@ -297,7 +363,7 @@ public class TraderStockPart implements InventoryHolder {
 		inventory.setItem(inventory.getSize() - 1, itemsConfig.getItemManagement(7));
 	}
 
-	public void linkItems()
+	/*public void linkItems()
 	{
 		for ( StockItem item : stock.get("sell") )
 		{
@@ -305,13 +371,13 @@ public class TraderStockPart implements InventoryHolder {
 			{
 				if ( item.equals(stock.get("buy").get(i)) )
 				{
-					item.getLimitSystem().linkWith(stock.get("buy").get(i));
-					stock.get("buy").get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
-					stock.get("buy").get(i).getLimitSystem().linkWith(item);
+				//	item.getLimitSystem().linkWith(stock.get("buy").get(i));
+				//	stock.get("buy").get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
+				//	stock.get("buy").get(i).getLimitSystem().linkWith(item);
 				}
 			}
 		}
-	}
+	}*/
 
 	//Returning the displayInventory
 	@Override
@@ -321,11 +387,9 @@ public class TraderStockPart implements InventoryHolder {
 		
 		for( StockItem item : stock.get("sell") ) 
 		{
-			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, "sell", pattern, null));
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, "sell", patterns, null));
 
-		//	chk.addEnchantments(item.getItemStack().getEnchantments());
-
-	        if ( item.getSlot() < 0 )
+			if ( item.getSlot() < 0 )
         		item.setSlot(inventory.firstEmpty());
 	        inventory.setItem(item.getSlot(),chk);
         }
@@ -363,7 +427,7 @@ public class TraderStockPart implements InventoryHolder {
 			}
 		}
 		
-		setPattern( data.getString("pattern", "") );
+	//	setPattern( data.getString("pattern", "") );
 	}
 
 	public void save(DataKey data)
@@ -422,24 +486,25 @@ public class TraderStockPart implements InventoryHolder {
 		return ItemStack.deserialize(map);
 	}
 	 
-	public static List<String> getLore(String type, StockItem item, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getLore(String type, StockItem item, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
 		if ( type.equals("glimit") )
-			return getLimitLore(item, stock, pattern, player);
+			return getLimitLore(item, stock, player);
 		if ( type.equals("plimit") )
-			return getPlayerLimitLore(item, stock, pattern, player);
+			return getPlayerLimitLore(item, stock, player);
 		if ( type.equals("manage") )
-			return getManageLore(item, stock, pattern, player);
-		return getPriceLore(item, 0, stock, pattern, player);
+			return getManageLore(item, stock, patterns, player);
+		return getPriceLore(item, 0, stock, patterns, player);
 	}
 	
-	public static List<String> getPriceLore(StockItem item, int i, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getPriceLore(StockItem item, int i, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
 
-		if ( pattern != null )
-			price = format.format(pattern.getItemPrice(player, item, stock, i, 0.0));
+		//TODO price
+		if ( patterns != null )
+			price = format.format(patterns.getItemPrice(player, item, stock, i, 0.0));
 		else
 			price = format.format(item.getPrice(i));
 		
@@ -450,20 +515,21 @@ public class TraderStockPart implements InventoryHolder {
 		return lore;
 	}
 	
-	public static List<String> getManageLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getManageLore(StockItem item, String stock, Player player)
 	{
+		org.bukkit.event.entity.EntityDeathEvent e;
 		List<String> lore = new ArrayList<String>();
-		if ( item.hasStackPrice() )
+		if ( item.stackPrice() )
 			lore.add("^7Stack price");
-		if ( item.isPatternListening() )
+		if ( item.patternPrice() )
 			lore.add("^7Pattern price");
-		if ( item.isPatternItem() )
+		if ( item.patternItem() )
 			lore.add("^7Pattern item");
 		
 		return lore;
 	}
 	
-	public static List<String> getPlayerLimitLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getPlayerLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
 		if ( item.getLimitSystem().hasLimit() )
@@ -475,7 +541,7 @@ public class TraderStockPart implements InventoryHolder {
 		return lore;
 	}
 	
-	public static List<String> getLimitLore(StockItem item, String stock, TransactionPattern pattern, Player player)
+	public static List<String> getLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
 		if ( item.getLimitSystem().hasLimit() )

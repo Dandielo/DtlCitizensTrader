@@ -14,7 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
-import net.dandielo.citizens.trader.objects.LimitSystem;
+import net.dandielo.citizens.trader.limits.Limits;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
@@ -932,7 +932,7 @@ public class PlayerTrader extends Trader {
 
 					
 					//set the limit system to 0/0/-2 (player empty configuration)
-					LimitSystem limitSystem = stockItem.getLimitSystem();
+					Limits limitSystem = stockItem.getLimitSystem();
 					limitSystem.setGlobalLimit(0);
 					limitSystem.setGlobalTimeout(-2000);
 					
@@ -993,7 +993,7 @@ public class PlayerTrader extends Trader {
 					
 					
 					//get the items limit system
-					LimitSystem limitSystem = getSelectedItem().getLimitSystem();
+					Limits limitSystem = getSelectedItem().getLimitSystem();
 					
 					
 					//timeout set to no timeout checks (-2000 = it will never reset)

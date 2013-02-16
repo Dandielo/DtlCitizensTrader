@@ -18,7 +18,7 @@ import net.dandielo.citizens.trader.NpcManager;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.objects.StockItem;
-import net.dandielo.citizens.trader.objects.TransactionPattern;
+import net.dandielo.citizens.trader.patterns.TPattern;
 import net.dandielo.citizens.trader.types.ServerTrader;
 import net.dandielo.citizens.trader.types.Trader;
 
@@ -124,7 +124,7 @@ public class TraderTags implements Listener {
         	Trader trader = new ServerTrader(npc.getTrait(TraderTrait.class), npc, p);
         	if ( tag.equals("pattern") )
         	{
-        		TransactionPattern pat = trader.getStock().getPattern();
+        		TPattern pat = trader.getStock().getPattern();
         		 e.setReplaced(pat == null ? "none" : pat.getName());
         	}
         	else

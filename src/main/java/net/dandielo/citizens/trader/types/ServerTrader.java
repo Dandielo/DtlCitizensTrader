@@ -20,12 +20,12 @@ import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionRes
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
-import net.dandielo.citizens.trader.objects.TransactionPattern;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
+import net.dandielo.citizens.trader.patterns.TPattern;
 
 public class ServerTrader extends Trader {
 
-	private TransactionPattern pattern = getStock().getPattern();
+	private TPattern pattern = getStock().getPattern();
 	private LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	public ServerTrader(TraderTrait trait, NPC npc, Player player) {

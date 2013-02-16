@@ -1,4 +1,4 @@
-package net.dandielo.citizens.trader.objects;
+package net.dandielo.citizens.trader.patterns;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,35 +7,34 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import net.dandielo.citizens.trader.CitizensTrader;
-import net.dandielo.citizens.trader.managers.PatternsManager;
+import net.dandielo.citizens.trader.objects.StockItem;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-public class TransactionPattern {
+public class TPattern {
 	private static PatternsManager patternsManager;
 	
 	private final String name;
-	private final boolean tier;
+	private final String type;
 	
 	HashMap<String, List<StockItem>> patternItems;
 	HashMap<String, HashMap<String, Double>> patternPrices;
-	TreeMap<String, TransactionPattern> patternInherits;
-	TreeMap<String, TransactionPattern> patternTiers;
+	TreeMap<String, TPattern> patternInherits;
+	TreeMap<String, TPattern> patternTiers;
 	HashMap<String, Double> multiplier;
 	
-	public TransactionPattern(String name, PatternsManager manager)
+/*	public TPattern(String name, PatternsManager manager)
 	{
-		this(name, false);
+		this(name, "master");
 		patternsManager = manager;
-	}
+	}*/
 	
-	public TransactionPattern(String name, boolean tier)
+	public TPattern(String name, String type, boolean tier)
 	{
-		//teh patterns name
 		this.name = name;
-		//is this pattern a tier?
-		this.tier = tier;
+	//	this.tier = tier;
+		this.type = type;
 		
 		//pattern items, needs to add both buy and sell when "items" section not in a pattern to avoid NPE
 		patternItems = new HashMap<String, List<StockItem>>();
@@ -46,8 +45,8 @@ public class TransactionPattern {
 		patternPrices = new HashMap<String, HashMap<String,Double>>();
 		
 		//pattenr triers and inherits
-		patternTiers = new TreeMap<String, TransactionPattern>();
-		patternInherits = new TreeMap<String, TransactionPattern>();
+		patternTiers = new TreeMap<String, TPattern>();
+		patternInherits = new TreeMap<String, TPattern>();
 		
 		//multipliers
 		multiplier = new HashMap<String, Double>();
@@ -60,17 +59,22 @@ public class TransactionPattern {
 		return name;
 	}
 	
+	public String getType()
+	{
+		return type;
+	}
+	/*
 	public void prepareInherits(ConfigurationSection inherits)
 	{
 		for ( String inherit : inherits.getStringList("inherits") )
 		{
-			TransactionPattern pattern = patternsManager.getPattern(inherit);
+			TPattern pattern = patternsManager.getPattern(inherit);
 			if ( pattern != null )
 				patternInherits.put(inherit, pattern);
 			else
 				CitizensTrader.warning("Could not load inherited pattern, does is it defined before this one?");
 		}
-	}
+	}*/
 	
 	public void loadPrices(ConfigurationSection prices)
 	{
@@ -124,10 +128,11 @@ public class TransactionPattern {
 			else
 			if ( transaction.startsWith("tier") )
 			{
-				TransactionPattern tier = patternTiers.get(transaction);
+				TPattern tier = patternTiers.get(transaction);
 				if ( tier == null )
 				{
-					tier = new TransactionPattern(name+":"+transaction, true);
+					//TODO new pattern tierring
+					tier = new TPattern(name+":"+transaction, true);
 					patternTiers.put(transaction, tier);
 				}
 				
@@ -229,7 +234,7 @@ public class TransactionPattern {
 		{
 			double m = 1.0;
 			
-			for ( Map.Entry<String, TransactionPattern> inherit : patternInherits.entrySet() )
+			for ( Map.Entry<String, TPattern> inherit : patternInherits.entrySet() )
 			{
 				if ( inherit.getValue() != null )
 				{
@@ -246,7 +251,7 @@ public class TransactionPattern {
 						if ( item.getIdAndData().split(":")[0].equals(entry.getKey()) )
 							price = entry.getValue();
 
-			for ( Map.Entry<String, TransactionPattern> tier : patternTiers.entrySet() )
+			for ( Map.Entry<String, TPattern> tier : patternTiers.entrySet() )
 				if ( CitizensTrader.getPermissionsManager().has(player, "dtl.trader.tiers." + tier.getKey()) )
 				{
 					price = tier.getValue().getItemPrice(player, item, transaction, slot, price, false);

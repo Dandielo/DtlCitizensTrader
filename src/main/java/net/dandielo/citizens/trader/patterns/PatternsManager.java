@@ -1,4 +1,4 @@
-package net.dandielo.citizens.trader.managers;
+package net.dandielo.citizens.trader.patterns;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,11 +13,10 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.objects.StockItem;
-import net.dandielo.citizens.trader.objects.TransactionPattern;
 
 public class PatternsManager {
 
-	HashMap<String, TransactionPattern> patterns = new HashMap<String, TransactionPattern>(); 
+	HashMap<String, TPattern> patterns = new HashMap<String, TPattern>(); 
 	
 	private final static char PATH_SEPARATOR = '/';
 	protected boolean separateFiles;
@@ -81,7 +80,7 @@ public class PatternsManager {
 
 			for ( String patternName : patternsConfig.getKeys(false) )
 			{
-				TransactionPattern pattern = new TransactionPattern(patternName, this);
+				TPattern pattern = new TPattern(patternName, this);
 				
 				for ( String section : patternsConfig.getConfigurationSection(patternName).getKeys(false) )
 				{	
@@ -182,7 +181,7 @@ public class PatternsManager {
 		return builder.toString();
 	}
 	
-	public TransactionPattern getPattern(String pattern)
+	public TPattern getPattern(String pattern)
 	{
 		return patterns.get(pattern.toLowerCase());
 	}

@@ -18,12 +18,12 @@ import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.commands.Command;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.LogManager;
-import net.dandielo.citizens.trader.managers.PatternsManager;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.trader.parts.TraderConfigPart;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
+import net.dandielo.citizens.trader.patterns.PatternsManager;
 import net.dandielo.citizens.trader.types.Trader;
 
 public class TraderCommands {
