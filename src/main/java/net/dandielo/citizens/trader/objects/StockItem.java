@@ -1,11 +1,5 @@
 package net.dandielo.citizens.trader.objects;
 
-import java.awt.print.Book;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,16 +7,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static net.dandielo.citizens.trader.CitizensTrader.*;
-
-import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.limits.Limits;
 
 import org.bukkit.Material;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 
@@ -37,6 +25,7 @@ public class StockItem {
 	
 	//trader fields 
 	protected double price;
+	protected Double multiply = null;
 	protected int slot = -1;
 	
 	protected Limits limits;
@@ -52,8 +41,6 @@ public class StockItem {
 	protected boolean patternItem = false;
 	
 	protected double spawnChance;
-	
-	
 	
 	//old fields
 	//protected ItemStack item = null;
@@ -215,6 +202,11 @@ public class StockItem {
 						price = Double.parseDouble(value);
 					}
 					else
+					if ( key.equals("m") )
+					{
+						multiply = new Double(value);
+					}
+					else
 					if ( key.equals("a") )
 					{
 						amounts.clear();
@@ -223,14 +215,9 @@ public class StockItem {
 						item.setAmount(amounts.get(0));
 					}
 					else
-					if ( key.equals("p") )
+					if ( key.equals("s") )
 					{
 						slot = Integer.parseInt(value);
-					}
-					else
-					if ( key.equals("p") )
-					{
-						price = Double.parseDouble(value);
 					}
 					else
 					if ( key.equals("d:") ) 
@@ -290,6 +277,10 @@ public class StockItem {
 		return item;
 	}
 	
+	public double getMultiplier()
+	{
+		return multiply == null ? 1.0 : multiply;
+	}
 /*	public ItemStack getItemStack(int slot) {
 		item.setAmount(amounts.get(slot));
 		if ( stackPrice )
@@ -421,12 +412,13 @@ public class StockItem {
 		price -= p;
 	}
 	
-	/*
-	public double getPrice() {
-		if ( stackPrice )
-			return price;
-		return price*amounts.get(0);
+	public double getRawPrice() {
+		return price;
 	}
+	public double getPrice(int slot) {
+		return price*amounts.get(slot);
+	}
+	/*
 	public double getRawPrice() {
 		return price;
 	}
@@ -598,5 +590,17 @@ public class StockItem {
 	{
 		int id = item.getTypeId();
 		return ( id > 275 && id < 289 ) || ( id > 291 && id < 296 ) || ( id > 298 && id < 304 ) || ( id > 306 && id < 326 );// ? true : false );
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static StockItem loadItem(Object data)
+	{
+		if ( data instanceof String )
+		{
+			return new StockItem((String) data);
+		}
+		for ( Map.Entry<String, Object> entry : ((Map<String, Object>) data).entrySet() )
+			return new StockItem(entry.getKey(), (List<String>) entry.getValue());
+		return null;
 	}
 }
