@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.objects.StockItem;
+import net.dandielo.citizens.trader.patterns.types.PricePattern;
 
 public class PatternsManager {
 
@@ -80,26 +81,9 @@ public class PatternsManager {
 
 			for ( String patternName : patternsConfig.getKeys(false) )
 			{
-				TPattern pattern = new TPattern(patternName, this);
+				TPattern pattern = createPattern(patternName, patternsConfig.getString(buildPath(patternName,"type")));
 				
-				for ( String section : patternsConfig.getConfigurationSection(patternName).getKeys(false) )
-				{	
-					if ( section.equals("prices") )
-					{
-						pattern.loadPrices(patternsConfig.getConfigurationSection(buildPath(patternName, section)));
-					}
-					else 
-					if ( section.equals("items") )
-					{
-						pattern.loadItems(patternsConfig.getConfigurationSection(buildPath(patternName, section)));
-					}
-					else 
-					if ( section.equals("inherits") )
-					{
-						pattern.prepareInherits(patternsConfig.getConfigurationSection(buildPath(patternName)));
-					}
-					
-				}
+				pattern.load(patternsConfig.getConfigurationSection(patternName));
 
 				patterns.put(patternName.toLowerCase(), pattern);
 			}
@@ -179,6 +163,15 @@ public class PatternsManager {
 		}
 
 		return builder.toString();
+	}
+	
+	public static TPattern createPattern(String name, String type)
+	{
+		if ( type.equals("price") )
+			return new PricePattern(name, type, false);
+		if ( type.equals("item") )
+			return new PricePattern(name, type, false);
+		return null;
 	}
 	
 	public TPattern getPattern(String pattern)

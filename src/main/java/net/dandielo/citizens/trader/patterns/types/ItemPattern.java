@@ -17,6 +17,7 @@ public class ItemPattern extends TPattern {
 	public ItemPattern(String name, String type, boolean tier) {
 		super(name, type, tier);
 		items = new HashMap<String, List<StockItem>>();
+		inherits = new HashMap<String, ItemPattern>();
 		tiers = new HashMap<String, ItemPattern>();
 	}
 
@@ -24,12 +25,15 @@ public class ItemPattern extends TPattern {
 	private boolean override;
 	
 	private Map<String, List<StockItem>> items;
+	private Map<String, ItemPattern> inherits;
 	private Map<String, ItemPattern> tiers;
 	
 	public void load(ConfigurationSection data)
 	{
 		List<StockItem> sell = new ArrayList<StockItem>();
 		List<StockItem> buy = new ArrayList<StockItem>();
+		
+		override = data.getBoolean("override", false);
 		
 		for ( String key : data.getKeys(false) )
 		{
@@ -64,6 +68,12 @@ public class ItemPattern extends TPattern {
 				}
 			}
 			else
+			if ( key.equals("inherits") )
+			{
+				for ( String pat : data.getStringList(key) )
+					inherits.put(pat, null);
+			}
+			else
 			{
 				ItemPattern pattern = new ItemPattern(name + "." + key, "item", true);
 				pattern.load(data.getConfigurationSection(key));
@@ -77,20 +87,54 @@ public class ItemPattern extends TPattern {
 	public List<StockItem> getStock(Player player, String stock)
 	{
 		List<StockItem> ret = new ArrayList<StockItem>();
-		ret.addAll(items.get(stock)); 
+		
+		for ( Entry<String, ItemPattern> pat : inherits.entrySet() )
+		{
+			if ( pat.getValue() == null )
+				continue;
+			
+			if ( perms.has(player, "") )
+			{
+				if ( override )
+				{
+					for ( StockItem item : pat.getValue().getStock(player, stock) )
+					{
+						ret.remove(item);
+						ret.add(item);
+					}
+				}
+				else
+					ret.addAll(pat.getValue().getStock(player, stock));
+			}
+		}
+		
+		if ( override )
+		{
+			for ( StockItem item :items.get(stock) )
+			{
+				ret.remove(item);
+				ret.add(item);
+			}
+		}
+		else
+			ret.addAll(items.get(stock)); 
 		
 		for ( Entry<String, ItemPattern> tier : tiers.entrySet() )
+		{
 			if ( perms.has(player, "") )
-				ret.addAll(tier.getValue().getStock(player, stock));
-		
+			{
+				if ( override )
+				{
+					for ( StockItem item : tier.getValue().getStock(player, stock) )
+					{
+						ret.remove(item);
+						ret.add(item);
+					}
+				}
+				else
+					ret.addAll(tier.getValue().getStock(player, stock));
+			}
+		}
 		return items.get(stock);
-	}
-
-	@Override
-	@SuppressWarnings("unchecked")
-	public <T> T getData(String data, Class<T> type) {
-		if ( !items.get("sell").getClass().equals(type) )
-			return null;
-		return (T) items.get("sell");
 	}
 }

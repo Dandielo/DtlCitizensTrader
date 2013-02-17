@@ -2,6 +2,8 @@ package net.dandielo.citizens.trader.objects;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -37,10 +39,14 @@ public class StockItem {
 	protected boolean checkEnchantments = false;
 	protected boolean checkEnchantmentLevels = false;
 	protected boolean patternMultiplier = false;
-	protected boolean patternPrice = false;
+	protected boolean patternPrice = true;
 	protected boolean patternItem = false;
 	
-	protected double spawnChance;
+	protected Double spawnChance = null;
+	
+	protected Integer matchPriority = 0;
+	protected String matcherString;
+	protected String tier;
 	
 	//old fields
 	//protected ItemStack item = null;
@@ -110,6 +116,7 @@ public class StockItem {
 	//load item from string with lore
 	public StockItem(String data, List<String> lore) 
 	{
+		matcherString = data;
 		// init limits
 		limits = new Limits(this);
 		
@@ -207,6 +214,11 @@ public class StockItem {
 						multiply = new Double(value);
 					}
 					else
+					if ( key.equals("c") )
+					{
+						spawnChance = new Double(value);
+					}
+					else
 					if ( key.equals("a") )
 					{
 						amounts.clear();
@@ -220,26 +232,31 @@ public class StockItem {
 						slot = Integer.parseInt(value);
 					}
 					else
-					if ( key.equals("d:") ) 
+					if ( key.equals("t") )
+					{
+						tier = value;
+					}
+					else
+					if ( key.equals("d") ) 
 					{
 						item.setDurability( Short.parseShort(value) );
 					}
 					else
-					if ( key.equals("gl:") ) 
+					if ( key.equals("gl") ) 
 					{
 						//TODO Global limits
 					//	String[] limitData = value.substring(3).split("/");
 					//	limit.setItemGlobalLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					else
-					if ( key.equals("pl:") ) 
+					if ( key.equals("pl") ) 
 					{
 						//TODO Player limits
 					//	String[] limitData = value.substring(3).split("/");
 					//	limit.setItemPlayerLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
 					}
 					else
-					if ( key.equals("e:") ) 
+					if ( key.equals("e") ) 
 					{
 						for ( String enchantment : value.split(",") )
 						{
@@ -251,7 +268,7 @@ public class StockItem {
 						}
 					}
 					else
-					if ( key.equals("se:")  )
+					if ( key.equals("se")  )
 					{
 						for ( String enchantment : value.split(",") )
 						{
@@ -279,7 +296,12 @@ public class StockItem {
 	
 	public double getMultiplier()
 	{
-		return multiply == null ? 1.0 : multiply;
+		return multiply;
+	}
+	
+	public boolean hasMupltiplier()
+	{
+		return multiply != null;
 	}
 /*	public ItemStack getItemStack(int slot) {
 		item.setAmount(amounts.get(slot));
@@ -412,19 +434,24 @@ public class StockItem {
 		price -= p;
 	}
 	
-	public double getRawPrice() {
+	public double getRawPrice() 
+	{
 		return price;
 	}
-	public double getPrice(int slot) {
+	
+	public double getPrice(int slot) 
+	{
 		return price*amounts.get(slot);
 	}
-	/*
-	public double getRawPrice() {
-		return price;
-	}
+	
 	public void setRawPrice(double newPrice)
 	{
 		price = newPrice;
+	}
+	
+	/*
+	public double getRawPrice() {
+		return price;
 	}
 	public double getPrice(int i) {
 		if ( stackPrice )
@@ -480,6 +507,7 @@ public class StockItem {
 	{
 		return patternItem;
 	}
+	
 	public void setAsPatternItem(boolean pItem)
 	{
 		patternItem = pItem;
@@ -489,6 +517,7 @@ public class StockItem {
 	{
 		return patternPrice;
 	}
+	
 	public void setPatternPrice(boolean p)
 	{
 		patternPrice = p;
@@ -497,10 +526,6 @@ public class StockItem {
 	public boolean patternMultiplier()
 	{
 		return patternPrice;
-	}
-	public void setPatternMultiplier(boolean p)
-	{
-		patternMultiplier = p;
 	}
 	
 	public boolean isCheckingEnchantments()
@@ -522,34 +547,125 @@ public class StockItem {
 	public String getIdAndData()
 	{
 		return item.getTypeId() + ( item.getData().getData() == 0 ? "" : ":" + item.getData().getData() );
+	}	
+	
+	public int getMatchPriority()
+	{
+		return matchPriority;
 	}
 	
-	/*
-	public static StockItem createItem(Class<? extends StockItem> itemClass, String data)
+	public boolean matches(StockItem item)
 	{
-		try {
-			return itemClass.getConstructor(String.class).newInstance(data);
-		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Matcher matcher = pattern.matcher(item.matcherString);
+
+		boolean result = true;
+		
+		// look for values
+		while(matcher.find() && result)
+		{
+			String key = matcher.group(7);
+			String value = matcher.group(8);
+			
+			//item name or flag
+			if ( key == null )
+			{
+				if ( matcher.group(2) != null && matcher.group(2).equals("n") )
+				{
+					result = name.equals(matcher.group(3).replace("[&]", " "));
+					item.matchPriority += 300; 
+				}
+				else
+				{
+					Material mat = Material.getMaterial(value);
+					if ( mat == null )
+						mat = Material.getMaterial(Integer.parseInt(value));
+					
+					if ( mat != null )
+						result = item.getItemStack().getType().equals(mat);
+					item.matchPriority += 130;
+				}
+			}
+			else
+			{
+				if ( key.equals("a") )
+				{
+					amounts.clear();
+					result = this.item.getAmount() == Integer.parseInt(value.split(",")[0]);
+					item.matchPriority += 5;
+				}
+				else
+				if ( key.equals("d") ) 
+				{
+					result = hasDurability(this.item) && this.item.getDurability() == Short.parseShort(value);
+					item.matchPriority += 45;
+				}
+				else
+				if ( key.equals("t") ) 
+				{
+					result = this.tier.equals(value);
+					item.matchPriority += 25;
+				}
+				else
+				if ( key.equals("e") ) 
+				{
+					String[] enchants = value.split(",");
+					
+					if ( enchants.length != this.item.getEnchantments().size() )
+					{
+						result = false;
+					}
+					else
+					{
+						Map<Enchantment, Integer> enchs = new HashMap<Enchantment, Integer>(this.item.getEnchantments());
+						boolean has = true;
+						
+						for ( int i = 0 ; i < enchants.length && has ; ++i )
+						{
+							String[] enchData = enchants[0].split("/");
+							Enchantment ench = Enchantment.getByName( enchData[0] );
+							if ( ench == null )
+								ench = Enchantment.getById( Integer.parseInt(enchData[0]));
+							int lvl = Integer.valueOf(enchData[0]);
+							
+							boolean h = false;
+							Iterator<Enchantment> it = enchs.keySet().iterator();
+							while(it.hasNext()&&!h) h = it.next().equals(ench) && enchs.get(ench) == lvl;
+							has = h;
+						}
+						result = has;
+					}
+					item.matchPriority += 5;
+				}
+				else
+				if ( key.equals("se")  )
+				{
+					String[] enchData = value.split("/");
+					
+					if ( this.item.getType().equals(Material.ENCHANTED_BOOK) )
+					{
+						EnchantmentStorageMeta meta = ((EnchantmentStorageMeta)this.item.getItemMeta());
+						Enchantment ench = Enchantment.getByName( enchData[0] );
+						if ( ench == null )
+							ench = Enchantment.getById( Integer.parseInt(enchData[0]) );
+						result = meta.getStoredEnchants().get(ench) == Integer.parseInt(enchData[1]);
+					}
+					else
+						result = false;
+				}
+				else
+				{
+					Material mat = Material.getMaterial(key);
+					if ( mat == null )
+						mat = Material.getMaterial(Integer.parseInt(key));
+
+					if ( mat != null )
+						result = this.item.getType().equals(mat) && this.item.getData().getData() == Byte.valueOf(value);
+				}
+				item.matchPriority += 5;
+			}
 		}
-		return null;
-	}*/
+		return result;
+	}
 	
 	@Override
 	public boolean equals(Object obj)
@@ -602,5 +718,5 @@ public class StockItem {
 		for ( Map.Entry<String, Object> entry : ((Map<String, Object>) data).entrySet() )
 			return new StockItem(entry.getKey(), (List<String>) entry.getValue());
 		return null;
-	}
+	} 
 }

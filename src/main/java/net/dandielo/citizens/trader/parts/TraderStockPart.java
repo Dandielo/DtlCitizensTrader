@@ -16,6 +16,9 @@ import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.patterns.PatternsManager;
 import net.dandielo.citizens.trader.patterns.TPattern;
+import net.dandielo.citizens.trader.patterns.types.ItemPattern;
+import net.dandielo.citizens.trader.patterns.types.PricePattern;
+import net.dandielo.citizens.trader.patterns.types.PricePattern.Price;
 import net.dandielo.citizens.trader.types.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
@@ -29,7 +32,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class TraderStockPart implements InventoryHolder {
-	PermissionsManager perms = CitizensTrader.getPermissionsManager();
+	private static PermissionsManager perms = CitizensTrader.getPermissionsManager();
 	
 	// allow to set different stocks for different players 
 	private static Map<String, Map<String, List<StockItem>>> playerStocks = new HashMap<String, Map<String, List<StockItem>>>();
@@ -89,20 +92,17 @@ public class TraderStockPart implements InventoryHolder {
 			return false;
 		
 		patterns.put(priority, patternsManager.getPattern(pattern));
-	//	reloadStock();
 		return true;
 	}
 	
 	public void removePattern(String pattern)
 	{	
 		patterns.remove(patternsManager.getPattern(pattern));
-	//	reloadStock();
 	}
 	
 	public void removeAllPatterns()
 	{	
 		patterns.clear();
-	//	reloadStock();
 	}
 	
 	public List<StockItem> getStock(String stock)
@@ -110,25 +110,45 @@ public class TraderStockPart implements InventoryHolder {
 		return this.stock.get(stock);
 	}
 	
-	public TraderStockPart createStockFor(Player p)
+	public List<StockItem> getStock(Player player, String st)
+	{
+		List<StockItem> result = new ArrayList<StockItem>();
+		
+		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
+		{
+			TPattern pat = pattern.getValue();
+			if ( pat instanceof ItemPattern && perms.has(player, "") )
+			{
+				result.addAll( ((ItemPattern)pat).getStock(player, st) );
+			}
+		}
+
+		for ( StockItem item : stock.get(st) ) {
+			result.remove(item);
+			result.add(item);
+		}
+
+		return result;
+	}
+	
+	public TraderStockPart createStockFor(Player player)
 	{
 		TraderStockPart pstock = new TraderStockPart(stockSize, name);
 		
 		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
 		{
 			TPattern pat = pattern.getValue();
-			if ( pat.getType().equals("item") && perms.has(p, pat.getName()) )
+			if ( pat instanceof ItemPattern && perms.has(player, "") )
 			{
-				pstock.stock.get("sell").addAll( pat.getStockItems("sell") );
-				pstock.stock.get("buy").addAll( pat.getStockItems("buy") );
+				pstock.stock.get("sell").addAll( ((ItemPattern)pat).getStock(player, "sell") );
+				pstock.stock.get("buy").addAll( ((ItemPattern)pat).getStock(player, "buy") );
 			}
 			else
-			if ( pat.equals("price") )
+			if ( pat instanceof PricePattern && perms.has(player, "") )
 			{
 				pstock.patterns.put(pattern.getKey(), pat);
 			}
 		}
-
 		
 		for ( StockItem item : stock.get("sell") ) {
 			pstock.stock.get("sell").remove(item);
@@ -142,50 +162,17 @@ public class TraderStockPart implements InventoryHolder {
 		
 		return pstock;
 	}
-	/*
-	public void reloadStock()
-	{
-		List<StockItem> oldSellStock = new ArrayList<StockItem>();
-		for ( StockItem item : stock.get("sell") )
-			if ( !item.isPatternItem() )
-				oldSellStock.add(item);
-		
-		List<StockItem> oldBuyStock = new ArrayList<StockItem>();
-		for ( StockItem item : stock.get("buy") )
-			if ( !item.isPatternItem() )
-				oldBuyStock.add(item);
-
-		stock.get("sell").clear();
-		stock.get("buy").clear();
-
-		if ( pattern != null )
-		{
-			stock.get("sell").addAll( pattern.getStockItems("sell") );
-			stock.get("buy").addAll( pattern.getStockItems("buy") );
-		}
-
-		
-		for ( StockItem item : oldSellStock ) {
-			stock.get("sell").remove(item);
-			stock.get("sell").add(item);
-		}
-
-		for ( StockItem item : oldBuyStock ) {
-			stock.get("buy").remove(item);
-			stock.get("buy").add(item);
-		}
-		
-	}*/
-	/*
+	
+	
 	public Inventory getInventory(String startingStock, Player player)
 	{
 		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
+		if ( startingStock == null )
+			startingStock = stock.get("sell").isEmpty() ? "buy" : "sell";
 		
 		for( StockItem item : stock.get(startingStock) ) 
 		{
-			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, startingStock, pattern, player));
-
-		//	chk.addEnchantments(item.getItemStack().getEnchantments());
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, startingStock, patterns, player));
 
 	        if ( item.getSlot() < 0 )
         		item.setSlot(inventory.firstEmpty());
@@ -197,7 +184,7 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
-	/*
+	
 	
 	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type)
 	{
@@ -206,10 +193,8 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for( StockItem item : stock.get(s.toString()) ) 
 			{
-				ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, s.toString(), pattern, player));
-            	
-			//	chk.addEnchantments(item.getItemStack().getEnchantments());
-				
+				ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, s.toString(), patterns, player));
+            
 				if ( item.getSlot() < 0 )
             		item.setSlot(inventory.firstEmpty());
             	
@@ -224,11 +209,8 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for( StockItem item : stock.get(s.toString()) )
 			{
-				ItemStack chk = setLore(item.getItemStack(), getLore(type, item, s.toString(), pattern, player));
+				ItemStack chk = setLore(item.getItemStack(), getLore(type, item, s.toString(), patterns, player));
  
-	         //ItemStack chk = new ItemStack(item.getItemStack().getType(),item.getItemStack().getAmount(),item.getItemStack().getDurability());
-	         //   chk.addEnchantments(item.getItemStack().getEnchantments());
-
 	            if ( item.getSlot() < 0 )
             		item.setSlot(inventory.firstEmpty());
 	            inventory.setItem( item.getSlot() ,chk);
@@ -240,7 +222,7 @@ public class TraderStockPart implements InventoryHolder {
 		} 
 		
 		return inventory;
-	}*/
+	}
 
 	public void addItem(String stock ,String data) {
 		this.stock.get(stock).add(new StockItem(data));
@@ -346,7 +328,8 @@ public class TraderStockPart implements InventoryHolder {
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", patterns, player));
 			
 			chk.setAmount(amount);
-			if ( item.getLimitSystem().checkLimit("", i) )
+			//TODO Limits
+		//	if ( item.getLimitSystem().checkLimit("", i) )
 				inventory.setItem(i++,chk);
 		}
 		inventory.setItem(stockSize - 1, itemsConfig.getItemManagement(7));
@@ -362,6 +345,7 @@ public class TraderStockPart implements InventoryHolder {
 		}
 		inventory.setItem(inventory.getSize() - 1, itemsConfig.getItemManagement(7));
 	}
+	//TODO Limits
 
 	/*public void linkItems()
 	{
@@ -384,18 +368,19 @@ public class TraderStockPart implements InventoryHolder {
 	public Inventory getInventory() 
 	{
 		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
+		String startingStock = stock.get("sell").isEmpty() ? "buy" : "sell";
 		
-		for( StockItem item : stock.get("sell") ) 
+		for( StockItem item : stock.get(startingStock) ) 
 		{
-			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, "sell", patterns, null));
+			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, 0, startingStock, patterns, null));
 
-			if ( item.getSlot() < 0 )
+	        if ( item.getSlot() < 0 )
         		item.setSlot(inventory.firstEmpty());
 	        inventory.setItem(item.getSlot(),chk);
         }
 
-        if ( !stock.get( "buy" ).isEmpty() )
-        	inventory.setItem(stockSize - 1, itemsConfig.getItemManagement( "buy" ) );
+        if ( !stock.get( opositeStock(startingStock) ).isEmpty() )
+        	inventory.setItem(stockSize - 1, itemsConfig.getItemManagement( opositeStock(startingStock) ) );
         
 		return inventory;
 	}
@@ -427,27 +412,22 @@ public class TraderStockPart implements InventoryHolder {
 			}
 		}
 		
-	//	setPattern( data.getString("pattern", "") );
 	}
 
 	public void save(DataKey data)
 	{
-		if ( pattern != null )
-			if ( !pattern.getName().isEmpty() )
-				data.setString("pattern", pattern.getName());
+		if ( !patterns.isEmpty() )
+			data.setRaw("patterns", patterns);
 		
 		List<String> sellList = new ArrayList<String>();
         for ( StockItem item : stock.get("sell") )
-			if ( !item.isPatternItem() )
+			if ( !item.patternItem() )
 				sellList.add(item.toString());
-        
         
 		List<String> buyList = new ArrayList<String>();
 		for ( StockItem item : stock.get("buy") )
-		{
-			if ( !item.isPatternItem() )
+			if ( !item.patternItem() )
 				buyList.add(item.toString());
-		}
 
 		data.setRaw("sell", sellList);
 		data.setRaw("buy", buyList);
@@ -481,8 +461,6 @@ public class TraderStockPart implements InventoryHolder {
 		
 		map.put("meta", meta);
 		
-	//	cis.setItemMeta(ItemStack.deserialize(map).getItemMeta());
-		
 		return ItemStack.deserialize(map);
 	}
 	 
@@ -493,7 +471,7 @@ public class TraderStockPart implements InventoryHolder {
 		if ( type.equals("plimit") )
 			return getPlayerLimitLore(item, stock, player);
 		if ( type.equals("manage") )
-			return getManageLore(item, stock, patterns, player);
+			return getManageLore(item, stock, player);
 		return getPriceLore(item, 0, stock, patterns, player);
 	}
 	
@@ -502,22 +480,27 @@ public class TraderStockPart implements InventoryHolder {
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
 
-		//TODO price
-		if ( patterns != null )
-			price = format.format(patterns.getItemPrice(player, item, stock, i, 0.0));
-		else
-			price = format.format(item.getPrice(i));
+		price = format.format(item.getPrice(i));
+		
+		Price prc = new Price(0);
+		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
+		{
+			if ( perms.has(player, "") )
+				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
+		}
+		if ( prc.hasPrice() )
+			price = format.format(prc.endPrice());
+		
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
-			lore.add(line.replace("{price}", price).replace("{amount}", item.getLimitSystem().getStackAmount()));
+			lore.add(line.replace("{price}", price).replace("{amount}", "not supported"));
 		
 		return lore;
 	}
 	
 	public static List<String> getManageLore(StockItem item, String stock, Player player)
 	{
-		org.bukkit.event.entity.EntityDeathEvent e;
 		List<String> lore = new ArrayList<String>();
 		if ( item.stackPrice() )
 			lore.add("^7Stack price");
@@ -532,11 +515,12 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getPlayerLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
-		if ( item.getLimitSystem().hasLimit() )
+		//TODO Limits
+		/*if ( item.getLimitSystem().hasLimit() )
 		{
 			lore.add("^7Limit: ^6" +item.getLimitSystem().getPlayerLimit());
 			lore.add("^7Timeout: ^6" + item.getLimitSystem().getPlayerTimeout());
-		}
+		}*/
 		
 		return lore;
 	}
@@ -544,11 +528,12 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
-		if ( item.getLimitSystem().hasLimit() )
+		//TODO Limits
+	/*	if ( item.getLimitSystem().hasLimit() )
 		{
 			lore.add("^7Limit: ^e" + item.getLimitSystem().getGlobalAmount() + "^6/" + item.getLimitSystem().getGlobalLimit());
 			lore.add("^7Timeout: ^6" + item.getLimitSystem().getGlobalTimeout());
-		}
+		}*/
 		
 		return lore;
 	}
@@ -577,19 +562,19 @@ public class TraderStockPart implements InventoryHolder {
 				for ( StockItem item : stock.get("sell") )
 				{
 					item.setRawPrice(0.0);
-					item.setPatternListening(true);
+					item.setPatternPrice(true);
 				}
 				for ( StockItem item : stock.get("buy") )
 				{
 					item.setRawPrice(0.0);
-					item.setPatternListening(true);
+					item.setPatternPrice(true);
 				}
 			}
 			else
 				for ( StockItem item : stock.get(st) )
 				{
 					item.setRawPrice(0.0);
-					item.setPatternListening(true);
+					item.setPatternPrice(true);
 				}
 		}
 		else
