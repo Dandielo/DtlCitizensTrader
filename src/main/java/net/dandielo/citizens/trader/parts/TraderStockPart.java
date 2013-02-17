@@ -388,6 +388,10 @@ public class TraderStockPart implements InventoryHolder {
 	@SuppressWarnings("unchecked")
 	public void load(DataKey data) 
 	{
+		List<String> pat = (List<String>) data.getRaw("patterns");
+		for ( String pattern : pat )
+			addPattern(pattern, Integer.valueOf(pattern.split(" ")[1]));
+		
 		if ( data.keyExists("sell") )
 		{
 			for ( String item : (List<String>) data.getRaw("sell") ) 
@@ -416,8 +420,9 @@ public class TraderStockPart implements InventoryHolder {
 
 	public void save(DataKey data)
 	{
-		if ( !patterns.isEmpty() )
-			data.setRaw("patterns", patterns);
+		List<String> patList = new ArrayList<String>();
+		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
+			patList.add(pat.getValue().getName() + " " + pat.getKey());
 		
 		List<String> sellList = new ArrayList<String>();
         for ( StockItem item : stock.get("sell") )

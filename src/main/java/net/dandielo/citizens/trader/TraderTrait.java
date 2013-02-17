@@ -118,10 +118,12 @@ public class TraderTrait extends Trait {
 				config.loadDtlWallet(npc);
 			
 			if ( this.type.equals(EType.SERVER_TRADER) && !defPattern.isEmpty() )
-				stock.setPattern(defPattern);
-			
-			if ( this.type.equals(EType.MARKET_TRADER) )
-				stock.linkItems();
+				stock.addPattern(defPattern, 0);
+				//stock.setPattern(defPattern);
+
+			//TODO Limits, linking
+			//if ( this.type.equals(EType.MARKET_TRADER) )
+			//	stock.linkItems();
 		}
 		else
 		if ( type.equals("banker") )
@@ -150,9 +152,10 @@ public class TraderTrait extends Trait {
 			
 			config.load(data);
 			stock.load(data);
-			
-			if ( this.type.equals(EType.MARKET_TRADER) )
-				stock.linkItems();
+
+			//TODO Limits
+			//if ( this.type.equals(EType.MARKET_TRADER) )
+			//	stock.linkItems();
 		}
 	}
 
