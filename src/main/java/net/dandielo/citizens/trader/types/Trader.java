@@ -58,13 +58,12 @@ public abstract class Trader implements tNPC {
 	//Trader runtime 
 	private StockItem selectedItem = null; 
 	private Boolean inventoryClicked = true;
-//	private Integer lastSlot = -1;
 
 
 	public Trader(TraderTrait trait, NPC npc, Player player) {
 		
 		// Initialize the trader
-		traderStock = trait.getStock();
+		traderStock = trait.getStock().createStockFor(player);
 		traderConfig = trait.getConfig();
 		
 		//init info
@@ -616,16 +615,12 @@ public abstract class Trader implements tNPC {
 	
 	public double getPrice(Player player, String transaction, int slot)
 	{
-		if ( getStock().getPattern() != null )
-			return getStock().getPattern().getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
-		return getSelectedItem().getPrice(slot);
+		return getStock().getPrice(getSelectedItem(), player, transaction, slot);
 	}
 	
 	public double getPrice(Player player, String transaction, StockItem item, int slot)
 	{
-		if ( getStock().getPattern() != null )
-			return getStock().getPattern().getItemPrice(player, item, transaction, slot, 0.0);
-		return item.getPrice(slot);
+		return getStock().getPrice(item, player, transaction, slot);
 	}
 	
 	public void loadDescriptions(Player player, Inventory inventory)

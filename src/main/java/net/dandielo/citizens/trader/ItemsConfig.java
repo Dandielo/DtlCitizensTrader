@@ -41,14 +41,7 @@ public class ItemsConfig {
 		settingsWand = convertStringData(config.getString("settings","340"), "", null);
 
 		buttons = new HashMap<String, ItemStack>();
-	/*	
-		pricesLore = new HashMap<String,List<String>>();
-		
-		pricesLore.put("pbuy", traderSection.getConfigurationSection("prices-lore").getStringList("player-inventory"));
-		pricesLore.put("sell", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-sell"));
-		pricesLore.put("buy", traderSection.getConfigurationSection("prices-lore").getStringList("trader-inventory-buy"));
-		*/
-		
+	
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
 			buttons.put(key, convertStringData(traderSection.getString(buildPath("inventory-navigation", key, "item")),
@@ -62,12 +55,7 @@ public class ItemsConfig {
 	public boolean disablePlugin() {
 		return this.disablePlugin;
 	}
-	
-	//public List<String> getPriceLore(String t)
-	//{
-	//	return pricesLore.get(t);
-	//}
-	
+		
 	public ItemStack initializeItemWithName(ItemStack itemStack, String name, List<String> lore)
 	{
 		NBTTagEditor.setName(itemStack, name.replace('^', '§'));

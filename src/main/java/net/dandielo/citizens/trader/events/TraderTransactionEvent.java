@@ -78,7 +78,8 @@ public class TraderTransactionEvent extends Event {
 		this.status = status;
 		this.item = item;
 		this.amount = item.getAmount();
-		this.left = item.getLimitSystem().getGlobalAvailable();
+		//TODO Limits
+		//this.left = item.getLimitSystem().getGlobalAvailable();
 		this.result = result;
 		this.player = (Player) humanEntity;
 	}
@@ -90,7 +91,8 @@ public class TraderTransactionEvent extends Event {
 		this.status = status;
 		this.item = item;
 		this.amount = amount;
-		this.left = item.getLimitSystem().getGlobalAvailable();
+		//TODO Limits
+		//this.left = item.getLimitSystem().getGlobalAvailable();
 		this.result = result;
 		this.player = (Player) humanEntity;
 	}

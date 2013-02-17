@@ -485,16 +485,7 @@ public class TraderStockPart implements InventoryHolder {
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
 
-		price = format.format(item.getPrice(i));
 		
-		Price prc = new Price(0);
-		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
-		{
-			if ( perms.has(player, "") )
-				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
-		}
-		if ( prc.hasPrice() )
-			price = format.format(prc.endPrice());
 		
 		
 		List<String> lore = new ArrayList<String>();
@@ -556,6 +547,21 @@ public class TraderStockPart implements InventoryHolder {
 		
 		if ( si.getAmounts().size() > 1 )
 			si.getAmounts().remove(si.getAmounts().size()-1);
+	}
+	
+	public double getPrice(StockItem item, Player player, String stock, int slot)
+	{
+		double price = item.getPrice(slot);
+		
+		Price prc = new Price(0);
+		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
+		{
+			if ( perms.has(player, "") )
+				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
+		}
+		if ( prc.hasPrice() )
+			price = prc.endPrice();
+		return price;
 	}
 
 	public void reset(String st, String target)

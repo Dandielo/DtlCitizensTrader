@@ -200,6 +200,7 @@ public class StockItem {
 					if ( value.equals("lore") ) 
 					{
 						this.lore = lore;
+						NBTTagEditor.addDescription(item, lore);
 					}
 				}
 				else

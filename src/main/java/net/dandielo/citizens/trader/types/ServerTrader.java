@@ -25,7 +25,7 @@ import net.dandielo.citizens.trader.patterns.TPattern;
 
 public class ServerTrader extends Trader {
 
-	private TPattern pattern = getStock().getPattern();
+//	private TPattern pattern = getStock().getPattern();
 	private LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	public ServerTrader(TraderTrait trait, NPC npc, Player player) {
