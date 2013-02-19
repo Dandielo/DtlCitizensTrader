@@ -10,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.dandielo.citizens.trader.limits.Limits;
+import net.dandielo.citizens.trader.limits.Limits.Limit;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -48,68 +49,11 @@ public class StockItem {
 	protected String matcherString;
 	protected String tier;
 	
-	//old fields
-	//protected ItemStack item = null;
-	//protected boolean stackPrice = false;
-	//protected double price = 0;
-	
-	
-	
-/*	@SuppressWarnings("unchecked")
-	public static void main(String arg[]) { 
-	    
-	    File file = new File("../../Desktop/test.yml");
-	    
-	    System.out.println(file.getAbsolutePath());
-		
-		YamlConfiguration yaml = new YamlConfiguration();
-		try {
-			yaml.load(file);//"test:\r [ [\'35:3 a:1\', lore:[lore1, lore2], book:[author, page1]], test3]");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		for ( Object e : yaml.getList("test") )
-		{
-			if ( e instanceof String )
-				System.out.println("Item: " + e);
-			else
-			{
-			//	List<Object> o = (List<Object>) e;
-				
-			//	for ( Object oo : o )
-				{
-					if ( e instanceof String )
-						System.out.println("Item with lore: " + e);
-					else
-						for ( Map.Entry<String, Object> en : ((Map<String, Object>) e).entrySet() )
-							System.out.println(en.getKey() + " | " + en.getValue() );
-				}
-			}
-		}
-	}*/
-	
 	//load item from string
 	public StockItem(String data)
 	{
 		this(data, null);
 	}
-	
-	/*
-	public static void main(String[] args)
-	{
-		String s = "35:3 p:33.3 a:1,3,4 cel ce n:Item name this ce";
-		Pattern pat = Pattern.compile("((n):(([^:\\s]+)( [^:\\s]{2,})*))|((\\S+){1}:){0,1}([^:\\s]+)");
-		Matcher mat = pat.matcher(s);
-		
-		while(mat.find())
-		{
-			System.out.println(mat.group(3) + "|");
-		}
-		
-		System.out.println(Pattern.matches("", ""));
-	}*/
 
 	private static Pattern pattern = Pattern.compile("((n):(([^:\\s]+)( [^:\\s]{2,})*))|((\\S+){1}:){0,1}([^:\\s]+)");//((\\S+){1}:){0,1}(([^:\\s]+)+( [^:\\s]{2,})*)");
 	
@@ -245,16 +189,14 @@ public class StockItem {
 					else
 					if ( key.equals("gl") ) 
 					{
-						//TODO Global limits
-					//	String[] limitData = value.substring(3).split("/");
-					//	limit.setItemGlobalLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
+						String[] limitData = value.split("/");
+						limits.setLimit("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
 					}
 					else
 					if ( key.equals("pl") ) 
 					{
-						//TODO Player limits
-					//	String[] limitData = value.substring(3).split("/");
-					//	limit.setItemPlayerLimit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1]), Integer.parseInt(limitData[2])*1000);
+						String[] limitData = value.split("/");
+						limits.setLimit("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
 					}
 					else
 					if ( key.equals("e") ) 
@@ -349,12 +291,12 @@ public class StockItem {
 			itemString += amounts.get(i) + ( i + 1 < amounts.size() ? "," : "" );
 		
 		//saving the item global limits
-	//	if ( limit.hasLimit() ) 
-	//		itemString += " gl:" + limit.toString();
+		if ( limits.getLimit("global") != null ) 
+			itemString += " gl:" + limits.getLimit("global").toString();
 		
 		//saving the item global limits
-	//	if ( limit.hasPlayerLimit() ) 
-	//		itemString += " pl:" + limit.playerLimitToString();
+		if ( limits.getLimit("player") != null ) 
+			itemString += " pl:" + limits.getLimit("player").toString();
 		
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
@@ -557,6 +499,10 @@ public class StockItem {
 	
 	public boolean matches(StockItem item)
 	{
+		return matches(item, true);
+	}
+	public boolean matches(StockItem item, boolean amount)
+	{
 		Matcher matcher = pattern.matcher(item.matcherString);
 
 		boolean result = true;
@@ -588,7 +534,7 @@ public class StockItem {
 			}
 			else
 			{
-				if ( key.equals("a") )
+				if ( key.equals("a") && amount )
 				{
 					amounts.clear();
 					result = this.item.getAmount() == Integer.parseInt(value.split(",")[0]);
