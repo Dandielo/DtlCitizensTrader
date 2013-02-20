@@ -2,6 +2,7 @@ package net.dandielo.citizens.trader.types;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,6 +24,7 @@ import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
+import net.dandielo.citizens.trader.limits.LimitManager;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.LogManager;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
@@ -40,6 +42,7 @@ public abstract class Trader implements tNPC {
 	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
 	protected static LogManager loggingManager = CitizensTrader.getLoggingManager();
 	protected static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
+	protected static LimitManager limits = CitizensTrader.getLimitsManager();
 	protected LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	//Configuration
@@ -340,28 +343,51 @@ public abstract class Trader implements tNPC {
 	//===============================================================================================
 	
 	public boolean checkBuyLimits(int scale) {
-		return selectedItem.getLimitSystem().checkLimit(player.getName(),0,scale);
+		return limits.checkLimit(this, player.getName(), selectedItem, selectedItem.getAmount()*scale) &&
+				limits.checkLimit(this, "global limit", selectedItem, selectedItem.getAmount()*scale);
+		//return selectedItem.getLimitSystem().checkLimit(player.getName(),0,scale);
 	}
 	
 	public boolean checkLimits() {
-		return selectedItem.getLimitSystem().checkLimit(player.getName(),0);
+		return limits.checkLimit(this, player.getName(), selectedItem, selectedItem.getAmount()) &&
+				limits.checkLimit(this, "global limit", selectedItem, selectedItem.getAmount());
+		//return selectedItem.getLimitSystem().checkLimit(player.getName(),0);
 	}
 	
 	public boolean checkLimits(int slot) {
-		return selectedItem.getLimitSystem().checkLimit(player.getName(),slot);
+		return limits.checkLimit(this, player.getName(), selectedItem, selectedItem.getAmount(slot)) &&
+				limits.checkLimit(this, "global limit", selectedItem, selectedItem.getAmount(slot));
 	}
 	
-	public boolean updateBuyLimits(int scale) {
-		return selectedItem.getLimitSystem().updateLimit(0, scale, player.getName());
+	public void updateBuyLimits(int scale) {
+		try {
+			limits.updateLimit(this, player.getName(), selectedItem, selectedItem.getAmount()*scale);
+			limits.updateLimit(this, "global limit", selectedItem, selectedItem.getAmount()*scale);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public boolean updateLimits(int slot) {
-		return selectedItem.getLimitSystem().updateLimit(slot, player.getName());
+	public void updateLimits(int slot) {
+		try {
+			limits.updateLimit(this, player.getName(), selectedItem, selectedItem.getAmount(slot));
+			limits.updateLimit(this, "global limit", selectedItem, selectedItem.getAmount(slot));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	public boolean updateLimits() {
-		return selectedItem.getLimitSystem().updateLimit(0, player.getName());
-	}
+	public void updateLimits() {
+		try {
+			limits.updateLimit(this, player.getName(), selectedItem, selectedItem.getAmount());
+			limits.updateLimit(this, "global limit", selectedItem, selectedItem.getAmount());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+}
 
 	//saving amounts
 	public final void saveManagedAmounts() {

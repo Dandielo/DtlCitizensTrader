@@ -109,7 +109,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			
 			double price = trader.getPrice(player, "sell")*qty;
 			
-			if ( !trader.getSelectedItem().getLimitSystem().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
+			if ( !trader.getSelectedItem().getLimits().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
 			{
 				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_LIMIT));
 				locale.sendMessage(player, "trader-transaction-failed-limit");

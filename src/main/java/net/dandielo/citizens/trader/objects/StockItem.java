@@ -482,7 +482,7 @@ public class StockItem {
 	}
 	
 	// limit systems
-	public Limits getLimitSystem() {
+	public Limits getLimits() {
 		return limits;
 	}
 
@@ -665,5 +665,9 @@ public class StockItem {
 		for ( Map.Entry<String, Object> entry : ((Map<String, Object>) data).entrySet() )
 			return new StockItem(entry.getKey(), (List<String>) entry.getValue());
 		return null;
+	}
+
+	public boolean hasLimit(String target) {
+		return limits.getLimit(target.equals("global limit") ? "global" : "player") != null;
 	} 
 }

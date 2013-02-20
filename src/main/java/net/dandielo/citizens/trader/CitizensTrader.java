@@ -14,6 +14,7 @@ import net.dandielo.citizens.trader.commands.core.TraderCommands;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenTrigger;
 import net.dandielo.citizens.trader.denizen.TraderTags;
+import net.dandielo.citizens.trader.limits.LimitManager;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.BackendManager;
 import net.dandielo.citizens.trader.managers.BankAccountsManager;
@@ -51,6 +52,7 @@ public class CitizensTrader extends JavaPlugin {
 	private static LogManager logManager;
 	private static PatternsManager patternsManager;
 	private static BankAccountsManager accountsManager;
+	private static LimitManager limits;
 	
 	//Trader configuration
 	private static ItemsConfig itemConfig;
@@ -103,6 +105,7 @@ public class CitizensTrader extends JavaPlugin {
 		accountsManager = new BankAccountsManager();
 		accountsManager.loadAccounts();
 		
+		limits = new LimitManager();
 		
 		//initializing vault plugin
 		if ( getServer().getPluginManager().getPlugin("Vault") == null ) 
@@ -280,6 +283,10 @@ public class CitizensTrader extends JavaPlugin {
 	public static CitizensTrader getInstance()
 	{
 		return instance;
+	}
+
+	public static LimitManager getLimitsManager() {
+		return limits;
 	}
 	
 	/*

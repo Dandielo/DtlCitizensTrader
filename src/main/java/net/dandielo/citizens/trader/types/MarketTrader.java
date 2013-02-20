@@ -317,7 +317,7 @@ public class MarketTrader extends Trader {
 		{			
 			
 			//get the items limit system
-			Limits limitSystem = getSelectedItem().getLimitSystem();
+			Limits limitSystem = getSelectedItem().getLimits();
 			
 			
 			//timeout set to no timeout checks (-2000 = it will never reset)
@@ -383,8 +383,8 @@ public class MarketTrader extends Trader {
 			
 			
 			//link the items! :D
-			stockItem.getLimitSystem().linkWith(oldStockItem);
-			oldStockItem.getLimitSystem().linkWith(stockItem);
+			stockItem.getLimits().linkWith(oldStockItem);
+			oldStockItem.getLimits().linkWith(stockItem);
 			
 			//disable pattern listening
 			stockItem.setAsPatternItem(false);
@@ -396,7 +396,7 @@ public class MarketTrader extends Trader {
 			
 			
 			//set the limit system to 0/0/-2 (player empty configuration)
-			Limits limitSystem = stockItem.getLimitSystem();
+			Limits limitSystem = stockItem.getLimits();
 			limitSystem.setGlobalLimit(0);
 			limitSystem.setGlobalTimeout(-2000);
 			

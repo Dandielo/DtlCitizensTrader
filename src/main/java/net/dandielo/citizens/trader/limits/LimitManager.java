@@ -149,8 +149,12 @@ public class LimitManager {
 					entry.addItem(item.toString(), new Date().toString());
 				else
 					i.setAmount(i.getAmount() + amount);
+				return;
 			}
 		}
+		
+		item.hasLimit(target);
+		
 		LimitEntry newEntry = new LimitEntry(target.equals("global limit") ? "global" : "player", target);
 		newEntry.addItem(item.toString(), new Date().toString());
 		newEntry.getItem(item).setAmount(amount);
@@ -207,7 +211,7 @@ public class LimitManager {
 				if ( item.matches(itm, false) )
 					if ( item == null || itm.getMatchPriority() >= matched.getMatchPriority() )
 						matched = itm;
-			return matched == null ? true : matched.getAmount() + amount >= matched.getLimitSystem().getLimit(limit).getLimit();					
+			return matched == null ? true : matched.getAmount() + amount >= matched.getLimits().getLimit(limit).getLimit();					
 		}
 		
 		@Override
