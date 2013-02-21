@@ -134,7 +134,8 @@ public class TraderStockPart implements InventoryHolder {
 	public TraderStockPart createStockFor(Player player)
 	{
 		TraderStockPart pstock = new TraderStockPart(stockSize, name);
-		
+
+		System.out.print("patterns");
 		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
 		{
 			TPattern pat = pattern.getValue();
@@ -149,13 +150,16 @@ public class TraderStockPart implements InventoryHolder {
 				pstock.patterns.put(pattern.getKey(), pat);
 			}
 		}
-		
+
+		System.out.print("items");
 		for ( StockItem item : stock.get("sell") ) {
+			System.out.print(item);
 			pstock.stock.get("sell").remove(item);
 			pstock.stock.get("sell").add(item);
 		}
 
 		for ( StockItem item : stock.get("buy") ) {
+			System.out.print(item);
 			pstock.stock.get("buy").remove(item);
 			pstock.stock.get("buy").add(item);
 		}
@@ -389,30 +393,59 @@ public class TraderStockPart implements InventoryHolder {
 	public void load(DataKey data) 
 	{
 		List<String> pat = (List<String>) data.getRaw("patterns");
-		for ( String pattern : pat )
-			addPattern(pattern, Integer.valueOf(pattern.split(" ")[1]));
+		if ( pat != null )
+			for ( String pattern : pat )
+				addPattern(pattern, Integer.valueOf(pattern.split(" ")[1]));
 		
 		if ( data.keyExists("sell") )
 		{
-			for ( String item : (List<String>) data.getRaw("sell") ) 
+			for ( Object item : (List<Object>) data.getRaw("sell") ) 
 			{
-				StockItem stockItem = new StockItem(item);
-				if ( stockItem.getSlot() < 0 )
-					stock.get("sell").add(stockItem);
+				if ( item instanceof String )
+				{
+					StockItem stockItem = new StockItem((String)item);
+					if ( stockItem.getSlot() < 0 )
+						stock.get("sell").add(stockItem);
+					else
+						stock.get("sell").add(0, stockItem);
+				}
 				else
-					stock.get("sell").add(0, stockItem);
+				{
+					StockItem stockItem = null;
+					for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
+						stockItem = new StockItem(entry.getKey(), entry.getValue());
+
+					if ( stockItem.getSlot() < 0 )
+						stock.get("sell").add(stockItem);
+					else
+						stock.get("sell").add(0, stockItem);
+				}
 			}
 		}
 
 		if ( data.keyExists("buy") ) 
 		{
-			for ( String item :  (List<String>) data.getRaw("buy") )
+			for ( Object item :  (List<Object>) data.getRaw("buy") )
 			{
-				StockItem stockItem = new StockItem(item);
-				if ( stockItem.getSlot() < 0 )
-					stock.get("buy").add(stockItem);
+				if ( item instanceof String )
+				{
+					StockItem stockItem = new StockItem((String)item);
+					if ( stockItem.getSlot() < 0 )
+						stock.get("buy").add(stockItem);
+					else
+						stock.get("buy").add(0, stockItem);
+				}
 				else
-					stock.get("buy").add(0, stockItem);
+				{
+					StockItem stockItem = null;
+					for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
+						stockItem = new StockItem(entry.getKey(), entry.getValue());
+
+					if ( stockItem.getSlot() < 0 )
+						stock.get("buy").add(stockItem);
+					else
+						stock.get("buy").add(0, stockItem);
+				}
 			}
 		}
 		
@@ -424,18 +457,32 @@ public class TraderStockPart implements InventoryHolder {
 		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
 			patList.add(pat.getValue().getName() + " " + pat.getKey());
 		
-		List<String> sellList = new ArrayList<String>();
+		List<Object> sellList = new ArrayList<Object>();
         for ( StockItem item : stock.get("sell") )
 			if ( !item.patternItem() )
 			{
-				sellList.add(item.toString());
+				if ( item.hasLore() )
+				{
+					Map<String, List<String>> temp = new HashMap<String, List<String>>();
+					temp.put(item.toString(), item.getLore());
+					sellList.add(temp);
+				}
+				else
+					sellList.add(item.toString());
 			}
         
-		List<String> buyList = new ArrayList<String>();
+		List<Object> buyList = new ArrayList<Object>();
 		for ( StockItem item : stock.get("buy") )
 			if ( !item.patternItem() )
 			{
-				buyList.add(item.toString());
+				if ( item.hasLore() )
+				{
+					Map<String, List<String>> temp = new HashMap<String, List<String>>();
+					temp.put(item.toString(), item.getLore());
+					buyList.add(temp);
+				}
+				else
+					buyList.add(item.toString());
 			}
 
 		data.setRaw("sell", sellList);

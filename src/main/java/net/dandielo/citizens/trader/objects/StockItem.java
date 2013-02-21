@@ -76,7 +76,7 @@ public class StockItem {
 			{
 				if ( key == null )
 				{
-					Material mat = Material.getMaterial(value);
+					Material mat = Material.getMaterial(value.toUpperCase());
 					if ( mat == null )
 						mat = Material.getMaterial(Integer.parseInt(value));
 					
@@ -85,7 +85,7 @@ public class StockItem {
 				}
 				else
 				{
-					Material mat = Material.getMaterial(key);
+					Material mat = Material.getMaterial(key.toUpperCase());
 					if ( mat == null )
 						mat = Material.getMaterial(Integer.parseInt(key));
 					
@@ -323,7 +323,7 @@ public class StockItem {
 			}
 		}
 		
-		if ( !name.isEmpty() ) 
+		if ( name != null && !name.isEmpty() ) 
 		{
 			itemString += " n:" + name;
 		}
@@ -354,7 +354,20 @@ public class StockItem {
 			itemString += " cel";
 		}
 		
+		if ( lore != null )
+			itemString += " lore";
+		
 		return itemString;
+	}
+	
+	public boolean hasLore()
+	{
+		return lore != null;
+	}
+	
+	public List<String> getLore()
+	{
+		return lore;
 	}
 
 	public boolean stackPrice() {
@@ -391,18 +404,6 @@ public class StockItem {
 	{
 		price = newPrice;
 	}
-	
-	/*
-	public double getRawPrice() {
-		return price;
-	}
-	public double getPrice(int i) {
-		if ( stackPrice )
-			return price;
-		if ( i < amounts.size() ) 
-			return price*amounts.get(i);
-		return 0;
-	}*/
 	
 	public boolean hasMultipleAmounts() {
 		//Allow MA for stack price
@@ -636,18 +637,6 @@ public class StockItem {
 		
 		return false;
 	}
-
-	/*public double calcPrice(Player player, TransactionPattern pattern, String stock)
-	{
-		return calcPrice(player, pattern, stock, 0);
-	}
-	
-	public double calcPrice(Player player, TransactionPattern pattern, String stock, int slot)
-	{
-		if ( pattern != null )
-			return pattern.getItemPrice(player, this, stock, slot, 0.0);
-		return getPrice(slot);
-	}*/
 
 	public static boolean hasDurability(ItemStack item)
 	{
