@@ -268,7 +268,7 @@ public class TraderCommands {
 	}
 	
 	//TODO pattern commands
-	@Command(
+/*	@Command(
 	name = "trader",
 	syntax = "pattern",
 	desc = "shows the pattern set for the selected trader or 'disabled' otherwise",
@@ -279,9 +279,9 @@ public class TraderCommands {
 			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
 		else
 			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", "#disabled");
-	}
+	}*/
 	
-	@Command(
+/*	@Command(
 	name = "trader",
 	syntax = "pattern set <pattern>",
 	desc = "sets a new pattern for a trader",
@@ -295,8 +295,8 @@ public class TraderCommands {
 			locale.sendMessage(sender, "error-argument-invalid", "argument", pattern);
 		else
 			locale.sendMessage(sender, "key-change", "key", "#pattern", "value", pattern);
-	}
-	
+	}*/
+/*	
 	@Command(
 	name = "trader",
 	syntax = "pattern save <pattern> (arg) (post)",
@@ -335,9 +335,9 @@ public class TraderCommands {
 			stock.reset(null, "prices");
 
 		locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
-	}
+	}*/
 	
-	@Command(
+/*	@Command(
 	name = "trader",
 	syntax = "pattern remove",
 	desc = "removes pattern from a trader",
@@ -346,9 +346,9 @@ public class TraderCommands {
 	{
 		trader.getStock().removePattern();
 		locale.sendMessage(sender, "key-change", "key", "#pattern", "value", "#disabled");
-	}
+	}*/
 	
-	@Command(
+/*	@Command(
 	name = "trader",
 	syntax = "pattern reload",
 	desc = "reloads all patterns and trader stocks",
@@ -370,7 +370,7 @@ public class TraderCommands {
 		{
 			npc.getTrait(TraderTrait.class).getStock().reloadStock();
 		}
-	}
+	}*/
 	
 	private static DecimalFormat format = new DecimalFormat("#.##");
 	

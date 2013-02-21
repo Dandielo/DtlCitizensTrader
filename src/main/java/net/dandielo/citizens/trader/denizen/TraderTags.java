@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,8 +125,10 @@ public class TraderTags implements Listener {
         	Trader trader = new ServerTrader(npc.getTrait(TraderTrait.class), npc, p);
         	if ( tag.equals("pattern") )
         	{
-        		TPattern pat = trader.getStock().getPattern();
-        		 e.setReplaced(pat == null ? "none" : pat.getName());
+        		String rep = "";
+        		for ( Entry<Integer, TPattern> en : trader.getStock().getPatterns().entrySet() )
+        			rep += ", " + en.getValue().getName();
+        		e.setReplaced(rep.isEmpty() ? "none" : rep.substring(2));
         	}
         	else
         	if ( tag.equals("wallet") )
@@ -204,7 +207,7 @@ public class TraderTags implements Listener {
         List<StockItem> stock = trader.getStock().getStock(st);
         for ( StockItem item : stock )
         {
-        	String price = new DecimalFormat("#.##").format(item.calcPrice(p, trader.getStock().getPattern(), st));
+        	String price = new DecimalFormat("#.##").format(trader.getStock().getPrice(item, p, st, 0));
         	hint += " | " + hintItem.replaceAll("\\{price\\}", price).replaceAll("\\{name\\}", item.name());
         }
 		return hint.isEmpty() ? "empty stock" : hint.substring(3);

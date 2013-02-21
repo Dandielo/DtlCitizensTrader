@@ -126,6 +126,14 @@ public class LimitManager {
 	
 	private Map<String, List<LimitEntry>> limits = new HashMap<String, List<LimitEntry>>();
 	
+	public StockItem getLimit(Trader trader, String target, StockItem item)
+	{
+		for ( LimitEntry entry : limits.get(trader.getNpc().getName()) )
+			if ( entry.getTarget().equals(target) )
+				return entry.getItem(item);
+		return null;
+	}
+	
 	public boolean checkLimit(Trader trader, String target, StockItem item, int amount)
 	{
 		for ( LimitEntry entry : limits.get(trader.getNpc().getName()) )
@@ -136,7 +144,7 @@ public class LimitManager {
 	
 	public void updateLimit(Trader trader, String target, StockItem item, int amount) throws ParseException
 	{
-		List<LimitEntry> entries = limits.get(trader);
+		List<LimitEntry> entries = limits.get(trader.getNpc().getName());
 		if ( entries == null )
 			 entries = new ArrayList<LimitEntry>();
 		
@@ -149,16 +157,30 @@ public class LimitManager {
 					entry.addItem(item.toString(), new Date().toString());
 				else
 					i.setAmount(i.getAmount() + amount);
+				updateLinked(trader, target, item, amount);
 				return;
 			}
 		}
 		
-		item.hasLimit(target);
+		if ( item.hasLimit(target) )
+		{	
+			LimitEntry newEntry = new LimitEntry(target.equals("global limit") ? "global" : "player", target);
+			newEntry.addItem(item.toString(), new Date().toString());
+			newEntry.getItem(item).setAmount(amount);
+			entries.add(newEntry);
+			
+			limits.put(trader.getNpc().getName(), entries);
+		}
 		
-		LimitEntry newEntry = new LimitEntry(target.equals("global limit") ? "global" : "player", target);
-		newEntry.addItem(item.toString(), new Date().toString());
-		newEntry.getItem(item).setAmount(amount);
-		entries.add(newEntry);
+	}
+	
+	protected void updateLinked(Trader trader, String target, StockItem item, int amount) throws ParseException
+	{
+		StockItem linked = item.getLimits().getLinked();
+		if ( linked != null )
+			updateLimit(trader, target, linked, amount);
+			//linked.getLimitSystem().limit.amount -= thisItem.getAmount(slot)*scale;
+		//limit.changeAmount(thisItem.getAmount(slot)*scale);
 	}
 	
 	public void scheduleCheck()

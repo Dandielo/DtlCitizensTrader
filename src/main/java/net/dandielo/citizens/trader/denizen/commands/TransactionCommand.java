@@ -16,7 +16,9 @@ import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionResult;
+import net.dandielo.citizens.trader.limits.LimitManager;
 import net.dandielo.citizens.trader.locale.LocaleManager;
+import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.types.ServerTrader;
 import net.dandielo.citizens.trader.types.Trader;
 import net.dandielo.citizens.trader.types.Trader.TraderStatus;
@@ -109,7 +111,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			
 			double price = trader.getPrice(player, "sell")*qty;
 			
-			if ( !trader.getSelectedItem().getLimits().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
+			if ( !checkLimits(trader, trader.getSelectedItem(), player) )//trader.getSelectedItem().getLimits().checkLimit(player.getName(), 0, qty) )// !trader.checkLimits() )
 			{
 				Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(trader, trader.getNpc(), player, trader.getTraderStatus(), trader.getSelectedItem(), price, qty, TransactionResult.FAIL_LIMIT));
 				locale.sendMessage(player, "trader-transaction-failed-limit");
@@ -192,5 +194,13 @@ public class TransactionCommand extends AbstractDenizenCommand {
 			}
 		}*/
 	}	
+	
+	protected static LimitManager limits = CitizensTrader.getLimitsManager();
+	
+	public boolean checkLimits(Trader trader, StockItem selectedItem, Player player) {
+		return limits.checkLimit(trader, player.getName(), selectedItem, selectedItem.getAmount()) &&
+				limits.checkLimit(trader, "global limit", selectedItem, selectedItem.getAmount());
+		//return selectedItem.getLimitSystem().checkLimit(player.getName(),0);
+	}
 
 }

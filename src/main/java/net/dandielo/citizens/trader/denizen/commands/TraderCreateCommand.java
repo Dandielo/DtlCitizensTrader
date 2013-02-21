@@ -125,7 +125,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 		TraderTrait trait = npc.getTrait(TraderTrait.class);
 		trait.implementTrader();
 		trait.setType((EType) scriptEntry.getObject("type"));
-		trait.getStock().setPattern((String) scriptEntry.getObject("pattern"));
+		trait.getStock().addPattern((String) scriptEntry.getObject("pattern"), 0);
 		trait.getConfig().getWallet().setType((WalletType) scriptEntry.getObject("wallet"));
 		trait.getConfig().setOwner((String) scriptEntry.getObject("owner"));
 	}

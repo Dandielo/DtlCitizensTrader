@@ -119,11 +119,6 @@ public class TraderTrait extends Trait {
 			
 			if ( this.type.equals(EType.SERVER_TRADER) && !defPattern.isEmpty() )
 				stock.addPattern(defPattern, 0);
-				//stock.setPattern(defPattern);
-
-			//TODO Limits, linking
-			//if ( this.type.equals(EType.MARKET_TRADER) )
-			//	stock.linkItems();
 		}
 		else
 		if ( type.equals("banker") )
@@ -152,10 +147,6 @@ public class TraderTrait extends Trait {
 			
 			config.load(data);
 			stock.load(data);
-
-			//TODO Limits
-			//if ( this.type.equals(EType.MARKET_TRADER) )
-			//	stock.linkItems();
 		}
 	}
 

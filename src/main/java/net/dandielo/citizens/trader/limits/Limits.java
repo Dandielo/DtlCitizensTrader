@@ -1,7 +1,5 @@
 package net.dandielo.citizens.trader.limits;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,9 +7,21 @@ import net.dandielo.citizens.trader.objects.StockItem;
 
 public class Limits {
 	private final StockItem item;
+	
+	private StockItem linked = null;
 
 	private Map<String, Limit> limits = new HashMap<String, Limit>();
 
+	public void linkWith(StockItem item)
+	{
+		linked = item;
+	}
+	
+	public StockItem getLinked()
+	{
+		return linked;
+	}
+	
 	public Limits(StockItem item)
 	{
 		this.item = item;
@@ -79,6 +89,16 @@ public class Limits {
 			timeout -= n;
 			if ( timeout < 0 )
 				timeout = -1;
+		}
+		
+		public void setTimeout(int n)
+		{
+			timeout = n;
+		}
+		
+		public void setLimit(int n)
+		{
+			limit = n;
 		}
 		
 		public int getLimit()

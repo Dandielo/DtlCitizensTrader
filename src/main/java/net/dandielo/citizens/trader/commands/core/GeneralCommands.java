@@ -38,8 +38,8 @@ public class GeneralCommands {
 			locale.sendMessage(sender, "key-value", "key", "#owner", "value", npc.getConfig().getOwner());
 			if ( npc.getWallet() != null )
 			locale.sendMessage(sender, "key-value", "key", "#wallet", "value", npc.getWallet().getType().toString());
-			if ( npc.getStock().getPattern() != null )
-			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
+		//	if ( npc.getStock().getPatterns() != null )
+		//	locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
 			
 		}
 	}

@@ -15,6 +15,7 @@ import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.limits.Limits;
+import net.dandielo.citizens.trader.limits.Limits.Limit;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
@@ -109,7 +110,7 @@ public class PlayerTrader extends Trader {
 					else
 					{
 
-						double price = getSelectedItem().getPrice();
+						double price = getSelectedItem().getPrice(0);
 						if ( !checkLimits() )
 						{
 							locale.sendMessage(player, "trader-transaction-failed-limit");
@@ -505,7 +506,7 @@ public class PlayerTrader extends Trader {
 							{
 								
 								//get the amount left in the stock
-								int leftAmount = getSelectedItem().getLimits().getGlobalLimit() - getSelectedItem().getLimits().getGlobalAmount();
+								int leftAmount = getSelectedItem().getLimits().getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 								
 								//check if the player has enough space
 								if ( inventoryHasPlaceAmount(leftAmount) )
@@ -530,9 +531,7 @@ public class PlayerTrader extends Trader {
 
 									//send message
 									locale.sendMessage(player, "trader-stock-item-remove");
-								//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
 									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(leftAmount));
-								//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + leftAmount) );
 								}
 							} 
 							else
@@ -546,7 +545,6 @@ public class PlayerTrader extends Trader {
 								}
 								else
 									locale.sendMessage(player, "error-nopermission");
-							//		player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:multiple-amounts") );
 							}
 							
 						}
@@ -559,7 +557,7 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, TraderStatus.MANAGE_BUY ).hasSelectedItem() ) 
 						{
 							//get the amount left in the stock
-							int stockedAmount = getSelectedItem().getLimits().getGlobalAmount();
+							int stockedAmount = limits.getLimit(this, "global", getSelectedItem()).getAmount();// getSelectedItem().getLimits().getGlobalAmount();
 							
 							//check if the player has enough space
 							if ( inventoryHasPlaceAmount(stockedAmount) )
@@ -578,18 +576,16 @@ public class PlayerTrader extends Trader {
 
 									//send a remove message
 									locale.sendMessage(player, "trader-stock-item-remove");
-									//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
 									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(stockedAmount));
-									//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + leftAmount) );
 								}
 								else
 								{
 									//send a item got amount message
-								//	player.sendMessage( localeManager.getLocaleString("item-amount-recover").replace("{amount}", "" + stockedAmount) );
 									locale.sendMessage(player, "trader-player-recover", "amount", String.valueOf(stockedAmount));
 									
 									//reset the amount
-									getSelectedItem().getLimits().setGlobalAmount(0);
+									limits.getLimit(this, "global", getSelectedItem()).setAmount(0);
+									//getSelectedItem().getLimits().getLimit("global").setA(0);
 								}
 									
 								
@@ -620,29 +616,26 @@ public class PlayerTrader extends Trader {
 							if ( !permissionsManager.has(player, "dtl.trader.managing.stack-price") )
 							{
 								locale.sendMessage(player, "error-nopermission");
-							//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
 								selectItem(null);
 								event.setCancelled(true);
 								return;
 							}
 							//if it has the stack price change it back to "per-item" price
-							if ( getSelectedItem().hasStackPrice() ) 
+							if ( getSelectedItem().stackPrice() ) 
 							{
 								getSelectedItem().setStackPrice(false);
 								locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#disabled");
-							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
 							} 
 							//change the price to a stack-price
 							else
 							{
 								getSelectedItem().setStackPrice(true);
 								locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#disabled");
-							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 							}
 							
 							
 							NBTTagEditor.removeDescription(event.getCurrentItem());
-							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), player));
 							
 						}
 						
@@ -655,7 +648,6 @@ public class PlayerTrader extends Trader {
 					}
 					event.setCancelled(true);
 					locale.sendMessage(player, "trader-stock-invalid-action");
-				//	player.sendMessage( localeManager.getLocaleString("invalid-action") );
 					return;
 					
 				}
@@ -669,7 +661,6 @@ public class PlayerTrader extends Trader {
 						//select the item to get the information from, and show the price
 						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
 							locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
-						//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 						
 						
 					} 
@@ -694,7 +685,6 @@ public class PlayerTrader extends Trader {
 							
 							//show the new price
 							locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
-						//	player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
 							
 						}
@@ -720,8 +710,7 @@ public class PlayerTrader extends Trader {
 						//select item which limit will be shown up
 						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
-							locale.sendMessage(player, "key-value", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimits().getGlobalLimit()));
-						//	player.sendMessage( localeManager.getLocaleString("item-buy-limit").replace("{limit}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()).replace("{amount}", "" + getSelectedItem().getLimitSystem().getGlobalAmount()) );
+							locale.sendMessage(player, "key-value", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimits().limit("global")));
 						}
 						
 						
@@ -733,17 +722,19 @@ public class PlayerTrader extends Trader {
 						//select the item
 						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
+
+							if ( getSelectedItem().getLimits().getLimit("global") == null )
+								getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
 							
 							if ( event.isRightClick() ) 
-								getSelectedItem().getLimits().changeGlobalLimit(-calculateLimit(event.getCursor()));
+								getSelectedItem().getLimits().getLimit("global").changeLimit(-calculateLimit(event.getCursor()));
 							else
-								getSelectedItem().getLimits().changeGlobalLimit(calculateLimit(event.getCursor()));
+								getSelectedItem().getLimits().getLimit("global").changeLimit(calculateLimit(event.getCursor()));
 							
 							NBTTagEditor.removeDescription(event.getCurrentItem());
-							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), null, player));
+							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 
-							locale.sendMessage(player, "key-change", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimits().getGlobalLimit()));
-							//player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:buy-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
+							locale.sendMessage(player, "key-change", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimits().limit("global")));
 						
 						}
 
@@ -924,7 +915,7 @@ public class PlayerTrader extends Trader {
 					
 					//pattern disabled always
 					stockItem.setAsPatternItem(false);
-					stockItem.setPatternListening(false);
+					stockItem.setPatternPrice(false);
 					
 					
 					//set the stock items slot
@@ -933,8 +924,7 @@ public class PlayerTrader extends Trader {
 					
 					//set the limit system to 0/0/-2 (player empty configuration)
 					Limits limitSystem = stockItem.getLimits();
-					limitSystem.setGlobalLimit(0);
-					limitSystem.setGlobalTimeout(-2000);
+					limitSystem.setLimit("global", new Limit(0, -2));
 					
 					
 					//put it into the stock list
@@ -948,7 +938,6 @@ public class PlayerTrader extends Trader {
 					
 					//send message
 					locale.sendMessage(player, "trader-stock-item-add");
-				//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 				}
 				
 				
@@ -960,10 +949,6 @@ public class PlayerTrader extends Trader {
 				//if it's not shift clicked it has no effect ;P
 				if ( !event.isShiftClick() )
 				{
-					
-					//message the player
-				//	p.sendMessage( locale.getLocaleString("amount-add-help") );
-					
 					
 					//reset the selection and set the clicked inventory (false = bottom)
 					selectItem(null);
@@ -997,15 +982,15 @@ public class PlayerTrader extends Trader {
 					
 					
 					//timeout set to no timeout checks (-2000 = it will never reset)
-					limitSystem.setGlobalTimeout(-2000);
+					limitSystem.getLimit("global").setTimeout(-2000);
 					
 					
-					int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
+					int getItemsLeft = limitSystem.getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 					if ( getItemsLeft < 0 )
 						getItemsLeft = 0;
 					
 					//set the new limit (how many items can players buy)
-					limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
+					limitSystem.getLimit("global").setLimit(getItemsLeft + itemToAdd.getAmount());
 
 					//send message
 					locale.sendMessage(player, "trader-player-add-amount");
@@ -1018,7 +1003,8 @@ public class PlayerTrader extends Trader {
 					
 					
 					//reset the amount
-					limitSystem.setGlobalAmount(0);
+					limits.getLimit(this, "global", getSelectedItem()).setAmount(0);
+					//limitSystem.setGlobalAmount(0);
 				
 					
 					//reset

@@ -17,6 +17,7 @@ import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionResult;
+import net.dandielo.citizens.trader.limits.Limits.Limit;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
@@ -568,6 +569,8 @@ public class ServerTrader extends Trader {
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
+								if ( getSelectedItem().getLimits().getLimit("global") == null )
+									getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 								{
@@ -607,6 +610,8 @@ public class ServerTrader extends Trader {
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
+								if ( getSelectedItem().getLimits().getLimit("player") == null )
+									getSelectedItem().getLimits().setLimit("player", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 								{
@@ -850,6 +855,8 @@ public class ServerTrader extends Trader {
 							//select the item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
+								if ( getSelectedItem().getLimits().getLimit("global") == null )
+									getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 									getSelectedItem().getLimits().getLimit("global").changeLimit(-calculateLimit(event.getCursor()));
@@ -896,6 +903,8 @@ public class ServerTrader extends Trader {
 							//select the item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
+								if ( getSelectedItem().getLimits().getLimit("player") == null )
+									getSelectedItem().getLimits().setLimit("player", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 									getSelectedItem().getLimits().getLimit("player").changeLimit(-calculateLimit(event.getCursor()));

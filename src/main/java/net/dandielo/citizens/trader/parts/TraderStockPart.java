@@ -427,12 +427,16 @@ public class TraderStockPart implements InventoryHolder {
 		List<String> sellList = new ArrayList<String>();
         for ( StockItem item : stock.get("sell") )
 			if ( !item.patternItem() )
+			{
 				sellList.add(item.toString());
+			}
         
 		List<String> buyList = new ArrayList<String>();
 		for ( StockItem item : stock.get("buy") )
 			if ( !item.patternItem() )
+			{
 				buyList.add(item.toString());
+			}
 
 		data.setRaw("sell", sellList);
 		data.setRaw("buy", buyList);

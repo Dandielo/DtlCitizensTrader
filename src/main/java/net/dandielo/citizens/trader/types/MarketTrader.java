@@ -16,6 +16,7 @@ import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.limits.Limits;
+import net.dandielo.citizens.trader.limits.Limits.Limit;
 import net.dandielo.citizens.trader.objects.NBTTagEditor;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
@@ -318,18 +319,20 @@ public class MarketTrader extends Trader {
 			
 			//get the items limit system
 			Limits limitSystem = getSelectedItem().getLimits();
-			
+
+			if ( limitSystem.getLimit("global") == null )
+				limitSystem.setLimit("global", new Limit(0, -2));
 			
 			//timeout set to no timeout checks (-2000 = it will never reset)
-			limitSystem.setGlobalTimeout(-2000);
+			limitSystem.getLimit("global").setTimeout(-2000);
 			
 			
-			int getItemsLeft = limitSystem.getGlobalLimit() - limitSystem.getGlobalAmount();
+			int getItemsLeft = limitSystem.getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 			if ( getItemsLeft < 0 )
 				getItemsLeft = 0;
 			
 			//set the new limit (how many items can players buy)
-			limitSystem.setGlobalLimit(getItemsLeft + itemToAdd.getAmount());
+			limitSystem.getLimit("global").setLimit(getItemsLeft + itemToAdd.getAmount());
 
 			//send message
 			//p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
@@ -341,7 +344,8 @@ public class MarketTrader extends Trader {
 			
 			
 			//reset the amount
-			limitSystem.setGlobalAmount(0);
+			limits.getLimit(this, "global", getSelectedItem()).setAmount(0);
+			//limitSystem.setGlobalAmount(0);
 		
 			
 			//reset
@@ -378,7 +382,7 @@ public class MarketTrader extends Trader {
 			//set the item to the inventory
 			if ( getTraderStatus().equals(TraderStatus.SELL) )
 			{
-				getInventory().setItem(firstEmpty, TraderStockPart.setLore(itemToAdd.clone(), TraderStockPart.getPriceLore(stockItem, 0, "sell", getStock().getPattern(), player)));
+				getInventory().setItem(firstEmpty, TraderStockPart.setLore(itemToAdd.clone(), TraderStockPart.getPriceLore(stockItem, 0, "sell", getStock().getPatterns(), player)));
 			}
 			
 			
@@ -388,8 +392,7 @@ public class MarketTrader extends Trader {
 			
 			//disable pattern listening
 			stockItem.setAsPatternItem(false);
-			stockItem.setPatternListening(false);
-			
+			stockItem.setPatternPrice(false);
 			
 			//set the stock items slot
 			stockItem.setSlot(firstEmpty);
@@ -397,14 +400,14 @@ public class MarketTrader extends Trader {
 			
 			//set the limit system to 0/0/-2 (player empty configuration)
 			Limits limitSystem = stockItem.getLimits();
-			limitSystem.setGlobalLimit(0);
-			limitSystem.setGlobalTimeout(-2000);
-			
+
+			if ( limitSystem.getLimit("global") == null )
+				limitSystem.setLimit("global", new Limit(0, -2));			
 			
 			//set the new limit (how many items can players buy)
-			limitSystem.setGlobalLimit(itemToAdd.getAmount()*scale);
+			limitSystem.getLimit("global") .setLimit(itemToAdd.getAmount()*scale);
 			
-			stockItem.setPatternListening(true);
+			stockItem.setPatternPrice(true);
 			//pattern.getItemPrice(stockItem, "sell");
 			//put it into the stock list
 			getStock().addItem("sell", stockItem);
@@ -483,8 +486,7 @@ public class MarketTrader extends Trader {
 	}
 	public double getPrice(Player player, String transaction, int slot)
 	{
-	//	System.out.print(getSelectedItem() + " " + slot + " " + transaction + " " + player + " " + pattern );
-		return getStock().getPattern().getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
+		return getStock().getPrice(getSelectedItem(), player, transaction, slot);//.getPattern().getItemPrice(player, getSelectedItem(), transaction, slot, 0.0);
 	}
 
 	@Override
