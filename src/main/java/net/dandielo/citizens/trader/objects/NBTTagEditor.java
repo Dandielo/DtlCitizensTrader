@@ -9,12 +9,10 @@ import java.util.regex.Pattern;
 import net.dandielo.citizens.trader.CitizensTrader;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 
@@ -22,12 +20,13 @@ public class NBTTagEditor {
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
-		int s = 0;
+	//	int s = 0;
 		for ( ItemStack item : inventory.getContents() )
 		{
 			if ( item != null )
 			{
-				int size = 0;
+				NBTTagEditor.removeDescription(item);
+			/*	int size = 0;
 				List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 				if ( lore != null )
 				{
@@ -79,15 +78,28 @@ public class NBTTagEditor {
 					inventory.setItem(s, new ItemStack(item));
 					
 					
-				}
+				}*/
 			}
-			++s;
+		//	++s;
 		}		
 	}
 	
 	public static ItemStack addDescription(ItemStack item, List<String> lore)
 	{
-		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		if ( lore == null || lore.isEmpty() )
+			return item;
+		
+		ItemMeta meta = item.getItemMeta();
+		if ( meta == null )
+			meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		
+		List<String> list = ( item.getItemMeta().getLore() != null ? item.getItemMeta().getLore() : new ArrayList<String>() );
+		for ( String s : lore )
+			list.add(s.replace('^', '§'));
+		
+		meta.setLore(list);
+		item.setItemMeta(meta);
+	/*	ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		Map<Enchantment, Integer> ench = item.getEnchantments();
 		
 		List<String> list = ( item.getItemMeta().getLore() != null ? item.getItemMeta().getLore() : new ArrayList<String>() );
@@ -111,22 +123,53 @@ public class NBTTagEditor {
 		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 		item.addUnsafeEnchantments(ench);
 		
-		return ItemStack.deserialize(map);
-	
+		return ItemStack.deserialize(map);*/
+		return item;
 	}
 	
 
 	public static void removeDescription(ItemStack item)
 	{
-		Map<String, Object> map = item.serialize();
-		if ( map.containsKey("meta") )
+		if ( !item.hasItemMeta() )
+			return;
+		
+		ItemMeta meta = item.getItemMeta();
+		if ( !meta.hasLore() )
+			return;
+		
+		List<String> list = meta.getLore();
+		
+		
+		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
+		
+		if ( list.size() > lore.size() )
 		{
-			ItemMeta meta = (ItemMeta) map.get("meta");
-			meta.setLore(null);
-			
-			item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+			Iterator<String> it = list.iterator();
+			while(it.hasNext())
+			{
+				String line = it.next();
+				for ( int j = 0 ; j < lore.size() ; ++j )
+				{
+					String m = lore.get(j);
+					m = m.replace("^", "[\\^|§]");
+					m = m.replace("{stack}", "\\S{1,}");
+					m = m.replace("{unit}", "\\S{1,}");
+
+					if ( Pattern.matches(m, line) )
+					{
+						it.remove();
+						j = lore.size();
+					}
+				}
+			}
 		}
-	
+		
+		if ( list.isEmpty() )
+			meta.setLore(null);
+		else
+			meta.setLore(list);
+
+		item.setItemMeta(meta);
 	}
 	
 	public static String getName(ItemStack item)
@@ -140,7 +183,6 @@ public class NBTTagEditor {
 	
 	public static void setName(ItemStack item, String name)
 	{
-		/*WTH is going on?! why do i need to serialize it?! GUYS FOCUS!*/
 		ItemMeta oldMeta = item.getItemMeta();
 		
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());

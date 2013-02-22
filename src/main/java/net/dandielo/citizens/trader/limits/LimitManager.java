@@ -128,6 +128,8 @@ public class LimitManager {
 	
 	public StockItem getLimit(Trader trader, String target, StockItem item)
 	{
+		if ( limits.get(trader.getNpc().getName()) == null )
+			return null;
 		for ( LimitEntry entry : limits.get(trader.getNpc().getName()) )
 			if ( entry.getTarget().equals(target) )
 				return entry.getItem(item);
@@ -136,6 +138,8 @@ public class LimitManager {
 	
 	public boolean checkLimit(Trader trader, String target, StockItem item, int amount)
 	{
+		if ( limits.get(trader.getNpc().getName()) == null )
+			return true;
 		for ( LimitEntry entry : limits.get(trader.getNpc().getName()) )
 			if ( entry.getTarget().equals(target) )
 				return entry.check(item, amount);

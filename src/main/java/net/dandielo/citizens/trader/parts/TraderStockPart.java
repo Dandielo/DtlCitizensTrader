@@ -531,13 +531,12 @@ public class TraderStockPart implements InventoryHolder {
 		return getPriceLore(item, 0, stock, patterns, player);
 	}
 	
-	public static List<String> getPriceLore(StockItem item, int i, String stock, Map<Integer, TPattern> patterns, Player player)
+	public static List<String> getPriceLore(StockItem item, int slot, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
 		String price = "";
 		DecimalFormat format = new DecimalFormat("#.##");
 
-		
-		
+		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot));
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
@@ -601,6 +600,21 @@ public class TraderStockPart implements InventoryHolder {
 	}
 	
 	public double getPrice(StockItem item, Player player, String stock, int slot)
+	{
+		double price = item.getPrice(slot);
+		
+		Price prc = new Price(0);
+		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
+		{
+			if ( perms.has(player, "") )
+				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
+		}
+		if ( prc.hasPrice() )
+			price = prc.endPrice();
+		return price;
+	}
+	
+	public static double getPrice(StockItem item, Map<Integer, TPattern> patterns, Player player, String stock, int slot)
 	{
 		double price = item.getPrice(slot);
 		
