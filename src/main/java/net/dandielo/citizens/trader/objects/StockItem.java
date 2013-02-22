@@ -323,11 +323,6 @@ public class StockItem {
 			}
 		}
 		
-		if ( name != null && !name.isEmpty() ) 
-		{
-			itemString += " n:" + name;
-		}
-		
 		//saving additional configurations
 		if ( stackPrice )
 		{
@@ -352,6 +347,11 @@ public class StockItem {
 		if ( checkEnchantmentLevels )
 		{
 			itemString += " cel";
+		}
+		
+		if ( name != null && !name.isEmpty() ) 
+		{
+			itemString += " n:" + name;
 		}
 		
 		if ( lore != null )

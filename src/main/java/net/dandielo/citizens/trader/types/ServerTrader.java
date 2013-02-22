@@ -667,15 +667,14 @@ public class ServerTrader extends Trader {
 				{
 					
 					 //items managing
-					 if ( equalsTraderStatus(getBasicManageModeByWool()) ) {
+					 if ( equalsTraderStatus(getBasicManageModeByWool()) ) 
+					 {
 						 
-						 //r.click = stack price
 						 if ( event.isRightClick() )
 						 {
 							if ( !permissionsManager.has(player, "dtl.trader.managing.stack-price") )
 							{
 								locale.sendMessage(player, "error-nopermission");
-							//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:stack-price") );
 								selectItem(null);
 								event.setCancelled(true);
 								return;
@@ -688,14 +687,12 @@ public class ServerTrader extends Trader {
 								{
 									getSelectedItem().setStackPrice(false);
 									locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#disabled");
-									//player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "disabled") );
 								} 
 								//change the price to a stack-price
 								else
 								{
 									getSelectedItem().setStackPrice(true);
 									locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#enabled");
-								//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:stack-price").replace("{value}", "enabled") );
 								}
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
@@ -725,9 +722,9 @@ public class ServerTrader extends Trader {
 								 
 								 //set the item to the stock
 								 if ( this.isBuyModeByWool() )
-									 getStock().addItem("buy", item);
+									 trait.getStock().addItem("buy", item);
 								 if ( this.isSellModeByWool() )
-									 getStock().addItem("sell", item);
+									 trait.getStock().addItem("sell", item);
 
 								 locale.sendMessage(player, "trader-stock-item-add");
 								 //player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
@@ -738,7 +735,6 @@ public class ServerTrader extends Trader {
 							 {
 								 getSelectedItem().setSlot(-2);
 								 locale.sendMessage(player, "trader-stock-item-select");
-							//	 player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 								 
 							 }
 							 
@@ -746,7 +742,6 @@ public class ServerTrader extends Trader {
 							 item.setSlot(slot);
 							 item.setAsPatternItem(false);
 							 locale.sendMessage(player, "trader-stock-item-update");
-							// player.sendMessage( localeManager.getLocaleString("xxx-item", "action:updated") );
 							 
 						} 
 						else 
@@ -946,9 +941,9 @@ public class ServerTrader extends Trader {
 
 					//remove it from the stock
 					if ( equalsTraderStatus(TraderStatus.MANAGE_SELL) )
-						getStock().removeItem("sell", getSelectedItem().getSlot());
+						trait.getStock().removeItem("sell", getSelectedItem().getSlot());
 					if ( equalsTraderStatus(TraderStatus.MANAGE_BUY) )
-						getStock().removeItem("buy", getSelectedItem().getSlot());
+						trait.getStock().removeItem("buy", getSelectedItem().getSlot());
 					
 					//reset the item
 					selectItem(null);

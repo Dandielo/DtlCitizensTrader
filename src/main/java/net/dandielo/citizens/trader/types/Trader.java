@@ -51,6 +51,7 @@ public abstract class Trader implements tNPC {
 	//Trader parts
 	private TraderStockPart traderStock;
 	private TraderConfigPart traderConfig;
+	protected TraderTrait trait;
 	
 	//Trader info
 	protected Player player;
@@ -72,6 +73,7 @@ public abstract class Trader implements tNPC {
 		//init info
 		this.player = player;
 		this.npc = npc;
+		this.trait = trait;
 
 		inventory = traderStock.getInventory("sell", player);
 		traderStatus = TraderStatus.SELL;
