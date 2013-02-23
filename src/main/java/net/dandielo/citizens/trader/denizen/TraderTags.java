@@ -114,7 +114,7 @@ public class TraderTags implements Listener {
         NPC npc = e.getNPC().getCitizen();
         
         String name = e.getName().toLowerCase();
-        String tag = e.getType().toLowerCase();
+        String tag = e.getType() == null ? "" : e.getType().toLowerCase();
         String subtag = e.getSubType() == null ? "" : e.getSubType().toLowerCase();
         
         if ( name.equals("trader") )
