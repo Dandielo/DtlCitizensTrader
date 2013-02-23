@@ -32,39 +32,99 @@ public class ItemPattern extends TPattern {
 	{
 		List<StockItem> sell = new ArrayList<StockItem>();
 		List<StockItem> buy = new ArrayList<StockItem>();
-		
+
 		override = data.getBoolean("override", false);
-		
+
 		for ( String key : data.getKeys(false) )
 		{
 			if ( key.equals("all") )
 			{
-				for ( Object object : data.getList(key) )
+				for ( Object item : data.getList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					sell.add(item);
-					buy.add(item);
+					if ( item instanceof String )
+					{
+						StockItem stockItem = new StockItem((String)item);
+						if ( stockItem.getSlot() < 0 )
+						{
+							sell.add(stockItem);
+							buy.add(stockItem);
+						}
+						else
+						{
+							sell.add(0, stockItem);
+							buy.add(0, stockItem);
+						}
+					}
+					else
+					{
+						StockItem stockItem = null;
+						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
+							stockItem = new StockItem(entry.getKey(), entry.getValue());
+
+						if ( stockItem.getSlot() < 0 )
+						{
+							sell.add(stockItem);
+							buy.add(stockItem);
+						}
+						else
+						{
+							sell.add(0, stockItem);
+							buy.add(0, stockItem);
+						}
+					}
 				}
 			}
 			else
 			if ( key.equals("sell") )
 			{
-				for ( Object object : data.getList(key) )
+				for ( Object item : data.getList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					sell.add(item);
+					if ( item instanceof String )
+					{
+						StockItem stockItem = new StockItem((String)item);
+						if ( stockItem.getSlot() < 0 )
+							sell.add(stockItem);
+						else
+							sell.add(0, stockItem);
+					}
+					else
+					{
+						StockItem stockItem = null;
+						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
+							stockItem = new StockItem(entry.getKey(), entry.getValue());
+
+						if ( stockItem.getSlot() < 0 )
+							sell.add(stockItem);
+						else
+							sell.add(0, stockItem);
+					}
 				}
 			}
 			else
 			if ( key.equals("buy") )
 			{
-				for ( Object object : data.getList(key) )
+				for ( Object item : data.getList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					buy.add(item);
+					System.out.print(item);
+					if ( item instanceof String )
+					{
+						StockItem stockItem = new StockItem((String)item);
+						if ( stockItem.getSlot() < 0 )
+							buy.add(stockItem);
+						else
+							buy.add(0, stockItem);
+					}
+					else
+					{
+						StockItem stockItem = null;
+						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
+							stockItem = new StockItem(entry.getKey(), entry.getValue());
+
+						if ( stockItem.getSlot() < 0 )
+							buy.add(stockItem);
+						else
+							buy.add(0, stockItem);
+					}
 				}
 			}
 			else
@@ -73,7 +133,7 @@ public class ItemPattern extends TPattern {
 				for ( String pat : data.getStringList(key) )
 					inherits.put(pat, null);
 			}
-			else
+			else if ( !key.equals("type") )
 			{
 				ItemPattern pattern = new ItemPattern(name + "." + key, "item", true);
 				pattern.load(data.getConfigurationSection(key));
@@ -93,7 +153,7 @@ public class ItemPattern extends TPattern {
 			if ( pat.getValue() == null )
 				continue;
 			
-			if ( perms.has(player, "") )
+			if ( perms.has(player, "dtl.trader.patterns." + pat.getValue().name) )
 			{
 				if ( override )
 				{
@@ -121,13 +181,14 @@ public class ItemPattern extends TPattern {
 		
 		for ( Entry<String, ItemPattern> tier : tiers.entrySet() )
 		{
-			if ( perms.has(player, "") )
+			if ( perms.has(player, "dtl.trader.tiers." + tier.getValue().name) )
 			{
 				if ( override )
 				{
 					for ( StockItem item : tier.getValue().getStock(player, stock) )
 					{
 						ret.remove(item);
+						item.setTier(tier.getValue().name);
 						ret.add(item);
 					}
 				}

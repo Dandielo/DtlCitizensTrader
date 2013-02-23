@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.objects.StockItem;
+import net.dandielo.citizens.trader.patterns.types.ItemPattern;
 import net.dandielo.citizens.trader.patterns.types.PricePattern;
 
 public class PatternsManager {
@@ -88,6 +89,7 @@ public class PatternsManager {
 				patterns.put(patternName.toLowerCase(), pattern);
 			}
 			
+			System.out.print(patterns);
 		} 
 		catch (FileNotFoundException e)
 		{
@@ -170,7 +172,7 @@ public class PatternsManager {
 		if ( type.equals("price") )
 			return new PricePattern(name, type, false);
 		if ( type.equals("item") )
-			return new PricePattern(name, type, false);
+			return new ItemPattern(name, type, false);
 		return null;
 	}
 	

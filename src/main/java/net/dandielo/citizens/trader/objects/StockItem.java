@@ -57,6 +57,11 @@ public class StockItem {
 
 	private static Pattern pattern = Pattern.compile("((n):(([^:\\s]+)( [^:\\s]{2,})*))|((\\S+){1}:){0,1}([^:\\s]+)");//((\\S+){1}:){0,1}(([^:\\s]+)+( [^:\\s]{2,})*)");
 	
+	private StockItem()
+	{
+		
+	}
+	
 	//load item from string with lore
 	public StockItem(String data, List<String> lore) 
 	{
@@ -132,6 +137,12 @@ public class StockItem {
 					if ( value.equals("pat") )
 					{
 						patternPrice = true;
+					}
+					else
+					//stack price management
+					if ( value.equals("!pat") )
+					{
+						patternPrice = false;
 					}
 					else
 					//stack price management
@@ -241,6 +252,130 @@ public class StockItem {
 		}
 	}
 	
+	public static StockItem priceItem(String data, List<String> lore) 
+	{
+		StockItem item = new StockItem();
+		
+		item.matcherString = data;
+		// init limits
+		item.limits = new Limits(item);
+		
+		Matcher matcher = pattern.matcher(data);
+		
+		// look for values
+		while(matcher.find())
+		{
+			String key = matcher.group(7);
+			String value = matcher.group(8);
+			
+			//item name or flag
+			if ( key == null )
+			{
+				if ( matcher.group(2) != null && matcher.group(2).equals("n") )
+				{
+					item.name = matcher.group(3);
+					//backward compatibility
+				//	item.setName(matcher.group(3));
+				}
+				else
+				//stack price management
+				if ( value.equals("lore") ) 
+				{
+					item.lore = lore;
+				//	NBTTagEditor.addDescription(item.item, lore);
+				}
+				else
+				{
+					Material mat = Material.getMaterial(value.toUpperCase());
+					if ( mat == null )
+						mat = Material.getMaterial(Integer.parseInt(value));
+					
+					item.item = new ItemStack(mat, 1);
+					item.amounts.add(1);
+				}
+			}
+			else
+			{
+				if ( key.equals("p") )
+				{
+					item.price = Double.parseDouble(value);
+				}
+				else
+				if ( key.equals("m") )
+				{
+					item.multiply = new Double(value);
+				}
+				else
+				if ( key.equals("c") )
+				{
+					item.spawnChance = new Double(value);
+				}
+				else
+				if ( key.equals("a") )
+				{
+					item.amounts.clear();
+					//for ( String amout : value.split(",") )
+					item.amounts.add( Integer.parseInt(value) < 1 ? 1 : Integer.parseInt(value) );
+				//	item.item.setAmount(item.amounts.get(0));
+				}
+				else
+				if ( key.equals("t") )
+				{
+					item.tier = value;
+				}
+				else
+				if ( key.equals("d") ) 
+				{
+					if ( item.item == null )
+						item.item = new ItemStack(Material.AIR, 0);
+					if ( value.endsWith("%") )
+						item.item.setDurability((short) (item.item.getDurability() * ( Short.parseShort(value) / 100 )));
+					else
+						item.item.setDurability( Short.parseShort(value) );
+				}
+			/*	else
+				if ( key.equals("e") ) 
+				{
+					for ( String enchantment : value.split(",") )
+					{
+						String[] enchData = enchantment.split("/");
+						Enchantment ench = Enchantment.getByName( enchData[0] );
+						if ( ench == null )
+							ench = Enchantment.getById( Integer.parseInt(enchData[0]));
+						item.item.addUnsafeEnchantment(ench, Integer.parseInt(enchData[1]));
+					}
+				}
+				else
+				if ( key.equals("se")  )
+				{
+					for ( String enchantment : value.split(",") )
+					{
+						String[] enchData = enchantment.split("/");
+						EnchantmentStorageMeta meta = ((EnchantmentStorageMeta)item.item.getItemMeta());
+						if ( item.item.getType().equals(Material.ENCHANTED_BOOK) )
+						{
+							Enchantment ench = Enchantment.getByName( enchData[0] );
+							if ( ench == null )
+								ench = Enchantment.getById( Integer.parseInt(enchData[0]) );
+							meta.addStoredEnchant(ench, Integer.parseInt(enchData[1]), true);
+						}
+						item.item.setItemMeta(meta);
+					}
+				}*/
+				else
+				{
+					Material mat = Material.getMaterial(key.toUpperCase());
+					if ( mat == null )
+						mat = Material.getMaterial(Integer.parseInt(key));
+					
+					item.item = new ItemStack(mat, 1, Byte.parseByte(value));
+					item.amounts.add(1);
+				}
+			}
+		}
+		return item;
+	}
+	
 	public ItemStack getItemStack() {
 		item.setAmount(amounts.get(0));
 		return item;
@@ -335,6 +470,8 @@ public class StockItem {
 		{
 			itemString += " pat";
 		}
+		else
+			itemString += " !pat";
 		if ( patternMultiplier )
 		{
 			itemString += " pm";
@@ -356,7 +493,7 @@ public class StockItem {
 		
 		if ( name != null && !name.isEmpty() ) 
 		{
-			itemString += " n:" + name;
+			itemString += " n:" + name + " ";
 		}
 		
 		if ( lore != null )
@@ -489,6 +626,10 @@ public class StockItem {
 		return limits;
 	}
 
+	public void setTier(String name) {
+		tier = name;
+	}
+
 	// get id and data as string
 	public String getIdAndData()
 	{
@@ -510,6 +651,8 @@ public class StockItem {
 
 		boolean result = true;
 		
+		System.out.print(item.matcherString);
+		
 		// look for values
 		while(matcher.find() && result)
 		{
@@ -519,8 +662,11 @@ public class StockItem {
 			//item name or flag
 			if ( key == null )
 			{
+				System.out.print("match: " + 1);
 				if ( matcher.group(2) != null && matcher.group(2).equals("n") )
 				{
+					System.out.print(matcher.group(3));
+					if ( name == null ) result = false; else
 					result = name.equals(matcher.group(3).replace("[&]", " "));
 					item.matchPriority += 300; 
 				}
@@ -531,12 +677,14 @@ public class StockItem {
 						mat = Material.getMaterial(Integer.parseInt(value));
 					
 					if ( mat != null )
-						result = item.getItemStack().getType().equals(mat);
+						result = this.item.getType().equals(mat);
+					
 					item.matchPriority += 130;
 				}
 			}
 			else
 			{
+				System.out.print("match: " + 2 + " " + key);
 				if ( key.equals("a") && amount )
 				{
 					amounts.clear();
@@ -546,7 +694,7 @@ public class StockItem {
 				else
 				if ( key.equals("d") ) 
 				{
-					result = hasDurability(this.item) && this.item.getDurability() == Short.parseShort(value);
+					result = hasDurability(this.item) && this.item.getDurability() >= Short.parseShort(value);
 					item.matchPriority += 45;
 				}
 				else
@@ -601,17 +749,25 @@ public class StockItem {
 					}
 					else
 						result = false;
+					item.matchPriority += 5;
 				}
-				else
+				else if ( !key.equals("p") && !key.equals("m") && !key.equals("dp") )
 				{
-					Material mat = Material.getMaterial(key);
-					if ( mat == null )
-						mat = Material.getMaterial(Integer.parseInt(key));
-
-					if ( mat != null )
-						result = this.item.getType().equals(mat) && this.item.getData().getData() == Byte.valueOf(value);
+					if ( key.equals("all") || key.equals("0") )
+					{
+						result = !hasDurability(this.item) && this.item.getData().getData() == Byte.valueOf(value);
+					}
+					else
+					{
+						Material mat = Material.getMaterial(key.toUpperCase());
+						if ( mat == null )
+							mat = Material.getMaterial(Integer.parseInt(key));
+	
+						if ( mat != null )
+							result = this.item.getType().equals(mat) && this.item.getData().getData() == Byte.valueOf(value);
+						item.matchPriority += 130;
+					}
 				}
-				item.matchPriority += 5;
 			}
 		}
 		return result;

@@ -334,9 +334,6 @@ public class MarketTrader extends Trader {
 			//set the new limit (how many items can players buy)
 			limitSystem.get("global").setLimit(getItemsLeft + itemToAdd.getAmount());
 
-			//send message
-			//p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
-			
 			
 			//set the amount to 0 to push it but don't change the top items amount 
 			itemToAdd.setAmount(0);

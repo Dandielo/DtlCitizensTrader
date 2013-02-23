@@ -39,31 +39,46 @@ public class PricePattern extends TPattern {
 		{
 			if ( key.equals("all") )
 			{
-				for ( Object object : data.getList(key) )
+				for ( String item : data.getStringList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					sell.add(item);
-					buy.add(item);
+					StockItem stockItem = StockItem.priceItem((String)item, null);
+					stockItem.setPatternPrice(false);
+					if ( stockItem.getSlot() < 0 )
+					{
+						sell.add(stockItem);
+						buy.add(stockItem);
+					}
+					else
+					{
+						sell.add(0, stockItem);
+						buy.add(0, stockItem);
+					}
 				}
 			}
+			else
 			if ( key.equals("sell") )
 			{
-				for ( Object object : data.getList(key) )
+				for ( String item : data.getStringList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					sell.add(item);
+					StockItem stockItem = StockItem.priceItem((String)item, null);
+					stockItem.setPatternPrice(false);
+					if ( stockItem.getSlot() < 0 )
+						sell.add(stockItem);
+					else
+						sell.add(0, stockItem);
 				}
 			}
+			else
 			if ( key.equals("buy") )
 			{
-
-				for ( Object object : data.getList(key) )
+				for ( String item : data.getStringList(key) )
 				{
-					StockItem item = StockItem.loadItem(object);
-					item.setAsPatternItem(true);
-					buy.add(item);
+					StockItem stockItem = StockItem.priceItem((String)item, null);
+					stockItem.setPatternPrice(false);
+					if ( stockItem.getSlot() < 0 )
+						buy.add(stockItem);
+					else
+						buy.add(0, stockItem);
 				}
 			}
 			else
@@ -72,7 +87,7 @@ public class PricePattern extends TPattern {
 				for ( String pat : data.getStringList(key) )
 					inherits.put(pat, null);
 			}
-			else
+			else if ( !key.equals("type") )
 			{
 				PricePattern pattern = new PricePattern(name + "." + key, "price", true);
 				pattern.load(data.getConfigurationSection(key));
@@ -100,16 +115,18 @@ public class PricePattern extends TPattern {
 	
 	public Price getPrice(StockItem item, Player player, String stock, boolean unit)
 	{
+		System.out.print("A");
 		if ( !item.patternPrice() )
 			return new Price(item.stackPrice() ? ( unit ? item.getRawPrice() / item.getAmount() : item.getRawPrice() ) : item.getPrice(0)); 
 
+		System.out.print("B");
 		Price price = new Price(0.0);
 		for ( Entry<String, PricePattern> pat : inherits.entrySet() )
 		{
 			if ( pat.getValue() == null )
 				continue;
 			
-			if ( perms.has(player, "") )
+			if ( perms.has(player, "dtl.trader.patterns." + pat.getValue().name) )
 			{
 				price.merge(pat.getValue().getPrice(item, player, stock));
 			}
@@ -117,6 +134,7 @@ public class PricePattern extends TPattern {
 		
 		for ( StockItem match : prices.get(stock) )
 		{
+			System.out.print(match + " | " + item + " | " + item.matches(match));
 			if ( item.matches(match) )
 			{
 				if ( !match.patternPrice() && price.priority[0] <= match.getMatchPriority() )
@@ -131,7 +149,7 @@ public class PricePattern extends TPattern {
 		}
 		for ( PricePattern pattern : tiers.values() )
 		{
-			if ( perms.has(player, "") )
+			if ( perms.has(player, "dtl.trader.tiers." + pattern.name) )
 			{
 				price.merge(pattern.getPrice(item, player, stock));
 			}
@@ -156,6 +174,7 @@ public class PricePattern extends TPattern {
 		
 		public void merge(Price p)
 		{
+			System.out.print(p.price);
 			if ( p.priority[0] >= priority[0] )
 			{
 				priority[0] = p.priority[0];
