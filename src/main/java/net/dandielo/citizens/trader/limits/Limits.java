@@ -32,7 +32,7 @@ public class Limits {
 		return item;
 	}
 	
-	public Limit getLimit(String limit)
+	public Limit get(String limit)
 	{
 		return limits.get(limit);
 	}
@@ -60,7 +60,7 @@ public class Limits {
 		return limits.get(limit) == null ? "no limit" : String.valueOf(limits.get(limit).getLimit());
 	}
 	
-	public void setLimit(String limit, Limit value)
+	public void set(String limit, Limit value)
 	{
 		limits.put(limit, value);
 	}

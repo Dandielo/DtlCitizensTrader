@@ -238,7 +238,7 @@ public abstract class Trader implements tNPC {
 		{
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
 			{
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) && selectedItem.equalsLores(item) ) 
 				{
 					//add amount to an item in the inventory, its done
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
@@ -317,20 +317,17 @@ public abstract class Trader implements tNPC {
 		return false;
 	}
 	
-	//switching inventory = change items in it
 	public final void switchInventory(TraderStatus status, String type) {
 		inventory.clear();
 		traderStock.inventoryView(inventory, status, player, type);
-	//	reset(status);
 	}
-	//switching inventory = change items in it
+
 	public final void switchInventory(TraderStatus status) {
 		inventory.clear();
 		traderStock.inventoryView(inventory, status, player, "manage");
 		reset(status);
 	}
 	
-	//swithing inventory (amounts selection)
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
 		if ( traderStatus.isManaging() )
@@ -340,20 +337,14 @@ public abstract class Trader implements tNPC {
 		selectedItem = item;
 	}
 	
-	
-	
-	//===============================================================================================
-	
 	public boolean checkBuyLimits(int scale) {
 		return limits.checkLimit(this, player.getName(), selectedItem, selectedItem.getAmount()*scale) &&
 				limits.checkLimit(this, "global limit", selectedItem, selectedItem.getAmount()*scale);
-		//return selectedItem.getLimitSystem().checkLimit(player.getName(),0,scale);
 	}
 	
 	public boolean checkLimits() {
 		return limits.checkLimit(this, player.getName(), selectedItem, selectedItem.getAmount()) &&
 				limits.checkLimit(this, "global limit", selectedItem, selectedItem.getAmount());
-		//return selectedItem.getLimitSystem().checkLimit(player.getName(),0);
 	}
 	
 	public boolean checkLimits(int slot) {
@@ -366,7 +357,6 @@ public abstract class Trader implements tNPC {
 			limits.updateLimit(this, player.getName(), selectedItem, selectedItem.getAmount()*scale);
 			limits.updateLimit(this, "global limit", selectedItem, selectedItem.getAmount()*scale);
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -557,6 +547,14 @@ public abstract class Trader implements tNPC {
 		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
 		if ( !name.isEmpty() )
 			itemInfo += " n:" + name;
+		if ( is.hasItemMeta() )
+		{
+			if ( is.getItemMeta().hasLore() )
+			{
+				itemInfo += " lore";
+				return new StockItem(itemInfo, is.getItemMeta().getLore());
+			}
+		}
 		return new StockItem(itemInfo);
 	}
 	

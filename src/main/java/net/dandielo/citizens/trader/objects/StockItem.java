@@ -141,6 +141,12 @@ public class StockItem {
 					}
 					else
 					//stack price management
+					if ( value.equals("!pm") )
+					{
+						patternMultiplier = false;
+					}
+					else
+					//stack price management
 					if ( value.equals("lore") ) 
 					{
 						this.lore = lore;
@@ -184,19 +190,22 @@ public class StockItem {
 					else
 					if ( key.equals("d") ) 
 					{
-						item.setDurability( Short.parseShort(value) );
+						if ( value.endsWith("%") )
+							item.setDurability((short) (item.getDurability() * ( Short.parseShort(value) / 100 )));
+						else
+							item.setDurability( Short.parseShort(value) );
 					}
 					else
 					if ( key.equals("gl") ) 
 					{
 						String[] limitData = value.split("/");
-						limits.setLimit("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
+						limits.set("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
 					}
 					else
 					if ( key.equals("pl") ) 
 					{
 						String[] limitData = value.split("/");
-						limits.setLimit("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
+						limits.set("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
 					}
 					else
 					if ( key.equals("e") ) 
@@ -246,12 +255,6 @@ public class StockItem {
 	{
 		return multiply != null;
 	}
-/*	public ItemStack getItemStack(int slot) {
-		item.setAmount(amounts.get(slot));
-		if ( stackPrice )
-			item.setAmount(amounts.get(0));
-		return item;
-	}*/
 	
 	public void setName(String name)
 	{
@@ -261,7 +264,7 @@ public class StockItem {
 	
 	public String getName()
 	{
-		return name;
+		return name == null ? "" : name;
 	}
 
 	public String name()
@@ -291,12 +294,12 @@ public class StockItem {
 			itemString += amounts.get(i) + ( i + 1 < amounts.size() ? "," : "" );
 		
 		//saving the item global limits
-		if ( limits.getLimit("global") != null ) 
-			itemString += " gl:" + limits.getLimit("global").toString();
+		if ( limits.get("global") != null ) 
+			itemString += " gl:" + limits.get("global").toString();
 		
 		//saving the item global limits
-		if ( limits.getLimit("player") != null ) 
-			itemString += " pl:" + limits.getLimit("player").toString();
+		if ( limits.get("player") != null ) 
+			itemString += " pl:" + limits.get("player").toString();
 		
 		//saving enchantment's
 		if ( !item.getEnchantments().isEmpty() ) {
@@ -334,8 +337,10 @@ public class StockItem {
 		}
 		if ( patternMultiplier )
 		{
-			itemString += " mp";
+			itemString += " pm";
 		}
+		else
+			itemString += " !pm";
 		
 		//use enchantments for comparison
 		if ( checkEnchantments ) 
@@ -406,9 +411,6 @@ public class StockItem {
 	}
 	
 	public boolean hasMultipleAmounts() {
-		//Allow MA for stack price
-		//if ( stackPrice )
-		//	return false;
 		return ( amounts.size() > 1 ? true : false );
 	}
 	
@@ -657,6 +659,29 @@ public class StockItem {
 	}
 
 	public boolean hasLimit(String target) {
-		return limits.getLimit(target.equals("global limit") ? "global" : "player") != null;
+		return limits.get(target.equals("global limit") ? "global" : "player") != null;
 	} 
+	
+	public boolean equalsLores(ItemStack item)
+	{
+		if ( !item.hasItemMeta() || !item.getItemMeta().hasLore() )
+		{
+			if ( lore == null || lore.isEmpty() )
+				return true;
+			return false;
+		}
+		if ( lore == null || lore.isEmpty() )
+			return false;
+
+		List<String> lore = NBTTagEditor.cleanLore(item.getItemMeta().getLore());
+		if ( lore.size() != this.lore.size() )
+			return false;
+
+		for ( int i = 0 ; i < lore.size() ; ++i )
+		{
+			if ( !this.lore.get(i).equals(lore.get(i)) )
+				return false;
+		}
+		return true;
+	}
 }

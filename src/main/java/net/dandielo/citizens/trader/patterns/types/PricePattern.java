@@ -85,12 +85,12 @@ public class PricePattern extends TPattern {
 	
 	public double getEndPrice(StockItem item, Player player, String stock)
 	{
-		return getPrice(item, player, stock, false).endPrice();
+		return getPrice(item, player, stock, false).endPrice(item.patternMultiplier());
 	}
 	
 	public double getEndPrice(StockItem item, Player player, String stock, boolean unit)
 	{
-		return getPrice(item, player, stock, unit).endPrice();
+		return getPrice(item, player, stock, unit).endPrice(item.patternMultiplier());
 	}
 	
 	public Price getPrice(StockItem item, Player player, String stock)
@@ -193,9 +193,9 @@ public class PricePattern extends TPattern {
 			return multiply != null ? multiply : 1.0;
 		}
 		
-		public double endPrice()
+		public double endPrice(boolean mp)
 		{
-			return price *= getMultiplier();
+			return price *= mp ? getMultiplier() : 1.0;
 		}
 	}
 }

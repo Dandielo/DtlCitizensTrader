@@ -237,7 +237,7 @@ public class LimitManager {
 				if ( item.matches(itm, false) )
 					if ( item == null || itm.getMatchPriority() >= matched.getMatchPriority() )
 						matched = itm;
-			return matched == null ? true : matched.getAmount() + amount >= matched.getLimits().getLimit(limit).getLimit();					
+			return matched == null ? true : matched.getAmount() + amount >= matched.getLimits().get(limit).getLimit();					
 		}
 		
 		@Override

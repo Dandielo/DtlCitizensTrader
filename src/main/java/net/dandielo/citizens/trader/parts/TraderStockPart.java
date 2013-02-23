@@ -561,12 +561,11 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getPlayerLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
-		//TODO Limits
-		/*if ( item.getLimitSystem().hasLimit() )
+		if ( item.getLimits().get("player") != null )
 		{
-			lore.add("^7Limit: ^6" +item.getLimitSystem().getPlayerLimit());
-			lore.add("^7Timeout: ^6" + item.getLimitSystem().getPlayerTimeout());
-		}*/
+			lore.add("^7Limit: ^6" +item.getLimits().limit("player"));
+			lore.add("^7Timeout: ^6" + item.getLimits().timeout("player"));
+		}
 		
 		return lore;
 	}
@@ -574,12 +573,11 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getLimitLore(StockItem item, String stock, Player player)
 	{
 		List<String> lore = new ArrayList<String>();
-		//TODO Limits
-	/*	if ( item.getLimitSystem().hasLimit() )
+		if ( item.getLimits().get("global") != null )
 		{
-			lore.add("^7Limit: ^e" + item.getLimitSystem().getGlobalAmount() + "^6/" + item.getLimitSystem().getGlobalLimit());
-			lore.add("^7Timeout: ^6" + item.getLimitSystem().getGlobalTimeout());
-		}*/
+			lore.add("^7Limit: ^6" + item.getLimits().limit("global"));
+			lore.add("^7Timeout: ^6" + item.getLimits().timeout("global"));
+		}
 		
 		return lore;
 	}
@@ -610,7 +608,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice();
+			price = prc.endPrice(item.patternMultiplier());
 		return price;
 	}
 	
@@ -625,7 +623,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice();
+			price = prc.endPrice(item.patternMultiplier());
 		return price;
 	}
 

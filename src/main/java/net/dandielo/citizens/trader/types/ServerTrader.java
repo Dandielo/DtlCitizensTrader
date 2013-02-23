@@ -569,16 +569,16 @@ public class ServerTrader extends Trader {
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								if ( getSelectedItem().getLimits().getLimit("global") == null )
-									getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
+								if ( getSelectedItem().getLimits().get("global") == null )
+									getSelectedItem().getLimits().set("global", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 								{
-									getSelectedItem().getLimits().getLimit("global").changeTimeout(-calculateTimeout(event.getCursor()));
+									getSelectedItem().getLimits().get("global").changeTimeout(-calculateTimeout(event.getCursor()));
 								}
 								else
 								{
-									getSelectedItem().getLimits().getLimit("global").changeTimeout(calculateTimeout(event.getCursor()));
+									getSelectedItem().getLimits().get("global").changeTimeout(calculateTimeout(event.getCursor()));
 								}
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
@@ -610,16 +610,16 @@ public class ServerTrader extends Trader {
 						{
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								if ( getSelectedItem().getLimits().getLimit("player") == null )
-									getSelectedItem().getLimits().setLimit("player", new Limit(0,-1));
+								if ( getSelectedItem().getLimits().get("player") == null )
+									getSelectedItem().getLimits().set("player", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
 								{
-									getSelectedItem().getLimits().getLimit("player").changeTimeout(-calculateTimeout(event.getCursor()));
+									getSelectedItem().getLimits().get("player").changeTimeout(-calculateTimeout(event.getCursor()));
 								}
 								else
 								{
-									getSelectedItem().getLimits().getLimit("player").changeTimeout(calculateTimeout(event.getCursor()));
+									getSelectedItem().getLimits().get("player").changeTimeout(calculateTimeout(event.getCursor()));
 								}
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
@@ -837,7 +837,7 @@ public class ServerTrader extends Trader {
 							//select item which limit will be shown up
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								locale.sendMessage(player, "key-value", "key", "#global-limit", "value", String.valueOf(getSelectedItem().getLimits().getLimit("global").getLimit()));
+								locale.sendMessage(player, "key-value", "key", "#global-limit", "value", String.valueOf(getSelectedItem().getLimits().get("global").getLimit()));
 							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:global-limit").replace("{value}", "" + getSelectedItem().getLimitSystem().getGlobalLimit()) );
 							}
 							
@@ -850,19 +850,19 @@ public class ServerTrader extends Trader {
 							//select the item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								if ( getSelectedItem().getLimits().getLimit("global") == null )
-									getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
+								if ( getSelectedItem().getLimits().get("global") == null )
+									getSelectedItem().getLimits().set("global", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
-									getSelectedItem().getLimits().getLimit("global").changeLimit(-calculateLimit(event.getCursor()));
+									getSelectedItem().getLimits().get("global").changeLimit(-calculateLimit(event.getCursor()));
 								else
-									getSelectedItem().getLimits().getLimit("global").changeLimit(calculateLimit(event.getCursor()));
+									getSelectedItem().getLimits().get("global").changeLimit(calculateLimit(event.getCursor()));
 
 								NBTTagEditor.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								getSelectedItem().setAsPatternItem(false);
-								locale.sendMessage(player, "key-change", "key", "#global-limit", "value", String.valueOf(getSelectedItem().getLimits().getLimit("global").getLimit()));
+								locale.sendMessage(player, "key-change", "key", "#global-limit", "value", String.valueOf(getSelectedItem().getLimits().get("global").getLimit()));
 							
 							}
 
@@ -886,7 +886,7 @@ public class ServerTrader extends Trader {
 							//select item which limit will be shown up
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								locale.sendMessage(player, "key-value", "key", "#player-limit", "value", String.valueOf(getSelectedItem().getLimits().getLimit("player").getLimit()));
+								locale.sendMessage(player, "key-value", "key", "#player-limit", "value", String.valueOf(getSelectedItem().getLimits().get("player").getLimit()));
 							}
 							
 							
@@ -898,19 +898,19 @@ public class ServerTrader extends Trader {
 							//select the item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 							{
-								if ( getSelectedItem().getLimits().getLimit("player") == null )
-									getSelectedItem().getLimits().setLimit("player", new Limit(0,-1));
+								if ( getSelectedItem().getLimits().get("player") == null )
+									getSelectedItem().getLimits().set("player", new Limit(0,-1));
 								
 								if ( event.isRightClick() ) 
-									getSelectedItem().getLimits().getLimit("player").changeLimit(-calculateLimit(event.getCursor()));
+									getSelectedItem().getLimits().get("player").changeLimit(-calculateLimit(event.getCursor()));
 								else
-									getSelectedItem().getLimits().getLimit("player").changeLimit(calculateLimit(event.getCursor()));
+									getSelectedItem().getLimits().get("player").changeLimit(calculateLimit(event.getCursor()));
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								getSelectedItem().setAsPatternItem(false);
-								locale.sendMessage(player, "key-value", "key", "#player-limit", "value", String.valueOf(getSelectedItem().getLimits().getLimit("player").getLimit()));
+								locale.sendMessage(player, "key-value", "key", "#player-limit", "value", String.valueOf(getSelectedItem().getLimits().get("player").getLimit()));
 							
 							}
 
@@ -950,20 +950,13 @@ public class ServerTrader extends Trader {
 					
 					//send a message
 					locale.sendMessage(player, "trader-stock-item-remove");
-				//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:removed") );
-					
 				} 
 				else
-				//select a new item ready to be a stock item
 				{
-					
-					//we don't want to have air in our stock, dont we?
 					if ( event.getCurrentItem().getTypeId() != 0 ) 
 					{
 						selectItem( toStockItem(event.getCurrentItem()) );
-						//send a message
 						locale.sendMessage(player, "trader-stock-item-select");
-					//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:selected") );
 					}
 				}
 			} 

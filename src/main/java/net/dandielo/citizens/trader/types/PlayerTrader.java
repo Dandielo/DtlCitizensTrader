@@ -506,7 +506,7 @@ public class PlayerTrader extends Trader {
 							{
 								
 								//get the amount left in the stock
-								int leftAmount = getSelectedItem().getLimits().getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
+								int leftAmount = getSelectedItem().getLimits().get("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 								
 								//check if the player has enough space
 								if ( inventoryHasPlaceAmount(leftAmount) )
@@ -723,13 +723,13 @@ public class PlayerTrader extends Trader {
 						if ( selectItem(clickedSlot, getBasicManageModeByWool()).hasSelectedItem() ) 
 						{
 
-							if ( getSelectedItem().getLimits().getLimit("global") == null )
-								getSelectedItem().getLimits().setLimit("global", new Limit(0,-1));
+							if ( getSelectedItem().getLimits().get("global") == null )
+								getSelectedItem().getLimits().set("global", new Limit(0,-1));
 							
 							if ( event.isRightClick() ) 
-								getSelectedItem().getLimits().getLimit("global").changeLimit(-calculateLimit(event.getCursor()));
+								getSelectedItem().getLimits().get("global").changeLimit(-calculateLimit(event.getCursor()));
 							else
-								getSelectedItem().getLimits().getLimit("global").changeLimit(calculateLimit(event.getCursor()));
+								getSelectedItem().getLimits().get("global").changeLimit(calculateLimit(event.getCursor()));
 							
 							NBTTagEditor.removeDescription(event.getCurrentItem());
 							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
@@ -924,7 +924,7 @@ public class PlayerTrader extends Trader {
 					
 					//set the limit system to 0/0/-2 (player empty configuration)
 					Limits limitSystem = stockItem.getLimits();
-					limitSystem.setLimit("global", new Limit(0, -2));
+					limitSystem.set("global", new Limit(0, -2));
 					
 					
 					//put it into the stock list
@@ -982,15 +982,15 @@ public class PlayerTrader extends Trader {
 					
 					
 					//timeout set to no timeout checks (-2000 = it will never reset)
-					limitSystem.getLimit("global").setTimeout(-2000);
+					limitSystem.get("global").setTimeout(-2000);
 					
 					
-					int getItemsLeft = limitSystem.getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
+					int getItemsLeft = limitSystem.get("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 					if ( getItemsLeft < 0 )
 						getItemsLeft = 0;
 					
 					//set the new limit (how many items can players buy)
-					limitSystem.getLimit("global").setLimit(getItemsLeft + itemToAdd.getAmount());
+					limitSystem.get("global").setLimit(getItemsLeft + itemToAdd.getAmount());
 
 					//send message
 					locale.sendMessage(player, "trader-player-add-amount");

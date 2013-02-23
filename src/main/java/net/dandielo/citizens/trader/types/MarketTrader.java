@@ -320,19 +320,19 @@ public class MarketTrader extends Trader {
 			//get the items limit system
 			Limits limitSystem = getSelectedItem().getLimits();
 
-			if ( limitSystem.getLimit("global") == null )
-				limitSystem.setLimit("global", new Limit(0, -2));
+			if ( limitSystem.get("global") == null )
+				limitSystem.set("global", new Limit(0, -2));
 			
 			//timeout set to no timeout checks (-2000 = it will never reset)
-			limitSystem.getLimit("global").setTimeout(-2000);
+			limitSystem.get("global").setTimeout(-2000);
 			
 			
-			int getItemsLeft = limitSystem.getLimit("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
+			int getItemsLeft = limitSystem.get("global").getLimit() - limits.getLimit(this, "global", getSelectedItem()).getAmount();
 			if ( getItemsLeft < 0 )
 				getItemsLeft = 0;
 			
 			//set the new limit (how many items can players buy)
-			limitSystem.getLimit("global").setLimit(getItemsLeft + itemToAdd.getAmount());
+			limitSystem.get("global").setLimit(getItemsLeft + itemToAdd.getAmount());
 
 			//send message
 			//p.sendMessage( locale.getLocaleString("item-added-selling").replace("{amount}", itemToAdd.getAmount() + "").replace( ( itemToAdd.getAmount() != 1 ? "{ending}" : "{none}"), "s" ) );
@@ -401,11 +401,11 @@ public class MarketTrader extends Trader {
 			//set the limit system to 0/0/-2 (player empty configuration)
 			Limits limitSystem = stockItem.getLimits();
 
-			if ( limitSystem.getLimit("global") == null )
-				limitSystem.setLimit("global", new Limit(0, -2));			
+			if ( limitSystem.get("global") == null )
+				limitSystem.set("global", new Limit(0, -2));			
 			
 			//set the new limit (how many items can players buy)
-			limitSystem.getLimit("global") .setLimit(itemToAdd.getAmount()*scale);
+			limitSystem.get("global") .setLimit(itemToAdd.getAmount()*scale);
 			
 			stockItem.setPatternPrice(true);
 			//pattern.getItemPrice(stockItem, "sell");

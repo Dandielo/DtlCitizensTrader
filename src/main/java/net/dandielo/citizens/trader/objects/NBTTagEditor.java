@@ -20,12 +20,14 @@ public class NBTTagEditor {
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
-	//	int s = 0;
+		int s = 0;
 		for ( ItemStack item : inventory.getContents() )
 		{
 			if ( item != null )
 			{
 				NBTTagEditor.removeDescription(item);
+
+				inventory.setItem(s, new ItemStack(cleanItem(item)));
 			/*	int size = 0;
 				List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 				if ( lore != null )
@@ -75,12 +77,11 @@ public class NBTTagEditor {
 					
 					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
 					
-					inventory.setItem(s, new ItemStack(item));
 					
 					
 				}*/
 			}
-		//	++s;
+			++s;
 		}		
 	}
 	
@@ -127,6 +128,33 @@ public class NBTTagEditor {
 		return item;
 	}
 	
+	public static List<String> cleanLore(List<String> list)
+	{
+		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
+		List<String> newList = new ArrayList<String>(list);
+		if ( list.size() >= lore.size() )
+		{
+			Iterator<String> it = newList.iterator();
+			while(it.hasNext())
+			{
+				String line = it.next();
+				for ( int j = 0 ; j < lore.size() ; ++j )
+				{
+					String m = lore.get(j);
+					m = m.replace("^", "[\\^|§]");
+					m = m.replace("{stack}", "\\S{1,}");
+					m = m.replace("{unit}", "\\S{1,}");
+					
+					if ( Pattern.matches(m, line) )
+					{
+						it.remove();
+						j = lore.size();
+					}
+				}
+			}
+		}
+		return newList;
+	}
 
 	public static void removeDescription(ItemStack item)
 	{
@@ -142,7 +170,7 @@ public class NBTTagEditor {
 		
 		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 		
-		if ( list.size() > lore.size() )
+		if ( list.size() >= lore.size() )
 		{
 			Iterator<String> it = list.iterator();
 			while(it.hasNext())
@@ -154,7 +182,7 @@ public class NBTTagEditor {
 					m = m.replace("^", "[\\^|§]");
 					m = m.replace("{stack}", "\\S{1,}");
 					m = m.replace("{unit}", "\\S{1,}");
-
+					
 					if ( Pattern.matches(m, line) )
 					{
 						it.remove();
@@ -170,6 +198,21 @@ public class NBTTagEditor {
 			meta.setLore(list);
 
 		item.setItemMeta(meta);
+	}
+	
+	public static ItemStack cleanItem(ItemStack item)
+	{
+		Map<String, Object> ser = item.serialize();
+		if ( !item.hasItemMeta() )
+			ser.remove("meta");
+		else
+		{
+			ItemMeta meta = item.getItemMeta();
+			if ( !(meta.hasLore() || meta.hasDisplayName() || meta.hasEnchants()) )
+				ser.remove("meta");
+		}
+
+		return ItemStack.deserialize(ser);
 	}
 	
 	public static String getName(ItemStack item)
