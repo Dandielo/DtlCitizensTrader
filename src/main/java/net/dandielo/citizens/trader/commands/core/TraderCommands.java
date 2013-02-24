@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -24,6 +25,7 @@ import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.trader.parts.TraderConfigPart;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
 import net.dandielo.citizens.trader.patterns.PatternsManager;
+import net.dandielo.citizens.trader.patterns.TPattern;
 import net.dandielo.citizens.trader.types.Trader;
 
 public class TraderCommands {
@@ -268,35 +270,43 @@ public class TraderCommands {
 	}
 	
 	//TODO pattern commands
-/*	@Command(
+	@Command(
 	name = "trader",
 	syntax = "pattern",
 	desc = "shows the pattern set for the selected trader or 'disabled' otherwise",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePattern(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
-		if ( npc.getStock().getPattern() != null )
-			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
+		if ( !npc.getBase().getStock().getPatterns().isEmpty() )
+		{
+			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", "");
+			int i = 1;
+			for ( Map.Entry<Integer, TPattern> pat : npc.getBase().getStock().getPatterns().entrySet() )
+			{
+				locale.sendMessage(sender, "key-value", "key", "" + i++, "value", pat.getValue().getName() + " (" + ChatColor.GREEN + pat.getValue().getType() + ChatColor.AQUA + ") - " + pat.getKey());
+			}
+		}
 		else
 			locale.sendMessage(sender, "key-value", "key", "#pattern", "value", "#disabled");
-	}*/
+	}
 	
-/*	@Command(
+	//TODO pattern added message
+	@Command(
 	name = "trader",
-	syntax = "pattern set <pattern>",
-	desc = "sets a new pattern for a trader",
-	usage = "- /trader pattern set global_prices",
+	syntax = "pattern add <pattern> (priority)",
+	desc = "adds a new pattern to a traders stock",
+	usage = "- /trader pattern add global_prices 1",
 	perm = "dtl.trader.commands.pattern")
-	public void tradePatternSet(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	public void tradePatternAdd(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		String pattern = args.get("pattern");
 
-		if ( !npc.getStock().setPattern(pattern) )
+		if ( !npc.getBase().getStock().addPattern(pattern, args.get("priority") == null ? 1 : Integer.parseInt(args.get("priority")) ) )
 			locale.sendMessage(sender, "error-argument-invalid", "argument", pattern);
 		else
 			locale.sendMessage(sender, "key-change", "key", "#pattern", "value", pattern);
-	}*/
-/*	
+	}
+
 	@Command(
 	name = "trader",
 	syntax = "pattern save <pattern> (arg) (post)",
@@ -335,20 +345,20 @@ public class TraderCommands {
 			stock.reset(null, "prices");
 
 		locale.sendMessage(sender, "pattern-save-success", "pattern", pattern);
-	}*/
+	}
 	
-/*	@Command(
+	@Command(
 	name = "trader",
-	syntax = "pattern remove",
+	syntax = "pattern remove <pattern>",
 	desc = "removes pattern from a trader",
 	perm = "dtl.trader.commands.pattern")
 	public void tradePatternRemove(CitizensTrader plugin, CommandSender sender, Trader trader, Map<String, String> args)
 	{
-		trader.getStock().removePattern();
+		trader.getBase().getStock().removePattern(args.get("pattern"));
 		locale.sendMessage(sender, "key-change", "key", "#pattern", "value", "#disabled");
-	}*/
+	}
 	
-/*	@Command(
+	@Command(
 	name = "trader",
 	syntax = "pattern reload",
 	desc = "reloads all patterns and trader stocks",
@@ -360,7 +370,7 @@ public class TraderCommands {
 		CitizensTrader.getPatternsManager().reload();
 		
 		// reload server traders
-		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.SERVER_TRADER) )
+	/*	for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.SERVER_TRADER) )
 		{
 			npc.getTrait(TraderTrait.class).getStock().reloadStock();
 		}
@@ -369,8 +379,8 @@ public class TraderCommands {
 		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.MARKET_TRADER) )
 		{
 			npc.getTrait(TraderTrait.class).getStock().reloadStock();
-		}
-	}*/
+		}*/
+	}
 	
 	private static DecimalFormat format = new DecimalFormat("#.##");
 	

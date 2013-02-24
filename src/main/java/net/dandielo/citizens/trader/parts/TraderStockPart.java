@@ -3,6 +3,7 @@ package net.dandielo.citizens.trader.parts;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +20,7 @@ import net.dandielo.citizens.trader.patterns.TPattern;
 import net.dandielo.citizens.trader.patterns.types.ItemPattern;
 import net.dandielo.citizens.trader.patterns.types.PricePattern;
 import net.dandielo.citizens.trader.patterns.types.PricePattern.Price;
+import net.dandielo.citizens.trader.types.Trader;
 import net.dandielo.citizens.trader.types.Trader.TraderStatus;
 
 import org.bukkit.Bukkit;
@@ -88,10 +90,8 @@ public class TraderStockPart implements InventoryHolder {
 	
 	public boolean addPattern(String pattern, int priority)
 	{
-		System.out.print("dd");
 		if ( patternsManager.getPattern(pattern) == null )
 			return false;
-		System.out.print("test");
 		
 		patterns.put(priority, patternsManager.getPattern(pattern));
 		return true;
@@ -99,7 +99,11 @@ public class TraderStockPart implements InventoryHolder {
 	
 	public void removePattern(String pattern)
 	{	
-		patterns.remove(patternsManager.getPattern(pattern));
+		Iterator<TPattern> it = patterns.values().iterator();
+		while(it.hasNext())
+			if ( it.next().getName().equals(pattern) )
+				it.remove();
+		//patterns.remove(patternsManager.getPattern(pattern));
 	}
 	
 	public void removeAllPatterns()
@@ -137,33 +141,27 @@ public class TraderStockPart implements InventoryHolder {
 	{
 		TraderStockPart pstock = new TraderStockPart(stockSize, name);
 
-		System.out.print("patterns");
 		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
 		{
 			TPattern pat = pattern.getValue();
-			System.out.print("perm: " + perms.has(player, "dtl.trader.pattern." + pat.getName()));
 			if ( pat instanceof ItemPattern && perms.has(player, "dtl.trader.pattern." + pat.getName()) )
 			{
-				System.out.print(pstock.stock.get("sell"));
 				pstock.stock.get("sell").addAll( ((ItemPattern)pat).getStock(player, "sell") );
 				pstock.stock.get("buy").addAll( ((ItemPattern)pat).getStock(player, "buy") );
 			}
 			else
 			if ( pat instanceof PricePattern && perms.has(player, "dtl.trader.pattern." + pat.getName()) )
-			{System.out.print("prc");
+			{
 				pstock.patterns.put(pattern.getKey(), pat);
 			}
 		}
 
-		System.out.print("items");
 		for ( StockItem item : stock.get("sell") ) {
-			System.out.print(item);
 			pstock.stock.get("sell").remove(item);
 			pstock.stock.get("sell").add(item);
 		}
 
 		for ( StockItem item : stock.get("buy") ) {
-			System.out.print(item);
 			pstock.stock.get("buy").remove(item);
 			pstock.stock.get("buy").add(item);
 		}
@@ -328,7 +326,7 @@ public class TraderStockPart implements InventoryHolder {
 		return null;
 	}
 	
-	public void setInventoryWith(Inventory inventory, StockItem item, Player player) {
+	public void setInventoryWith(Trader trader, Inventory inventory, StockItem item, Player player) {
 		int i = 0;
 
 		for ( Integer amount : item.getAmounts() ) 
@@ -336,8 +334,7 @@ public class TraderStockPart implements InventoryHolder {
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", patterns, player));
 			
 			chk.setAmount(amount);
-			//TODO Limits
-		//	if ( item.getLimitSystem().checkLimit("", i) )
+			if ( CitizensTrader.getLimitsManager().checkLimit(trader, "sell", item, amount) )
 				inventory.setItem(i++,chk);
 		}
 		inventory.setItem(stockSize - 1, itemsConfig.getItemManagement(7));
@@ -610,13 +607,11 @@ public class TraderStockPart implements InventoryHolder {
 		Price prc = new Price(0);
 		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
 		{
-			System.out.print("ns: " );
-			if ( pat.getValue() instanceof PricePattern && perms.has(player, "dtl.trader.pattern." + pat.getValue().getName()) )
+			if ( pat.getValue() instanceof PricePattern && perms.has(player, "dtl.trader.patterns." + pat.getValue().getName()) )
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
 			price = prc.endPrice(item.patternMultiplier());
-		System.out.print("ns: " + prc.hasPrice());
 		return price;
 	}
 	
@@ -627,13 +622,11 @@ public class TraderStockPart implements InventoryHolder {
 		Price prc = new Price(0);
 		for ( Entry<Integer, TPattern> pat : patterns.entrySet() )
 		{
-		//	System.out.print("s: " + (pat instanceof TPattern));
-			if ( pat.getValue() instanceof PricePattern && perms.has(player, "dtl.trader.pattern." + pat.getValue().getName()) )
+			if ( pat.getValue() instanceof PricePattern && perms.has(player, "dtl.trader.patterns." + pat.getValue().getName()) )
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
 			price = prc.endPrice(item.patternMultiplier());
-		System.out.print("s: " + prc.hasPrice());
 		return price;
 	}
 

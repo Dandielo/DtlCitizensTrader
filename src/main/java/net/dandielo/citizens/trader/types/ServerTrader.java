@@ -727,7 +727,6 @@ public class ServerTrader extends Trader {
 									 trait.getStock().addItem("sell", item);
 
 								 locale.sendMessage(player, "trader-stock-item-add");
-								 //player.sendMessage( localeManager.getLocaleString("xxx-item", "action:added") );
 							 }
 							 
 							 //select an item if it exists in the traders inventory
@@ -735,7 +734,6 @@ public class ServerTrader extends Trader {
 							 {
 								 getSelectedItem().setSlot(-2);
 								 locale.sendMessage(player, "trader-stock-item-select");
-								 
 							 }
 							 
 							 //set the managed items slot

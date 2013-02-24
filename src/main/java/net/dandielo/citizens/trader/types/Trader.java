@@ -333,7 +333,7 @@ public abstract class Trader implements tNPC {
 		if ( traderStatus.isManaging() )
 			TraderStockPart.setManagerInventoryWith(inventory, item);
 		else
-			traderStock.setInventoryWith(inventory, item, player);
+			traderStock.setInventoryWith(this, inventory, item, player);
 		selectedItem = item;
 	}
 	
@@ -556,6 +556,10 @@ public abstract class Trader implements tNPC {
 			}
 		}
 		return new StockItem(itemInfo);
+	}
+
+	public TraderTrait getBase() {
+		return trait;
 	}
 	
 	public static TraderStatus getStartStatus(Player player) {

@@ -35,6 +35,7 @@ public class StockItem {
 	
 	protected boolean stackPrice = false;
 	protected boolean unitPrice = false;
+	protected boolean hasPrice = false;
 	
 	//pattern fields 
 	protected boolean checkEnchantments = false;
@@ -169,6 +170,7 @@ public class StockItem {
 					if ( key.equals("p") )
 					{
 						price = Double.parseDouble(value);
+						hasPrice = true;
 					}
 					else
 					if ( key.equals("m") )
@@ -274,15 +276,12 @@ public class StockItem {
 				if ( matcher.group(2) != null && matcher.group(2).equals("n") )
 				{
 					item.name = matcher.group(3);
-					//backward compatibility
-				//	item.setName(matcher.group(3));
 				}
 				else
 				//stack price management
 				if ( value.equals("lore") ) 
 				{
 					item.lore = lore;
-				//	NBTTagEditor.addDescription(item.item, lore);
 				}
 				else
 				{
@@ -299,6 +298,7 @@ public class StockItem {
 				if ( key.equals("p") )
 				{
 					item.price = Double.parseDouble(value);
+					item.hasPrice = true;
 				}
 				else
 				if ( key.equals("m") )
@@ -373,6 +373,9 @@ public class StockItem {
 				}
 			}
 		}
+		if ( item.item == null )
+			item.item = new ItemStack(0, 0);
+		
 		return item;
 	}
 	
@@ -414,7 +417,7 @@ public class StockItem {
 		String itemString = "" + item.getTypeId() + ( item.getData().getData() != 0 ? ":" + item.getData().getData() : "" );
 		
 		//saving the item price
-		if ( !patternPrice )
+		if ( !patternPrice && hasPrice )
 			itemString += " p:" + new DecimalFormat("#.##").format(price);
 		
 		//saving the item slot
@@ -520,13 +523,18 @@ public class StockItem {
 		stackPrice = b;
 	}
 	
+	public boolean hasPrice()
+	{
+		return hasPrice;
+	}
+	
 	public void increasePrice(double d) {
 		price += d;
 	}
 	
 	public void lowerPrice(double p) {
 		if ( ( price - p ) < 0 ) {
-			price = 0;
+			price = 0.0;
 			return;
 		}
 		price -= p;
@@ -650,9 +658,7 @@ public class StockItem {
 		Matcher matcher = pattern.matcher(item.matcherString);
 
 		boolean result = true;
-		
-		System.out.print(item.matcherString);
-		
+		item.matchPriority = 0;
 		// look for values
 		while(matcher.find() && result)
 		{
@@ -662,10 +668,8 @@ public class StockItem {
 			//item name or flag
 			if ( key == null )
 			{
-				System.out.print("match: " + 1);
 				if ( matcher.group(2) != null && matcher.group(2).equals("n") )
 				{
-					System.out.print(matcher.group(3));
 					if ( name == null ) result = false; else
 					result = name.equals(matcher.group(3).replace("[&]", " "));
 					item.matchPriority += 300; 
@@ -684,7 +688,6 @@ public class StockItem {
 			}
 			else
 			{
-				System.out.print("match: " + 2 + " " + key);
 				if ( key.equals("a") && amount )
 				{
 					amounts.clear();
@@ -700,7 +703,10 @@ public class StockItem {
 				else
 				if ( key.equals("t") ) 
 				{
+					System.out.print(tier + " " + value);
+					if ( this.tier == null ) return false; else
 					result = this.tier.equals(value);
+					System.out.print(tier + " " + value);
 					item.matchPriority += 25;
 				}
 				else

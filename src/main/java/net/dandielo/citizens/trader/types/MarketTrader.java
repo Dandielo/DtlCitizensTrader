@@ -348,12 +348,6 @@ public class MarketTrader extends Trader {
 			//reset
 			selectItem(null);
 		}
-		else
-		{
-			//that item isn't in the stock
-		//	p.sendMessage( locale.getLocaleString("item-not-in-stock") );
-			
-		}
 	}
 	
 	public boolean addItem(ItemStack itemToAdd, int scale, StockItem oldStockItem)
@@ -363,7 +357,6 @@ public class MarketTrader extends Trader {
 			return false;
 		
 		Inventory inventory = this.getStock().getInventory("sell", player);
-	//	this.getStock().inventoryView(inventory, TraderStatus.SELL, player);
 		//get the first empty item slot
 		int firstEmpty = inventory.firstEmpty();
 
@@ -405,7 +398,6 @@ public class MarketTrader extends Trader {
 			limitSystem.get("global") .setLimit(itemToAdd.getAmount()*scale);
 			
 			stockItem.setPatternPrice(true);
-			//pattern.getItemPrice(stockItem, "sell");
 			//put it into the stock list
 			getStock().addItem("sell", stockItem);
 			
@@ -413,7 +405,6 @@ public class MarketTrader extends Trader {
 			itemToAdd.setAmount(backUpAmount);
 			
 			//send message
-		//	p.sendMessage( locale.getLocaleString("xxx-item", "action:added") );
 		}
 		else
 		{

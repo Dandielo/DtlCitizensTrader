@@ -42,6 +42,7 @@ public class PricePattern extends TPattern {
 				for ( String item : data.getStringList(key) )
 				{
 					StockItem stockItem = StockItem.priceItem((String)item, null);
+					if ( tier ) stockItem.setTier(name);
 					stockItem.setPatternPrice(false);
 					if ( stockItem.getSlot() < 0 )
 					{
@@ -61,6 +62,7 @@ public class PricePattern extends TPattern {
 				for ( String item : data.getStringList(key) )
 				{
 					StockItem stockItem = StockItem.priceItem((String)item, null);
+					if ( tier ) stockItem.setTier(name);
 					stockItem.setPatternPrice(false);
 					if ( stockItem.getSlot() < 0 )
 						sell.add(stockItem);
@@ -74,6 +76,7 @@ public class PricePattern extends TPattern {
 				for ( String item : data.getStringList(key) )
 				{
 					StockItem stockItem = StockItem.priceItem((String)item, null);
+					if ( tier ) stockItem.setTier(name);
 					stockItem.setPatternPrice(false);
 					if ( stockItem.getSlot() < 0 )
 						buy.add(stockItem);
@@ -82,14 +85,14 @@ public class PricePattern extends TPattern {
 				}
 			}
 			else
-			if ( key.equals("inherits") )
+			if ( !tier && key.equals("inherits") )
 			{
 				for ( String pat : data.getStringList(key) )
 					inherits.put(pat, null);
 			}
-			else if ( !key.equals("type") )
+			else if ( !key.equals("type") && !key.equals("priority") )
 			{
-				PricePattern pattern = new PricePattern(name + "." + key, "price", true);
+				PricePattern pattern = new PricePattern(key, "price", true);
 				pattern.load(data.getConfigurationSection(key));
 				tiers.put(key, pattern);
 			}
@@ -115,11 +118,9 @@ public class PricePattern extends TPattern {
 	
 	public Price getPrice(StockItem item, Player player, String stock, boolean unit)
 	{
-		System.out.print("A");
 		if ( !item.patternPrice() )
 			return new Price(item.stackPrice() ? ( unit ? item.getRawPrice() / item.getAmount() : item.getRawPrice() ) : item.getPrice(0)); 
 
-		System.out.print("B");
 		Price price = new Price(0.0);
 		for ( Entry<String, PricePattern> pat : inherits.entrySet() )
 		{
@@ -134,10 +135,9 @@ public class PricePattern extends TPattern {
 		
 		for ( StockItem match : prices.get(stock) )
 		{
-			System.out.print(match + " | " + item + " | " + item.matches(match));
 			if ( item.matches(match) )
 			{
-				if ( !match.patternPrice() && price.priority[0] <= match.getMatchPriority() )
+				if ( match.hasPrice() && item.patternPrice() && price.priority[0] <= match.getMatchPriority() )
 				{
 					price.price(match.getRawPrice(), match.getMatchPriority());
 				}
@@ -155,8 +155,10 @@ public class PricePattern extends TPattern {
 			}
 		}
 		
-		price.priority[0] += (priority * 1000);
-		price.priority[1] += (priority * 1000);
+		if ( price.priority[0] >= 0 )
+			price.priority[0] += (priority * 1000);
+		if ( price.priority[1] >= 0 )
+			price.priority[1] += (priority * 1000);
 		return price;
 	}
 	
@@ -174,7 +176,6 @@ public class PricePattern extends TPattern {
 		
 		public void merge(Price p)
 		{
-			System.out.print(p.price);
 			if ( p.priority[0] >= priority[0] )
 			{
 				priority[0] = p.priority[0];

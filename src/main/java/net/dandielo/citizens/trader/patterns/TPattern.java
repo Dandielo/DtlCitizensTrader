@@ -12,11 +12,13 @@ public abstract class TPattern {
 	// pattern fields 
 	protected final String name;
 	protected final String type;
+	protected final boolean tier;
 	
 	public TPattern(String name, String type, boolean tier)
 	{
 		this.name = name;
 		this.type = type;
+		this.tier = tier;
 	}
 
 	public String getName()
@@ -28,8 +30,12 @@ public abstract class TPattern {
 	{
 		return type;
 	}
+	
+	public boolean isTier()
+	{
+		return tier;
+	}
 
 	public abstract void load(ConfigurationSection data);
-	
-	
+
 }

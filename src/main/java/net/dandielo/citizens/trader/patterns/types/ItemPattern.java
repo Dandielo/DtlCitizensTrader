@@ -44,6 +44,8 @@ public class ItemPattern extends TPattern {
 					if ( item instanceof String )
 					{
 						StockItem stockItem = new StockItem((String)item);
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 						if ( stockItem.getSlot() < 0 )
 						{
 							sell.add(stockItem);
@@ -60,7 +62,8 @@ public class ItemPattern extends TPattern {
 						StockItem stockItem = null;
 						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
 							stockItem = new StockItem(entry.getKey(), entry.getValue());
-
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 						if ( stockItem.getSlot() < 0 )
 						{
 							sell.add(stockItem);
@@ -82,6 +85,8 @@ public class ItemPattern extends TPattern {
 					if ( item instanceof String )
 					{
 						StockItem stockItem = new StockItem((String)item);
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 						if ( stockItem.getSlot() < 0 )
 							sell.add(stockItem);
 						else
@@ -92,6 +97,8 @@ public class ItemPattern extends TPattern {
 						StockItem stockItem = null;
 						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
 							stockItem = new StockItem(entry.getKey(), entry.getValue());
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 
 						if ( stockItem.getSlot() < 0 )
 							sell.add(stockItem);
@@ -105,10 +112,11 @@ public class ItemPattern extends TPattern {
 			{
 				for ( Object item : data.getList(key) )
 				{
-					System.out.print(item);
 					if ( item instanceof String )
 					{
 						StockItem stockItem = new StockItem((String)item);
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 						if ( stockItem.getSlot() < 0 )
 							buy.add(stockItem);
 						else
@@ -119,6 +127,8 @@ public class ItemPattern extends TPattern {
 						StockItem stockItem = null;
 						for ( Map.Entry<String, List<String>> entry : ((Map<String, List<String>>) item).entrySet() )
 							stockItem = new StockItem(entry.getKey(), entry.getValue());
+						if ( tier ) stockItem.setTier(name);
+						stockItem.setAsPatternItem(true);
 
 						if ( stockItem.getSlot() < 0 )
 							buy.add(stockItem);
@@ -128,14 +138,14 @@ public class ItemPattern extends TPattern {
 				}
 			}
 			else
-			if ( key.equals("inherits") )
+			if ( !tier && key.equals("inherits") )
 			{
 				for ( String pat : data.getStringList(key) )
 					inherits.put(pat, null);
 			}
 			else if ( !key.equals("type") )
 			{
-				ItemPattern pattern = new ItemPattern(name + "." + key, "item", true);
+				ItemPattern pattern = new ItemPattern(key, "item", true);
 				pattern.load(data.getConfigurationSection(key));
 				tiers.put(key, pattern);
 			}
@@ -188,7 +198,6 @@ public class ItemPattern extends TPattern {
 					for ( StockItem item : tier.getValue().getStock(player, stock) )
 					{
 						ret.remove(item);
-						item.setTier(tier.getValue().name);
 						ret.add(item);
 					}
 				}
@@ -196,6 +205,6 @@ public class ItemPattern extends TPattern {
 					ret.addAll(tier.getValue().getStock(player, stock));
 			}
 		}
-		return items.get(stock);
+		return ret;
 	}
 }
