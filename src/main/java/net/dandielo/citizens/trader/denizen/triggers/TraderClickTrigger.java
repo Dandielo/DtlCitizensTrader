@@ -4,7 +4,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
+import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.NpcManager;
@@ -27,9 +30,11 @@ public class TraderClickTrigger extends AbstractDenizenTrigger implements Listen
         // If engaged or not cool, calls On Unavailable, if cool, calls On Click
         // If available (not engaged, and cool) sets cool down and returns true. 
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getClicker())) return;
+        
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Get Interact Script for Player/NPC
-        String script = sH.getInteractScript(event.getNPC(), event.getClicker(), this.getClass());
+        InteractScriptContainer script = npc.getInteractScript(event.getClicker(), this.getClass());
 
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getClicker(), script))

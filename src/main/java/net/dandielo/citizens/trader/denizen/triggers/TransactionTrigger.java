@@ -10,8 +10,9 @@ import org.bukkit.event.Listener;
 
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.npc.traits.TriggerTrait;
-import net.aufdemrand.denizen.scripts.ScriptEngine.QueueType;
 import net.aufdemrand.denizen.scripts.ScriptHelper;
+import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
+import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.DebugElement;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenTrigger;
@@ -31,9 +32,11 @@ public class TransactionTrigger extends AbstractDenizenTrigger implements Listen
         // If engaged or not cool, calls On Unavailable, if cool, calls On Click
         // If available (not engaged, and cool) sets cool down and returns true. 
         if (!event.getNPC().getTrait(TriggerTrait.class).trigger(this, event.getParticipant())) return;
+        
+        dNPC npc = DenizenAPI.getDenizenNPC(event.getNPC());
 
         // Get Interact Script for Player/NPC
-        String script = sH.getInteractScript(event.getNPC(), event.getParticipant(), this.getClass());
+        InteractScriptContainer script = npc.getInteractScript(event.getParticipant(), this.getClass());
         
         // Parse Click Trigger, if unable to parse call No Click Trigger action
         if (!parse(denizen.getNPCRegistry().getDenizen(event.getNPC()), event.getParticipant(), script))
@@ -42,7 +45,7 @@ public class TransactionTrigger extends AbstractDenizenTrigger implements Listen
             denizen.getNPCRegistry().getDenizen(event.getNPC()).action("no transaction trigger", event.getParticipant());
         }
     }
-
+/*
     @Override
     public boolean parse(dNPC npc, Player player, String script) {
         if (script == null) return false;
@@ -66,7 +69,7 @@ public class TransactionTrigger extends AbstractDenizenTrigger implements Listen
         sB.queueScriptEntries(player, sB.buildScriptEntries(player, npc, theScript, script, theStep), QueueType.PLAYER);
 
         return true;
-    }
+    }*/
 
     @Override
     public void onEnable() {
