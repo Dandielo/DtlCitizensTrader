@@ -30,10 +30,6 @@
 			<id>vault-repo</id>
 			<url>http://ci.herocraftonline.com/plugin/repository/everything/</url>
 		</repository>
-		<repository>
-			<id>thirdparty</id>
-			<url>http://93.181.141.191:8081/nexus/content/repositories/thirdparty/</url>
-		</repository>
 	</repositories> 
 	
 	<!-- Dependencies -->
