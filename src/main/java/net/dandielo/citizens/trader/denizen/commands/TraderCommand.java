@@ -66,7 +66,7 @@ public class TraderCommand extends AbstractDenizenCommand {
 	{
 		NPC npc = scriptEntry.getNPC().getCitizen();
 		
-		if ( npc.hasTrait(TraderTrait.class) )
+		if ( !npc.hasTrait(TraderTrait.class) )
 			return;
 		
 		if ( scriptEntry.getObject("action").equals("open") )
