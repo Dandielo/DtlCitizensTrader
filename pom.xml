@@ -41,6 +41,12 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		<dependency> 
+			<groupId>net.aufdemrand</groupId>
+			<artifactId>denizen</artifactId>
+			<version>${denizen.version}</version>
+			<scope>provided</scope> 
+		</dependency> 
 		<dependency>
 			<groupId>net.citizensnpcs</groupId>
 			<artifactId>citizens</artifactId>
@@ -54,12 +60,6 @@
 			<version>${vault.version}</version>
 			<type>jar</type>
 			<scope>provided</scope>
-		</dependency> 
-		<dependency> 
-			<groupId>net.aufdemrand</groupId>
-			<artifactId>denizen</artifactId>
-			<version>${denizen.version}</version>
-			<scope>provided</scope> 
 		</dependency> 
 		<dependency> 
 		    <groupId>net.dandielo</groupId>
