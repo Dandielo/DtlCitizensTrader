@@ -141,9 +141,9 @@ public class TraderTags implements Listener {
         	else
         	if ( tag.equals("stock") )
         	{
-        		if ( !subtag.contains("-") )
+        		if ( !subtag.contains(".") )
         			return;
-        		String[] stock = subtag.split("-", 2);
+        		String[] stock = subtag.split(".", 2);
 
         		if ( stock[1].equals("trigger") )
         			e.setReplaced(regexTrigger(p, trader, stock[0]));
