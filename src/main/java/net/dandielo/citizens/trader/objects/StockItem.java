@@ -826,7 +826,7 @@ public class StockItem {
 	
 	public boolean equalsLores(ItemStack item)
 	{
-		if ( !item.hasItemMeta() || !item.getItemMeta().hasLore() )
+		if ( !item.hasItemMeta() || NBTTagEditor.cleanLore(item.getItemMeta().getLore()).isEmpty() )
 		{
 			if ( lore == null || lore.isEmpty() )
 				return true;
