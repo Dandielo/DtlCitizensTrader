@@ -149,15 +149,6 @@ public class ServerTrader extends Trader {
 								price );
 							
 						}
-						
-						//TODO remove?
-					//	else
-					//	{
-							//TODO add debug mode
-					//		p.sendMessage( locale.getLocaleString("xxx-item-cost-xxx").replace("{price}", f.format(getPrice(p, "sell")) ) );
-					//		p.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:buy") );
-					//		setClickedSlot(slot);
-					//	}
 					}
 				}
 			} 
@@ -172,27 +163,21 @@ public class ServerTrader extends Trader {
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_LIMIT));
 						locale.sendMessage(player, "trader-transaction-failed-limit");
-					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:limit"));
 					}
 					else
 					if ( !inventoryHasPlace(slot) )
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_SPACE));
 						locale.sendMessage(player, "trader-transaction-failed-inventory");
-					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:inventory"));
 					}
 					else
 					if ( !buyTransaction(price) ) 
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 						locale.sendMessage(player, "trader-transaction-failed-money");
-					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:buying", "reason:money"));
 					}
 					else
 					{
-						//send message
-						//TODO add debug mode
-					//	player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount(slot) ).replace("{price}", f.format(price) ) );
 						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						
 						addSelectedToInventory(slot);

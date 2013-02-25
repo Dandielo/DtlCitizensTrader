@@ -626,7 +626,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier());
+			price = prc.endPrice(item.patternMultiplier())*item.getAmount(slot);
 		return price;
 	}
 	
@@ -641,7 +641,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier());
+			price = prc.endPrice(item.patternMultiplier())*item.getAmount(slot);
 		return price;
 	}
 
