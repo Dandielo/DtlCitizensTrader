@@ -169,18 +169,18 @@ public class StockItem {
 				{
 					if ( key.equals("p") )
 					{
-						price = Double.parseDouble(value);
+						price = toDouble(value);
 						hasPrice = true;
 					}
 					else
 					if ( key.equals("m") )
 					{
-						multiply = new Double(value);
+						multiply = new Double(toDouble(value));
 					}
 					else
 					if ( key.equals("c") )
 					{
-						spawnChance = new Double(value);
+						spawnChance = new Double(toDouble(value));
 					}
 					else
 					if ( key.equals("a") )
@@ -297,18 +297,18 @@ public class StockItem {
 			{
 				if ( key.equals("p") )
 				{
-					item.price = Double.parseDouble(value);
+					item.price = toDouble(value);
 					item.hasPrice = true;
 				}
 				else
 				if ( key.equals("m") )
 				{
-					item.multiply = new Double(value);
+					item.multiply = new Double(toDouble(value));
 				}
 				else
 				if ( key.equals("c") )
 				{
-					item.spawnChance = new Double(value);
+					item.spawnChance = new Double(toDouble(value));
 				}
 				else
 				if ( key.equals("a") )
@@ -847,5 +847,26 @@ public class StockItem {
 				return false;
 		}
 		return true;
+	}
+	
+	public static double toDouble(String d)
+	{
+		double db = 0.0;
+		try
+		{
+			db = Double.parseDouble(d);
+		} 
+		catch(Exception e)
+		{
+			try
+			{
+				db = Double.parseDouble(d.replace(',', '.'));
+			}
+			catch(Exception ex)
+			{
+				db = Double.parseDouble(d.replace('.', ','));
+			}
+		}
+		return db;
 	}
 }
