@@ -529,10 +529,12 @@ public class StockItem {
 	}
 	
 	public void increasePrice(double d) {
+		hasPrice = true;
 		price += d;
 	}
 	
 	public void lowerPrice(double p) {
+		hasPrice = true;
 		if ( ( price - p ) < 0 ) {
 			price = 0.0;
 			return;
