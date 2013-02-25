@@ -241,11 +241,7 @@ public class ServerTrader extends Trader {
 				
 				if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() )
 				{
-					
-					
-					//TODO remove ?
-				//	if ( getClickedSlot() == slot && !getInventoryClicked() ) 
-				//	{
+				
 					double price = getPrice(player, "buy");
 					int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
 					
@@ -253,23 +249,20 @@ public class ServerTrader extends Trader {
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_LIMIT));
 						locale.sendMessage(player, "trader-transaction-failed-limit");
-					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit"));
 					}
 					else
 					if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 					{
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), player, this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 						locale.sendMessage(player, "trader-transaction-failed-money");
-					//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money"));
 					}
 					else
 					{
-					//	player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
 						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
 						//TODO
 						updateBuyLimits(scale);
 
-						NBTTagEditor.removeDescription(event.getCurrentItem());
+						NBTTagEditor.removeDescription(event.getCurrentItem(), "player-inventory");
 						removeFromInventory(event.getCurrentItem(), event);
 						
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.SUCCESS_BUY));
@@ -338,7 +331,7 @@ public class ServerTrader extends Trader {
 					
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.SUCCESS_BUY));
 					
-					NBTTagEditor.removeDescription(event.getCurrentItem());
+					NBTTagEditor.removeDescription(event.getCurrentItem(), "player-inventory");
 					
 					//inventory cleanup
 					removeFromInventory(event.getCurrentItem(),event);
@@ -810,7 +803,7 @@ public class ServerTrader extends Trader {
 								getSelectedItem().setPatternPrice(false);
 								
 								NBTTagEditor.removeDescription(event.getCurrentItem());
-								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), getStock().getPatterns(), player));
+								event.setCurrentItem(TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), getStock().getPatterns(), player)));
 
 								locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
 							}

@@ -298,7 +298,7 @@ public abstract class Trader implements tNPC {
 	
 	public void setItemPriceLore(ItemStack is)
 	{
-		NBTTagEditor.removeDescription(is);
+		NBTTagEditor.removeDescription(is, "player-inventory");
 		StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
 		
 		if ( it != null )

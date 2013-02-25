@@ -533,6 +533,7 @@ public class TraderStockPart implements InventoryHolder {
 			return getManageLore(item, stock, player);
 		return getPriceLore(item, 0, stock, patterns, player);
 	}
+
 	
 	public static List<String> getPriceLore(StockItem item, int slot, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
@@ -543,6 +544,20 @@ public class TraderStockPart implements InventoryHolder {
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
+			lore.add(line.replace("{price}", price).replace("{amount}", "not supported"));
+		
+		return lore;
+	}
+	
+	public static List<String> getManagePriceLore(StockItem item, int slot, String stock, Map<Integer, TPattern> patterns, Player player)
+	{
+		String price = "";
+		DecimalFormat format = new DecimalFormat("#.##");
+
+		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot));
+		
+		List<String> lore = new ArrayList<String>();
+		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-buy") )//itemsConfig.getPriceLore(stock) )
 			lore.add(line.replace("{price}", price).replace("{amount}", "not supported"));
 		
 		return lore;

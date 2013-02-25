@@ -108,7 +108,7 @@ public class TraderConfigPart {
 			data.setString("wallet.bank", wallet.getBank());
 		
 		if ( wallet.getMoney() != 0.0 )
-			data.setDouble("money", wallet.getMoney());
+			data.setDouble("wallet.money", wallet.getMoney());
 		
 		data.setString("owner", owner);
 		data.setBoolean("trading", enabled);

@@ -25,7 +25,7 @@ public class NBTTagEditor {
 		{
 			if ( item != null )
 			{
-				NBTTagEditor.removeDescription(item);
+				NBTTagEditor.removeDescription(item, "player-inventory");
 
 				inventory.setItem(s, new ItemStack(cleanItem(item)));
 			/*	int size = 0;
@@ -167,8 +167,29 @@ public class NBTTagEditor {
 		
 		List<String> list = meta.getLore();
 		
+		list.clear();
 		
-		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
+		if ( list.isEmpty() )
+			meta.setLore(null);
+		else
+			meta.setLore(list);
+
+		item.setItemMeta(meta);
+	}
+	
+	public static void removeDescription(ItemStack item, String toRem)
+	{
+		if ( !item.hasItemMeta() )
+			return;
+		
+		ItemMeta meta = item.getItemMeta();
+		if ( !meta.hasLore() )
+			return;
+		
+		List<String> list = meta.getLore();
+		
+		
+		List<String> lore = CitizensTrader.getLocaleManager().lore(toRem);
 		
 		if ( list.size() >= lore.size() )
 		{
