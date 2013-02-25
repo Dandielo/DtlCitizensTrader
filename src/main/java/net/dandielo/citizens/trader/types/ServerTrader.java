@@ -722,9 +722,15 @@ public class ServerTrader extends Trader {
 								 
 								 //set the item to the stock
 								 if ( this.isBuyModeByWool() )
+								 {
 									 trait.getStock().addItem("buy", item);
+									 getStock().addItem("buy", item);
+								 }
 								 if ( this.isSellModeByWool() )
+								 {
 									 trait.getStock().addItem("sell", item);
+									 getStock().addItem("sell", item);
+								 }
 
 								 locale.sendMessage(player, "trader-stock-item-add");
 							 }
@@ -764,10 +770,7 @@ public class ServerTrader extends Trader {
 						//is item id and data equal?
 						if ( !equalsSelected(event.getCursor(),true,false) 
 								&& !event.getCursor().getType().equals(Material.AIR) ) {
-
-							//invalid item
-
-						//	player.sendMessage( localeManager.getLocaleString("xxx-item", "action:invalid") );
+							
 							locale.sendMessage(player, "trader-stock-item-invalid");
 							event.setCancelled(true);
 						}
@@ -788,7 +791,6 @@ public class ServerTrader extends Trader {
 							//select item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
 								locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
-							//	player.sendMessage( localeManager.getLocaleString("xxx-value", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							
 						} 
 						else
@@ -811,7 +813,6 @@ public class ServerTrader extends Trader {
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), getStock().getPatterns(), player));
 
 								locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
-							//	player.sendMessage( localeManager.getLocaleString("xxx-value-changed", "", "manage:price").replace("{value}", f.format(getSelectedItem().getRawPrice())) );
 							}
 							
 						}

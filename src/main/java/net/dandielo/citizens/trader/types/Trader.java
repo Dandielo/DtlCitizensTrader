@@ -162,20 +162,35 @@ public abstract class Trader implements tNPC {
 		return false;
 	}
 
+	public final Trader selectBaseItem(ItemStack item, TraderStatus status, boolean dura, boolean amount) {
+		selectedItem = trait.getStock().getItem(item, status, dura, amount);
+		return this;
+	}
+	public final Trader selectBaseItem(ItemStack item, TraderStatus status, boolean amount) {
+		selectedItem = trait.getStock().getItem(item, status, StockItem.hasDurability(item), amount);
+		return this;
+	}
+	
 	public final Trader selectItem(StockItem i) {
 		selectedItem = i;
 		return this;
 	}
-	public final Trader selectItem(int slot,TraderStatus status) {
-		selectedItem = traderStock.getItem(slot, status);
+	public final Trader selectItem(int slot, TraderStatus status) {
+		selectedItem = trait.getStock().getItem(slot, status);
+		if ( selectedItem == null )
+			selectedItem = traderStock.getItem(slot, status);
 		return this;
 	} 
 	public final Trader selectItem(ItemStack item, TraderStatus status, boolean dura, boolean amount) {
-		selectedItem = traderStock.getItem(item, status, dura, amount);
+		selectedItem = trait.getStock().getItem(item, status, dura, amount);
+		if ( selectedItem == null )
+			selectedItem = traderStock.getItem(item, status, dura, amount);
 		return this;
 	}
 	public final Trader selectItem(ItemStack item, TraderStatus status, boolean amount) {
-		selectedItem = traderStock.getItem(item, status, StockItem.hasDurability(item), amount);
+		selectedItem = trait.getStock().getItem(item, status, StockItem.hasDurability(item), amount);
+		if ( selectedItem == null )
+			selectedItem = traderStock.getItem(item, status, StockItem.hasDurability(item), amount);
 		return this;
 	}
 	
