@@ -24,9 +24,9 @@ abstract public class AbstractDenizenCommand extends AbstractCommand {
 			CitizensTrader.info("Hooked into " + denizen.getDescription().getFullName());
 			CitizensTrader.info("Registering commands... ");
 			
-			new TransactionCommand();
-			new TraderCreateCommand();
-			new TraderCommand();
+			new TransactionCommand().activate().as("TRANSACTION").withOptions("({SELL}|BUY) [ITEM:#(:#)] (QTY:#)", 1);
+			new TraderCommand().activate().as("TRADER").withOptions("({OPEN}|CLOSE|PATTERN|WALLET) (ACTION:action) (PATTERN:pattern_name)",0);
+			new TraderCreateCommand().activate().as("TRADERCREATE").withOptions("({SERVER}|MARKET|PLAYER) [NAME:trader_name] (WALLET:SERVER|{NPC}|OWNER) (PATTERN:pattern_name) (LOC:location) (OWNER:owner) (ENTITY:entity)",1);
 
 		}
 	}
