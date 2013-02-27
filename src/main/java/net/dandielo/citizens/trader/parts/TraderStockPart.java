@@ -103,7 +103,6 @@ public class TraderStockPart implements InventoryHolder {
 		while(it.hasNext())
 			if ( it.next().getName().equals(pattern) )
 				it.remove();
-		//patterns.remove(patternsManager.getPattern(pattern));
 	}
 	
 	public void removeAllPatterns()
@@ -123,7 +122,7 @@ public class TraderStockPart implements InventoryHolder {
 		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
 		{
 			TPattern pat = pattern.getValue();
-			if ( pat instanceof ItemPattern && perms.has(player, "") )
+			if ( pat instanceof ItemPattern && perms.has(player, "dtl.trader.patterns." + pat.getName()) )
 			{
 				result.addAll( ((ItemPattern)pat).getStock(player, st) );
 			}
