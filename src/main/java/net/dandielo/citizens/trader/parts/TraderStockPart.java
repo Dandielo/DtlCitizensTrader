@@ -143,13 +143,13 @@ public class TraderStockPart implements InventoryHolder {
 		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
 		{
 			TPattern pat = pattern.getValue();
-			if ( pat instanceof ItemPattern && perms.has(player, "dtl.trader.pattern." + pat.getName()) )
+			if ( pat instanceof ItemPattern && perms.has(player, "dtl.trader.patterns." + pat.getName()) )
 			{
 				pstock.stock.get("sell").addAll( ((ItemPattern)pat).getStock(player, "sell") );
 				pstock.stock.get("buy").addAll( ((ItemPattern)pat).getStock(player, "buy") );
 			}
 			else
-			if ( pat instanceof PricePattern && perms.has(player, "dtl.trader.pattern." + pat.getName()) )
+			if ( pat instanceof PricePattern && perms.has(player, "dtl.trader.patterns." + pat.getName()) )
 			{
 				pstock.patterns.put(pattern.getKey(), pat);
 			}
