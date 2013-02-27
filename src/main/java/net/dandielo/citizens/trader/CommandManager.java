@@ -219,6 +219,7 @@ public class CommandManager {
 			if ( !CitizensTrader.getPermissionsManager().has(sender, perm) )
 			{
 				sender.sendMessage(ChatColor.RED + "You don't have permissions to use this command");
+				return true;
 			}
 			try 
 			{
