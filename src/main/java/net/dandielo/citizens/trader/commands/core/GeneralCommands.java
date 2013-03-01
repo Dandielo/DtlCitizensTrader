@@ -162,7 +162,7 @@ public class GeneralCommands {
 	//Type help command
 	@Command(
 	name = "trader",
-	syntax = "help (page)",
+	syntax = "help {args}",
 	desc = "allows to get information about all trader commands",
 	perm = "dtl.trader.commands.help",
 	npc = false)
@@ -177,8 +177,8 @@ public class GeneralCommands {
 		int page = 1;
 		try
 		{
-			if ( args.containsKey("page") )
-				page = Integer.parseInt(args.get("page"));
+			if ( args.containsKey("free") )
+				page = Integer.parseInt(args.get("free"));
 		} 
 		catch (NumberFormatException e)
 		{
@@ -199,11 +199,16 @@ public class GeneralCommands {
 			if ( i >= (page-1)*4 && i < (page)*4 )
 			{
 				sender.sendMessage(nameAndSyntax(cmd));
-				sender.sendMessage(perm(cmd));
-				sender.sendMessage(description(cmd));
-				if ( !cmd.usage().isEmpty() )
-					sender.sendMessage(usage(cmd));
-				sender.sendMessage(npc(cmd));
+				if ( args.containsKey("perm") )
+					sender.sendMessage(perm(cmd));
+				if ( args.containsKey("desc") )
+				{
+					sender.sendMessage(npc(cmd));
+					sender.sendMessage(description(cmd));
+				}
+				if ( args.containsKey("usage") )
+					if ( !cmd.usage().isEmpty() )
+						sender.sendMessage(usage(cmd));
 				sender.sendMessage("");
 			}
 			++i;

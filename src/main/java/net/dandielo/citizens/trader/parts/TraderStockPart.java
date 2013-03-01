@@ -158,7 +158,6 @@ public class TraderStockPart implements InventoryHolder {
 		for ( StockItem item : stock.get("sell") ) {
 			pstock.stock.get("sell").remove(item);
 		}
-
 		for ( StockItem item : stock.get("buy") ) {
 			pstock.stock.get("buy").remove(item);
 		}
@@ -166,7 +165,6 @@ public class TraderStockPart implements InventoryHolder {
 		for ( StockItem item : stock.get("sell") ) {
 			pstock.stock.get("sell").add(item);
 		}
-
 		for ( StockItem item : stock.get("buy") ) {
 			pstock.stock.get("buy").add(item);
 		}
