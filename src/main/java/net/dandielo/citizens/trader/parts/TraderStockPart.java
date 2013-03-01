@@ -115,7 +115,7 @@ public class TraderStockPart implements InventoryHolder {
 		return this.stock.get(stock);
 	}
 	
-	public List<StockItem> getStock(Player player, String st)
+	/*public List<StockItem> getStock(Player player, String st)
 	{
 		List<StockItem> result = new ArrayList<StockItem>();
 		
@@ -134,7 +134,7 @@ public class TraderStockPart implements InventoryHolder {
 		}
 
 		return result;
-	}
+	}*/
 	
 	public TraderStockPart createStockFor(Player player)
 	{
@@ -157,11 +157,17 @@ public class TraderStockPart implements InventoryHolder {
 
 		for ( StockItem item : stock.get("sell") ) {
 			pstock.stock.get("sell").remove(item);
-			pstock.stock.get("sell").add(item);
 		}
 
 		for ( StockItem item : stock.get("buy") ) {
 			pstock.stock.get("buy").remove(item);
+		}
+
+		for ( StockItem item : stock.get("sell") ) {
+			pstock.stock.get("sell").add(item);
+		}
+
+		for ( StockItem item : stock.get("buy") ) {
 			pstock.stock.get("buy").add(item);
 		}
 		
