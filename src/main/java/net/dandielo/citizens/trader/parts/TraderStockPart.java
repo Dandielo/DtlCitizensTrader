@@ -115,27 +115,6 @@ public class TraderStockPart implements InventoryHolder {
 		return this.stock.get(stock);
 	}
 	
-	/*public List<StockItem> getStock(Player player, String st)
-	{
-		List<StockItem> result = new ArrayList<StockItem>();
-		
-		for ( Entry<Integer, TPattern> pattern : patterns.entrySet() )
-		{
-			TPattern pat = pattern.getValue();
-			if ( pat instanceof ItemPattern && perms.has(player, "dtl.trader.patterns." + pat.getName()) )
-			{
-				result.addAll( ((ItemPattern)pat).getStock(player, st) );
-			}
-		}
-
-		for ( StockItem item : stock.get(st) ) {
-			result.remove(item);
-			result.add(item);
-		}
-
-		return result;
-	}*/
-	
 	public TraderStockPart createStockFor(Player player)
 	{
 		TraderStockPart pstock = new TraderStockPart(stockSize, name);
@@ -172,7 +151,6 @@ public class TraderStockPart implements InventoryHolder {
 		return pstock;
 	}
 	
-	
 	public Inventory getInventory(String startingStock, Player player)
 	{
 		Inventory inventory = Bukkit.createInventory(this, stockSize, name);
@@ -193,7 +171,6 @@ public class TraderStockPart implements InventoryHolder {
         
 		return inventory;
 	}
-	
 	
 	public Inventory inventoryView(Inventory inventory, TraderStatus s, Player player, String type)
 	{
@@ -629,7 +606,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier())*item.getAmount(slot);
+			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (1/item.getAmount(0))*item.getAmount(slot) : item.getAmount(slot));
 		return price;
 	}
 	
@@ -644,7 +621,7 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier())*item.getAmount(slot);
+			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (1/item.getAmount(0))*item.getAmount(slot) : item.getAmount(slot));
 		return price;
 	}
 

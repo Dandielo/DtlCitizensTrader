@@ -549,6 +549,8 @@ public class StockItem {
 	
 	public double getPrice(int slot) 
 	{
+		if ( stackPrice )
+			return price/amounts.get(0);
 		return price*amounts.get(slot);
 	}
 	

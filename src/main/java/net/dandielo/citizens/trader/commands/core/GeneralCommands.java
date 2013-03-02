@@ -159,10 +159,54 @@ public class GeneralCommands {
 		commands.put(type, list);
 	}
 	
+	@Command(
+	name = "trader",
+	syntax = "help",
+	desc = "allows to get information about all trader commands",
+	perm = "dtl.trader.commands.help",
+	npc = false)
+	public void traderHelpBasic(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
+	{
+		List<Command> cmds = commands.get("trader");
+		
+		if ( cmds == null )
+			sender.sendMessage(ChatColor.RED + "No commands are registered for this type");
+
+		//Getting the page
+	//	int page = 1;
+	//	try
+	//	{
+	//		if ( args.containsKey("page") )
+	//			page = Integer.parseInt(args.get("page"));
+	//	} 
+	//	catch (NumberFormatException e)
+	//	{
+	//		page = 1;
+	//	}
+	//	int overall = ( cmds.size() / 4 ) + (cmds.size() % 4 == 0 ? 0 : 1);
+		
+	//	if ( page < 1 || page > overall )
+	//		page = 1;
+		
+		
+		sender.sendMessage(ChatColor.GOLD + "== " + ChatColor.YELLOW + "Trader commands" + ChatColor.GOLD + " ==");
+		sender.sendMessage("");
+		
+	//	int i = 0;
+		for ( Command cmd : cmds )
+		{
+		//	if ( i >= (page-1)*4 && i < (page)*4 )
+			{
+				sender.sendMessage(nameAndSyntax(cmd));
+			}
+		//	++i;
+		}
+	}
+	
 	//Type help command
 	@Command(
 	name = "trader",
-	syntax = "help {args}",
+	syntax = "help --all (page)",
 	desc = "allows to get information about all trader commands",
 	perm = "dtl.trader.commands.help",
 	npc = false)
@@ -177,8 +221,8 @@ public class GeneralCommands {
 		int page = 1;
 		try
 		{
-			if ( args.containsKey("free") )
-				page = Integer.parseInt(args.get("free"));
+			if ( args.containsKey("page") )
+				page = Integer.parseInt(args.get("page"));
 		} 
 		catch (NumberFormatException e)
 		{
@@ -199,16 +243,11 @@ public class GeneralCommands {
 			if ( i >= (page-1)*4 && i < (page)*4 )
 			{
 				sender.sendMessage(nameAndSyntax(cmd));
-				if ( args.containsKey("perm") )
-					sender.sendMessage(perm(cmd));
-				if ( args.containsKey("desc") )
-				{
-					sender.sendMessage(npc(cmd));
-					sender.sendMessage(description(cmd));
-				}
-				if ( args.containsKey("usage") )
-					if ( !cmd.usage().isEmpty() )
-						sender.sendMessage(usage(cmd));
+				sender.sendMessage(perm(cmd));
+				sender.sendMessage(description(cmd));
+				if ( !cmd.usage().isEmpty() )
+					sender.sendMessage(usage(cmd));
+				sender.sendMessage(npc(cmd));
 				sender.sendMessage("");
 			}
 			++i;
