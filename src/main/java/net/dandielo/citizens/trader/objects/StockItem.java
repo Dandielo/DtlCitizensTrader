@@ -20,6 +20,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class StockItem {
 	//item fields
@@ -171,6 +172,17 @@ public class StockItem {
 				}
 				else
 				{
+					if ( key.equals("c") )
+					{
+						if ( !item.getType().equals(Material.LEATHER_CHESTPLATE) )
+							continue;
+						
+						LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+						
+						String[] clrs = value.split("^");
+						meta.setColor(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
+					}
+					else
 					if ( key.equals("fw") )
 					{
 						if ( !item.getType().equals(Material.FIREWORK) )
@@ -206,6 +218,7 @@ public class StockItem {
 							meta.addEffect(builder.build());
 						}
 					}
+					else
 					if ( key.equals("p") )
 					{
 						price = toDouble(value);
