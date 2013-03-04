@@ -2,6 +2,7 @@ package net.dandielo.citizens.trader.objects;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,10 +13,13 @@ import java.util.regex.Pattern;
 import net.dandielo.citizens.trader.limits.Limits;
 import net.dandielo.citizens.trader.limits.Limits.Limit;
 
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 
 public class StockItem {
 	//item fields
@@ -167,6 +171,41 @@ public class StockItem {
 				}
 				else
 				{
+					if ( key.equals("fw") )
+					{
+						if ( !item.getType().equals(Material.FIREWORK) )
+							continue;
+						FireworkEffect.Builder builder = FireworkEffect.builder();
+						FireworkMeta meta = (FireworkMeta) item.getItemMeta();
+						
+						String[] values = value.split("/");
+						for ( String effectData : values )
+						{
+							List<String> fwe = Arrays.asList(effectData.split("."));
+							builder.with(FireworkEffect.Type.valueOf(fwe.get(0).toUpperCase()));
+							
+							builder.trail(fwe.contains("trail"));
+							builder.flicker(fwe.contains("flicker"));
+							
+							List<Color> colors = new ArrayList<Color>();
+							for ( String clr : fwe.get(1).split("-") )
+							{
+								String[] clrs = clr.split("^");
+								colors.add(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
+							}
+							builder.withColor(colors);
+							
+							List<Color> fades = new ArrayList<Color>();
+							for ( String clr : fwe.get(2).split("-") )
+							{
+								String[] clrs = clr.split("^");
+								fades.add(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
+							}
+							builder.withFade(fades);
+							
+							meta.addEffect(builder.build());
+						}
+					}
 					if ( key.equals("p") )
 					{
 						price = toDouble(value);

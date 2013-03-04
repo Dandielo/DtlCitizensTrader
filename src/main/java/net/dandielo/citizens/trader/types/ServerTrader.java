@@ -235,29 +235,18 @@ public class ServerTrader extends Trader {
 						
 					
 					} 
-				//	else
-				//	{
-					//	p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-				//		player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-				//		setClickedSlot(slot);
-				//	}
 				}
 			} 
 			else
 			if ( equalsTraderStatus(TraderStatus.SELL_AMOUNT) )
 			{ 
-				//TODO add descriptions ("Can't sell here");
-				//p.sendMessage( locale.getLocaleString("amount-exception") );
 				event.setCancelled(true);
 				return;
 			} 
 			else
 			if ( selectItem(event.getCurrentItem(),TraderStatus.BUY,true).hasSelectedItem() ) 
 			{				
-				
-			//	if ( getClickedSlot() == slot && !getInventoryClicked() && permissionsManager.has(player, "dtl.trader.options.buy") ) 
-			//	{
-
+			
 				double price = getPrice(player, "buy");
 
 				int scale = event.getCurrentItem().getAmount() / getSelectedItem().getAmount(); 
@@ -303,20 +292,7 @@ public class ServerTrader extends Trader {
 						price*scale );
 
 				}
-		//	}
-			//	else
-			//	{
-			//		if ( !event.getCurrentItem().equals(new ItemStack(Material.WOOL,1,(short)0,(byte)3)) &&
-			//			 !event.getCurrentItem().getType().equals(Material.AIR) ) 
-			//		{
-				//		p.sendMessage( locale.getLocaleString("xxx-item-price-xxx").replace("{price}", f.format(getPrice(p, "buy")*((int)event.getCurrentItem().getAmount() / getSelectedItem().getAmount())) ) );
-			//			player.sendMessage( locale.getLocaleString("xxx-transaction-continue", "transaction:sell") );
-			//			
-			//			setClickedSlot(slot);
-			//		}
-			//	}
 			}
-		//	setInventoryClicked(false);
 		}
 		event.setCancelled(true);
 	}
@@ -325,9 +301,7 @@ public class ServerTrader extends Trader {
 	@Override
 	public void managerMode(InventoryClickEvent event) {
 		
-		//Going to hide this in the future as an CustomEvent, for developers also
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
-	//	Player p = (Player) event.getWhoClicked();
 		int slot = event.getSlot();		
 		
 		if ( slot < 0 )
@@ -389,8 +363,7 @@ public class ServerTrader extends Trader {
 					
 					//send message
 					locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
-				//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
-					
+						
 				}
 				else 
 				//global limits management
