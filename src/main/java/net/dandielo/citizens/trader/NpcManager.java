@@ -295,7 +295,7 @@ public class NpcManager implements Listener {
 
 		final Player player = event.getClicker();
 		
-		if ( event.isCancelled() )
+		if ( event.isCancelled() && !(player.isSneaking() && (player.isOp() || this.permManager.has(player, "dtl.trader.denizen.bypass")) ) )
 			return;
 
 		if ( tempOpening.contains(player.getName()) )
