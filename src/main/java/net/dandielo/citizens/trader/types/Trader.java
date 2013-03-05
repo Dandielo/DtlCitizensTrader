@@ -255,7 +255,7 @@ public abstract class Trader implements tNPC {
 		{
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
 			{
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) && selectedItem.equalsLores(item) ) 
+				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) && selectedItem.equalsLores(item) && selectedItem.equalsFireworks(item) ) 
 				{
 					//add amount to an item in the inventory, its done
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
@@ -560,12 +560,17 @@ public abstract class Trader implements tNPC {
 					itemInfo += e.getKey().getId() + "/" + e.getValue() + ",";
 			}
 		}
-		
+		else
 		if ( StockItem.isLeatherArmor(is) )
 		{
 			LeatherArmorMeta meta = (LeatherArmorMeta) is.getItemMeta();
 			Color color = meta.getColor();
 			itemInfo += " c:" + color.getRed() + "^" + color.getGreen() + "^" + color.getBlue();
+		}
+		else
+		if ( is.getType().equals(Material.FIREWORK) )
+		{
+			itemInfo += " fw:" + StockItem.fireworkData(is);
 		}
 		
 		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
@@ -579,6 +584,7 @@ public abstract class Trader implements tNPC {
 				return new StockItem(itemInfo, is.getItemMeta().getLore());
 			}
 		}
+		
 		return new StockItem(itemInfo);
 	}
 

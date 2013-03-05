@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -272,6 +273,8 @@ public class NBTTagEditor {
 		if ( meta instanceof LeatherArmorMeta )
 			if ( ((LeatherArmorMeta) meta).getColor() != null )
 				return true;
+		if ( meta instanceof FireworkMeta )
+			return true;
 		return false;
 	}
 }

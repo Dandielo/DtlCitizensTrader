@@ -82,7 +82,6 @@ public class StockItem {
 		{
 			String key = matcher.group(7);
 			String value = matcher.group(8);
-			
 			if ( item == null )
 			{
 				if ( key == null )
@@ -185,38 +184,7 @@ public class StockItem {
 					else
 					if ( key.equals("fw") )
 					{
-						if ( !item.getType().equals(Material.FIREWORK) )
-							continue;
-						FireworkEffect.Builder builder = FireworkEffect.builder();
-						FireworkMeta meta = (FireworkMeta) item.getItemMeta();
-						
-						String[] values = value.split("/");
-						for ( String effectData : values )
-						{
-							List<String> fwe = Arrays.asList(effectData.split("."));
-							builder.with(FireworkEffect.Type.valueOf(fwe.get(0).toUpperCase()));
-							
-							builder.trail(fwe.contains("trail"));
-							builder.flicker(fwe.contains("flicker"));
-							
-							List<Color> colors = new ArrayList<Color>();
-							for ( String clr : fwe.get(1).split("-") )
-							{
-								String[] clrs = clr.split("^");
-								colors.add(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
-							}
-							builder.withColor(colors);
-							
-							List<Color> fades = new ArrayList<Color>();
-							for ( String clr : fwe.get(2).split("-") )
-							{
-								String[] clrs = clr.split("^");
-								fades.add(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
-							}
-							builder.withFade(fades);
-							
-							meta.addEffect(builder.build());
-						}
+						StockItem.firweorkMeta(item, value);
 					}
 					else
 					if ( key.equals("p") )
@@ -518,12 +486,17 @@ public class StockItem {
 				}
 			}
 		}
-		
+		else
 		if ( isLeatherArmor(item) )
 		{
 			LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
 			Color color = meta.getColor();
 			itemString += " c:" + color.getRed() + "^" + color.getGreen() + "^" + color.getBlue();
+		}
+		else
+		if ( item.getType().equals(Material.FIREWORK) )
+		{
+			itemString += " fw:" + fireworkData(item);
 		}
 		
 		//saving additional configurations
@@ -949,5 +922,97 @@ public class StockItem {
 	{
 		Material mat = item.getType();
 		return mat.equals(Material.LEATHER_BOOTS) || mat.equals(Material.LEATHER_CHESTPLATE) || mat.equals(Material.LEATHER_HELMET) || mat.equals(Material.LEATHER_LEGGINGS);
+	}
+	
+	public boolean equalsFireworks(ItemStack item)
+	{
+		if ( !item.getType().equals(Material.FIREWORK) )
+			return true;
+		return this.item.getItemMeta().equals(item.getItemMeta());
+	}
+	
+	public static void firweorkMeta(ItemStack item, String value)
+	{
+		if ( !item.getType().equals(Material.FIREWORK) )
+			return;
+		FireworkEffect.Builder builder = FireworkEffect.builder();
+		FireworkMeta meta = (FireworkMeta) item.getItemMeta();
+		String[] values = value.split("/");
+		
+		for ( String effectData : values )
+		{
+			List<String> fwe = Arrays.asList(effectData.split("\\."));
+
+			builder.trail(fwe.contains("trail"));
+			builder.flicker(fwe.contains("flicker"));
+
+			int i = 0;
+			for ( String line : fwe )
+			{
+				if ( line.contains("^") )
+				{
+					List<Color> colors = new ArrayList<Color>();
+					for ( String clr : line.split("-") )
+					{
+						String[] clrs = clr.split("\\^");
+						colors.add(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[1]), Integer.parseInt(clrs[2])));
+
+					}
+					if ( i++ == 0 )
+						builder.withColor(colors);
+					else
+						builder.withFade(colors);
+				}
+				else
+				{
+					if ( !line.isEmpty() && !(line.equals("flicker") || line.equals("trail")) )
+					{
+						builder.with(FireworkEffect.Type.valueOf(line.toUpperCase()));
+					}
+				}
+			}
+			meta.addEffect(builder.build());
+		}
+		item.setItemMeta(meta);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static String fireworkData(ItemStack item)
+	{
+		FireworkMeta meta = (FireworkMeta) item.getItemMeta();
+		
+		String data = "";
+		int i = 0;
+		for ( FireworkEffect effect : meta.getEffects() )
+		{
+			int j = 0;
+			for ( Map.Entry<String, Object> entry : effect.serialize().entrySet() )
+			{
+				if ( entry.getValue() instanceof List )
+				{
+					int z = 0;
+					List<Color> list = (List<Color>) entry.getValue();
+					for ( Color color : list )
+					{
+						data += color.getRed() + "^" + color.getGreen() + "^" + color.getBlue();
+						if ( z++ + 1 < list.size() )
+							data += "-";
+					}
+				}
+				else if ( ( entry.getValue() instanceof Boolean ) )
+				{
+					if ( (Boolean)entry.getValue() )
+						data += entry.getKey();
+					else continue;
+				}
+				else
+					data += entry.getValue();
+				if ( j++ + 1 < effect.serialize().size() )
+					data += ".";
+			}
+			if ( i++ + 1 < meta.getEffectsSize() )
+				data += "/";
+		}
+		return data;
 	}
 }

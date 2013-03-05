@@ -32,6 +32,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -502,6 +503,11 @@ public class TraderStockPart implements InventoryHolder {
 		if ( StockItem.isLeatherArmor(cis) )
 		{
 			((LeatherArmorMeta)meta).setColor(((LeatherArmorMeta)cis.getItemMeta()).getColor());
+		}
+		else
+		if ( cis.getType().equals(Material.FIREWORK) )
+		{
+			((FireworkMeta)meta).addEffects(((FireworkMeta)cis.getItemMeta()).getEffects());
 		}
 		
 		Map<String, Object> map = cis.serialize();
