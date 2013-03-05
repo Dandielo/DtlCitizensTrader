@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -18,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.CitizensTrader;
@@ -557,6 +559,13 @@ public abstract class Trader implements tNPC {
 				for ( Map.Entry<Enchantment, Integer> e : meta.getStoredEnchants().entrySet() )
 					itemInfo += e.getKey().getId() + "/" + e.getValue() + ",";
 			}
+		}
+		
+		if ( StockItem.isLeatherArmor(is) )
+		{
+			LeatherArmorMeta meta = (LeatherArmorMeta) is.getItemMeta();
+			Color color = meta.getColor();
+			itemInfo += " c:" + color.getRed() + "^" + color.getGreen() + "^" + color.getBlue();
 		}
 		
 		String name = NBTTagEditor.getName(is).replace(" ", "[&]");

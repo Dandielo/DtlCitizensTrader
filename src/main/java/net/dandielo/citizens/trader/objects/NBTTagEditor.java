@@ -14,6 +14,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 
 public class NBTTagEditor {
@@ -27,7 +28,7 @@ public class NBTTagEditor {
 			{
 				NBTTagEditor.removeDescription(item, "player-inventory");
 
-				inventory.setItem(s, new ItemStack(cleanItem(item)));
+				inventory.setItem(s, cleanItem(item));
 			/*	int size = 0;
 				List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 				if ( lore != null )
@@ -130,6 +131,7 @@ public class NBTTagEditor {
 	
 	public static List<String> cleanLore(List<String> list)
 	{
+		if ( list == null ) return new ArrayList<String>();
 		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
 		List<String> newList = new ArrayList<String>(list);
 		if ( list.size() >= lore.size() )
@@ -229,7 +231,7 @@ public class NBTTagEditor {
 		else
 		{
 			ItemMeta meta = item.getItemMeta();
-			if ( !(meta.hasLore() || meta.hasDisplayName() || meta.hasEnchants()) )
+			if ( !(meta.hasLore() || meta.hasDisplayName() || meta.hasEnchants() || checkMeta(meta)) )
 				ser.remove("meta");
 		}
 
@@ -263,5 +265,13 @@ public class NBTTagEditor {
 		map.put("meta", meta);
 		
 		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+	}
+	
+	public static boolean checkMeta(ItemMeta meta)
+	{
+		if ( meta instanceof LeatherArmorMeta )
+			if ( ((LeatherArmorMeta) meta).getColor() != null )
+				return true;
+		return false;
 	}
 }

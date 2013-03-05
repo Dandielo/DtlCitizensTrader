@@ -33,6 +33,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class TraderStockPart implements InventoryHolder {
 	private static PermissionsManager perms = CitizensTrader.getPermissionsManager();
@@ -475,7 +476,8 @@ public class TraderStockPart implements InventoryHolder {
 
 	//Static methods
 	public static ItemStack setLore(ItemStack cis, List<String> lore)
-	{		
+	{	
+	//	ItemStack is = cis.clone();
 		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(cis.getType());
 		
 		List<String> list = cis.getItemMeta().getLore();
@@ -495,6 +497,11 @@ public class TraderStockPart implements InventoryHolder {
 		{
 			for ( Map.Entry<Enchantment, Integer> e : ((EnchantmentStorageMeta)cis.getItemMeta()).getStoredEnchants().entrySet() )
 				((EnchantmentStorageMeta)meta).addStoredEnchant(e.getKey(),	e.getValue(), true);
+		}
+		else
+		if ( StockItem.isLeatherArmor(cis) )
+		{
+			((LeatherArmorMeta)meta).setColor(((LeatherArmorMeta)cis.getItemMeta()).getColor());
 		}
 		
 		Map<String, Object> map = cis.serialize();

@@ -61,7 +61,7 @@ public class StockItem {
 		this(data, null);
 	}
 
-	private static Pattern pattern = Pattern.compile("((n):(([^:\\s]+)( [^:\\s]{2,})*))|((\\S+){1}:){0,1}([^:\\s]+)");//((\\S+){1}:){0,1}(([^:\\s]+)+( [^:\\s]{2,})*)");
+	private static Pattern pattern = Pattern.compile("((n):(([^:\\s]+)( [^:\\s]{1,})*))|((\\S+){1}:){0,1}([^:\\s]+)");//((\\S+){1}:){0,1}(([^:\\s]+)+( [^:\\s]{2,})*)");
 	
 	private StockItem()
 	{
@@ -174,13 +174,13 @@ public class StockItem {
 				{
 					if ( key.equals("c") )
 					{
-						if ( !item.getType().equals(Material.LEATHER_CHESTPLATE) )
-							continue;
-						
-						LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
-						
-						String[] clrs = value.split("^");
-						meta.setColor(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0]), Integer.parseInt(clrs[0])));
+						if ( isLeatherArmor(item) )
+						{
+							LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+							String[] clrs = value.split("\\^", 3);
+							meta.setColor(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[1]), Integer.parseInt(clrs[2])));
+							item.setItemMeta(meta);
+						}
 					}
 					else
 					if ( key.equals("fw") )
@@ -228,11 +228,6 @@ public class StockItem {
 					if ( key.equals("m") )
 					{
 						multiply = new Double(toDouble(value));
-					}
-					else
-					if ( key.equals("c") )
-					{
-						spawnChance = new Double(toDouble(value));
 					}
 					else
 					if ( key.equals("a") )
@@ -347,6 +342,19 @@ public class StockItem {
 			}
 			else
 			{
+				if ( key.equals("c") )
+				{
+					if ( item.item == null )
+						item.item = new ItemStack(Material.LEATHER_CHESTPLATE, 0);
+					if ( StockItem.isLeatherArmor(item.item) )
+					{
+						LeatherArmorMeta meta = (LeatherArmorMeta) item.item.getItemMeta();
+						String[] clrs = value.split("\\^", 3);
+						meta.setColor(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[1]), Integer.parseInt(clrs[2])));
+						item.item.setItemMeta(meta);
+					}
+				}
+				else
 				if ( key.equals("p") )
 				{
 					item.price = toDouble(value);
@@ -356,11 +364,6 @@ public class StockItem {
 				if ( key.equals("m") )
 				{
 					item.multiply = new Double(toDouble(value));
-				}
-				else
-				if ( key.equals("c") )
-				{
-					item.spawnChance = new Double(toDouble(value));
 				}
 				else
 				if ( key.equals("a") )
@@ -514,6 +517,13 @@ public class StockItem {
 					++i;
 				}
 			}
+		}
+		
+		if ( isLeatherArmor(item) )
+		{
+			LeatherArmorMeta meta = (LeatherArmorMeta) item.getItemMeta();
+			Color color = meta.getColor();
+			itemString += " c:" + color.getRed() + "^" + color.getGreen() + "^" + color.getBlue();
 		}
 		
 		//saving additional configurations
@@ -744,6 +754,17 @@ public class StockItem {
 			}
 			else
 			{
+				if ( key.equals("c") )
+				{
+					if ( isLeatherArmor(this.item) )
+					{
+						LeatherArmorMeta meta = (LeatherArmorMeta) this.item.getItemMeta();
+						String[] clrs = value.split("\\^", 3);
+						result = meta.getColor().equals(Color.fromRGB(Integer.parseInt(clrs[0]), Integer.parseInt(clrs[1]), Integer.parseInt(clrs[2])));
+						item.matchPriority += 5;
+					}
+				}
+				else
 				if ( key.equals("a") && amount )
 				{
 					amounts.clear();
@@ -922,5 +943,11 @@ public class StockItem {
 			}
 		}
 		return db;
+	}
+	
+	public static boolean isLeatherArmor(ItemStack item)
+	{
+		Material mat = item.getType();
+		return mat.equals(Material.LEATHER_BOOTS) || mat.equals(Material.LEATHER_CHESTPLATE) || mat.equals(Material.LEATHER_HELMET) || mat.equals(Material.LEATHER_LEGGINGS);
 	}
 }
