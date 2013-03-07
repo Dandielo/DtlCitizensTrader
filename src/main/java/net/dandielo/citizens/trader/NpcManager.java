@@ -177,7 +177,7 @@ public class NpcManager implements Listener {
 		
 		//if normal inventory is open ignore this event
 		if ( (p.getGameMode().equals(GameMode.SURVIVAL) 
-				|| p.getGameMode().equals(GameMode.SURVIVAL) )
+				|| p.getGameMode().equals(GameMode.ADVENTURE) )
 				&& event.getView().getType().equals(InventoryType.CRAFTING) )
 			return;
 		
@@ -280,9 +280,6 @@ public class NpcManager implements Listener {
 	@EventHandler
 	public void onNPCDespawn(NPCDespawnEvent event)
 	{
-		
-		//if ( this.isEconomyNpc.contains(event.getNPC()) )
-		//	this.isEconomyNpc.remove(event.getNPC());
 	}
 	
 	public HashSet<String> tempOpening = new HashSet<String>();

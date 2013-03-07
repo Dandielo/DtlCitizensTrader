@@ -93,8 +93,11 @@ public class Wallet {
 				return economy.bankWithdraw(bank, m).transactionSuccess();
 			case NPC: 
 				if ( money >= m ) 
+				{
 					money -= m; 
-				return money >= m;
+					return true;
+				}
+				return false;
 			default:
 				return true;
 		}

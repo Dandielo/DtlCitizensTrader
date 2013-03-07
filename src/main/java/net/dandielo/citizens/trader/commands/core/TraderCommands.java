@@ -424,7 +424,7 @@ public class TraderCommands {
 		Wallet wallet = npc.getWallet();
 		double amount = Double.parseDouble(args.get("amount"));
 		
-		if ( CitizensTrader.getEconomy().depositPlayer(sender.getName(), amount).transactionSuccess() )
+		if ( CitizensTrader.getEconomy().withdrawPlayer(sender.getName(), amount).transactionSuccess() )
 		{
 			wallet.deposit(null, amount);
 			locale.sendMessage(sender, "wallet-deposit", "amount", format.format(amount));
