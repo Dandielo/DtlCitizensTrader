@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
@@ -132,7 +133,6 @@ public class TraderCommands {
 	public void traderManage(CitizensTrader plugin, Player sender, Trader trader, Map<String, String> args)
 	{
 		NpcManager man = CitizensTrader.getNpcEcoManager();
-		
 		String name = args.get("free");
 
 		if ( name == null )
