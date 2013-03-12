@@ -471,6 +471,7 @@ public class TraderStockPart implements InventoryHolder {
 					buyList.add(item.toString());
 			}
 
+		data.setRaw("patterns", patList);
 		data.setRaw("sell", sellList);
 		data.setRaw("buy", buyList);
 	}
