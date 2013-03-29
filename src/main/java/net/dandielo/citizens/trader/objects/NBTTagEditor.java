@@ -201,6 +201,8 @@ public class NBTTagEditor {
 			return true;
 		if ( meta instanceof EnchantmentStorageMeta )
 			return true;
+		if ( !(meta instanceof ItemMeta) )
+			return true;
 		return false;
 	}
 }
