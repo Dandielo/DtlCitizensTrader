@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -30,58 +31,6 @@ public class NBTTagEditor {
 				NBTTagEditor.removeDescription(item, "player-inventory");
 
 				inventory.setItem(s, cleanItem(item));
-			/*	int size = 0;
-				List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
-				if ( lore != null )
-				{
-					size = lore.size();
-					
-					Map<String, Object> map = item.serialize();
-					ItemMeta meta = (ItemMeta) map.get("meta");
-
-					if ( meta != null )
-					{
-						List<String> list = null;//new ArrayList<String>(meta.getLore()); 
-						if ( meta.getLore() != null && meta.getLore().size() > size )
-						{
-							list = new ArrayList<String>(meta.getLore()); 
-							
-							Iterator<String> it = list.iterator();
-							while(it.hasNext())
-							{
-								String line = it.next();
-								for ( int j = 0 ; j < lore.size() ; ++j )
-								{
-									String m = lore.get(j);
-									m = m.replace("^", "[\\^|§]");
-									m = m.replace("{stack}", "\\S{1,}");
-									m = m.replace("{unit}", "\\S{1,}");
-
-									if ( Pattern.matches(m, line) )
-									{
-										it.remove();
-										j = lore.size();
-									}
-								}
-							}
-						}
-						if ( list != null && list.isEmpty() )
-							meta.setLore(null);
-						else
-							meta.setLore(list);
-					}
-					
-					map.remove("meta");
-					if ( meta != null  )
-						map.put("meta", meta);
-					else 
-						map.put("meta", Bukkit.getItemFactory().getItemMeta(item.getType()));
-					
-					item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
-					
-					
-					
-				}*/
 			}
 			++s;
 		}		
@@ -102,31 +51,6 @@ public class NBTTagEditor {
 		
 		meta.setLore(list);
 		item.setItemMeta(meta);
-	/*	ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
-		Map<Enchantment, Integer> ench = item.getEnchantments();
-		
-		List<String> list = ( item.getItemMeta().getLore() != null ? item.getItemMeta().getLore() : new ArrayList<String>() );
-		for ( String s : lore )
-			list.add(s.replace('^', '§'));
-		
-		meta.setLore(list);
-		meta.setDisplayName(item.getItemMeta().getDisplayName());
-		Map<String, Object> map = item.serialize();
-		
-		if ( item.getType().equals(Material.ENCHANTED_BOOK) )
-		{
-			EnchantmentStorageMeta em = (EnchantmentStorageMeta) item.getItemMeta();
-			if ( em.getStoredEnchants() != null )
-				for ( Map.Entry<Enchantment, Integer> e : em.getStoredEnchants().entrySet() )
-					((EnchantmentStorageMeta) meta).addStoredEnchant(e.getKey(), e.getValue(), true);
-		}
-		
-		map.put("meta", meta);
-		
-		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
-		item.addUnsafeEnchantments(ench);
-		
-		return ItemStack.deserialize(map);*/
 		return item;
 	}
 	
@@ -274,6 +198,8 @@ public class NBTTagEditor {
 			if ( ((LeatherArmorMeta) meta).getColor() != null )
 				return true;
 		if ( meta instanceof FireworkMeta )
+			return true;
+		if ( meta instanceof EnchantmentStorageMeta )
 			return true;
 		return false;
 	}
