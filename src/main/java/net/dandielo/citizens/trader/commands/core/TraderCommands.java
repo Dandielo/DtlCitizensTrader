@@ -368,18 +368,6 @@ public class TraderCommands {
 	{
 		// reload patterns
 		CitizensTrader.getPatternsManager().reload();
-		
-		// reload server traders
-	/*	for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.SERVER_TRADER) )
-		{
-			npc.getTrait(TraderTrait.class).getStock().reloadStock();
-		}
-		
-		// reload market traders
-		for ( NPC npc : CitizensTrader.getNpcEcoManager().getTraders(EType.MARKET_TRADER) )
-		{
-			npc.getTrait(TraderTrait.class).getStock().reloadStock();
-		}*/
 	}
 	
 	private static DecimalFormat format = new DecimalFormat("#.##");

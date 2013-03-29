@@ -8,16 +8,16 @@
   
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<craftbukkit.version>1.5-R0.1-SNAPSHOT</craftbukkit.version>
+		<craftbukkit.version>1.5.1-R0.1-SNAPSHOT</craftbukkit.version>
 		<citizens.version>2.0.7-SNAPSHOT</citizens.version>
 		<vault.version>1.2.13-SNAPSHOT</vault.version>
-		<denizen.version>0.8-PRERELEASE</denizen.version>
+		<denizen.version>0.8.8-PRERELEASE</denizen.version>
 		<wallets.version>1.0.0-SNAPSHOT</wallets.version>
 				<build.number>Unknown</build.number>
 	</properties> 
 
 	<!-- Repositories -->
-	<repositories> 
+	<repositories>  
 		<repository>
 			<id>bukkit-repo</id>
 			<url>http://repo.bukkit.org/content/groups/public/</url>

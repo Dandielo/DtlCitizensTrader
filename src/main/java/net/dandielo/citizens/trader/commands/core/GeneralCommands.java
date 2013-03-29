@@ -23,7 +23,7 @@ public class GeneralCommands {
 	name = "trader",
 	syntax = "",
 	perm = "dtl.trader.commands",
-	desc = "shows the current selected traders information",
+	desc = "shows info about the current selected traders",
 	npc = false)
 	public void trader(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
@@ -37,10 +37,7 @@ public class GeneralCommands {
 			locale.sendMessage(sender, "key-value", "key", "#type", "value", "#" + npc.getType().toString() + "-trader");
 			locale.sendMessage(sender, "key-value", "key", "#owner", "value", npc.getConfig().getOwner());
 			if ( npc.getWallet() != null )
-			locale.sendMessage(sender, "key-value", "key", "#wallet", "value", npc.getWallet().getType().toString());
-		//	if ( npc.getStock().getPatterns() != null )
-		//	locale.sendMessage(sender, "key-value", "key", "#pattern", "value", npc.getStock().getPattern().getName());
-			
+			locale.sendMessage(sender, "key-value", "key", "#wallet", "value", npc.getWallet().getType().toString());			
 		}
 	}
 	
@@ -171,35 +168,15 @@ public class GeneralCommands {
 		
 		if ( cmds == null )
 			sender.sendMessage(ChatColor.RED + "No commands are registered for this type");
-
-		//Getting the page
-	//	int page = 1;
-	//	try
-	//	{
-	//		if ( args.containsKey("page") )
-	//			page = Integer.parseInt(args.get("page"));
-	//	} 
-	//	catch (NumberFormatException e)
-	//	{
-	//		page = 1;
-	//	}
-	//	int overall = ( cmds.size() / 4 ) + (cmds.size() % 4 == 0 ? 0 : 1);
-		
-	//	if ( page < 1 || page > overall )
-	//		page = 1;
-		
 		
 		sender.sendMessage(ChatColor.GOLD + "== " + ChatColor.YELLOW + "Trader commands" + ChatColor.GOLD + " ==");
 		sender.sendMessage("");
 		
-	//	int i = 0;
 		for ( Command cmd : cmds )
 		{
-		//	if ( i >= (page-1)*4 && i < (page)*4 )
 			{
 				sender.sendMessage(nameAndSyntax(cmd));
 			}
-		//	++i;
 		}
 	}
 	
