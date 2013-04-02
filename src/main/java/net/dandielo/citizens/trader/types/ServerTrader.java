@@ -300,13 +300,12 @@ public class ServerTrader extends Trader {
 
 	@Override
 	public void managerMode(InventoryClickEvent event) {
-		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
-		int slot = event.getSlot();		
+		int slot = event.getSlot();	
 		
 		if ( slot < 0 )
 		{
-			event.setCancelled(true);
+			event.setCursor(null);
 			switchInventory(getBasicManageModeByWool());
 			return;
 		}
@@ -865,9 +864,15 @@ public class ServerTrader extends Trader {
 
 					//remove it from the stock
 					if ( equalsTraderStatus(TraderStatus.MANAGE_SELL) )
+					{
 						trait.getStock().removeItem("sell", getSelectedItem().getSlot());
+						getStock().removeItem("sell", getSelectedItem().getSlot());
+					}
 					if ( equalsTraderStatus(TraderStatus.MANAGE_BUY) )
+					{
 						trait.getStock().removeItem("buy", getSelectedItem().getSlot());
+						getStock().removeItem("sell", getSelectedItem().getSlot());
+					}
 					
 					//reset the item
 					selectItem(null);
@@ -877,7 +882,7 @@ public class ServerTrader extends Trader {
 				} 
 				else
 				{
-					if ( event.getCurrentItem().getTypeId() != 0 ) 
+					if ( event.getCurrentItem().getTypeId() != 0 && !hasSelectedItem() ) 
 					{
 						selectItem( toStockItem(event.getCurrentItem()) );
 						locale.sendMessage(player, "trader-stock-item-select");

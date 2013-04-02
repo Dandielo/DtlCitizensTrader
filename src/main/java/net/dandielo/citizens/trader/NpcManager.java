@@ -163,6 +163,8 @@ public class NpcManager implements Listener {
 	//Events Handling!
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
+		
+	//	System.out.print("Click Event");
 		//player licked the inventory
 		if ( !( event.getWhoClicked() instanceof Player ) )
 			return;

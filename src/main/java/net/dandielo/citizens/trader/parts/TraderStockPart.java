@@ -39,13 +39,6 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 public class TraderStockPart implements InventoryHolder {
 	private static PermissionsManager perms = CitizensTrader.getPermissionsManager();
 	
-	// allow to set different stocks for different players 
-	private static Map<String, Map<String, List<StockItem>>> playerStocks = new HashMap<String, Map<String, List<StockItem>>>();
-	
-	public static Map<String, List<StockItem>> getPlayerStock(String player) {
-		return playerStocks.get(player);
-	}
-	
 	// patterns
 	private static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
 	
@@ -231,6 +224,7 @@ public class TraderStockPart implements InventoryHolder {
 	}
 	
 	public StockItem getItem(int slot, TraderStatus status) {
+		
 		for ( StockItem item : stock.get(status.toString()) )
 			if ( item.getSlot() == slot )
 				return item;

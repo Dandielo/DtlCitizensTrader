@@ -403,7 +403,7 @@ public class StockItem {
 	}
 	
 	public ItemStack getItemStack() {
-		item.setAmount(amounts.get(0));
+		if ( amounts.size() > 0 ) item.setAmount(amounts.get(0));
 		return item;
 	}
 	
@@ -564,11 +564,13 @@ public class StockItem {
 	}
 	
 	public void increasePrice(double d) {
+		patternPrice = false;
 		hasPrice = true;
 		price += d;
 	}
 	
 	public void lowerPrice(double p) {
+		patternPrice = false;
 		hasPrice = true;
 		if ( ( price - p ) < 0 ) {
 			price = 0.0;
@@ -753,10 +755,10 @@ public class StockItem {
 				else
 				if ( key.equals("t") ) 
 				{
-					System.out.print(tier + " " + value);
+			//		System.out.print(tier + " " + value);
 					if ( this.tier == null ) return false; else
 					result = this.tier.equals(value);
-					System.out.print(tier + " " + value);
+			//		System.out.print(tier + " " + value);
 					item.matchPriority += 25;
 				}
 				else

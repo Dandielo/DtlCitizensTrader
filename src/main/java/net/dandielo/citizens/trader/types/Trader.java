@@ -179,19 +179,21 @@ public abstract class Trader implements tNPC {
 	}
 	public final Trader selectItem(int slot, TraderStatus status) {
 		selectedItem = trait.getStock().getItem(slot, status);
-		if ( selectedItem == null )
+		System.out.print(selectedItem + " | " + trait.getStock().getStock("sell").size());
+		if ( selectedItem != null )
 			selectedItem = traderStock.getItem(slot, status);
+		System.out.print(selectedItem + " | " + traderStock.getStock("sell").size());
 		return this;
 	} 
 	public final Trader selectItem(ItemStack item, TraderStatus status, boolean dura, boolean amount) {
 		selectedItem = trait.getStock().getItem(item, status, dura, amount);
-		if ( selectedItem == null )
+		if ( selectedItem != null )
 			selectedItem = traderStock.getItem(item, status, dura, amount);
 		return this;
 	}
 	public final Trader selectItem(ItemStack item, TraderStatus status, boolean amount) {
 		selectedItem = trait.getStock().getItem(item, status, StockItem.hasDurability(item), amount);
-		if ( selectedItem == null )
+		if ( selectedItem != null )
 			selectedItem = traderStock.getItem(item, status, StockItem.hasDurability(item), amount);
 		return this;
 	}
@@ -347,6 +349,7 @@ public abstract class Trader implements tNPC {
 	
 	public final void switchInventory(StockItem item) {
 		inventory.clear();
+		
 		if ( traderStatus.isManaging() )
 			TraderStockPart.setManagerInventoryWith(inventory, item);
 		else
@@ -418,7 +421,7 @@ public abstract class Trader implements tNPC {
 			return TraderStatus.MANAGE_SELL;
 		if ( isBuyModeByWool() )
 			return TraderStatus.MANAGE_BUY;
-		return TraderStatus.MANAGE;
+		return TraderStatus.MANAGE_SELL;
 	}
 	
 	//when a player is buying
@@ -502,7 +505,7 @@ public abstract class Trader implements tNPC {
 	
 	//static helper methods
 	public static boolean isWool(ItemStack itemToCompare,ItemStack managementItem) {
-		return ( itemToCompare.getType().equals(managementItem.getType()) &&
+		return itemToCompare != null && ( itemToCompare.getType().equals(managementItem.getType()) &&
 				itemToCompare.getDurability() == managementItem.getDurability() );
 	}
 	
