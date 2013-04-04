@@ -191,6 +191,7 @@ public class StockItem {
 					{
 						price = toDouble(value);
 						hasPrice = true;
+						patternPrice = false;
 					}
 					else
 					if ( key.equals("m") )
@@ -535,7 +536,7 @@ public class StockItem {
 		}
 		
 		if ( lore != null )
-			itemString += " lore";
+			itemString += "  lore";
 		
 		return itemString;
 	}
