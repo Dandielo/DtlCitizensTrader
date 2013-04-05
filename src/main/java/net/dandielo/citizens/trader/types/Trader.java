@@ -69,7 +69,7 @@ public abstract class Trader implements tNPC {
 	public Trader(TraderTrait trait, NPC npc, Player player) {
 		
 		// Initialize the trader
-		traderStock = trait.getStock().createStockFor(player);
+		traderStock = trait.getStock();//.createStockFor(player);
 		traderConfig = trait.getConfig();
 		
 		//init info
@@ -179,10 +179,10 @@ public abstract class Trader implements tNPC {
 	}
 	public final Trader selectItem(int slot, TraderStatus status) {
 		selectedItem = trait.getStock().getItem(slot, status);
-		System.out.print(selectedItem + " | " + trait.getStock().getStock("sell").size());
+	//	System.out.print(selectedItem + " | " + trait.getStock().getStock("sell").size());
 		if ( selectedItem != null )
 			selectedItem = traderStock.getItem(slot, status);
-		System.out.print(selectedItem + " | " + traderStock.getStock("sell").size());
+	//	System.out.print(selectedItem + " | " + traderStock.getStock("sell").size());
 		return this;
 	} 
 	public final Trader selectItem(ItemStack item, TraderStatus status, boolean dura, boolean amount) {

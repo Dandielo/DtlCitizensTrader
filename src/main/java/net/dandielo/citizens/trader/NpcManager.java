@@ -164,7 +164,7 @@ public class NpcManager implements Listener {
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
 		
-	//	System.out.print("Click Event: " + event.getEventName());
+	//	System.out.print("Click Event: " + event.getRawSlot());
 		//player licked the inventory
 		if ( !( event.getWhoClicked() instanceof Player ) )
 			return;
@@ -348,7 +348,7 @@ public class NpcManager implements Listener {
 						locale.sendMessage(player, "managermode-disabled", "npc", npc.getFullName());
 						
 						tNPC newNpc = new ServerTrader(characterTrait, npc, player);
-						((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
+					//	((Trader)newNpc).switchInventory(Trader.getStartStatus(player));
 						playerInteraction.put(playerName, newNpc);
 						
 						if ( !newNpc.onRightClick(player, characterTrait, npc) )

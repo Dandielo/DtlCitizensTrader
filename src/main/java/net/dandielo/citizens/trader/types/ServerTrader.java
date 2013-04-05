@@ -31,7 +31,6 @@ public class ServerTrader extends Trader {
 	
 	public ServerTrader(TraderTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);
-	//	pattern = patterns.getPattern(this.getTraderConfig().getPattern());
 	}
 
 	@Override
@@ -302,6 +301,7 @@ public class ServerTrader extends Trader {
 	public void managerMode(InventoryClickEvent event) {
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		int slot = event.getSlot();	
+	//	System.out.print(this.getTraderStatus().name());
 		
 		if ( slot < 0 )
 		{
@@ -629,7 +629,7 @@ public class ServerTrader extends Trader {
 							selectItem(null);
 							
 							//cancel the event
-							event.setCancelled(true);
+						//	event.setCancelled(true);
 							return;
 						 }
 						 if ( hasSelectedItem() ) 
@@ -938,6 +938,7 @@ public class ServerTrader extends Trader {
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	
 
+	//	System.out.print('a');
 		player.openInventory(getInventory());
 		return true;
 	}
