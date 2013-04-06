@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.commands.core;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -370,7 +371,8 @@ public class TraderCommands {
 		CitizensTrader.getPatternsManager().reload();
 	}
 	
-	private static DecimalFormat format = new DecimalFormat("#.##");
+	private static NumberFormat format = NumberFormat.getCurrencyInstance();
+	//private static DecimalFormat format = new DecimalFormat("#.##");
 	
 	@Command(
 	name = "trader",
@@ -415,8 +417,8 @@ public class TraderCommands {
 		if ( CitizensTrader.getEconomy().withdrawPlayer(sender.getName(), amount).transactionSuccess() )
 		{
 			wallet.deposit(null, amount);
-			locale.sendMessage(sender, "wallet-deposit", "amount", format.format(amount));
-			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()));
+			locale.sendMessage(sender, "wallet-deposit", "amount", format.format(amount).replace("$", ""));
+			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()).replace("$", ""));
 		}
 		else
 			locale.sendMessage(sender, "wallet-deposit-fail");
@@ -436,8 +438,8 @@ public class TraderCommands {
 		if ( wallet.withdraw(null, amount) )
 		{
 			CitizensTrader.getEconomy().depositPlayer(sender.getName(), amount);
-			locale.sendMessage(sender, "wallet-withdraw", "amount", format.format(amount));
-			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()));
+			locale.sendMessage(sender, "wallet-withdraw", "amount", format.format(amount).replace("$", ""));
+			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()).replace("$", ""));
 		}
 		else
 			locale.sendMessage(sender, "wallet-withdraw-fail");
@@ -454,7 +456,7 @@ public class TraderCommands {
 		if ( !wallet.getType().equals(WalletType.NPC) )
 			locale.sendMessage(sender, "wallet-invalid");
 		else
-			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()));
+			locale.sendMessage(sender, "wallet-balance", "amount", format.format(wallet.getMoney()).replace("$", ""));
 	}
 	
 }

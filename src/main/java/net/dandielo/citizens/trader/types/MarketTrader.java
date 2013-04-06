@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,7 +34,8 @@ public class MarketTrader extends Trader {
 	@Override
 	public void simpleMode(InventoryClickEvent event) 
 	{
-		DecimalFormat f = new DecimalFormat("#.##");
+	    NumberFormat f2 = NumberFormat.getCurrencyInstance();
+		//DecimalFormat f = new DecimalFormat("#.##");
 		
 	//	Player p = (Player) event.getWhoClicked();
 		int slot = event.getSlot();
@@ -133,7 +135,7 @@ public class MarketTrader extends Trader {
 						}
 						else
 						{
-							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f2.format(price).replace("$", ""));
 						
 
 							addSelectedToInventory(0);
@@ -184,7 +186,7 @@ public class MarketTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f2.format(price).replace("$", ""));
 						
 						addSelectedToInventory(slot);
 
@@ -230,7 +232,7 @@ public class MarketTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f2.format(price).replace("$", ""));
 					
 
 						removeFromInventory(event.getCurrentItem(),event);
@@ -276,7 +278,7 @@ public class MarketTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f2.format(price).replace("$", ""));
 				
 					updateBuyLimits(scale);
 					removeFromInventory(event.getCurrentItem(),event);

@@ -2,6 +2,7 @@ package net.dandielo.citizens.trader.types;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -309,11 +310,12 @@ public abstract class Trader implements tNPC {
 		{
 			int scale = is.getAmount() / it.getAmount();
 			
-			DecimalFormat f = new DecimalFormat("#.##");
+			NumberFormat f = NumberFormat.getCurrencyInstance();
+			//DecimalFormat f = new DecimalFormat("#.##");
 			
 			List<String> lore = new ArrayList<String>(); ;
 			for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") ) //itemsConfig.getPriceLore("pbuy") )
-				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy"))+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
+				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy")).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
 			
 			if ( scale > 0 )
 				NBTTagEditor.addDescription(is, lore);	
@@ -617,9 +619,10 @@ public abstract class Trader implements tNPC {
 		Date date = new Date();
 		DateFormat df = new SimpleDateFormat("HH-mm-ss");
 		
-		DecimalFormat dec = new DecimalFormat("#.##");
+		NumberFormat dec = NumberFormat.getCurrencyInstance();
+		//DecimalFormat dec = new DecimalFormat("#.##");
 		
-		loggingManager.log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player.getName() + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price) );
+		loggingManager.log("["+df.format(date)+"]["+npc.getName()+"]["+action+"] - <" + player.getName() + ">\n      id:"+ id + " data:" + data + " amount:" + amount + " price:" + dec.format(price).format("$", "") );
 	}
 	
 	public void playerLog(String owner, String buyer, String action, StockItem item, int slot)
@@ -688,7 +691,8 @@ public abstract class Trader implements tNPC {
 	
 	public void loadDescriptions(Player player, Inventory inventory)
 	{
-		DecimalFormat f = new DecimalFormat("#.##");
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+	    //DecimalFormat f = new DecimalFormat("#.##");
 		for ( int i = 0 ; i < inventory.getSize() ; ++i )
 		{
 			ItemStack item = inventory.getItem(i);
@@ -704,7 +708,7 @@ public abstract class Trader implements tNPC {
 
 					List<String> lore = new ArrayList<String>(); ;
 					for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") )
-						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0))+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale)+""));
+						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0)).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale).replace("$", "")+""));
 					
 					if ( scale > 0 )
 						NBTTagEditor.addDescription(item, lore);			
