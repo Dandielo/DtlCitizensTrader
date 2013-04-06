@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,7 +37,8 @@ public class ServerTrader extends Trader {
 	@Override
 	public void simpleMode(InventoryClickEvent event) 
 	{
-		DecimalFormat f = new DecimalFormat("#.##");
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+	    //DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -125,7 +127,7 @@ public class ServerTrader extends Trader {
 						}
 						else
 						{ 
-							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
 						
 							addSelectedToInventory(0);
 
@@ -310,7 +312,8 @@ public class ServerTrader extends Trader {
 			return;
 		}
 		
-		DecimalFormat f = new DecimalFormat("#.##");
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+		//DecimalFormat f = new DecimalFormat("#.##");
 		
 		if ( top )
 		{
@@ -714,7 +717,7 @@ public class ServerTrader extends Trader {
 
 							//select item
 							if ( selectItem(slot, getBasicManageModeByWool()).hasSelectedItem() ) 
-								locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+								locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()).replace("$", ""));
 							
 						} 
 						else
@@ -736,7 +739,7 @@ public class ServerTrader extends Trader {
 								NBTTagEditor.removeDescription(event.getCurrentItem());
 								event.setCurrentItem(TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), getStock().getPatterns(), player)));
 
-								locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+								locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()).replace("$", ""));
 							}
 							
 						}

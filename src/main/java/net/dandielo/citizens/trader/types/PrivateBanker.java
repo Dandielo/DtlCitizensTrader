@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -31,7 +32,8 @@ public class PrivateBanker extends Banker {
 		event.setCancelled(true);
 		
 		Player player = (Player) event.getWhoClicked();
-		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		NumberFormat decimalFormat = NumberFormat.getCurrencyInstance();
+		//DecimalFormat decimalFormat = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
@@ -53,7 +55,7 @@ public class PrivateBanker extends Banker {
 					{
 						if ( lastSlot != slot )
 						{
-							locale.sendMessage(player, "key-value", "key", "#tab-price", "value", decimalFormat.format(BankerPart.getTabPrice(tabs())));
+							locale.sendMessage(player, "key-value", "key", "#tab-price", "value", decimalFormat.format(BankerPart.getTabPrice(tabs())).replace("$", ""));
 						//	player.sendMessage( locale.getLocaleString("tab-price").replace("{value}", decimalFormat.format(BankerPart.getTabPrice(tabs()))) );
 
 							lastSlot = slot;
