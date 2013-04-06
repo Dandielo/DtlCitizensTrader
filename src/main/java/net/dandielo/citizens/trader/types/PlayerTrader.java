@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -29,7 +30,8 @@ public class PlayerTrader extends Trader {
 	@Override
 	public void simpleMode(InventoryClickEvent event) 
 	{
-		DecimalFormat f = new DecimalFormat("#.##");
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+	    //DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -130,7 +132,7 @@ public class PlayerTrader extends Trader {
 						}
 						else
 						{
-							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
 						//	player.sendMessage( localeManager.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:bought").replace("{amount}", "" + getSelectedItem().getAmount() ).replace("{price}", f.format(getSelectedItem().getPrice()) ) );
 
 
@@ -329,7 +331,8 @@ public class PlayerTrader extends Trader {
 
 		boolean top = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
 		//Player p = (Player) event.getWhoClicked();
-		DecimalFormat f = new DecimalFormat("#.##");
+		NumberFormat f = NumberFormat.getCurrencyInstance();
+		//DecimalFormat f = new DecimalFormat("#.##");
 		
 		int clickedSlot = event.getSlot();
 		
@@ -660,7 +663,7 @@ public class PlayerTrader extends Trader {
 						
 						//select the item to get the information from, and show the price
 						if ( selectItem(event.getSlot(), getBasicManageModeByWool()).hasSelectedItem() ) 
-							locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+							locale.sendMessage(player, "key-value", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()).replace("$", ""));
 						
 						
 					} 
@@ -684,7 +687,7 @@ public class PlayerTrader extends Trader {
 							
 							
 							//show the new price
-							locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()));
+							locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()).replace("$", ""));
 							
 							
 						}
