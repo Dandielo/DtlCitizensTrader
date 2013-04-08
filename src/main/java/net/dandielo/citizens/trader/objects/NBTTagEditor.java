@@ -177,22 +177,13 @@ public class NBTTagEditor {
 	
 	public static void setName(ItemStack item, String name)
 	{
-		ItemMeta oldMeta = item.getItemMeta();
+		ItemMeta meta = item.getItemMeta();
 		
-		ItemMeta meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+		if ( meta == null )
+			meta = Bukkit.getItemFactory().getItemMeta(item.getType());
+	
 		meta.setDisplayName(name);
-		
-		if ( oldMeta != null )
-		{
-			meta.setLore(oldMeta.getLore());
-			for ( Map.Entry<Enchantment, Integer> e : oldMeta.getEnchants().entrySet() )
-				meta.addEnchant(e.getKey(), e.getValue(), true);
-		}
-		
-		Map<String, Object> map = item.serialize();
-		map.put("meta", meta);
-		
-		item.setItemMeta(ItemStack.deserialize(map).getItemMeta());
+		item.setItemMeta(meta);
 	}
 	
 	public static boolean checkMeta(ItemMeta meta)

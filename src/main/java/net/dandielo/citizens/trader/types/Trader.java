@@ -578,7 +578,7 @@ public abstract class Trader implements tNPC {
 			itemInfo += " fw:" + StockItem.fireworkData(is);
 		}
 		
-		String name = NBTTagEditor.getName(is).replace(" ", "[&]");
+		String name = NBTTagEditor.getName(is);
 		if ( !name.isEmpty() )
 			itemInfo += " n:" + name;
 		if ( is.hasItemMeta() )
@@ -586,6 +586,7 @@ public abstract class Trader implements tNPC {
 			if ( is.getItemMeta().hasLore() )
 			{
 				itemInfo += "  lore";
+				System.out.print(itemInfo);
 				return new StockItem(itemInfo, is.getItemMeta().getLore());
 			}
 		}

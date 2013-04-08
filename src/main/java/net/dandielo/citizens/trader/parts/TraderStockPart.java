@@ -1,6 +1,5 @@
 package net.dandielo.citizens.trader.parts;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
