@@ -537,7 +537,7 @@ public class StockItem {
 		}
 		
 		if ( lore != null )
-			itemString += "  lore";
+			itemString += " lore";
 		
 		return itemString;
 	}

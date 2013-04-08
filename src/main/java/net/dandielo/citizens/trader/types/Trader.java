@@ -585,7 +585,7 @@ public abstract class Trader implements tNPC {
 		{
 			if ( is.getItemMeta().hasLore() )
 			{
-				itemInfo += " lore";
+				itemInfo += "  lore";
 				return new StockItem(itemInfo, is.getItemMeta().getLore());
 			}
 		}
