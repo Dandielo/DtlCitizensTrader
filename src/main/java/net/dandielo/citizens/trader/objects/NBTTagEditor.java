@@ -206,8 +206,8 @@ public class NBTTagEditor {
 			return true;
 		if ( meta instanceof BookMeta )
 			return true;
-		//if ( meta != null && meta instanceof ItemMeta )
-		//	System.out.print(meta.getClass().getSimpleName());
+		if ( meta != null && meta instanceof ItemMeta && !meta.getClass().getSimpleName().equals("CraftMetaItem") )
+			return true;
 		return false;
 	}
 }
