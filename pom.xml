@@ -28,6 +28,9 @@
 	        <snapshots>
 	            <updatePolicy>always</updatePolicy>
 	        </snapshots>
+	        <releases>
+	            <updatePolicy>always</updatePolicy>
+	        </releases>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
