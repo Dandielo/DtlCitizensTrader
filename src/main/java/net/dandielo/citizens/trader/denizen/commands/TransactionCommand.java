@@ -60,7 +60,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		{
             if (aH.matchesItem(arg)) {
 
-            	item = aH.getItemFrom(arg);
+            	item = aH.getItemFrom(arg).getItemStack();
 				dB.echoDebug("...set ITEM: '%s'", item.getType().name());
                 continue;
              

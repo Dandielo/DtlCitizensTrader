@@ -11,7 +11,7 @@ import net.dandielo.citizens.trader.denizen.triggers.TraderClickTrigger;
 public abstract class AbstractDenizenTrigger extends AbstractTrigger {
 
 	public static void registerTriggers() {
-		new TraderClickTrigger().activate().as("Trader").withOptions(false, Settings.TriggerDefaultCooldown("Trader"), CooldownType.PLAYER);
+		new TraderClickTrigger().activate().as("Trader");//.withOptions(false, Settings.TriggerDefaultCooldown("Trader"), CooldownType.PLAYER);
 		CitizensTrader.info("Registered" + ChatColor.YELLOW + " TraderClick trigger");
 	}
 
