@@ -25,6 +25,9 @@
 		<repository>
 			<id>everything</id>
 			<url>http://repo.citizensnpcs.com</url>
+	        <snapshots>
+	            <updatePolicy>always</updatePolicy>
+	        </snapshots>
 		</repository>
 		<repository>
 			<id>vault-repo</id>
