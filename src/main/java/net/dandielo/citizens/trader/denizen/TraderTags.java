@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.denizen;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +135,7 @@ public class TraderTags implements Listener {
         	if ( tag.equals("wallet") )
         	{
         		if ( subtag.equals("balance") )
-        			e.setReplaced(new DecimalFormat("#.##").format(trader.getConfig().getWallet().getMoney()));
+        			e.setReplaced(NumberFormat.getCurrencyInstance().format(trader.getConfig().getWallet().getMoney()).replace("$", ""));
         		else 
         			e.setReplaced(trader.getConfig().getWallet().getType().toString());
         	}
@@ -207,7 +208,7 @@ public class TraderTags implements Listener {
         List<StockItem> stock = trader.getStock().getStock(st);
         for ( StockItem item : stock )
         {
-        	String price = new DecimalFormat("#.##").format(trader.getStock().getPrice(item, p, st, 0));
+        	String price = NumberFormat.getCurrencyInstance().format(trader.getStock().getPrice(item, p, st, 0)).replace("$", "");
         	hint += " | " + hintItem.replaceAll("\\{price\\}", price).replaceAll("\\{name\\}", item.name());
         }
 		return hint.isEmpty() ? "empty stock" : hint.substring(3);

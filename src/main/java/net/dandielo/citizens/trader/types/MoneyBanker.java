@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,8 @@ public class MoneyBanker extends Banker {
 		Player player = (Player) event.getWhoClicked();
 		String playerName = (String) event.getWhoClicked().getName();
 		
-		DecimalFormat decimalFormat = new DecimalFormat("#.##");
+		NumberFormat decimalFormat = NumberFormat.getCurrencyInstance();
+		//DecimalFormat decimalFormat = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -88,7 +90,7 @@ public class MoneyBanker extends Banker {
 					double withdraw = current.getAmount()*itemValue;
 					economy.withdrawPlayer(playerName, withdraw);
 					locale.sendMessage(player, "banker-got-item", "name", current.getType().name(), "amount", current.getAmount());
-					locale.sendMessage(player, "banker-lost-money", "money", decimalFormat.format(withdraw));
+					locale.sendMessage(player, "banker-lost-money", "money", decimalFormat.format(withdraw).replace("$", ""));
 				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ current.getAmount()) );
 				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
@@ -111,7 +113,7 @@ public class MoneyBanker extends Banker {
 						
 					economy.withdrawPlayer(playerName, withdraw);
 					locale.sendMessage(player, "banker-item-got", "name", current.getType().name(), "amount", current.getAmount());
-					locale.sendMessage(player, "banker-money-lost", "money", decimalFormat.format(withdraw));
+					locale.sendMessage(player, "banker-money-lost", "money", decimalFormat.format(withdraw).replace("$", ""));
 				//	player.sendMessage( locale.getLocaleString("mbank-xxx-item", "entity:player", "action:{transaction}", "transaction:bought").replace("{item}", current.getType().name()).replace("{amount}", ""+ amount) );
 				//	player.sendMessage( locale.getLocaleString("xxx-money-xxx", "entity:player", "action:paid").replace("{money}", decimalFormat.format(withdraw)) );
 				}
@@ -203,7 +205,7 @@ public class MoneyBanker extends Banker {
 	public static void setDescription(ItemStack item, int amount)
 	{
 		List<String> lore = new ArrayList<String>();
-		lore.add("^r^7Value: ^6" + new DecimalFormat("#.##").format(amount * itemValue));
+		lore.add("^r^7Value: ^6" + NumberFormat.getCurrencyInstance().format(amount * itemValue).replace("$", ""));
 		NBTTagEditor.addDescription(item, lore);
 	}
 

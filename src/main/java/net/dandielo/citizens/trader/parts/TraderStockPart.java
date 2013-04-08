@@ -1,6 +1,7 @@
 package net.dandielo.citizens.trader.parts;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -526,9 +527,10 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getPriceLore(StockItem item, int slot, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
 		String price = "";
-		DecimalFormat format = new DecimalFormat("#.##");
+		NumberFormat format = NumberFormat.getCurrencyInstance();
+		//DecimalFormat format = new DecimalFormat("#.##");
 
-		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot));
+		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot)).replace("$", "");
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
@@ -540,9 +542,10 @@ public class TraderStockPart implements InventoryHolder {
 	public static List<String> getManagePriceLore(StockItem item, int slot, String stock, Map<Integer, TPattern> patterns, Player player)
 	{
 		String price = "";
-		DecimalFormat format = new DecimalFormat("#.##");
+		NumberFormat format = NumberFormat.getCurrencyInstance();
+		//DecimalFormat format = new DecimalFormat("#.##");
 
-		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot));
+		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot)).replace("$", "");
 		
 		List<String> lore = new ArrayList<String>();
 		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-buy") )//itemsConfig.getPriceLore(stock) )
