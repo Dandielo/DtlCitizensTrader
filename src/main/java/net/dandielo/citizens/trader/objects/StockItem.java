@@ -235,7 +235,7 @@ public class StockItem {
 					if ( key.equals("pl") ) 
 					{
 						String[] limitData = value.split("/");
-						limits.set("global", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
+						limits.set("player", new Limit(Integer.parseInt(limitData[0]), Integer.parseInt(limitData[1])));
 					}
 					else
 					if ( key.equals("e") ) 
