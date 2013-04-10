@@ -757,10 +757,8 @@ public class StockItem {
 				else
 				if ( key.equals("t") ) 
 				{
-			//		System.out.print(tier + " " + value);
 					if ( this.tier == null ) return false; else
 					result = this.tier.equals(value);
-			//		System.out.print(tier + " " + value);
 					item.matchPriority += 25;
 				}
 				else

@@ -3,7 +3,8 @@ locale:
 wands:
   manage: 280
   settings: 340
-trader: 
+trader:
+  player-limits: 1
   patterns:
     file: 'patterns.yml'
     default: ''

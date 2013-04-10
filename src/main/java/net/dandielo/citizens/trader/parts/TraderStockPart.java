@@ -248,6 +248,7 @@ public class TraderStockPart implements InventoryHolder {
 				if ( amount && equal )
 					equal =  itemStack.getAmount() >= item.getItemStack().getAmount();
 
+				/* still needed? Oo */
 				if ( equal ) {
 					// StockItem has 2 boolean properties that are set to true if its entry in an Items Pattern has the "ce" or "cel" flags  
 					boolean checkEnchant = item.isCheckingEnchantments();
@@ -326,23 +327,6 @@ public class TraderStockPart implements InventoryHolder {
 		}
 		inventory.setItem(inventory.getSize() - 1, itemsConfig.getItemManagement(7));
 	}
-	//TODO Limits
-
-	/*public void linkItems()
-	{
-		for ( StockItem item : stock.get("sell") )
-		{
-			for ( int i = 0 ; i < stock.get("buy").size() ; ++i )
-			{
-				if ( item.equals(stock.get("buy").get(i)) )
-				{
-				//	item.getLimitSystem().linkWith(stock.get("buy").get(i));
-				//	stock.get("buy").get(i).getLimitSystem().setGlobalAmount(item.getLimitSystem().getGlobalLimit());
-				//	stock.get("buy").get(i).getLimitSystem().linkWith(item);
-				}
-			}
-		}
-	}*/
 
 	//Returning the displayInventory
 	@Override
