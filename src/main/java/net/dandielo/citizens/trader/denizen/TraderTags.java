@@ -234,7 +234,7 @@ public class TraderTags implements Listener {
 		if ( denizen != null )
 		{
 			tTags = new TraderTags();
-			denizen.getServer().getPluginManager().registerEvents(tTags, denizen);
+			CitizensTrader.getInstance().getServer().getPluginManager().registerEvents(tTags, denizen);
 			CitizensTrader.info("Registered denizen " + ChatColor.YELLOW + "Replacement Tags");
 		}
 	}
