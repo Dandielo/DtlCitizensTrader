@@ -12,7 +12,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.types.MarketTrader;
 import net.dandielo.citizens.trader.types.PlayerTrader;
 import net.dandielo.citizens.trader.types.ServerTrader;
@@ -92,7 +92,7 @@ public class TraderCommand extends AbstractDenizenCommand {
 			
 			CitizensTrader.getNpcEcoManager().addInteractionNpc(player.getName(), trader);
 	
-			NBTTagEditor.removeDescriptions(player.getInventory());
+			MetaTools.removeDescriptions(player.getInventory());
 			trader.loadDescriptions(player, player.getInventory());
 			
 			player.openInventory(trader.getInventory());

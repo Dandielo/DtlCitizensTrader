@@ -6,7 +6,7 @@ import java.util.Map;
 
 
 import net.dandielo.citizens.trader.objects.BankItem;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
@@ -58,9 +58,9 @@ public class ItemsConfig {
 		
 	public ItemStack initializeItemWithName(ItemStack itemStack, String name, List<String> lore)
 	{
-		NBTTagEditor.setName(itemStack, name.replace('^', '§'));
+		MetaTools.setName(itemStack, name.replace('^', '§'));
 		if ( lore != null )
-			NBTTagEditor.addDescription(itemStack, lore);
+			MetaTools.addDescription(itemStack, lore);
 
 		return itemStack;
 	}

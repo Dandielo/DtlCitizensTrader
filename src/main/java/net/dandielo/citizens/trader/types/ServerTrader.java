@@ -20,7 +20,7 @@ import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dandielo.citizens.trader.limits.Limits.Limit;
 import net.dandielo.citizens.trader.locale.LocaleManager;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
 import net.dandielo.citizens.trader.patterns.TPattern;
@@ -222,7 +222,7 @@ public class ServerTrader extends Trader {
 						//TODO
 						updateBuyLimits(scale);
 
-						NBTTagEditor.removeDescription(event.getCurrentItem(), "player-inventory");
+						MetaTools.removeDescription(event.getCurrentItem(), "player-inventory");
 						removeFromInventory(event.getCurrentItem(), event);
 						
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.SUCCESS_BUY));
@@ -280,7 +280,7 @@ public class ServerTrader extends Trader {
 					
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.SUCCESS_BUY));
 					
-					NBTTagEditor.removeDescription(event.getCurrentItem(), "player-inventory");
+					MetaTools.removeDescription(event.getCurrentItem(), "player-inventory");
 					
 					//inventory cleanup
 					removeFromInventory(event.getCurrentItem(),event);
@@ -508,7 +508,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimits().get("global").changeTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 
 								locale.sendMessage(player, "key-change", "key", "#global-timeout", "value", String.valueOf(getSelectedItem().getLimits().timeout("global")));
@@ -549,7 +549,7 @@ public class ServerTrader extends Trader {
 									getSelectedItem().getLimits().get("player").changeTimeout(calculateTimeout(event.getCursor()));
 								}
 								
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								//add to config 
@@ -622,7 +622,7 @@ public class ServerTrader extends Trader {
 									locale.sendMessage(player, "key-value", "key", "#stack-price", "value", "#enabled");
 								}
 								
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								getSelectedItem().setAsPatternItem(false);
@@ -736,7 +736,7 @@ public class ServerTrader extends Trader {
 								getSelectedItem().setAsPatternItem(false);
 								getSelectedItem().setPatternPrice(false);
 								
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								event.setCurrentItem(TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), getStock().getPatterns(), player)));
 
 								locale.sendMessage(player, "key-change", "key", "#price", "value", f.format(getSelectedItem().getRawPrice()).replace("$", ""));
@@ -784,7 +784,7 @@ public class ServerTrader extends Trader {
 								else
 									getSelectedItem().getLimits().get("global").changeLimit(calculateLimit(event.getCursor()));
 
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								getSelectedItem().setAsPatternItem(false);
@@ -832,7 +832,7 @@ public class ServerTrader extends Trader {
 								else
 									getSelectedItem().getLimits().get("player").changeLimit(calculateLimit(event.getCursor()));
 								
-								NBTTagEditor.removeDescription(event.getCurrentItem());
+								MetaTools.removeDescription(event.getCurrentItem());
 								TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPlayerLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 								
 								getSelectedItem().setAsPatternItem(false);
@@ -937,7 +937,7 @@ public class ServerTrader extends Trader {
 			return true;
 		}
 
-		NBTTagEditor.removeDescriptions(player.getInventory());
+		MetaTools.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	
 

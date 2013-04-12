@@ -21,7 +21,7 @@ import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.commands.Command;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.LogManager;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.trader.parts.TraderConfigPart;
@@ -169,7 +169,7 @@ public class TraderCommands {
 	perm = "dtl.trader.commands.open")
 	public void traderOpen(CitizensTrader plugin, Player player, Trader trader, Map<String, String> args)
 	{
-		NBTTagEditor.removeDescriptions(player.getInventory());
+		MetaTools.removeDescriptions(player.getInventory());
 		if ( !trader.getTraderStatus().isManaging() )
 			trader.loadDescriptions(player, player.getInventory());	
 		

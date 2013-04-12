@@ -31,7 +31,7 @@ import net.dandielo.citizens.trader.limits.LimitManager;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.LogManager;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.parts.TraderConfigPart;
@@ -224,7 +224,7 @@ public abstract class Trader implements tNPC {
 		{
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
 			{
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) ) 
 				{
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
 						return true;
@@ -258,7 +258,7 @@ public abstract class Trader implements tNPC {
 		{
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
 			{
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) && selectedItem.equalsLores(item) && selectedItem.equalsFireworks(item) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) && selectedItem.equalsLores(item) && selectedItem.equalsFireworks(item) ) 
 				{
 					//add amount to an item in the inventory, its done
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
@@ -303,7 +303,7 @@ public abstract class Trader implements tNPC {
 	
 	public void setItemPriceLore(ItemStack is)
 	{
-		NBTTagEditor.removeDescription(is, "player-inventory");
+		MetaTools.removeDescription(is, "player-inventory");
 		StockItem it = this.getStock().getItem(is, TraderStatus.BUY, true, false);
 		
 		if ( it != null )
@@ -318,7 +318,7 @@ public abstract class Trader implements tNPC {
 				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy")).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
 			
 			if ( scale > 0 )
-				NBTTagEditor.addDescription(is, lore);	
+				MetaTools.addDescription(is, lore);	
 		}
 	}
 	
@@ -578,7 +578,7 @@ public abstract class Trader implements tNPC {
 			itemInfo += " fw:" + StockItem.fireworkData(is);
 		}
 		
-		String name = NBTTagEditor.getName(is);
+		String name = MetaTools.getName(is);
 		if ( !name.isEmpty() )
 			itemInfo += " n:" + name;
 		if ( is.hasItemMeta() )
@@ -712,7 +712,7 @@ public abstract class Trader implements tNPC {
 						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0)).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale).replace("$", "")+""));
 					
 					if ( scale > 0 )
-						NBTTagEditor.addDescription(item, lore);			
+						MetaTools.addDescription(item, lore);			
 				}
 			}
 		}

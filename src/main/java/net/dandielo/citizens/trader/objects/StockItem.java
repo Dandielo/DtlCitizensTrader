@@ -167,7 +167,7 @@ public class StockItem {
 					if ( value.equals("lore") ) 
 					{
 						this.lore = lore;
-						NBTTagEditor.addDescription(item, lore);
+						MetaTools.addDescription(item, lore);
 					}
 				}
 				else
@@ -421,7 +421,7 @@ public class StockItem {
 	
 	public void setName(String name)
 	{
-		NBTTagEditor.setName(item, name);
+		MetaTools.setName(item, name);
 		this.name = name;
 	}
 	
@@ -878,7 +878,7 @@ public class StockItem {
 	
 	public boolean equalsLores(ItemStack item)
 	{
-		if ( !item.hasItemMeta() || NBTTagEditor.cleanLore(item.getItemMeta().getLore()).isEmpty() )
+		if ( !item.hasItemMeta() || MetaTools.cleanLore(item.getItemMeta().getLore()).isEmpty() )
 		{
 			if ( lore == null || lore.isEmpty() )
 				return true;
@@ -887,7 +887,7 @@ public class StockItem {
 		if ( lore == null || lore.isEmpty() )
 			return false;
 
-		List<String> lore = NBTTagEditor.cleanLore(item.getItemMeta().getLore());
+		List<String> lore = MetaTools.cleanLore(item.getItemMeta().getLore());
 		if ( lore.size() != this.lore.size() )
 			return false;
 

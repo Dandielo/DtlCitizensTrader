@@ -16,7 +16,7 @@ import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.types.Banker;
 import net.dandielo.citizens.trader.types.MarketTrader;
 import net.dandielo.citizens.trader.types.MoneyBanker;
@@ -244,7 +244,7 @@ public class NpcManager implements Listener {
 			@Override
 			public void run() {
 				if (  playerInteraction.get(player.getName()) == null )
-					NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
+					MetaTools.removeDescriptions(event.getPlayer().getInventory());
 			}
 		};
 		timer.schedule(task, 1000);
@@ -533,7 +533,7 @@ public class NpcManager implements Listener {
 	@EventHandler
 	public void onLogin(PlayerLoginEvent event)
 	{
-		NBTTagEditor.removeDescriptions(event.getPlayer().getInventory());
+		MetaTools.removeDescriptions(event.getPlayer().getInventory());
 	}
 
 }

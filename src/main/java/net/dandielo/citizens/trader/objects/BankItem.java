@@ -105,7 +105,7 @@ public class BankItem
 	
 	public void setName(String name)
 	{
-		NBTTagEditor.setName(item, name);
+		MetaTools.setName(item, name);
 		this.name = name;
 	}
 	

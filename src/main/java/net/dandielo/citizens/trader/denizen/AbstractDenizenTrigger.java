@@ -2,9 +2,7 @@ package net.dandielo.citizens.trader.denizen;
 
 import org.bukkit.ChatColor;
 
-import net.aufdemrand.denizen.Settings;
 import net.aufdemrand.denizen.scripts.triggers.AbstractTrigger;
-import net.aufdemrand.denizen.scripts.triggers.TriggerRegistry.CooldownType;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.denizen.triggers.TraderClickTrigger;
 

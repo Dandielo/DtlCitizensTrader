@@ -15,7 +15,7 @@ import net.dandielo.citizens.trader.managers.PermissionsManager;
 import net.dandielo.citizens.trader.objects.BankAccount;
 import net.dandielo.citizens.trader.objects.BankItem;
 import net.dandielo.citizens.trader.objects.BankTab;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.trader.parts.BankerPart;
@@ -250,7 +250,7 @@ abstract public class Banker implements tNPC {
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
 			{
 				
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) ) 
 				{
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
 						return true;
@@ -288,7 +288,7 @@ abstract public class Banker implements tNPC {
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
 			{
 				
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) ) 
 				{
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() )
 						return true;
@@ -336,7 +336,7 @@ abstract public class Banker implements tNPC {
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() )
 			{
 
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) ) 
 				{
 					
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
@@ -390,7 +390,7 @@ abstract public class Banker implements tNPC {
 			
 			if ( item.getDurability() == selectedItem.getItemStack().getDurability() ) 
 			{
-				if ( NBTTagEditor.getName(item).equals(selectedItem.getName()) ) 
+				if ( MetaTools.getName(item).equals(selectedItem.getName()) ) 
 				{
 				
 					if ( item.getAmount() + amountToAdd <= selectedItem.getItemStack().getMaxStackSize() ) {
@@ -485,7 +485,7 @@ abstract public class Banker implements tNPC {
 			for ( Enchantment ench : is.getEnchantments().keySet() ) 
 				itemInfo += ench.getId() + "/" + is.getEnchantmentLevel(ench) + ",";
 		}
-		String name = NBTTagEditor.getName(is);
+		String name = MetaTools.getName(is);
 		if ( !name.isEmpty() )
 			itemInfo += " n:"+name.replace(" ", "[@]");
 		

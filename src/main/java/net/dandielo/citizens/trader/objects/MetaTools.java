@@ -10,6 +10,7 @@ import net.dandielo.citizens.trader.CitizensTrader;
 
 import org.bukkit.Bukkit;
 
+import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -22,7 +23,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
 
-public class NBTTagEditor {
+public class MetaTools {
 	
 	public static void removeDescriptions(Inventory inventory)
 	{		
@@ -31,7 +32,7 @@ public class NBTTagEditor {
 		{
 			if ( item != null )
 			{
-				NBTTagEditor.removeDescription(item, "player-inventory");
+				MetaTools.removeDescription(item, "player-inventory");
 
 				inventory.setItem(s, cleanItem(item));
 			}
@@ -159,7 +160,7 @@ public class NBTTagEditor {
 		else
 		{
 			ItemMeta meta = item.getItemMeta();
-			if ( !(meta.hasLore() || meta.hasDisplayName() || meta.hasEnchants() || checkMeta(meta)) )
+			if ( !(meta.hasLore() || meta.hasDisplayName() || meta.hasEnchants() || checkMeta(item)) )
 				ser.remove("meta");
 		}
 
@@ -186,8 +187,9 @@ public class NBTTagEditor {
 		item.setItemMeta(meta);
 	}
 	
-	public static boolean checkMeta(ItemMeta meta)
+	public static boolean checkMeta(ItemStack item)
 	{
+		ItemMeta meta = item.getItemMeta();
 		if ( meta instanceof LeatherArmorMeta )
 			if ( ((LeatherArmorMeta) meta).getColor() != null )
 				return true;
@@ -197,7 +199,7 @@ public class NBTTagEditor {
 			return true;
 		if ( meta instanceof BookMeta )
 			return true;
-		if ( meta != null && meta instanceof ItemMeta && !meta.getClass().getSimpleName().equals("CraftMetaItem") )
+		if ( NBTTools.checkItem(item) )
 			return true;
 		return false;
 	}

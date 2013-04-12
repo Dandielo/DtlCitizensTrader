@@ -17,7 +17,7 @@ import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.limits.Limits;
 import net.dandielo.citizens.trader.limits.Limits.Limit;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
 
@@ -637,7 +637,7 @@ public class PlayerTrader extends Trader {
 							}
 							
 							
-							NBTTagEditor.removeDescription(event.getCurrentItem());
+							MetaTools.removeDescription(event.getCurrentItem());
 							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getManageLore(getSelectedItem(), getTraderStatus().name(), player));
 							
 						}
@@ -682,7 +682,7 @@ public class PlayerTrader extends Trader {
 								getSelectedItem().increasePrice(calculatePrice(event.getCursor()));
 							
 
-							NBTTagEditor.removeDescription(event.getCurrentItem());
+							MetaTools.removeDescription(event.getCurrentItem());
 							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getPriceLore(getSelectedItem(), 0, getBasicManageModeByWool().toString(), null, player));
 							
 							
@@ -734,7 +734,7 @@ public class PlayerTrader extends Trader {
 							else
 								getSelectedItem().getLimits().get("global").changeLimit(calculateLimit(event.getCursor()));
 							
-							NBTTagEditor.removeDescription(event.getCurrentItem());
+							MetaTools.removeDescription(event.getCurrentItem());
 							TraderStockPart.setLore(event.getCurrentItem(), TraderStockPart.getLimitLore(getSelectedItem(), getTraderStatus().name(), player));
 
 							locale.sendMessage(player, "key-change", "key", "#buy-limit", "value", String.valueOf(getSelectedItem().getLimits().limit("global")));
@@ -1087,7 +1087,7 @@ public class PlayerTrader extends Trader {
 		}
 		
 		//DEscriptions for player items
-		NBTTagEditor.removeDescriptions(player.getInventory());
+		MetaTools.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());
 

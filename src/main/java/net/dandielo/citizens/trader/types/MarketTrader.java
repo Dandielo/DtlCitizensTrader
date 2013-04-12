@@ -18,7 +18,7 @@ import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.limits.Limits;
 import net.dandielo.citizens.trader.limits.Limits.Limit;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
 
@@ -462,7 +462,7 @@ public class MarketTrader extends Trader {
 			return true;
 		}
 
-		NBTTagEditor.removeDescriptions(player.getInventory());
+		MetaTools.removeDescriptions(player.getInventory());
 		if ( !getTraderStatus().isManaging() )
 			loadDescriptions(player, player.getInventory());	
 		

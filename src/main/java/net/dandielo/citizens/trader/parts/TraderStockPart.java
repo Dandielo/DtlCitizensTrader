@@ -13,7 +13,7 @@ import net.citizensnpcs.api.util.DataKey;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.patterns.PatternsManager;
 import net.dandielo.citizens.trader.patterns.TPattern;
@@ -467,7 +467,7 @@ public class TraderStockPart implements InventoryHolder {
 			list.add(s.replace('^', '§'));
 		
 		meta.setLore(list);
-		meta.setDisplayName(NBTTagEditor.getName(cis));
+		meta.setDisplayName(MetaTools.getName(cis));
 		
 		for ( Map.Entry<Enchantment, Integer> e : cis.getEnchantments().entrySet() )
 			meta.addEnchant(e.getKey(), e.getValue(), true);

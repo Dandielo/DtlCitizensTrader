@@ -14,7 +14,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
-import net.dandielo.citizens.trader.objects.NBTTagEditor;
+import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.PlayerBankAccount;
 import net.milkbowl.vault.economy.Economy;
 
@@ -206,7 +206,7 @@ public class MoneyBanker extends Banker {
 	{
 		List<String> lore = new ArrayList<String>();
 		lore.add("^r^7Value: ^6" + NumberFormat.getCurrencyInstance().format(amount * itemValue).replace("$", ""));
-		NBTTagEditor.addDescription(item, lore);
+		MetaTools.addDescription(item, lore);
 	}
 
 	@Override
