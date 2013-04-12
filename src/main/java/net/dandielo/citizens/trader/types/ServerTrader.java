@@ -173,8 +173,8 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price));
-						
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
+							
 						addSelectedToInventory(slot);
 						
 						Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.SUCCESS_SELL));
@@ -857,7 +857,7 @@ public class ServerTrader extends Trader {
 		} 
 		//bottom inventory click
 		else
-		{
+		{//System.out.print(equalsTraderStatus(getBasicManageModeByWool()));
 			//is item managing
 			if ( equalsTraderStatus(getBasicManageModeByWool()) )
 			{

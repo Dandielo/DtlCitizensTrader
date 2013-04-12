@@ -160,6 +160,13 @@ public class NpcManager implements Listener {
 	}
 	
 	
+/*	@EventHandler
+	public void onClk(InventoryClickEvent event)
+	{
+		System.out.print("Empty Click Event: " + event.getRawSlot());
+		
+	}*/
+	
 	//Events Handling!
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
