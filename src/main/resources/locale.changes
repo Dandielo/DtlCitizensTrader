@@ -1,6 +1,6 @@
 messages: 
   error-managermode-enabled: 
-    message: '^6You cant\'t do this while in management mode'
+    message: '^6You cant do this while in management mode'
   trader-stock-item-invalid: 
     message: ^6This item is invalid
 lores: 

@@ -1,6 +1,5 @@
 package net.dandielo.citizens.trader.objects;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -589,7 +588,7 @@ public class StockItem {
 	public double getPrice(int slot) 
 	{
 		if ( stackPrice )
-			return price/amounts.get(0);
+			return price;
 		return price*amounts.get(slot);
 	}
 	

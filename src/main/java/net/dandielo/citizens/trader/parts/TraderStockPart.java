@@ -600,7 +600,8 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (1/item.getAmount(0))*item.getAmount(slot) : item.getAmount(slot));
+			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (double) item.getAmount(slot) / (double) item.getAmount(0) : item.getAmount(slot));
+		else price *= item.stackPrice() ? (double) item.getAmount(slot) / (double) item.getAmount(0) : 1;
 		return price;
 	}
 	
@@ -615,7 +616,8 @@ public class TraderStockPart implements InventoryHolder {
 				prc.merge(((PricePattern)pat.getValue()).getPrice(item, player, stock));
 		}
 		if ( prc.hasPrice() )
-			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (1/item.getAmount(0))*item.getAmount(slot) : item.getAmount(slot));
+			price = prc.endPrice(item.patternMultiplier())*(item.stackPrice() ? (double) item.getAmount(slot) / (double) item.getAmount(0) : item.getAmount(slot));
+		else price *= item.stackPrice() ? (double) item.getAmount(slot) / (double) item.getAmount(0) : 1;
 		return price;
 	}
 

@@ -632,7 +632,7 @@ public class ServerTrader extends Trader {
 							selectItem(null);
 							
 							//cancel the event
-						//	event.setCancelled(true);
+							event.setCancelled(true);
 							return;
 						 }
 						 if ( hasSelectedItem() ) 
