@@ -1,67 +1,14 @@
 messages: 
-  denizen-item-hint:
-    message: '{item}: {price}'
-  trader-transaction-success: 
-    message: ^6You {action} ^3{amount} ^6for ^3{price}
-  error-argument-invalid:
-    message: '^6Invalid argument was supplied: ^3{argument}'
-  plugin-command-message: 
-    message: '^6== dtlTraders ^3{version} ^6=='
-  error-npc-not-selected:
-    message: '^6You did not selected any trader'
-  wallet-balance: 
-    message: '^6Wallet balance: ^3{amount}'
-  wallet-deposit: 
-    message: ^6Deposited ^3{amount} 
-  wallet-deposit-fail: 
-    message: 'You dont have enought money' 
-  wallet-withdraw: 
-    message: ^6Withdrawed ^3{amount} 
-  wallet-withdraw-fail: 
-    message: '^6Is there enough money to withdraw from this wallet?' 
-  wallet-invalid: 
-    message: ^6You can not use this command on this wallet type
-  pattern-save-success: 
-    message: ^6Successfuly created ^3{pattern} ^6pattern
-  pattern-save-fail-exists: 
-    message: ^6This pattern already exists {pattern}
-  error-command-invalid: 
-    message: '^6This command is invalid'
-  banker-created: 
-    message: '^6You created a new banker: {banker}'
-  trader-created:
-    message: '^6You created a new trader: {trader}'
-  trader-hire-limit: 
-    message: '^6You cannot hire more traders'
-keywords: 
-  bought:
-    keyword: Bought
-  sold: 
-    keyword: Sold
-  type: 
-    keyword: Type
-  server-trader:
-    keyword: Server Trader
-    new: trader-server
-  player-trader:
-    keyword: Player Trader
-    new: trader-player
-  market-trader:
-    keyword: Market Trader
-    new: trader-market
-  banker-type: 
-    keyword: Banker type
-  banker-private: 
-    keyword: Private Banker
-  banker-money:
-    keyword: Money Banker
+  error-managermode-enabled: 
+    message: '^6You cant\'t do this while in management mode'
+  trader-stock-item-invalid: 
+    message: ^6This item is invalid
 lores: 
-  manage-price: 
-    name: ^r^6Price management
+  sell-tab:
+    name: ^r^6Buy stock
     lore:
-    - ^7Click to toggle price managing
-  manage-buy-limit: 
-    name: ^r^6Buy limit management
+    - ^7Click to switch to sell stock
+  buy-tab:
+    name: ^r^6Sell stock
     lore:
-    - ^7Allows to set amounts you 
-    - ^7want to buy from players
+    - ^7Click to switch to buy stock

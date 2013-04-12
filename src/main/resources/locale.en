@@ -4,6 +4,7 @@ messages:
   plugin-command-message: '^6== dtlTraders ^3{version} ^6=='
   error-nopermission: ^6You dont have permissions to do this
   error-nopermission-creative: ^6You dont have permissions to do this while in ^3creative mode
+  error-managermode-enabled: '^6You cant\'t do this while in management mode'
   error-command-invalid: '^6This command is invalid'
   error-argument-missing: '^6Argument is missing: {argument}'
   error-argument-invalid: '^6Invalid argument was supplied: ^3{argument}'
@@ -15,6 +16,7 @@ messages:
   trader-stock-item-add: ^6Item added
   trader-stock-item-update: ^6Item updated
   trader-stock-item-remove: ^6Item removed
+  trader-stock-item-invalid: ^6This item is invalid
   trader-transaction-success: ^3You bought/sold an item
   trader-transaction-failed-limit: ^6Limit for that item has been reached
   trader-transaction-failed-inventory: ^6You dont got enough place in your inventory
@@ -73,13 +75,13 @@ lores:
     lore:
     - '^7Price: ^6{price}'
   sell-tab:
-    name: ^r^6Sell stock
-    lore:
-    - ^7Click to switch to buy stock
-  buy-tab:
     name: ^r^6Buy stock
     lore:
     - ^7Click to switch to sell stock
+  buy-tab:
+    name: ^r^6Sell stock
+    lore:
+    - ^7Click to switch to buy stock
   manage-price: 
     name: ^r^6Price management
     lore:

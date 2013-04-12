@@ -695,7 +695,7 @@ public class ServerTrader extends Trader {
 					{
 						
 						//is item id and data equal?
-						if ( !equalsSelected(event.getCursor(),true,false) 
+						if ( !equalsSelected(event.getCursor(),false,false) 
 								&& !event.getCursor().getType().equals(Material.AIR) ) {
 							
 							locale.sendMessage(player, "trader-stock-item-invalid");
