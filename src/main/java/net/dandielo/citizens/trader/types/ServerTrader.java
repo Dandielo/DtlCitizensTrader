@@ -38,7 +38,6 @@ public class ServerTrader extends Trader {
 	public void simpleMode(InventoryClickEvent event) 
 	{
 		NumberFormat f = NumberFormat.getCurrencyInstance();
-	    //DecimalFormat f = new DecimalFormat("#.##");
 		int slot = event.getSlot();
 		
 		if ( slot < 0 )
@@ -218,7 +217,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(event.getCurrentItem().getAmount()), "price", f.format(price*scale).replace("$", ""));
 						//TODO
 						updateBuyLimits(scale);
 
@@ -254,26 +253,22 @@ public class ServerTrader extends Trader {
 				if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 				{
 					locale.sendMessage(player, "error-nopermission");
-				//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:permission") );
 				}
 				else
 				if ( !checkBuyLimits(scale) )
 				{
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 					locale.sendMessage(player, "trader-transaction-failed-limit");
-					//player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:limit") );
 				}
 				else
 				if ( !sellTransaction(price*scale, event.getCurrentItem()) )
 				{
 					Bukkit.getServer().getPluginManager().callEvent(new TraderTransactionEvent(this, this.getNpc(), event.getWhoClicked(), this.getTraderStatus(), this.getSelectedItem(), price, TransactionResult.FAIL_MONEY));
 					locale.sendMessage(player, "trader-transaction-failed-money");
-				//	player.sendMessage(localeManager.getLocaleString("xxx-transaction-falied-xxx", "transaction:selling", "reason:money") );
 				}
 				else
 				{
-					//player.sendMessage( locale.getLocaleString("xxx-transaction-xxx-item", "entity:player", "transaction:sold").replace("{amount}", "" + getSelectedItem().getAmount()*scale ).replace("{price}", f.format(price*scale) ) );
-					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(event.getCurrentItem().getAmount()), "price", f.format(price*scale).replace("$", ""));
 					
 					//limits update
 					updateBuyLimits(scale);
