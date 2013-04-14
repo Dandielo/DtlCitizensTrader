@@ -339,7 +339,6 @@ public class ServerTrader extends Trader {
 
 						//send message
 						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-price");
-						//player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:price") );
 					}
 						
 				} 
@@ -384,7 +383,6 @@ public class ServerTrader extends Trader {
 
 						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-global-limit");
 						//send message
-						//player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:global-limit") );
 					}					
 				} 
 				else 
@@ -394,7 +392,6 @@ public class ServerTrader extends Trader {
 					if ( !permissionsManager.has(player, "dtl.trader.managing.player-limits") )
 					{
 						locale.sendMessage(player, "error-nopermission");
-						//player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy-limit") );
 					}
 					else
 					{
@@ -408,7 +405,6 @@ public class ServerTrader extends Trader {
 	
 						//send message
 						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-player-limit");
-					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:player-limit") );
 					}					
 				}
 				else
@@ -418,7 +414,6 @@ public class ServerTrader extends Trader {
 					if ( !permissionsManager.has(player, "dtl.trader.options.buy") )
 					{
 						locale.sendMessage(player, "error-nopermission");
-					//	player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:buy") );
 					}
 					else
 					{
@@ -427,7 +422,6 @@ public class ServerTrader extends Trader {
 	
 						//send message
 						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
-					//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:buy") );
 						
 					}
 				}
@@ -437,7 +431,6 @@ public class ServerTrader extends Trader {
 					if ( !permissionsManager.has(player, "dtl.trader.options.sell") )
 					{
 						locale.sendMessage(player, "error-nopermission");
-				//		player.sendMessage( localeManager.getLocaleString("lacks-permissions-manage-xxx", "", "manage:sell") );
 					}
 					else
 					{
@@ -446,8 +439,7 @@ public class ServerTrader extends Trader {
 						switchInventory(TraderStatus.MANAGE_SELL);
 						
 						//send message
-						locale.sendMessage(player, "error-nopermission");
-				//		player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:sell") );
+						locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
 						
 					}
 				}
@@ -461,7 +453,6 @@ public class ServerTrader extends Trader {
 					
 
 					locale.sendMessage(player, "trader-manage-toggle", "mode", "#manage-stock");
-				//	player.sendMessage( localeManager.getLocaleString("xxx-managing-toggled", "entity:player", "manage:stock") );
 				}
 				
 				event.setCancelled(true);
@@ -646,12 +637,12 @@ public class ServerTrader extends Trader {
 								 if ( this.isBuyModeByWool() )
 								 {
 									 trait.getStock().addItem("buy", item);
-									 getStock().addItem("buy", item);
+								//	 getStock().addItem("buy", item);
 								 }
 								 if ( this.isSellModeByWool() )
 								 {
 									 trait.getStock().addItem("sell", item);
-									 getStock().addItem("sell", item);
+								//	 getStock().addItem("sell", item);
 								 }
 
 								 locale.sendMessage(player, "trader-stock-item-add");
