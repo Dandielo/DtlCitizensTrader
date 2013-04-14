@@ -1,5 +1,6 @@
 package net.dandielo.citizens.trader.objects;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -442,7 +443,7 @@ public class StockItem {
 		
 		//saving the item price
 		if ( !patternPrice && hasPrice )
-			itemString += " p:" + NumberFormat.getCurrencyInstance().format(price).replace("$", "");
+			itemString += " p:" + new DecimalFormat("#.##").format(price);//.replace("$", "");
 		
 		//saving the item slot
 		itemString += " s:" + slot;
