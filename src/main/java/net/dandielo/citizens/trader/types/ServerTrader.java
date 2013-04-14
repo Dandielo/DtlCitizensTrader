@@ -217,7 +217,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(event.getCurrentItem().getAmount()), "price", f.format(price*scale).replace("$", ""));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""));
 						//TODO
 						updateBuyLimits(scale);
 
@@ -268,7 +268,7 @@ public class ServerTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(event.getCurrentItem().getAmount()), "price", f.format(price*scale).replace("$", ""));
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""));
 					
 					//limits update
 					updateBuyLimits(scale);
