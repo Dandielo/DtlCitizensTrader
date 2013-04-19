@@ -592,6 +592,12 @@ public class StockItem {
 			return price;
 		return price*amounts.get(slot);
 	}
+
+	public void setPrice(double newPrice)
+	{
+		hasPrice = true;
+		price = newPrice;
+	}
 	
 	public void setRawPrice(double newPrice)
 	{

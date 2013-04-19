@@ -46,7 +46,7 @@ public class StockroomTrait extends Trait {
             if ( item != null )
             {
             	item.setPatternPrice(false);
-            	item.setRawPrice(price);
+            	item.setPrice(price);
             	if ( stacksize > 1 )
             	{
             		item.setStackPrice(true);
@@ -77,7 +77,7 @@ public class StockroomTrait extends Trait {
             if ( item != null )
             {
             	item.setPatternPrice(false);
-            	item.setRawPrice(price);
+            	item.setPrice(price);
             	if ( stacksize > 1 )
             	{
             		item.setStackPrice(true);

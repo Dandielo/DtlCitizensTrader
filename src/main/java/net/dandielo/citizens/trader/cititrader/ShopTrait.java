@@ -43,10 +43,10 @@ public class ShopTrait extends Trait {
             if ( item != null )
             {
             	item.setPatternPrice(false);
-            	item.setRawPrice(price);
+            	item.setPrice(price);
             	if ( stacksize > 1 )
             	{
-            		item.setRawPrice(price);
+            		item.setStackPrice(true);
             		item.setAmount(stacksize);
             	}
     			stock.addItem("sell", item);
@@ -73,7 +73,7 @@ public class ShopTrait extends Trait {
             if ( item != null )
             {
             	item.setPatternPrice(false);
-            	item.setRawPrice(price);
+            	item.setPrice(price);
             	if ( stacksize > 1 )
             	{
             		item.setStackPrice(true);
