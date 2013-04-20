@@ -1,7 +1,6 @@
 package net.dandielo.citizens.trader.types;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,7 +25,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.TraderTrait;
-import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.limits.LimitManager;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.LogManager;
@@ -688,6 +686,11 @@ public abstract class Trader implements tNPC {
 	public double getPrice(Player player, String transaction, StockItem item, int slot)
 	{
 		return getStock().getPrice(item, player, transaction, slot);
+	}
+	
+	public static String playerMoney(Player player)
+	{
+		return NumberFormat.getCurrencyInstance().format(CitizensTrader.getEconomy().getBalance(player.getName())).replace("$", "");
 	}
 	
 	public void loadDescriptions(Player player, Inventory inventory)

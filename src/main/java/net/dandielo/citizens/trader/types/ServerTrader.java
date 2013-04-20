@@ -1,6 +1,5 @@
 package net.dandielo.citizens.trader.types;
 
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
 import org.bukkit.Bukkit;
@@ -15,7 +14,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.dandielo.citizens.trader.CitizensTrader;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
-import net.dandielo.citizens.trader.events.TraderOpenEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent.TransactionResult;
 import net.dandielo.citizens.trader.limits.Limits.Limit;
@@ -23,11 +21,9 @@ import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.objects.MetaTools;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.parts.TraderStockPart;
-import net.dandielo.citizens.trader.patterns.TPattern;
 
 public class ServerTrader extends Trader {
 
-//	private TPattern pattern = getStock().getPattern();
 	private LocaleManager locale = CitizensTrader.getLocaleManager();
 	
 	public ServerTrader(TraderTrait trait, NPC npc, Player player) {
@@ -126,7 +122,7 @@ public class ServerTrader extends Trader {
 						}
 						else
 						{ 
-							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player));
 						
 							addSelectedToInventory(0);
 
@@ -172,7 +168,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player));
 							
 						addSelectedToInventory(slot);
 						
@@ -217,7 +213,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player));
 						//TODO
 						updateBuyLimits(scale);
 
@@ -268,7 +264,7 @@ public class ServerTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""));
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player));
 					
 					//limits update
 					updateBuyLimits(scale);
