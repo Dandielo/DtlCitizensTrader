@@ -122,7 +122,7 @@ public class ServerTrader extends Trader {
 						}
 						else
 						{ 
-							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player));
+							locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player), "item", getSelectedItem().name());
 						
 							addSelectedToInventory(0);
 
@@ -168,7 +168,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#bought", "amount", String.valueOf(getSelectedItem().getAmount()), "price", f.format(price).replace("$", ""), "money", playerMoney(player), "item", getSelectedItem().name());
 							
 						addSelectedToInventory(slot);
 						
@@ -213,7 +213,7 @@ public class ServerTrader extends Trader {
 					}
 					else
 					{
-						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player));
+						locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player), "item", getSelectedItem().name());
 						//TODO
 						updateBuyLimits(scale);
 
@@ -264,7 +264,7 @@ public class ServerTrader extends Trader {
 				}
 				else
 				{
-					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player));
+					locale.sendMessage(player, "trader-transaction-success", "action", "#sold", "amount", String.valueOf(getSelectedItem().getAmount()*scale), "price", f.format(price*scale).replace("$", ""), "money", playerMoney(player), "item", getSelectedItem().name());
 					
 					//limits update
 					updateBuyLimits(scale);
