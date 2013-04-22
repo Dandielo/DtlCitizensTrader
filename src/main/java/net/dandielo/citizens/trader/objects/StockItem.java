@@ -432,7 +432,7 @@ public class StockItem {
 
 	public String name()
 	{
-		return name.isEmpty() ? item.getType().name() : name;
+		return name != null && name.isEmpty() ? item.getType().name() : name;
 	}
 	
 	@Override
