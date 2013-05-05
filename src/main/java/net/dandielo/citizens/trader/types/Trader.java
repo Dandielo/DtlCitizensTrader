@@ -68,7 +68,7 @@ public abstract class Trader implements tNPC {
 	public Trader(TraderTrait trait, NPC npc, Player player) {
 		
 		// Initialize the trader
-		traderStock = trait.getStock();//.createStockFor(player);
+		traderStock = trait.getStock().createStockFor(player);
 		traderConfig = trait.getConfig();
 		
 		//init info
