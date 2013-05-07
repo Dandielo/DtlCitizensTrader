@@ -10,8 +10,6 @@ import net.dandielo.citizens.trader.CitizensTrader;
 
 import org.bukkit.Bukkit;
 
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -19,8 +17,6 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 
 public class MetaTools {

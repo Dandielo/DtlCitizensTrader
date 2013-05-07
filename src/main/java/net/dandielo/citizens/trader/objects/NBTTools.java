@@ -1,7 +1,7 @@
 package net.dandielo.citizens.trader.objects;
 
 import java.lang.reflect.Field;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_5_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class NBTTools {
@@ -18,7 +18,7 @@ public class NBTTools {
 			// Set it accessible 
 			handle.setAccessible(true);
 			// Save the reference
-			net.minecraft.server.v1_5_R2.ItemStack vItem = (net.minecraft.server.v1_5_R2.ItemStack) handle.get(cItem);
+			net.minecraft.server.v1_5_R3.ItemStack vItem = (net.minecraft.server.v1_5_R3.ItemStack) handle.get(cItem);
    
 			return vItem.getTag() != null;
 		} catch (Exception e) {

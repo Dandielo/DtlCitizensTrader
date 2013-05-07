@@ -1,6 +1,5 @@
 package net.dandielo.citizens.trader;
 
-import java.lang.reflect.Field;
 import java.util.logging.Logger;
 
 import net.aufdemrand.denizen.Denizen;
@@ -24,15 +23,11 @@ import net.dandielo.citizens.trader.managers.PermissionsManager;
 import net.dandielo.citizens.trader.patterns.PatternsManager;
 import net.dandielo.citizens.wallets.Wallets;
 import net.milkbowl.vault.economy.Economy;
-import net.minecraft.server.v1_5_R2.NBTTagCompound;
-//import net.sacredlabyrinth.phaed.simpleclans.SimpleClans;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_5_R2.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
