@@ -690,7 +690,7 @@ public abstract class Trader implements tNPC {
 	
 	public static String playerMoney(Player player)
 	{
-		return NumberFormat.getCurrencyInstance().format(CitizensTrader.getEconomy().getBalance(player.getName())).replace("$", "");
+		return NumberFormat.getNumberInstance().format(CitizensTrader.getEconomy().getBalance(player.getName()));
 	}
 	
 	public void loadDescriptions(Player player, Inventory inventory)

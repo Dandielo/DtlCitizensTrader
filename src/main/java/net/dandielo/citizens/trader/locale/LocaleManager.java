@@ -181,6 +181,7 @@ public class LocaleManager {
 		{
 			if ( obj[i] instanceof String )
 			{
+				System.out.print(obj[i+1]);
 				if ( !keywords.containsKey(new LocaleEntry((String) obj[i+1], pver)) && ((String) obj[i+1]).startsWith("#") )
 				{
 					locale.set(buildPath("keywords", ((String) obj[i+1]).substring(1)), "^3Invalid keyword!");

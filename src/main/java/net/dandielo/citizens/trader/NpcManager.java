@@ -1,5 +1,11 @@
 package net.dandielo.citizens.trader;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -535,6 +541,18 @@ public class NpcManager implements Listener {
 					
 		}
 		
+	}
+	
+	@EventHandler
+	public void onTransaction(TraderTransactionEvent event) throws IOException
+	{
+		String name = event.getNPC().getName();
+		int stra = event.getStatus().equals(TraderStatus.SELL) ? 1 : 0;
+		int btra = event.getStatus().equals(TraderStatus.BUY) ? 1 : 0;
+		
+		URL dtl = new URL("http://www.dtltraders.dandielo.net?s=" + CitizensTrader.getInstance().getServer().getName() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
+        URLConnection dtlCon = dtl.openConnection(); 
+        dtlCon.connect();
 	}
 	
 	@EventHandler
