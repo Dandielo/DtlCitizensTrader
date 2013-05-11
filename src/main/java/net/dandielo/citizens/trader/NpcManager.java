@@ -548,7 +548,7 @@ public class NpcManager implements Listener {
 	{
 		String name = event.getNPC().getName();
 		int stra = event.getResult().equals(TransactionResult.SUCCESS_SELL) ? 1 : 0;
-		int btra = event.getStatus().equals(TransactionResult.SUCCESS_BUY) ? 1 : 0;
+		int btra = event.getResult().equals(TransactionResult.SUCCESS_BUY) ? 1 : 0;
 		
 		URL dtl = new URL("http://www.dtltraders.dandielo.net/req.php?s=" + CitizensTrader.getInstance().getServer().getServerName() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
         URLConnection dtlCon = dtl.openConnection(); 
