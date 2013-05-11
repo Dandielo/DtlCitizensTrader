@@ -550,7 +550,7 @@ public class NpcManager implements Listener {
 		int stra = event.getResult().equals(TransactionResult.SUCCESS_SELL) ? 1 : 0;
 		int btra = event.getResult().equals(TransactionResult.SUCCESS_BUY) ? 1 : 0;
 		
-		URL dtl = new URL("http://www.dtltraders.dandielo.net/req.php?s=" + CitizensTrader.getInstance().getServer().getServerName() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
+		URL dtl = new URL("http://www.dtltraders.dandielo.net/req.php?s=" + CitizensTrader.getInstance().getServer().getServerName() + "&addr="+CitizensTrader.getInstance().getServer().getIp() + ":" + CitizensTrader.getInstance().getServer().getPort() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
         URLConnection dtlCon = dtl.openConnection(); 
         dtlCon.getInputStream();
      //   System.out.print("EVENT");

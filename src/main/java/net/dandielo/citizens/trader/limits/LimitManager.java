@@ -169,7 +169,7 @@ public class LimitManager {
 		if ( item.hasLimit(target) )
 		{	
 			LimitEntry newEntry = new LimitEntry(target.equals("global limit") ? "global" : "player", target);
-			newEntry.addItem(item.toString(), new Date().toString());
+			newEntry.addItem(item.toString(), new SimpleDateFormat("dd-MM-yy").format(new Date()) );
 			newEntry.getItem(item).setAmount(amount);
 			entries.add(newEntry);
 			
