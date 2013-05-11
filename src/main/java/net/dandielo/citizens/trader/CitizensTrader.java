@@ -159,6 +159,8 @@ public class CitizensTrader extends JavaPlugin {
 		
 		//Denizen commands
 		initializeDenizens();
+		getServer().getPluginManager().registerEvents(TraderTags.tTags, denizen);
+		info("Registered denizen " + ChatColor.YELLOW + "Replacement Tags");
 	
 		//plugin enabled
 		info("v" + pdfFile.getVersion() + " enabled.");

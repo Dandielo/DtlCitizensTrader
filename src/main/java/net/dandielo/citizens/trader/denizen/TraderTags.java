@@ -34,7 +34,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class TraderTags implements Listener {
 	
 	private static NpcManager manager = CitizensTrader.getNpcEcoManager();
-	private static TraderTags tTags;
+	public static TraderTags tTags;
 	
     private Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
     private Map<String, Pattern> playerChatPattern = new ConcurrentHashMap<String, Pattern>();
@@ -234,8 +234,6 @@ public class TraderTags implements Listener {
 		if ( denizen != null )
 		{
 			tTags = new TraderTags();
-			CitizensTrader.getInstance().getServer().getPluginManager().registerEvents(tTags, denizen);
-			CitizensTrader.info("Registered denizen " + ChatColor.YELLOW + "Replacement Tags");
 		}
 	}
 	
