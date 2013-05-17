@@ -13,7 +13,7 @@ import net.dandielo.citizens.trader.parts.TraderStockPart;
 
 public class TraderTrait extends Trait {
 	//player trader manager
-	private static int limit = CitizensTrader.getInstance().getConfig().getInt("trader.player-limits", 1);
+	private static int limit = DtlTraders.getInstance().getConfig().getInt("trader.player-limits", 1);
 	private static Map<String, Integer> limits = new HashMap<String, Integer>();
 	
 	public static boolean addTrader(String player)
@@ -46,7 +46,7 @@ public class TraderTrait extends Trait {
 	
 	@Override
 	public void onSpawn() {
-		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+		DtlTraders.getNpcEcoManager().addEconomyNpc(npc);
 	}
 	
 	@Override
@@ -60,12 +60,12 @@ public class TraderTrait extends Trait {
 		type = EType.SERVER_TRADER;
 		implementTrader();
 		
-		if ( CitizensTrader.dtlWalletsEnabled() )
+		if ( DtlTraders.dtlWalletsEnabled() )
 			config.loadDtlWallet(npc);
 		
-		CitizensTrader.getNpcEcoManager().addEconomyNpc(npc);
+		DtlTraders.getNpcEcoManager().addEconomyNpc(npc);
 		
-		defPattern = CitizensTrader.getInstance().getConfig().getString("trader.patterns.default","");
+		defPattern = DtlTraders.getInstance().getConfig().getString("trader.patterns.default","");
 	}
 	
 	public TraderStockPart getStock() {
@@ -114,7 +114,7 @@ public class TraderTrait extends Trait {
 			
 			addTrader(config.getOwner());
 			
-			if ( CitizensTrader.dtlWalletsEnabled() )
+			if ( DtlTraders.dtlWalletsEnabled() )
 				config.loadDtlWallet(npc);
 			
 			if ( this.type.equals(EType.SERVER_TRADER) && !defPattern.isEmpty() )
@@ -129,7 +129,7 @@ public class TraderTrait extends Trait {
 				banker = new BankerPart();
 			
 
-			if ( CitizensTrader.dtlWalletsEnabled() )
+			if ( DtlTraders.dtlWalletsEnabled() )
 				banker.loadDtlWallet(npc);
 			
 			banker.load(data);

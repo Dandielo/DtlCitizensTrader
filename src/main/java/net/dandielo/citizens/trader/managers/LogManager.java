@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -40,7 +40,7 @@ public class LogManager {
 	
 	public void initializePlayerLogs()
 	{
-		FileConfiguration config = CitizensTrader.getInstance().getConfig();
+		FileConfiguration config = DtlTraders.getInstance().getConfig();
 		playerLoggingEnabled = config.getBoolean("logging.player-trader.enable", true);
 		
 		//filename
@@ -90,7 +90,7 @@ public class LogManager {
 	public void initializeGeneralLogg()
 	{
 		//config file
-		FileConfiguration config = CitizensTrader.getInstance().getConfig();
+		FileConfiguration config = DtlTraders.getInstance().getConfig();
 		generalLoggingEnabled = config.getBoolean("logging.general.enable", true);
 		
 		

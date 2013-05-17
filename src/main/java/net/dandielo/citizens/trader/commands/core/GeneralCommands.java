@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.commands.Command;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.types.Banker;
@@ -17,7 +17,7 @@ import org.bukkit.command.CommandSender;
 
 public class GeneralCommands {
 	
-	private static LocaleManager locale = CitizensTrader.getLocaleManager();
+	private static LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	@Command(
 	name = "trader",
@@ -25,7 +25,7 @@ public class GeneralCommands {
 	perm = "dtl.trader.commands",
 	desc = "shows info about the current selected traders",
 	npc = false)
-	public void trader(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	public void trader(DtlTraders plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		if ( npc == null )
 		{
@@ -47,7 +47,7 @@ public class GeneralCommands {
 	perm = "dtl.trader.commands.reload",
 	desc = "reloads the locale and the config file",
 	npc = false)
-	public void traderReload(CitizensTrader plugin, CommandSender sender, Trader npc, Map<String, String> args)
+	public void traderReload(DtlTraders plugin, CommandSender sender, Trader npc, Map<String, String> args)
 	{
 		//reload the general config file
 		plugin.reloadConfig();
@@ -63,7 +63,7 @@ public class GeneralCommands {
 	perm = "dtl.banker.commands",
 	desc = "shows the current selected bankers information",
 	npc = false)
-	public void banker(CitizensTrader plugin, CommandSender sender, Banker npc, Map<String, String> args)
+	public void banker(DtlTraders plugin, CommandSender sender, Banker npc, Map<String, String> args)
 	{
 		if ( npc == null )
 		{
@@ -82,7 +82,7 @@ public class GeneralCommands {
 	perm = "dtl.banker.commands.reload",
 	desc = "reloads the locale and the config file",
 	npc = false)
-	public void bankerReload(CitizensTrader plugin, CommandSender sender, Banker npc, Map<String, String> args)
+	public void bankerReload(DtlTraders plugin, CommandSender sender, Banker npc, Map<String, String> args)
 	{
 		//reload the general config file
 		plugin.reloadConfig();
@@ -99,7 +99,7 @@ public class GeneralCommands {
 	desc = "allows to get information about all banker commands",
 	perm = "dtl.banker.commands.help",
 	npc = false)
-	public void bankerHelp(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
+	public void bankerHelp(DtlTraders plugin, CommandSender sender, NPC npc, Map<String, String> args)
 	{
 		List<Command> cmds = commands.get("banker");
 		
@@ -162,7 +162,7 @@ public class GeneralCommands {
 	desc = "allows to get information about all trader commands",
 	perm = "dtl.trader.commands.help",
 	npc = false)
-	public void traderHelpBasic(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
+	public void traderHelpBasic(DtlTraders plugin, CommandSender sender, NPC npc, Map<String, String> args)
 	{
 		List<Command> cmds = commands.get("trader");
 		
@@ -187,7 +187,7 @@ public class GeneralCommands {
 	desc = "allows to get information about all trader commands",
 	perm = "dtl.trader.commands.help",
 	npc = false)
-	public void traderHelp(CitizensTrader plugin, CommandSender sender, NPC npc, Map<String, String> args)
+	public void traderHelp(DtlTraders plugin, CommandSender sender, NPC npc, Map<String, String> args)
 	{
 		List<Command> cmds = commands.get("trader");
 		

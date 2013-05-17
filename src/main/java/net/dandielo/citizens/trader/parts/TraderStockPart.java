@@ -10,7 +10,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import net.citizensnpcs.api.util.DataKey;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
 import net.dandielo.citizens.trader.objects.MetaTools;
@@ -36,13 +36,13 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class TraderStockPart implements InventoryHolder {
-	private static PermissionsManager perms = CitizensTrader.getPermissionsManager();
+	private static PermissionsManager perms = DtlTraders.getPermissionsManager();
 	
 	// patterns
-	private static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
+	private static PatternsManager patternsManager = DtlTraders.getPatternsManager();
 	
 	// config
-	private static ItemsConfig itemsConfig = CitizensTrader.getInstance().getItemConfig(); 
+	private static ItemsConfig itemsConfig = DtlTraders.getInstance().getItemConfig(); 
 	
 	public TraderStockPart(String name)
 	{
@@ -311,7 +311,7 @@ public class TraderStockPart implements InventoryHolder {
 			ItemStack chk = setLore(item.getItemStack(), getPriceLore(item, i, "sell", patterns, player));
 			
 			chk.setAmount(amount);
-			if ( CitizensTrader.getLimitsManager().checkLimit(trader, "sell", item, amount) )
+			if ( DtlTraders.getLimitsManager().checkLimit(trader, "sell", item, amount) )
 				inventory.setItem(i++,chk);
 		}
 		inventory.setItem(stockSize - 1, itemsConfig.getItemManagement(7));
@@ -516,7 +516,7 @@ public class TraderStockPart implements InventoryHolder {
 		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot)).replace("$", "");
 		
 		List<String> lore = new ArrayList<String>();
-		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
+		for ( String line : DtlTraders.getLocaleManager().lore("trader-inventory-" + stock) )//itemsConfig.getPriceLore(stock) )
 			lore.add(line.replace("{price}", price).replace("{amount}", "not supported"));
 		
 		return lore;
@@ -531,7 +531,7 @@ public class TraderStockPart implements InventoryHolder {
 		price = format.format(TraderStockPart.getPrice(item, patterns, player, stock, slot)).replace("$", "");
 		
 		List<String> lore = new ArrayList<String>();
-		for ( String line : CitizensTrader.getLocaleManager().lore("trader-inventory-buy") )//itemsConfig.getPriceLore(stock) )
+		for ( String line : DtlTraders.getLocaleManager().lore("trader-inventory-buy") )//itemsConfig.getPriceLore(stock) )
 			lore.add(line.replace("{price}", price).replace("{amount}", "not supported"));
 		
 		return lore;

@@ -18,8 +18,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public class CommandManager {
-	private static CitizensTrader plugin = CitizensTrader.getInstance();
-	private static LocaleManager locale = CitizensTrader.getLocaleManager();
+	private static DtlTraders plugin = DtlTraders.getInstance();
+	private static LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	private TradersExecutor executor;
 	
@@ -218,7 +218,7 @@ public class CommandManager {
 		
 		public Boolean execute(CommandSender sender, tNPC tNPC, String[] args)
 		{
-			if ( !CitizensTrader.getPermissionsManager().has(sender, perm) )
+			if ( !DtlTraders.getPermissionsManager().has(sender, perm) )
 			{
 				sender.sendMessage(ChatColor.RED + "You don't have permissions to use this command");
 				return true;

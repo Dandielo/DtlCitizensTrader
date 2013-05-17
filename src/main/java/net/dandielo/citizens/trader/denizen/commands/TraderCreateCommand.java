@@ -14,7 +14,7 @@ import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
 import net.citizensnpcs.api.trait.trait.Owner;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
@@ -39,7 +39,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 	
 	public TraderCreateCommand() {
 		this.activate().as("TRADERCREATE").withOptions("({SERVER}|MARKET|PLAYER) [NAME:trader_name] (WALLET:SERVER|{NPC}|OWNER) (PATTERN:pattern_name) (LOC:location) (OWNER:owner) (ENTITY:entity)", 1);
-		CitizensTrader.info("Registered denizen " + ChatColor.YELLOW + TraderCreateCommand.class.getSimpleName());
+		DtlTraders.info("Registered denizen " + ChatColor.YELLOW + TraderCreateCommand.class.getSimpleName());
 	}
 	
 	@Override
@@ -48,7 +48,7 @@ public class TraderCreateCommand extends AbstractDenizenCommand {
 		EType type = EType.SERVER_TRADER;
 		EntityType entity = EntityType.PLAYER;
 		String name = null;
-		String pattern = CitizensTrader.getInstance().getConfig().getString("trader.patterns.default", "");
+		String pattern = DtlTraders.getInstance().getConfig().getString("trader.patterns.default", "");
 		String owner = "no owner";
 		Location location = scriptEntry.getPlayer().getLocation();
 		WalletType wallet = WalletType.NPC;

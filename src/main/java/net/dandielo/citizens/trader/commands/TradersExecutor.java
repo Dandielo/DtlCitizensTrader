@@ -3,7 +3,7 @@ package net.dandielo.citizens.trader.commands;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.CommandManager;
 import net.dandielo.citizens.trader.NpcManager;
 import net.dandielo.citizens.trader.TraderTrait;
@@ -24,7 +24,7 @@ public class TradersExecutor implements CommandExecutor {
 		citizens = (Citizens) CitizensAPI.getPlugin();
 	}
 	
-	private static NpcManager traders = CitizensTrader.getNpcEcoManager();
+	private static NpcManager traders = DtlTraders.getNpcEcoManager();
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String name, String[] args) {

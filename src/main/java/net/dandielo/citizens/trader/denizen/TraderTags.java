@@ -15,7 +15,7 @@ import net.aufdemrand.denizen.events.ReplaceableTagEvent;
 import net.aufdemrand.denizen.npc.dNPC;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.NpcManager;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
@@ -33,7 +33,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class TraderTags implements Listener {
 	
-	private static NpcManager manager = CitizensTrader.getNpcEcoManager();
+	private static NpcManager manager = DtlTraders.getNpcEcoManager();
 	public static TraderTags tTags;
 	
     private Map<String, List<String>> playerChatHistory = new ConcurrentHashMap<String, List<String>>();
@@ -203,7 +203,7 @@ public class TraderTags implements Listener {
 	
 	private String hint(Player p, Trader trader, String st) {
 		String hint = "";
-		String hintItem = CitizensTrader.getLocaleManager().message("denizen-hint-item");
+		String hintItem = DtlTraders.getLocaleManager().message("denizen-hint-item");
 
         List<StockItem> stock = trader.getStock().getStock(st);
         for ( StockItem item : stock )

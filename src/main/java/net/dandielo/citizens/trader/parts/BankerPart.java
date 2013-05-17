@@ -7,7 +7,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.DataKey;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.wallets.AbstractWallet;
@@ -31,7 +31,7 @@ public class BankerPart {
 	//max tabs to show	
 	public BankerPart()
 	{
-		config = CitizensTrader.getInstance().getConfig();
+		config = DtlTraders.getInstance().getConfig();
 		wallet = new Wallet(WalletType.OWNER);
 		
 

@@ -2,13 +2,13 @@ package net.dandielo.citizens.trader.managers;
 
 import java.util.Map;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.objects.BankAccount;
 import net.dandielo.citizens.trader.objects.PlayerBankAccount;
 
 public class BankAccountsManager {
 	protected static Map<String, BankAccount> accounts;
-	protected static BackendManager backendManager = CitizensTrader.getBackendManager();
+	protected static BackendManager backendManager = DtlTraders.getBackendManager();
 	
 	
 	public void loadAccounts() 

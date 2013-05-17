@@ -7,7 +7,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import net.citizensnpcs.api.exception.NPCLoadException;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.util.DataKey;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.objects.Wallet;
 import net.dandielo.citizens.trader.objects.Wallet.WalletType;
 import net.dandielo.citizens.wallets.AbstractWallet;
@@ -63,7 +63,7 @@ public class TraderConfigPart {
 	}
 	
 	public boolean buyTransaction(String player, double price) {
-		boolean success = CitizensTrader.getEconomy().withdrawPlayer(player, price).transactionSuccess();
+		boolean success = DtlTraders.getEconomy().withdrawPlayer(player, price).transactionSuccess();
 		if ( success )
 			deposit(owner, price);
 		return success;
@@ -72,7 +72,7 @@ public class TraderConfigPart {
 	public boolean sellTransaction(String player, double price) {
 		boolean success = withdraw(owner, price);
 		if ( success )
-			CitizensTrader.getEconomy().depositPlayer(player, price);
+			DtlTraders.getEconomy().depositPlayer(player, price);
 		return success;
 	}
 	public void load(DataKey data) throws NPCLoadException 

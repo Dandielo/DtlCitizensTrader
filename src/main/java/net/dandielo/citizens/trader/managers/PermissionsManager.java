@@ -2,7 +2,7 @@ package net.dandielo.citizens.trader.managers;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.milkbowl.vault.permission.Permission;
 
 public class PermissionsManager {
@@ -15,7 +15,7 @@ public class PermissionsManager {
 	
 	private boolean setupPermissions()
     {
-        RegisteredServiceProvider<Permission> permissionProvider = CitizensTrader.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+        RegisteredServiceProvider<Permission> permissionProvider = DtlTraders.getInstance().getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
         if (permissionProvider != null) {
             permission = permissionProvider.getProvider();
         }

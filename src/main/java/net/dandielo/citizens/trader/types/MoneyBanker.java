@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.objects.MetaTools;
@@ -20,7 +20,7 @@ import net.milkbowl.vault.economy.Economy;
 
 public class MoneyBanker extends Banker {
 	
-	private static Economy economy = CitizensTrader.getEconomy();
+	private static Economy economy = DtlTraders.getEconomy();
 	
 	private static ItemStack exchangeItem;
 	private static double itemValue; 
@@ -33,7 +33,7 @@ public class MoneyBanker extends Banker {
 		player = p;
 
 		exchangeItem = itemConfig.getExchangeItem();
-		itemValue = CitizensTrader.getInstance().getConfig().getDouble("bank.money-bank.item-value", 10.0);
+		itemValue = DtlTraders.getInstance().getConfig().getDouble("bank.money-bank.item-value", 10.0);
 
 		tabInventory = account.exchangeInventory(54, "Banker " + npc.getName());
 		switchInventory();

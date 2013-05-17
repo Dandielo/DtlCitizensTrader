@@ -11,7 +11,7 @@ import net.aufdemrand.denizen.scripts.ScriptEntry;
 import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
@@ -38,12 +38,12 @@ public class TransactionCommand extends AbstractDenizenCommand {
 
 	// Initialize variables 
 	
-	LocaleManager locale = CitizensTrader.getLocaleManager();
+	LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	public TransactionCommand()
 	{
 		this.activate().as("TRANSACTION").withOptions("({SELL}|BUY) [ITEM:item_name(:#)] (QTY:#)", 1);
-		CitizensTrader.info("Registered denizen " + ChatColor.YELLOW + TransactionCommand.class.getSimpleName());
+		DtlTraders.info("Registered denizen " + ChatColor.YELLOW + TransactionCommand.class.getSimpleName());
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		int qty = 1;
 		
 		trader = new ServerTrader(scriptEntry.getNPC().getCitizen().getTrait(TraderTrait.class), scriptEntry.getNPC().getCitizen(), scriptEntry.getPlayer());
-		CitizensTrader.getNpcEcoManager().addInteractionNpc(scriptEntry.getPlayer().getName(), trader);
+		DtlTraders.getNpcEcoManager().addInteractionNpc(scriptEntry.getPlayer().getName(), trader);
 
 		for (String arg : scriptEntry.getArguments())
 		{
@@ -195,7 +195,7 @@ public class TransactionCommand extends AbstractDenizenCommand {
 		}*/
 	}	
 	
-	protected static LimitManager limits = CitizensTrader.getLimitsManager();
+	protected static LimitManager limits = DtlTraders.getLimitsManager();
 	
 	public boolean checkLimits(Trader trader, StockItem selectedItem, Player player) {
 		return limits.checkLimit(trader, player.getName(), selectedItem, selectedItem.getAmount()) &&

@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.utilities.arguments.aH;
 import net.aufdemrand.denizen.utilities.debugging.dB;
 import net.aufdemrand.denizen.utilities.debugging.dB.Messages;
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenCommand;
 import net.dandielo.citizens.trader.objects.MetaTools;
@@ -90,7 +90,7 @@ public class TraderCommand extends AbstractDenizenCommand {
 				break;
 			}
 			
-			CitizensTrader.getNpcEcoManager().addInteractionNpc(player.getName(), trader);
+			DtlTraders.getNpcEcoManager().addInteractionNpc(player.getName(), trader);
 	
 			MetaTools.removeDescriptions(player.getInventory());
 			trader.loadDescriptions(player, player.getInventory());

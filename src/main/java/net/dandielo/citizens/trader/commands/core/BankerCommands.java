@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.MobType;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.commands.Command;
@@ -16,7 +16,7 @@ import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.types.Banker;
 
 public class BankerCommands {
-	private static LocaleManager locale = CitizensTrader.getLocaleManager();
+	private static LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	@Command(
 	name = "banker",
@@ -25,7 +25,7 @@ public class BankerCommands {
 	desc = "creates a new banker with the given arguments | 'e:', 't:'",
 	usage = "- /banker create Banker Name e:zombie t:private",
 	npc = false)
-	public void traderCreate(CitizensTrader plugin, Player sender, Banker trader, Map<String, String> args)
+	public void traderCreate(DtlTraders plugin, Player sender, Banker trader, Map<String, String> args)
 	{
 		String name = args.get("free");
 		

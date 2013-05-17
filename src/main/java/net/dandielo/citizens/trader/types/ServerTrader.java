@@ -11,7 +11,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.TraderTrait.EType;
 import net.dandielo.citizens.trader.events.TraderTransactionEvent;
@@ -24,7 +24,7 @@ import net.dandielo.citizens.trader.parts.TraderStockPart;
 
 public class ServerTrader extends Trader {
 
-	private LocaleManager locale = CitizensTrader.getLocaleManager();
+	private LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	public ServerTrader(TraderTrait trait, NPC npc, Player player) {
 		super(trait, npc, player);

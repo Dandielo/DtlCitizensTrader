@@ -11,7 +11,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.patterns.types.ItemPattern;
 import net.dandielo.citizens.trader.patterns.types.PricePattern;
@@ -27,7 +27,7 @@ public class PatternsManager {
 	protected File patternsFile;
 	
 	public PatternsManager() {		
-		ConfigurationSection config = CitizensTrader.getInstance().getConfig();
+		ConfigurationSection config = DtlTraders.getInstance().getConfig();
 		
 		String accountsFilename = config.getString("trader.patterns.file");
 

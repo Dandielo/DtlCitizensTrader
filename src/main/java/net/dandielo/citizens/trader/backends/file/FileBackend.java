@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static net.dandielo.citizens.trader.CitizensTrader.*;
+import static net.dandielo.citizens.trader.DtlTraders.*;
 import net.dandielo.citizens.trader.backends.Backend;
 import net.dandielo.citizens.trader.objects.BankAccount;
 import net.dandielo.citizens.trader.objects.BankItem;

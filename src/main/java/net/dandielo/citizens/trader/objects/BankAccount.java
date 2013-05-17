@@ -9,12 +9,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 
 abstract public class BankAccount implements InventoryHolder  {
 	//
 	//protected static Backend backend = CitizensTrader.getBackendManager().getBackend();
-	protected static ConfigurationSection config = CitizensTrader.getInstance().getConfig();
+	protected static ConfigurationSection config = DtlTraders.getInstance().getConfig();
 	
 	//Stored items
 	protected Map<Integer, BankTab> bankTabs;	

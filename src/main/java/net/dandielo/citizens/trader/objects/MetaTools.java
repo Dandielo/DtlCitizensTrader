@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 
 import org.bukkit.Bukkit;
 
@@ -57,7 +57,7 @@ public class MetaTools {
 	public static List<String> cleanLore(List<String> list)
 	{
 		if ( list == null ) return new ArrayList<String>();
-		List<String> lore = CitizensTrader.getLocaleManager().lore("player-inventory");
+		List<String> lore = DtlTraders.getLocaleManager().lore("player-inventory");
 		List<String> newList = new ArrayList<String>(list);
 		if ( list.size() >= lore.size() )
 		{
@@ -116,7 +116,7 @@ public class MetaTools {
 		List<String> list = meta.getLore();
 		
 		
-		List<String> lore = CitizensTrader.getLocaleManager().lore(toRem);
+		List<String> lore = DtlTraders.getLocaleManager().lore(toRem);
 		
 		if ( list.size() >= lore.size() )
 		{

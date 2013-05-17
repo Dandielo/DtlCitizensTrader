@@ -32,13 +32,13 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class CitizensTrader extends JavaPlugin {
+public class DtlTraders extends JavaPlugin {
 	//citizens trader logger
 	protected final static Logger logger = Logger.getLogger("Minecraft");
 	protected static CommandSender sender;
 	
 	//plugin instance
-	private static CitizensTrader instance;
+	private static DtlTraders instance;
 	private static Denizen denizen;
 	private static Wallets wallets;
 	
@@ -281,7 +281,7 @@ public class CitizensTrader extends JavaPlugin {
 	}
 	
 	//plugin instance
-	public static CitizensTrader getInstance()
+	public static DtlTraders getInstance()
 	{
 		return instance;
 	}

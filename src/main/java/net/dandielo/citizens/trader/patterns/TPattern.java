@@ -1,13 +1,13 @@
 package net.dandielo.citizens.trader.patterns;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.managers.PermissionsManager;
 
 import org.bukkit.configuration.ConfigurationSection;
 
 public abstract class TPattern {	
 	// permissions manager
-	protected static final PermissionsManager perms = CitizensTrader.getPermissionsManager();
+	protected static final PermissionsManager perms = DtlTraders.getPermissionsManager();
 	
 	// pattern fields 
 	protected final String name;

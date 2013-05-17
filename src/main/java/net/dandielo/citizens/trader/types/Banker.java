@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.locale.LocaleManager;
 import net.dandielo.citizens.trader.managers.BankAccountsManager;
@@ -51,10 +51,10 @@ abstract public class Banker implements tNPC {
 	
 	public Banker(NPC bankerNpc, BankerPart bankConfiguration, String owner) {
 
-		permissions = CitizensTrader.getPermissionsManager();
-		itemConfig = CitizensTrader.getInstance().getItemConfig();
-		locale = CitizensTrader.getLocaleManager();
-		accounts = CitizensTrader.getAccountsManager();
+		permissions = DtlTraders.getPermissionsManager();
+		itemConfig = DtlTraders.getInstance().getItemConfig();
+		locale = DtlTraders.getLocaleManager();
+		accounts = DtlTraders.getAccountsManager();
 		settings = bankConfiguration;
 		//loading accoutns
 

@@ -859,12 +859,6 @@ public class StockItem {
 		
 		return false;
 	}
-
-	public static boolean hasDurability(ItemStack item)
-	{
-		int id = item.getTypeId();
-		return ( id > 275 && id < 289 ) || ( id > 291 && id < 296 ) || ( id > 298 && id < 304 ) || ( id > 306 && id < 326 );// ? true : false );
-	}
 	
 	@SuppressWarnings("unchecked")
 	public static StockItem loadItem(Object data)
@@ -1022,5 +1016,11 @@ public class StockItem {
 				data += "/";
 		}
 		return data;
+	}
+	
+	public static boolean hasDurability(ItemStack item)
+	{
+		int id = item.getTypeId();
+		return ( id > 275 && id < 289 ) || ( id > 291 && id < 296 ) || ( id > 298 && id < 304 ) || ( id > 306 && id < 326 );// ? true : false );
 	}
 }

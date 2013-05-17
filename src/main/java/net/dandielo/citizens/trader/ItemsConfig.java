@@ -45,8 +45,8 @@ public class ItemsConfig {
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
 			buttons.put(key, convertStringData(traderSection.getString(buildPath("inventory-navigation", key, "item")),
-					CitizensTrader.getLocaleManager().name(key),
-					CitizensTrader.getLocaleManager().lore(key)) );
+					DtlTraders.getLocaleManager().name(key),
+					DtlTraders.getLocaleManager().lore(key)) );
 		}
 		
 		exchangeItem = new BankItem(config.getString("bank.money-bank.exchange-item", "388")).getItemStack();
@@ -67,7 +67,7 @@ public class ItemsConfig {
 	
 	public void reloadConfig()
 	{
-		ConfigurationSection traderSection = CitizensTrader.getInstance().getConfig().getConfigurationSection("trader");
+		ConfigurationSection traderSection = DtlTraders.getInstance().getConfig().getConfigurationSection("trader");
 		
 		this.rclickInterval = traderSection.getLong("rclick-interval");
 		this.localeFile = traderSection.getString("locale.file","locale.eng");
@@ -76,8 +76,8 @@ public class ItemsConfig {
 		for ( String key : traderSection.getConfigurationSection("inventory-navigation").getKeys(false) )
 		{
 			buttons.put(key, convertStringData(traderSection.getString(buildPath("inventory-navigation", key, "item")),
-					CitizensTrader.getLocaleManager().name(key),
-					CitizensTrader.getLocaleManager().lore(key)) );
+					DtlTraders.getLocaleManager().name(key),
+					DtlTraders.getLocaleManager().lore(key)) );
 		}
 	}
 	
@@ -98,9 +98,9 @@ public class ItemsConfig {
 		} 
 		catch( NumberFormatException e )
 		{
-			CitizensTrader.severe("Wrong number format in config file!");
-			CitizensTrader.severe("Plugin will be disabled!");
-			CitizensTrader.info("Error information");
+			DtlTraders.severe("Wrong number format in config file!");
+			DtlTraders.severe("Plugin will be disabled!");
+			DtlTraders.info("Error information");
 			e.printStackTrace();
 			disablePlugin = true;
 			return null;

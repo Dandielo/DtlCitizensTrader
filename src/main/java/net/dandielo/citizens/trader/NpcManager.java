@@ -50,11 +50,11 @@ import org.bukkit.event.player.PlayerLoginEvent;
 
 public class NpcManager implements Listener {
 	//trader configs
-	protected static ItemsConfig config = CitizensTrader.getInstance().getItemConfig();
+	protected static ItemsConfig config = DtlTraders.getInstance().getItemConfig();
 	
 	//managers
-	protected static LocaleManager locale = CitizensTrader.getLocaleManager();
-	private PermissionsManager permManager = CitizensTrader.getPermissionsManager();
+	protected static LocaleManager locale = DtlTraders.getLocaleManager();
+	private PermissionsManager permManager = DtlTraders.getPermissionsManager();
 	private Timer timer;
 	
 	//EconomyNpc
@@ -550,7 +550,7 @@ public class NpcManager implements Listener {
 		int stra = event.getResult().equals(TransactionResult.SUCCESS_SELL) ? 1 : 0;
 		int btra = event.getResult().equals(TransactionResult.SUCCESS_BUY) ? 1 : 0;
 		
-		URL dtl = new URL("http://www.dtltraders.dandielo.net/req.php?s=" + CitizensTrader.getInstance().getServer().getServerName() + "&addr="+CitizensTrader.getInstance().getServer().getIp() + ":" + CitizensTrader.getInstance().getServer().getPort() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
+		URL dtl = new URL("http://www.dtltraders.dandielo.net/req.php?s=" + DtlTraders.getInstance().getServer().getServerName() + "&addr="+DtlTraders.getInstance().getServer().getIp() + ":" + DtlTraders.getInstance().getServer().getPort() + "&t=" + name + "&ts=" + stra + "&tb=" + btra);
         URLConnection dtlCon = dtl.openConnection(); 
         dtlCon.getInputStream();
      //   System.out.print("EVENT");

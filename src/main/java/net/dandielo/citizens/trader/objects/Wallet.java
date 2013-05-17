@@ -5,7 +5,7 @@ import com.massivecraft.factions.integration.Econ;
 import com.palmergames.bukkit.towny.TownySettings;
 import com.palmergames.bukkit.towny.object.Town;
 */
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 //import net.sacredlabyrinth.phaed.simpleclans.Clan;
@@ -25,7 +25,7 @@ public class Wallet {
 	//create a wallet with the givet Type
 	public Wallet(WalletType t) {
 		type = t;
-		economy = CitizensTrader.getEconomy();
+		economy = DtlTraders.getEconomy();
 	}
 	
 	// get/set wallet type

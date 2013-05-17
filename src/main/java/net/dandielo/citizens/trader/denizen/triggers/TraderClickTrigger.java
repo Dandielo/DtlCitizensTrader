@@ -9,7 +9,7 @@ import net.aufdemrand.denizen.npc.traits.TriggerTrait;
 import net.aufdemrand.denizen.scripts.containers.core.InteractScriptContainer;
 import net.aufdemrand.denizen.utilities.DenizenAPI;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.NpcManager;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.denizen.AbstractDenizenTrigger;
@@ -43,7 +43,7 @@ public class TraderClickTrigger extends AbstractDenizenTrigger implements Listen
 
 	@Override
     public void onEnable() {
-		CitizensTrader.getInstance().getServer().getPluginManager().registerEvents(this, CitizensTrader.getInstance());
+		DtlTraders.getInstance().getServer().getPluginManager().registerEvents(this, DtlTraders.getInstance());
     }
 
 }

@@ -2,7 +2,7 @@ package net.dandielo.citizens.trader.denizen;
 
 import net.aufdemrand.denizen.Denizen;
 import net.aufdemrand.denizen.scripts.commands.AbstractCommand;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.NpcManager;
 import net.dandielo.citizens.trader.denizen.commands.TraderCommand;
 import net.dandielo.citizens.trader.denizen.commands.TraderCreateCommand;
@@ -14,15 +14,15 @@ abstract public class AbstractDenizenCommand extends AbstractCommand {
 	
 	public AbstractDenizenCommand()
 	{
-		npcManager = CitizensTrader.getNpcEcoManager();
+		npcManager = DtlTraders.getNpcEcoManager();
 	}
 	
 	public static void initializeDenizenCommands(Denizen denizen)
 	{
 		if ( denizen != null )
 		{
-			CitizensTrader.info("Hooked into " + denizen.getDescription().getFullName());
-			CitizensTrader.info("Registering commands... ");
+			DtlTraders.info("Hooked into " + denizen.getDescription().getFullName());
+			DtlTraders.info("Registering commands... ");
 			
 			new TransactionCommand().activate().as("TRANSACTION").withOptions("({SELL}|BUY) [ITEM:#(:#)] (QTY:#)", 1);
 			new TraderCommand().activate().as("TRADER").withOptions("({OPEN}|CLOSE|PATTERN|WALLET) (ACTION:action) (PATTERN:pattern_name)",0);

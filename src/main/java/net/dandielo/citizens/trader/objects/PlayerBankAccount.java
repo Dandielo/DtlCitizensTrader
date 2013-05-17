@@ -1,12 +1,12 @@
 package net.dandielo.citizens.trader.objects;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.backends.Backend;
 
 import org.bukkit.inventory.Inventory;
 public class PlayerBankAccount extends BankAccount 
 {	
-	private Backend players = CitizensTrader.getBackendManager().getBackend();
+	private Backend players = DtlTraders.getBackendManager().getBackend();
 	
 	public PlayerBankAccount(String owner) {
 		//super

@@ -16,7 +16,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.objects.StockItem;
 import net.dandielo.citizens.trader.types.Trader;
 
@@ -34,14 +34,14 @@ public class LimitManager {
 	
 	public void loadFile()
 	{
-		ConfigurationSection config = CitizensTrader.getInstance().getConfig();
+		ConfigurationSection config = DtlTraders.getInstance().getConfig();
 		
 		String name = config.getString("locale.file");
 		if ( name == null ) 
 		{
 			name = "locale.en";
 			config.set("locale.file", name);
-			CitizensTrader.getInstance().saveConfig();
+			DtlTraders.getInstance().saveConfig();
 		}
 		
 		String path = config.getString("locale.path", "plugins/DtlCitizensTrader/locale");
@@ -64,7 +64,7 @@ public class LimitManager {
 				file.createNewFile();
 				
 				// Look for defaults in the jar
-			    InputStream stream = CitizensTrader.getInstance().getResource("locale.en");
+			    InputStream stream = DtlTraders.getInstance().getResource("locale.en");
 			    
 			    if (stream != null)
 			    {

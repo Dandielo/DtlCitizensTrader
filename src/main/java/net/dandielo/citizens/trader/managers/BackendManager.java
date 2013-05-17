@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.bukkit.configuration.file.FileConfiguration;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.backends.Backend;
 import net.dandielo.citizens.trader.backends.file.FileBackend;
 import net.dandielo.citizens.trader.objects.BankAccount;
@@ -19,7 +19,7 @@ public class BackendManager {
 	
 	public BackendManager()
 	{
-		config = CitizensTrader.getInstance().getConfig();
+		config = DtlTraders.getInstance().getConfig();
 		players = new FileBackend(config, "player-accounts");
 	}
 	

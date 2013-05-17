@@ -22,7 +22,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import net.citizensnpcs.api.npc.NPC;
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 import net.dandielo.citizens.trader.ItemsConfig;
 import net.dandielo.citizens.trader.TraderTrait;
 import net.dandielo.citizens.trader.limits.LimitManager;
@@ -40,14 +40,14 @@ import net.dandielo.citizens.trader.patterns.PatternsManager;
 public abstract class Trader implements tNPC {
 	
 	//Managers
-	protected static PermissionsManager permissionsManager = CitizensTrader.getPermissionsManager();
-	protected static LogManager loggingManager = CitizensTrader.getLoggingManager();
-	protected static PatternsManager patternsManager = CitizensTrader.getPatternsManager();
-	protected static LimitManager limits = CitizensTrader.getLimitsManager();
-	protected LocaleManager locale = CitizensTrader.getLocaleManager();
+	protected static PermissionsManager permissionsManager = DtlTraders.getPermissionsManager();
+	protected static LogManager loggingManager = DtlTraders.getLoggingManager();
+	protected static PatternsManager patternsManager = DtlTraders.getPatternsManager();
+	protected static LimitManager limits = DtlTraders.getLimitsManager();
+	protected LocaleManager locale = DtlTraders.getLocaleManager();
 	
 	//Configuration
-	protected static ItemsConfig itemsConfig = CitizensTrader.getInstance().getItemConfig();
+	protected static ItemsConfig itemsConfig = DtlTraders.getInstance().getItemConfig();
 	
 	//Trader parts
 	private TraderStockPart traderStock;
@@ -312,7 +312,7 @@ public abstract class Trader implements tNPC {
 			//DecimalFormat f = new DecimalFormat("#.##");
 			
 			List<String> lore = new ArrayList<String>(); ;
-			for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") ) //itemsConfig.getPriceLore("pbuy") )
+			for ( String l : DtlTraders.getLocaleManager().lore("player-inventory") ) //itemsConfig.getPriceLore("pbuy") )
 				lore.add(l.replace("{unit}", f.format(getPrice(player, "buy")).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy")*scale)+""));
 			
 			if ( scale > 0 )
@@ -690,7 +690,7 @@ public abstract class Trader implements tNPC {
 	
 	public static String playerMoney(Player player)
 	{
-		return NumberFormat.getNumberInstance().format(CitizensTrader.getEconomy().getBalance(player.getName()));
+		return NumberFormat.getNumberInstance().format(DtlTraders.getEconomy().getBalance(player.getName()));
 	}
 	
 	public void loadDescriptions(Player player, Inventory inventory)
@@ -711,7 +711,7 @@ public abstract class Trader implements tNPC {
 					int scale = item.getAmount() / stockItem.getAmount(); 
 
 					List<String> lore = new ArrayList<String>(); ;
-					for ( String l : CitizensTrader.getLocaleManager().lore("player-inventory") )
+					for ( String l : DtlTraders.getLocaleManager().lore("player-inventory") )
 						lore.add(l.replace("{unit}", f.format(getPrice(player, "buy", stockItem, 0)).replace("$", "")+"").replace("{stack}", f.format(getPrice(player, "buy", stockItem, 0)*scale).replace("$", "")+""));
 					
 					if ( scale > 0 )

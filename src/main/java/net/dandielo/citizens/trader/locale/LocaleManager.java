@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.dandielo.citizens.trader.CitizensTrader;
+import net.dandielo.citizens.trader.DtlTraders;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -45,14 +45,14 @@ public class LocaleManager {
 	
 	public void loadFile()
 	{
-		ConfigurationSection config = CitizensTrader.getInstance().getConfig();
+		ConfigurationSection config = DtlTraders.getInstance().getConfig();
 		
 		String name = config.getString("locale.file");
 		if ( name == null ) 
 		{
 			name = "locale.en";
 			config.set("locale.file", name);
-			CitizensTrader.getInstance().saveConfig();
+			DtlTraders.getInstance().saveConfig();
 		}
 		
 		String path = config.getString("locale.path", "plugins/DtlCitizensTrader/locale");
@@ -75,7 +75,7 @@ public class LocaleManager {
 				file.createNewFile();
 				
 				// Look for defaults in the jar
-			    InputStream stream = CitizensTrader.getInstance().getResource("locale.en");
+			    InputStream stream = DtlTraders.getInstance().getResource("locale.en");
 			    
 			    if (stream != null)
 			    {
@@ -98,7 +98,7 @@ public class LocaleManager {
 	public YamlConfiguration defaultLocale()
 	{
 		// Look for defaults in the jar
-	    InputStream stream = CitizensTrader.getInstance().getResource("locale.changes");
+	    InputStream stream = DtlTraders.getInstance().getResource("locale.changes");
 	    YamlConfiguration locale = null;
 	    
 	    if (stream != null)
